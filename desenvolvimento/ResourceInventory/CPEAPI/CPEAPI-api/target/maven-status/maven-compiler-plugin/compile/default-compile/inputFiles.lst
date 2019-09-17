@@ -1,0 +1,13 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/UninstallStbService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/CatalogService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/AllocateStbService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/RestConfig.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/DeallocateService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/RetrieveService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/UpdateStbService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/UninstallService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/UpdateService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/InstallStbService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/AllocateService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/InstallService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-api/src/main/java/com/tlf/oss/resourceinventory/cpe/api/v1_0/DeallocateStbService.java

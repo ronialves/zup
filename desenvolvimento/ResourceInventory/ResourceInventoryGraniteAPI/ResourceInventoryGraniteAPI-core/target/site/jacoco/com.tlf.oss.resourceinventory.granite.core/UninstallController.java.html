@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UninstallController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">UninstallController.java</span></div><h1>UninstallController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.validation.Uninstall;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="nc" id="L11">public class UninstallController extends ValidatorEntity {</span>
+	
+	@Inject
+	private OSSLogger logger;
+	
+	@Inject
+	private DeallocateResourceMetallicController unistallResourceController;
+	@Inject
+	private UninstallGponController uninstallGponController;
+	
+	public ResourceInventoryEntity uninstallResource(@Uninstall ResourceInventoryEntity entity) throws OSSBusinessException{
+		
+<span class="nc bnc" id="L23" title="All 2 branches missed.">		if(isGpon(entity)){</span>
+<span class="nc" id="L24">			logger.log(OSSLogger.INFO, &quot;UninstallController - GPON&quot;);</span>
+<span class="nc" id="L25">			entity = uninstallGponController.doExecution(entity);</span>
+		}else{
+<span class="nc" id="L27">			logger.log(OSSLogger.INFO, &quot;UninstallController - METALICO&quot;);</span>
+<span class="nc" id="L28">			entity = unistallResourceController.doExecution(entity);		</span>
+		}
+<span class="nc" id="L30">		return entity;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

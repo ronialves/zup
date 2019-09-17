@@ -1,0 +1,63 @@
+[
+    {
+        "faultCode": "RIOSP-501",
+        "faultDescription": "PARAMETRO NAO INFORMADO."
+    },
+    {
+        "faultCode": "RIOSP-502",
+        "faultDescription": "ERRO DE CONEXAO."
+    },
+    {
+        "faultCode": "RIOSP-503",
+        "faultDescription": "PARAMETRO INVALIDO."
+    },
+    {
+        "faultCode": "RIOSP-504",
+        "faultDescription": "ERRO DE CADASTRO (IT)."
+    },
+    {
+        "faultCode": "RIOSP-509",
+        "faultDescription": "ERRO DE CADASTRO (ENGENHARIA)."
+    },
+    {
+        "faultCode": "RIOSP-505",
+        "faultDescription": "ERRO DE SISTEMA."
+    }, 
+	{
+        "faultCode": "RIOSP-506",
+        "faultDescription": "ERRO TRANSACIONAL (IT)."
+    },
+    {
+        "faultCode": "RIOSP-507",
+        "faultDescription": "ERRO TRANSACIONAL (ENGENHARIA)."
+    },
+    {
+        "faultCode": "RIOSP-508",
+        "faultDescription": "ERRO OPERACIONAL (CAMPO)."
+    },
+    {
+        "faultCode": "RIOSP-510",
+        "faultDescription": "ERRO OPERACIONAL (GERENCIA)."
+    },
+    {
+        "faultCode": "RIOSP-512",
+        "faultDescription": "ERRO OPERACIONAL (ENGENHARIA)."
+    },
+    {
+        "faultCode": "RIOSP-511",
+        "faultDescription": "ERRO DE AMBIENTE."
+    },
+    {
+        "faultCode": "RIOSP-666",
+        "faultDescription": "ERRO INTERNO NAO MAPEADO."
+    },
+    {
+        "faultCode": "RIOSP-777",
+        "faultDescription": "ACAO NAO DEFINIDA."
+    }
+    ,
+    {
+        "faultCode": "RIOSP-999",
+        "faultDescription": "ERRO NAO MAPEADO."
+    }
+]

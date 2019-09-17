@@ -1,0 +1,193 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { CatalogoDispositivo } from '../catalogo-dispositivo.model';
+import { CatalogService } from '../catalog-list.service';
+import { of as observableOf, Observable } from 'rxjs';
+import { catchError, startWith, map, filter } from 'rxjs/operators';
+import { AppHeaderView } from 'src/app/toolbar/app-header-view.model';
+import { ToolbarService } from 'src/app/toolbar/toolbar.service'
+import { FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-catalog-list',
+  templateUrl: './catalog-list.component.html',
+  styleUrls: ['./catalog-list.component.scss']
+})
+export class CatalogListComponent implements OnInit {
+  tiles: Array<any> = [
+    { title: 'Fabricante: ', cols: 3, rows: 1, text: '', campo: 'fabricante' },
+    { title: 'Modelo: ', cols: 3, rows: 1, text: '', campo: 'modelo' },
+    { title: 'Rede: ', cols: 3, rows: 1, text: '', campo: 'rede' },
+    { title: 'Categoria: ', cols: 3, rows: 1, text: '', campo: 'categoriaDispositivo.nomeCategoria' },
+    { title: 'Tipo Categoria: ', cols: 3, rows: 1, text: '', campo: 'categoriaDispositivo.tipoRfs' },
+  ];
+  displayedColumns: string[] = ['fabricante', 'modelo', 'rede', 'tecnologia', 'categoria', 'acao'];
+  fabricantes: string[];
+  modelos: string[];
+  redes: string[];
+  tecnologias: string[];
+  categorias: string[];
+  detail: CatalogoDispositivo = null;
+  caracteristicas: Array<any> = [];
+  grid: Array<any> = [];
+  list: Array<CatalogoDispositivo> = [];
+  listFiltered: Array<CatalogoDispositivo> = [];
+  dataSource: MatTableDataSource<CatalogoDispositivo> = null;
+
+  ctrlFabricante = new FormControl();
+  ctrlModelo = new FormControl();
+  ctrlRede = new FormControl();
+  ctrlTecnologia = new FormControl();
+  ctrlCategoria = new FormControl();
+ 
+  filteredFabricante: Observable<string[]>;
+  filteredModelo: Observable<string[]>;
+  filteredTecnologia: Observable<string[]>;
+  filteredCategoria: Observable<string[]>;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoading: boolean;
+  isCatchError: boolean;
+
+  constructor(private catalogService: CatalogService, private toolbarService: ToolbarService) { }
+
+  ngOnInit() {
+    let headerView = new AppHeaderView();
+    headerView.title = "Catálogo de equipamentos";
+    headerView.icon = "fas fa-boxes";
+    this.toolbarService.changeViewName(headerView);
+    this.loadCatalog(); 
+
+  }
+
+  private loadCatalog() {
+    this.isLoading = true;
+    this.isCatchError = false;   
+    this.catalogService.list().pipe(
+      catchError(() => {
+        this.isLoading = false;
+        this.isCatchError = true;
+        return observableOf([]);
+      })
+    ).subscribe((list) => {
+      this.list = list.map(element => {
+        if (element.caracteristicas.find(this.caracteristicaFind)) {
+          element['tecnologia'] = element.caracteristicas.find(this.caracteristicaFind).valor;
+        }
+        return element;
+      });
+      this.dataSource = new MatTableDataSource<CatalogoDispositivo>(this.list);
+      this.dataSource.paginator = this.paginator;
+      this.isLoading = false;
+      this.isCatchError = false;
+      this.listFiltered = this.list;
+      this.mountList(list);
+    });
+  }
+
+  onDetail(element: CatalogoDispositivo) {
+    if (element) {
+
+      if (this.detail && this.detail.id === element.id) {
+        this.detail = null;
+        return;
+      }
+
+      this.detail = element;
+      this.caracteristicas = [];
+
+      element.caracteristicas.forEach(element => {
+        this.caracteristicas.push({ title: `${element.nome}: `, cols: 3, rows: 1, text: element.valor, campo: 'valor' });
+      });
+
+      this.tiles.forEach(title => {
+        if (title.campo.includes('.')) {
+          const campo = title.campo.split('.');
+          title.text = element[campo[0]][campo[1]];
+        } else {
+          title.text = element[title.campo];
+        }
+      });
+      this.grid = this.tiles.concat(this.caracteristicas);
+    }
+  }
+
+  onDelete(element: CatalogoDispositivo) {
+    if (element) {
+      this.catalogService.delete(element.id).subscribe(() => {
+        this.loadCatalog();
+      }, (e) => {
+        alert("[RICPE] - Erro ao chamar a consulta => O equipamento no pode ser excludo pois possui um dispositivo vinculado a ele");
+      })
+    }
+  }
+
+  caracteristicaFind(element) {
+    return (element.nome === "Tecnologia");
+  }
+
+  private mountList(list: Array<CatalogoDispositivo>) {
+    if (list) {
+      this.fabricantes = Array.from(new Set(list.map(x => x.fabricante))).sort();
+      this.modelos = Array.from(new Set(list.map(x => x.modelo))).sort();
+      this.redes = Array.from(new Set(list.map(x => x.rede))).sort();
+      this.tecnologias = Array.from(new Set(list.map(x => x.caracteristicas.find(this.caracteristicaFind).valor))).sort();
+      this.categorias = Array.from(new Set(list.map(x => x.categoriaDispositivo.nomeCategoria))).sort();
+    }
+    this.createFilter();
+  }
+
+  private createFilter(){
+
+    this.filteredFabricante = this.ctrlFabricante.valueChanges.pipe(
+      startWith(''),
+      map(x => this.fabricantes.filter(option => option.toLowerCase().includes(x.toLowerCase())))
+    );
+
+    this.filteredModelo = this.ctrlModelo.valueChanges.pipe(
+      startWith(''),
+      map(x => this.modelos.filter(option => option.toLowerCase().includes(x.toLowerCase())))
+    );
+
+    this.filteredTecnologia = this.ctrlTecnologia.valueChanges.pipe(
+      startWith(''),
+      map(x => this.tecnologias.filter(option => option.toLowerCase().includes(x.toLowerCase())))
+    );
+
+    this.filteredCategoria = this.ctrlCategoria.valueChanges.pipe(
+      startWith(''),
+      map(x => this.categorias.filter(option => option.toLowerCase().includes(x.toLowerCase())))
+    );
+  }
+
+  onFilter(){
+    this.listFiltered = this.list.filter(x => {
+      if( (x.fabricante === this.ctrlFabricante.value || !this.ctrlFabricante.value) 
+        && (x.modelo === this.ctrlModelo.value || !this.ctrlModelo.value)
+        && (x.rede === this.ctrlRede.value || !this.ctrlRede.value)
+        && (this.getTecnologiaValor(x) === this.ctrlTecnologia.value || !this.ctrlTecnologia.value)
+        && (x.categoriaDispositivo.nomeCategoria === this.ctrlCategoria.value || !this.ctrlCategoria.value)){
+          return true;
+      }
+    })
+
+    this.dataSource = new MatTableDataSource<CatalogoDispositivo>(this.listFiltered);
+    this.dataSource.paginator = this.paginator;    
+    this.mountList(this.listFiltered);
+  }
+
+  onClearFilters(){
+    this.ctrlFabricante.setValue("");
+    this.ctrlModelo.setValue("");
+    this.ctrlRede.setValue("");
+    this.ctrlTecnologia.setValue("");
+    this.ctrlCategoria.setValue("");
+    this.loadCatalog();
+  }
+
+  private getTecnologiaValor(catalago:CatalogoDispositivo){
+    return catalago.caracteristicas.filter( y => {
+      return this.caracteristicaFind(y)
+    })[0].valor
+  }
+}

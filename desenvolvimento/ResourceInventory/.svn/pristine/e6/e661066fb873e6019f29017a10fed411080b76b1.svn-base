@@ -1,0 +1,23 @@
+<deallocateResourceIn>
+	<brazilianUrbanPropertyAddress>
+		<networkOwner>VIVO2</networkOwner>
+		<placePhysicalResourceAssoc>
+			<physicalLink>
+				<voiceProtocol>SIP</voiceProtocol>
+				<accessTechnology>GPON</accessTechnology>
+			</physicalLink>
+		</placePhysicalResourceAssoc>
+	</brazilianUrbanPropertyAddress>
+	<resourceFacingService>
+		<serviceId>CTA-01234567-069</serviceId>
+	</resourceFacingService>
+	<customerOrder>
+		<purchaseOrderNumber>8-A4336E869B-1</purchaseOrderNumber>
+	</customerOrder>
+	<resourceOrder>
+		<resourceOrderItem>
+			<id>1234</id>
+			<name>TSS_FIBER_ACCESS_PORT</name>
+		</resourceOrderItem>
+	</resourceOrder>
+</deallocateResourceIn>

@@ -1,0 +1,49 @@
+package com.tlf.oss.resourceinventory.tbs.api.faultmanagement.v1_0;
+
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.RestInterceptor;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.nwi.core.EquipmentRetrievalController;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.util.RIConstants;
+
+
+@Path("/equipmentRetrieval")
+public class EquipmentRetrievalService extends RestInterceptor {
+
+	@Inject
+	protected OSSLogger logger;
+	
+	@Inject
+	private EquipmentRetrievalController controller;
+	
+	
+	/**
+	 * Executa o retrieval para Busca de Equipamentos.
+	 * 
+	 * @param entity
+	 * @return {@link Response}
+	 * @throws OSSBusinessException
+	 */
+	@POST
+	@Consumes(RIConstants.MEDIA_TYPE_APPLICATION_JSON_UTF8)
+	@Produces(RIConstants.MEDIA_TYPE_APPLICATION_JSON_UTF8)
+	public Response doExecution(ResourceInventoryEntity entity) {
+		
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalService - Iniciando fluxo de Consulta a equipamentos de Rede.");
+		try {
+			entity = controller.retrieval(entity);
+		} catch (OSSBusinessException e) {
+			logger.log(OSSLogger.ERROR, this.getClass().getName() + " - NWI.retrieval executado com erro" + e);
+		}
+		return Response.status(Status.OK).entity(entity).build();
+	}
+}

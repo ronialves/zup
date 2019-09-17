@@ -1,0 +1,228 @@
+package com.tlf.oss.resourceinventory.granite.core;
+
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.ChangeSpeedGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ReserveResourceGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ServiceCodeEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.Operation;
+import com.tlf.oss.resourceinventory.granite.core.repository.ChangeSpeedGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ReserveResourceGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.RetrieveServiceCodeDao;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.PhysicalLink;
+import com.tlf.oss.resourceinventory.schemas.PlacePhysicalResourceAssoc;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ReserveResourceGponEntityTest {
+	
+	private static final String SUCCESS = "0";
+
+	@Mock
+	private OSSLogger logger;
+	
+	@InjectMocks
+	private ReservationResourceGponController reservationResourceGponController;
+	
+	@Mock
+	private ReserveResourceGponDao reserveResourceGponDao;
+	
+	@Mock
+	private ChangeSpeedGponDao changeSpeedGponDao;
+	
+	@Mock
+	private RetrieveServiceCodeDao retrieveServiceCodeDao;
+	
+	private ResourceInventoryEntity entity;
+	
+	@Before
+	public void before(){
+		
+		entity = new ResourceInventoryEntity();
+		
+		BrazilianUrbanPropertyAddress address = new BrazilianUrbanPropertyAddress();
+		address.setCnl("11425");
+		address.setTelephonicArea("OS");
+		
+		PlacePhysicalResourceAssoc physicalResourceAssoc = new PlacePhysicalResourceAssoc();
+		PhysicalLink physicalLink = new PhysicalLink();
+		physicalLink.setAccessTechnology("GPON");
+		address.setPlacePhysicalResourceAssoc(physicalResourceAssoc);
+		
+		Cabinet cabinet = new Cabinet();
+		cabinet.setPrimaryFiber("1");
+		cabinet.setPrimaryCable("01");
+		
+		ResourceFacingService resourceFacingService = new ResourceFacingService();
+		resourceFacingService.setServiceId("123456789123456");
+
+		ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribes.setValue("C000059999");
+		
+		List<ServiceSpecCharDescribes> serviceSpecCharDescribesList = new ArrayList<>();
+		serviceSpecCharDescribesList.add(serviceSpecCharDescribes);
+		
+		ServiceDescribedBy serviceDescribedBy = new ServiceDescribedBy();
+		serviceDescribedBy.setName("NRC");
+		serviceDescribedBy.setServiceSpecCharDescribes(serviceSpecCharDescribesList);
+		
+		List<ServiceDescribedBy> serviceDescribedByList = new ArrayList<>();
+		serviceDescribedByList.add(serviceDescribedBy);
+		
+		resourceFacingService.setServiceDescribedBy(serviceDescribedByList);
+		
+		CustomerFacingService customerFacingService = new CustomerFacingService();
+		customerFacingService.setCategory("BROADBAND");
+		
+		ServiceSpecCharDescribes customerServiceSpecCharDescribes = new ServiceSpecCharDescribes();
+		customerServiceSpecCharDescribes.setValue("16384");
+		
+		ServiceSpecCharDescribes customerServiceSpecCharDescribes1 = new ServiceSpecCharDescribes();
+		customerServiceSpecCharDescribes1.setValue("FIXED");
+		
+		List<ServiceSpecCharDescribes> customerServiceSpecCharDescribesList = new ArrayList<>();
+		customerServiceSpecCharDescribesList.add(customerServiceSpecCharDescribes);
+		
+		List<ServiceSpecCharDescribes> customerServiceSpecCharDescribesList1 = new ArrayList<>();
+		customerServiceSpecCharDescribesList1.add(customerServiceSpecCharDescribes1);
+
+		ServiceDescribedBy customerServiceDescribedBy = new ServiceDescribedBy();
+		customerServiceDescribedBy.setName("Downstream");
+		customerServiceDescribedBy.setServiceSpecCharDescribes(customerServiceSpecCharDescribesList);
+		
+		ServiceDescribedBy customerServiceDescribedBy1 = new ServiceDescribedBy();
+		customerServiceDescribedBy1.setName("IP");
+		customerServiceDescribedBy1.setServiceSpecCharDescribes(customerServiceSpecCharDescribesList1);
+		
+		List<ServiceDescribedBy> customerServiceDescribedByList = new ArrayList<>();
+		customerServiceDescribedByList.add(customerServiceDescribedBy);
+		customerServiceDescribedByList.add(customerServiceDescribedBy1);
+		
+		customerFacingService.setServiceDescribedBy(customerServiceDescribedByList);
+		
+		entity.setAddress(address);
+		entity.setCabinet(cabinet);
+		entity.setResourceFacingService(resourceFacingService);
+		entity.setCustomerFacingService(new ArrayList<>());
+		entity.getCustomerFacingService().add(customerFacingService);
+		
+	}
+	
+	@Test
+	public void testReserveResourceSucess() throws OSSBusinessException {
+		
+		final ServiceCodeEntity serviceCodeEntity = new ServiceCodeEntity();
+		serviceCodeEntity.setServiceCode("IPSF02");
+		when(retrieveServiceCodeDao.retrieveServiceCode(anyObject())).thenReturn(serviceCodeEntity);
+		
+		ReserveResourceGponEntity serviceResponse = new ReserveResourceGponEntity();	
+		serviceResponse.setCnl(entity.getAddress().getCnl());
+		serviceResponse.setSiglaAt(entity.getAddress().getTelephonicArea());
+		serviceResponse.setAccessDesignator(entity.getResourceFacingService().getServiceId());
+		serviceResponse.setPrimaryCable(entity.getCabinet().getPrimaryCable());
+		serviceResponse.setPrimaryFiber(entity.getCabinet().getPrimaryFiber());
+		serviceResponse.setServiceCode(serviceCodeEntity.getServiceCode());
+		serviceResponse.setCode(SUCCESS);
+		
+		when(reserveResourceGponDao.reserveResourceGpon(anyObject())).thenReturn(serviceResponse);
+		
+		final ResourceInventoryEntity reserveResourceGponEntity = reservationResourceGponController.reserveResource(entity, Operation.SALE_OFFER);
+		
+		assertNotNull(reserveResourceGponEntity);
+	}
+	
+	@Test(expected=OSSBusinessException.class)
+	public void testReserveResourceOSSException() throws OSSBusinessException {
+		
+		final ServiceCodeEntity serviceCodeEntity = new ServiceCodeEntity();
+		serviceCodeEntity.setServiceCode("IPSF02");
+		when(retrieveServiceCodeDao.retrieveServiceCode(anyObject())).thenReturn(serviceCodeEntity);
+		
+		ReserveResourceGponEntity serviceResponse = new ReserveResourceGponEntity();	
+		serviceResponse.setCnl(entity.getAddress().getCnl());
+		serviceResponse.setSiglaAt(entity.getAddress().getTelephonicArea());
+		serviceResponse.setAccessDesignator(entity.getResourceFacingService().getServiceId());
+		serviceResponse.setPrimaryCable(entity.getCabinet().getPrimaryCable());
+		serviceResponse.setPrimaryFiber(entity.getCabinet().getPrimaryFiber());
+		serviceResponse.setServiceCode(serviceCodeEntity.getServiceCode());
+		serviceResponse.setCode("10");
+		
+		when(reserveResourceGponDao.reserveResourceGpon(anyObject())).thenReturn(serviceResponse);
+
+		reservationResourceGponController.reserveResource(entity, Operation.SALE_OFFER);
+	}
+	
+	@Test
+	public void testReserveGponResourceSucess() throws OSSBusinessException {
+		
+		final ServiceCodeEntity serviceCodeEntity = new ServiceCodeEntity();
+		serviceCodeEntity.setServiceCode("IPSF02");
+		when(retrieveServiceCodeDao.retrieveServiceCode(anyObject())).thenReturn(serviceCodeEntity);
+
+		ChangeSpeedGponEntity serviceResponse = new ChangeSpeedGponEntity();	
+		serviceResponse.setServiceId("123456789123456");
+		serviceResponse.setServiceCode(serviceCodeEntity.getServiceCode());
+		serviceResponse.setCode(SUCCESS);
+		
+		when(changeSpeedGponDao.reserveOfferEdition(anyObject())).thenReturn(serviceResponse);
+		
+		final ResourceInventoryEntity reserveResourceGponEntity = reservationResourceGponController.reserveResource(entity, Operation.OFFER_EDITION);
+
+		assertNotNull(reserveResourceGponEntity);
+	}
+	
+	@Test(expected=OSSBusinessException.class)
+	public void testReserveGponResourceOSSException() throws OSSBusinessException {
+		
+		final ServiceCodeEntity serviceCodeEntity = new ServiceCodeEntity();
+		serviceCodeEntity.setServiceCode("IPSF02");
+		when(retrieveServiceCodeDao.retrieveServiceCode(anyObject())).thenReturn(serviceCodeEntity);
+
+		ChangeSpeedGponEntity serviceResponse = new ChangeSpeedGponEntity();	
+		serviceResponse.setServiceId("");
+		serviceResponse.setServiceCode(serviceCodeEntity.getServiceCode());
+		serviceResponse.setCode("10");
+		
+		when(changeSpeedGponDao.reserveOfferEdition(anyObject())).thenReturn(serviceResponse);
+
+		reservationResourceGponController.reserveResource(entity, Operation.OFFER_EDITION);
+	}
+	
+	@Test(expected=OSSBusinessException.class)
+	public void testReserveGponResourceConnectionErrorException() throws OSSBusinessException {
+		
+		final ServiceCodeEntity serviceCodeEntity = new ServiceCodeEntity();
+		serviceCodeEntity.setServiceCode("IPSF02");
+		when(retrieveServiceCodeDao.retrieveServiceCode(anyObject())).thenReturn(serviceCodeEntity);
+		ReserveResourceGponEntity serviceResponse = new ReserveResourceGponEntity();
+		serviceResponse.setServiceCode(serviceCodeEntity.getServiceCode());
+		serviceResponse.setCode(Code.RIGRANITE_002.getValue());
+		serviceResponse.setDescription(Code.RIGRANITE_002.getDescription());
+		
+		when(reserveResourceGponDao.reserveResourceGpon(anyObject())).thenReturn(serviceResponse);
+
+		reservationResourceGponController.reserveResource(entity, Operation.SALE_OFFER);
+	}
+	
+}

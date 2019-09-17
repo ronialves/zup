@@ -1,0 +1,38 @@
+@import '../../app.component.scss';
+
+.ui-home-header {
+    padding-left: 10px;
+    background: $ui-primary-color;
+    color: $ui-white-color;
+}
+
+.ui-home-header span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.ui-home-container {
+    height: 100%;
+    width: 100%;
+    margin-top: 60px;
+    align-content: center;
+    align-items: center;
+    padding: 20px;
+
+    table {
+        width: 100%;  
+        
+        th {
+            font-weight: bold;
+            font-size: 15px;
+        }
+    }
+}
+
+.catalog-grid {
+    margin-bottom: 20px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

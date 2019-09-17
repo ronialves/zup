@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InstallController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CPEAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.cpe.core</a> &gt; <span class="el_source">InstallController.java</span></div><h1>InstallController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.cpe.core;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoRecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.CpeWsName;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoRecurso;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoServico;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.cpe.enums.TipoRfs;
+import com.tlf.oss.resourceinventory.cpe.factory.OssBusinessExceptionFactory;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoRecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.utils.EntityExtractor;
+import com.tlf.oss.resourceinventory.cpe.validation.Install;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L26">public class InstallController {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private EstadoServicoAssinanteRepository estadoServicoAssinanteRepository;
+
+	@Inject
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Inject
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Inject
+	private EstadoRecursoLogicoRepository estadoRecursoLogicoRepository;
+
+	@Transactional(rollbackOn = OSSBusinessException.class)
+	public ResourceInventoryEntity install(@Install ResourceInventoryEntity entity) throws OSSBusinessException {
+		try {
+<span class="fc" id="L46">			logger.log(OSSLogger.INFO, &quot;Iniciando o install no CPE...&quot;);</span>
+
+<span class="fc" id="L48">			ServicoAssinante servicoAssinante = servicoAssinanteRepository.findByServiceId(entity);</span>
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">			if (null != servicoAssinante) {</span>
+<span class="fc" id="L51">				EstadoServicoAssinante estadoServicoAssinante = estadoServicoAssinanteRepository</span>
+<span class="fc" id="L52">				        .findByEstadoServico(EstadoServico.ATIVADO);</span>
+
+<span class="fc" id="L54">				servicoAssinante.setEstadoServicoAssinanteId(estadoServicoAssinante.getId());</span>
+
+<span class="fc" id="L56">				servicoAssinanteRepository.update(servicoAssinante);</span>
+
+<span class="fc" id="L58">				RecursoLogico recursoLogico = recursoLogicoRepository</span>
+<span class="fc" id="L59">				        .findByServicoAssinanteId(servicoAssinante.getId());</span>
+
+<span class="fc" id="L61">				EstadoRecursoLogico estadoRecursoLogico = estadoRecursoLogicoRepository</span>
+<span class="fc" id="L62">				        .findByEstadoRecurso(EstadoRecurso.INSTALADO);</span>
+
+<span class="fc" id="L64">				recursoLogico.setEstadoRecursoLogicoId(estadoRecursoLogico.getId());</span>
+
+<span class="fc" id="L66">				recursoLogicoRepository.update(recursoLogico);</span>
+
+<span class="fc" id="L68">				logger.log(OSSLogger.INFO, &quot;Finalizando o install no CPE...&quot;);</span>
+<span class="fc" id="L69">			} else {</span>
+<span class="fc" id="L70">				String type = TipoRfs.fromRoiName(EntityExtractor.extractResourceOrderItemName(entity)).getType();</span>
+<span class="fc" id="L71">				String serviceId = EntityExtractor.extractServiceId(entity);</span>
+<span class="fc" id="L72">				String message = &quot;Não foi encontrado um cliente com o Designador de &quot; + type + &quot; &quot; + serviceId;</span>
+
+<span class="fc" id="L74">				throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(OssBusinessExceptionFactory.DEFAULT_ERROR_CODE, message, CpeWsName.INSTALL);</span>
+			}
+<span class="fc" id="L76">		} catch (OSSBusinessException obe) {</span>
+<span class="fc" id="L77">			logger.error(obe.getMessage(), obe);</span>
+<span class="fc" id="L78">			throw obe;</span>
+<span class="fc" id="L79">		} catch (Exception e) {</span>
+<span class="fc" id="L80">			logger.error(e.getMessage(), e);</span>
+
+<span class="fc" id="L82">			throw new OSSBusinessException(FalloutCode.RICPE_999.getDescription(), FalloutCode.RICPE_999.getValue(),</span>
+<span class="fc" id="L83">			        e.getMessage());</span>
+<span class="fc" id="L84">		}</span>
+
+<span class="fc" id="L86">		return entity;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

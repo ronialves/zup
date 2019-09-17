@@ -1,0 +1,42 @@
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgModule } from "@angular/core";
+import { HttpClientModule } from "@angular/common/http";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+
+import { AppRoutingModule } from "./app-routing.module";
+import { AppMaterialModule } from "./app-material.module";
+import { AppComponent } from "./app.component";
+import { HomeComponent } from "./home/home.component";
+import { NavBarComponent } from "./nav-bar/nav-bar.component";
+import { CatalogListComponent } from "./catalog/catalog-list/catalog-list.component";
+import { CatalogListFiltersComponent } from "./catalog/catalog-list/catalog-list-filters.component";
+import { CatalogEditComponent } from "./catalog/catalog-edit/catalog-edit.component";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    NavBarComponent,
+    CatalogListComponent,
+    CatalogListFiltersComponent,
+    CatalogEditComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    AppMaterialModule,
+    ReactiveFormsModule,
+    FormsModule
+  ],
+  providers: [
+    { provide: MatDialogRef, useValue: {} },
+    { provide: MAT_DIALOG_DATA, useValue: [] }
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [CatalogEditComponent]
+})
+export class AppModule {}

@@ -1,0 +1,18 @@
+<resourceInventoryEntity>
+    <gatherResourceInformation>
+        <address>
+            <networkOwner>VIVO2</networkOwner>
+        </address>
+        <shelf>
+            <hasCards>
+                <id>4712254</id>
+            </hasCards>
+        </shelf>
+        <resourceOrder>
+            <resourceOrderItem>
+                <name>RETRIEVE</name>
+                <action>GET_RESOURCE</action>
+            </resourceOrderItem>
+        </resourceOrder>
+    </gatherResourceInformation>
+</resourceInventoryEntity>

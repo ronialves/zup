@@ -1,0 +1,133 @@
+<div class="ui-catalog-container">
+  <div class="mat-elevation-z8" *ngIf="!detail">
+    <div class="ui-catalog-filters">
+      <h3>Filtros</h3>
+      <mat-divider></mat-divider>
+      <mat-grid-list cols="10" style="margin-top: 12px;">
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <mat-form-field class="example-full-width">
+            <input matInput placeholder="Fabricante" aria-label="Fabricante" [matAutocomplete]="autoFabricante" [formControl]="ctrlFabricante">
+            <mat-autocomplete #autoFabricante="matAutocomplete">
+              <mat-option *ngFor="let item of filteredFabricante | async" [value]="item">
+                <span>{{item}}</span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <mat-form-field class="example-full-width">
+            <input matInput placeholder="Modelo" aria-label="Modelo" [matAutocomplete]="autoModelo" [formControl]="ctrlModelo">
+            <mat-autocomplete #autoModelo="matAutocomplete">
+              <mat-option *ngFor="let item of filteredModelo | async" [value]="item">
+                <span>{{item}}</span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <mat-form-field>
+            <mat-label>Rede</mat-label>
+            <mat-select [formControl]="ctrlRede">
+              <mat-option *ngFor="let item of redes" [value]="item">
+                {{item}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <mat-form-field class="example-full-width">
+            <input matInput placeholder="Tecnologia" aria-label="Tecnologia" [matAutocomplete]="autoTecnologia" [formControl]="ctrlTecnologia">
+            <mat-autocomplete #autoTecnologia="matAutocomplete">
+              <mat-option *ngFor="let item of filteredTecnologia | async" [value]="item">
+                <span>{{item}}</span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <mat-form-field class="example-full-width">
+            <input matInput placeholder="Categoria" aria-label="Categoria" [matAutocomplete]="autoCategoria" [formControl]="ctrlCategoria">
+            <mat-autocomplete #autoCategoria="matAutocomplete">
+              <mat-option *ngFor="let item of filteredCategoria | async" [value]="item">
+                <span>{{item}}</span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <div class="ui-filter-buttons">
+        <button mat-raised-button color="primary" (click)="onFilter()">
+          <i class="fas fa-filter"></i> Filtrar
+        </button>
+        <button mat-raised-button color="primary" (click)="onClearFilters()">
+          <i class="fas fa-times"></i> Limpar
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="mat-elevation-z8" *ngIf="detail">
+    <div class="ui-catalog-grid">
+      <div>
+        <h3>Detalhes</h3>
+        <button mat-icon-button matTooltip="Fechar" (click)="onDetail(detail)"><i class="far fa-window-close fa-2x"></i></button>
+      </div>
+      <mat-divider></mat-divider>
+      <mat-grid-list cols="12" rowHeight="42px" style="margin-top: 12px;">
+        <mat-grid-tile *ngFor="let tile of grid" [colspan]="tile.cols" [rowspan]="tile.rows">
+          <div class="ui-text-inside-grid">
+            <label>{{tile.title}}</label>{{tile.text}}
+          </div>          
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+  <div class="mat-elevation-z8">
+    <div class="ui-table-container">
+      <div class="ui-loading-shade" *ngIf="isLoading || isCatchError">
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+        <div class="ui-warning" *ngIf="isCatchError">Não foi possível retornar os dados.</div>
+      </div>
+      <table mat-table [dataSource]="dataSource" *ngIf="!isLoading">
+        <!-- Fabricante Column -->
+        <ng-container matColumnDef="fabricante">
+          <th mat-header-cell *matHeaderCellDef>Fabricante</th>
+          <td mat-cell *matCellDef="let element">{{element?.fabricante}}</td>
+        </ng-container>
+        <!-- Modelo Column -->
+        <ng-container matColumnDef="modelo">
+          <th mat-header-cell *matHeaderCellDef>Modelo</th>
+          <td mat-cell *matCellDef="let element">{{element?.modelo}}</td>
+        </ng-container>
+        <!-- Rede Column -->
+        <ng-container matColumnDef="rede">
+          <th mat-header-cell *matHeaderCellDef>Rede</th>
+          <td mat-cell *matCellDef="let element">{{element?.rede}}</td>
+        </ng-container>
+        <!-- Tecnologia Column -->
+        <ng-container matColumnDef="tecnologia">
+          <th mat-header-cell *matHeaderCellDef>Tecnologia</th>
+          <td mat-cell *matCellDef="let element">{{element?.tecnologia}}</td>
+        </ng-container>
+        <!-- Categoria Column -->
+        <ng-container matColumnDef="categoria">
+          <th mat-header-cell *matHeaderCellDef>Categoria</th>
+          <td mat-cell *matCellDef="let element">{{element?.categoriaDispositivo?.nomeCategoria}}</td>
+        </ng-container>
+        <!-- Categoria Column -->
+        <ng-container matColumnDef="acao">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-mini-fab color="primary" matTooltip="Excluir Modelo" matTooltipPosition="above" (click)="onDelete(element)"><i class="far fa-trash-alt"></i></button>
+            <button mat-mini-fab color="primary" matTooltip="Editar Modelo" matTooltipPosition="above"><i class="fas fa-edit"></i></button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+            class="ui-element-row"
+            [class.active]="detail != null && detail.id === row.id"
+            (click)="onDetail(row)"></tr>
+      </table>
+    </div>
+    <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

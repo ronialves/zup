@@ -1,0 +1,59 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoServico;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.utils.EntityExtractor;
+import com.tlf.oss.resourceinventory.cpe.validation.Install;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class InstallController {
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private EstadoServicoAssinanteRepository estadoServicoAssinanteRepository;
+
+	@Inject
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Transactional(rollbackOn = OSSBusinessException.class)
+	public ResourceInventoryEntity install(@Install ResourceInventoryEntity entity) throws OSSBusinessException {
+		try {
+			logger.log(OSSLogger.INFO, "Iniciando o install no CPE...");
+
+			ServicoAssinante servicoAssinante = servicoAssinanteRepository.findByServiceId(entity);
+
+			if (null != servicoAssinante) {
+				EstadoServicoAssinante estadoServicoAssinante = estadoServicoAssinanteRepository
+						.findByEstadoServico(EstadoServico.ATIVADO);
+
+				servicoAssinante.setEstadoServicoAssinanteId(estadoServicoAssinante.getId());
+
+				servicoAssinanteRepository.update(servicoAssinante);
+
+				logger.log(OSSLogger.INFO, "Finalizando o install no CPE...");
+			} else {
+				throw new OSSBusinessException(FalloutCode.RICPE_003.getDescription(),
+											   FalloutCode.RICPE_003.getValue(),
+											   "Nenhum recurso encontrado para o serviceId " + EntityExtractor.extractServiceId(entity));
+			}
+		} catch (Exception e) {
+			logger.log(OSSLogger.ERROR, e.getMessage());
+
+			throw new OSSBusinessException(FalloutCode.RICPE_999.getDescription(), FalloutCode.RICPE_999.getValue(),
+					e.getMessage());
+		}
+
+		return entity;
+	}
+}

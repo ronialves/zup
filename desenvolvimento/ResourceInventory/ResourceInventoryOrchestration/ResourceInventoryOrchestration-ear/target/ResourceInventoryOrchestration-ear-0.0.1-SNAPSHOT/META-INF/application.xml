@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/application_7.xsd" version="7">
+  <display-name>ResourceInventoryOrchestration-ear</display-name>
+  <module>
+    <web>
+      <web-uri>ResourceInventoryOrchestration-api.war</web-uri>
+      <context-root>/ri-orchestration</context-root>
+    </web>
+  </module>
+  <module>
+    <ejb>ResourceInventoryOrchestration-core.jar</ejb>
+  </module>
+  <library-directory>APP-INF/lib</library-directory>
+</application>

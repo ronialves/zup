@@ -1,0 +1,12 @@
+com/tlf/oss/resourceinventory/television/entity/CidadeUf.class
+com/tlf/oss/resourceinventory/television/core/validation/DetermineAvailability.class
+com/tlf/oss/resourceinventory/television/core/validation/DetermineAvailabilityValidator.class
+com/tlf/oss/resourceinventory/television/entity/CidadeCobertura.class
+com/tlf/oss/resourceinventory/television/repository/DetermineAvailabilityRepository.class
+com/tlf/oss/resourceinventory/television/core/validation/ValidatorEntity.class
+com/tlf/oss/resourceinventory/television/entity/Cobertura.class
+com/tlf/oss/resourceinventory/television/enums/ExceptionInfoEnum.class
+com/tlf/oss/resourceinventory/television/to/ResultTo.class
+com/tlf/oss/resourceinventory/television/enums/EntityFields.class
+com/tlf/oss/resourceinventory/television/core/DetermineAvailabilityController.class
+com/tlf/oss/resourceinventory/television/repository/factory/GenericRepository.class

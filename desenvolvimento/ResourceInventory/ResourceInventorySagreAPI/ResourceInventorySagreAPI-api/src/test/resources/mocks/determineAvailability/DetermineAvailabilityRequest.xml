@@ -1,0 +1,16 @@
+<determineResourceAvailabilityIn>
+    <brazilianUrbanPropertyAddress>
+        <streetCode>65879</streetCode>
+        <streetNrFirst>1290</streetNrFirst>
+        <cnl>11000</cnl>
+        <cnlAcronym/>
+        <networkOwner>VIVO2</networkOwner>
+        <telephonicArea>RE</telephonicArea>
+        <placePhysicalResourceAssoc>
+            <physicalLink>
+                <voiceProtocol>SIP</voiceProtocol>
+                <accessTechnology>GPON</accessTechnology>
+            </physicalLink>
+        </placePhysicalResourceAssoc>
+    </brazilianUrbanPropertyAddress>
+</determineResourceAvailabilityIn>

@@ -1,0 +1,23 @@
+package com.tlf.oss.resourceinventory.orchestration.execution.resourceordermanagement;
+
+rule "[Release] - VIVO1" extends "BaseRule"
+    agenda-group "RELEASE"
+    salience 1
+    when
+  		$action : Action(name == '1.0_RELEASE_VIVO1') from $resource.actions
+  		ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+ 	then
+  		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[External RELEASE] - VIVO2" extends "BaseRule"
+    agenda-group "RELEASE"
+    when
+        $action : Action(name == '1.0_EXTERNAL_RELEASE_VIVO2') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO2')
+          
+      then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end

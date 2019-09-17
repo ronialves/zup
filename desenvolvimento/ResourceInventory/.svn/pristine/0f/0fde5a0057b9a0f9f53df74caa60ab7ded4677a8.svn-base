@@ -1,0 +1,83 @@
+package com.tfl.oss.resourceinventory.orchestration.execution
+
+rule "[Install] - VIVO1" extends "BaseRule"
+	agenda-group "INSTALL"
+	salience 1
+	when
+		$action : Action(name == '1.0_INSTALL_VIVO1') from $resource.actions
+	 	ResourceInventoryEntity(address!.networkOwner == 'VIVO1')
+		ResourceInventoryEntity( address!.placePhysicalResourceAssoc!.physicalLink!.accessTechnology == 'METALICO') 
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);		
+		insert( $action );
+end
+
+rule "[Install] - OFFER EDITION VIVO1" extends "BaseRule"
+    agenda-group "INSTALL"
+    salience 10
+    when        
+        $action : Action(name == '1.0_INSTALL_OFFER_EDITION_VIVO1') from $resource.actions
+        ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+        ResourceInventoryEntity( 'Edição de Oferta' == customerOrder!.customerOrderType)
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action); 
+        insert( $action );
+end
+
+rule "[External INSTALL] - VIVO2" extends "BaseRule"
+    agenda-group "INSTALL"
+    salience 1
+    when
+        $action : Action(name == '1.0_EXTERNAL_INSTALL_VIVO2') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO2', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_PHYSICAL_ACCESS')
+         
+      then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[Internal INSTALL] - VIVO2" extends "BaseRule"
+    agenda-group "INSTALL"
+	salience 1
+    when
+        $action : Action(name == '1.0_INTERNAL_INSTALL_VIVO2') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO2', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_ACCESS_PORT')
+         
+      then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[External Install] - VIVO1" extends "BaseRule"
+	agenda-group "INSTALL"
+    when
+        $action : Action(name == '1.0_EXTERNAL_INSTALL_VIVO1') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO1', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_PHYSICAL_ACCESS')
+         
+      then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[Internal Install] - VIVO1" extends "BaseRule"
+	agenda-group "INSTALL"
+    when
+        $action : Action(name == '1.0_INTERNAL_INSTALL_VIVO1') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO1', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_ACCESS_PORT')
+         
+      then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[Install] - CPE" extends "BaseRule"
+	agenda-group "INSTALL"
+	when
+		$action : Action(name == '1.0_CPE_INSTALL') from $resource.actions
+		ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null, 
+            resourceOrder!.resourceOrderItem!.name.contains("R_CPE_"))
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+

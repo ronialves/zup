@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GatherResourceInformationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core</a> &gt; <span class="el_source">GatherResourceInformationController.java</span></div><h1>GatherResourceInformationController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.IPAddress;
+import com.tlf.oss.resourceinventory.schemas.LogicalResource;
+import com.tlf.oss.resourceinventory.schemas.LogicalResourceAssociation;
+import com.tlf.oss.resourceinventory.schemas.PhysicalPort;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ResourceCharacteristicSpecification;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.Splitter;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.api.resourcelifecyclemanagement.v1_0.GatherResourceInformation;
+import com.tlf.oss.resourceinventory.tbs.core.validation.GatherResource;
+import com.tlf.oss.resourceinventory.tbs.entity.GatherResourceEntity;
+import com.tlf.oss.resourceinventory.tbs.repository.GatherResourceInformationRepository;
+
+<span class="fc" id="L27">public class GatherResourceInformationController implements Serializable {</span>
+    private static final long seialVersionUID = 1L;
+
+    @Inject private OSSLogger ossLogger;
+    @Inject private GatherResourceInformationRepository gatherResourceInformationRepository;
+
+    private ResourceInventoryEntity buildResourceInventoryEntityResponse(GatherResourceEntity gatherResourceEntity) {
+<span class="fc" id="L34">        ResourceInventoryEntity resourceInventoryEntity = new ResourceInventoryEntity();</span>
+<span class="fc" id="L35">        Cabinet cabinet = new Cabinet();</span>
+<span class="fc" id="L36">        Shelf shelf = new Shelf();</span>
+
+<span class="fc" id="L38">        PortAdapterCard portAdapterCard = new PortAdapterCard();</span>
+<span class="fc" id="L39">        PhysicalPort physicalPort = new PhysicalPort();</span>
+
+<span class="fc" id="L41">        IPAddress ipAddress = new IPAddress();</span>
+<span class="fc" id="L42">        ipAddress.setNetworkNumber(gatherResourceEntity.getIpAddress());</span>
+
+<span class="fc" id="L44">        physicalPort.setLogicalResourceAssociation(this.buildLogicalResources(gatherResourceEntity));</span>
+<span class="fc" id="L45">        portAdapterCard.setContainsPorts(Arrays.asList(physicalPort));</span>
+
+<span class="fc" id="L47">        shelf.setIpAddress(ipAddress);</span>
+<span class="fc" id="L48">        shelf.setHasCards(Arrays.asList(portAdapterCard));</span>
+<span class="fc" id="L49">        shelf.setResourceCharacteristicSpecifications(this.buildResourceCharacteristicSpecifications(gatherResourceEntity));</span>
+
+<span class="fc" id="L51">        cabinet.setHasShelves(Arrays.asList(shelf));</span>
+<span class="fc" id="L52">        resourceInventoryEntity.setCabinet(cabinet);</span>
+<span class="fc" id="L53">        return resourceInventoryEntity;</span>
+    }
+
+    private List&lt;ResourceCharacteristicSpecification&gt; buildResourceCharacteristicSpecifications(GatherResourceEntity gatherResourceEntity) {
+<span class="fc" id="L57">        List&lt;ResourceCharacteristicSpecification&gt; resourceCharacteristicSpecifications = new ArrayList&lt;&gt;();</span>
+
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (gatherResourceEntity.getMascaraIp() != null) {</span>
+<span class="fc" id="L60">            ResourceCharacteristicSpecification ipMask = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L61">            ipMask.setId(&quot;MASCARA_IP&quot;);</span>
+<span class="fc" id="L62">            ipMask.setValue(gatherResourceEntity.getMascaraIp());</span>
+<span class="fc" id="L63">            resourceCharacteristicSpecifications.add(ipMask);</span>
+        }
+
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (gatherResourceEntity.getGerencia() != null) {</span>
+<span class="fc" id="L67">            ResourceCharacteristicSpecification gerencia = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L68">            gerencia.setId(&quot;GERENCIA&quot;);</span>
+<span class="fc" id="L69">            gerencia.setValue(gatherResourceEntity.getGerencia());</span>
+<span class="fc" id="L70">            resourceCharacteristicSpecifications.add(gerencia);</span>
+        }
+
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (gatherResourceEntity.getSwitchAtendimento() != null) {</span>
+<span class="fc" id="L74">            ResourceCharacteristicSpecification switchAtendimento = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L75">            switchAtendimento.setId(&quot;SWITCH_ATENDIMENTO&quot;);</span>
+<span class="fc" id="L76">            switchAtendimento.setValue(gatherResourceEntity.getSwitchAtendimento());</span>
+<span class="fc" id="L77">            resourceCharacteristicSpecifications.add(switchAtendimento);</span>
+        }
+
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (gatherResourceEntity.getV5ID() != null) {</span>
+<span class="fc" id="L81">            ResourceCharacteristicSpecification v5id = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L82">            v5id.setId(&quot;V5ID&quot;);</span>
+<span class="fc" id="L83">            v5id.setValue(gatherResourceEntity.getV5ID());</span>
+<span class="fc" id="L84">            resourceCharacteristicSpecifications.add(v5id);</span>
+        }
+
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (gatherResourceEntity.getSwitchAtendimento2() != null) {</span>
+<span class="fc" id="L88">            ResourceCharacteristicSpecification switchAtendimento = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L89">            switchAtendimento.setId(&quot;SWITCH_ATENDIMENTO_2&quot;);</span>
+<span class="fc" id="L90">            switchAtendimento.setValue(gatherResourceEntity.getSwitchAtendimento2());</span>
+<span class="fc" id="L91">            resourceCharacteristicSpecifications.add(switchAtendimento);</span>
+        }
+
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if (gatherResourceEntity.getV5ID2() != null) {</span>
+<span class="fc" id="L95">            ResourceCharacteristicSpecification v5id = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L96">            v5id.setId(&quot;V5ID_2&quot;);</span>
+<span class="fc" id="L97">            v5id.setValue(gatherResourceEntity.getV5ID2());</span>
+<span class="fc" id="L98">            resourceCharacteristicSpecifications.add(v5id);</span>
+        }
+
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if (gatherResourceEntity.getShasta() != null) {</span>
+<span class="fc" id="L102">            ResourceCharacteristicSpecification shasta = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L103">            shasta.setId(&quot;SHASTA&quot;);</span>
+<span class="fc" id="L104">            shasta.setValue(gatherResourceEntity.getShasta());</span>
+<span class="fc" id="L105">            resourceCharacteristicSpecifications.add(shasta);</span>
+        }
+
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if (gatherResourceEntity.getProtocoloAGCF() != null) {</span>
+<span class="fc" id="L109">            ResourceCharacteristicSpecification protocoloAGCF = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L110">            protocoloAGCF.setId(&quot;PROTOCOLO_AGCF&quot;);</span>
+<span class="fc" id="L111">            protocoloAGCF.setValue(gatherResourceEntity.getProtocoloAGCF());</span>
+<span class="fc" id="L112">            resourceCharacteristicSpecifications.add(protocoloAGCF);</span>
+        }
+
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if (gatherResourceEntity.getNomeAGCF() != null) {</span>
+<span class="fc" id="L116">            ResourceCharacteristicSpecification nomeAGCF = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L117">            nomeAGCF.setId(&quot;NOME_AGCF&quot;);</span>
+<span class="fc" id="L118">            nomeAGCF.setValue(gatherResourceEntity.getNomeAGCF());</span>
+<span class="fc" id="L119">            resourceCharacteristicSpecifications.add(nomeAGCF);</span>
+        }
+
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        if (gatherResourceEntity.getIpAddressAGCF() != null) {</span>
+<span class="fc" id="L123">            ResourceCharacteristicSpecification ipAddressAGCF = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L124">            ipAddressAGCF.setId(&quot;IP_ADDRESS_AGCF&quot;);</span>
+<span class="fc" id="L125">            ipAddressAGCF.setValue(gatherResourceEntity.getIpAddressAGCF());</span>
+<span class="fc" id="L126">            resourceCharacteristicSpecifications.add(ipAddressAGCF);</span>
+        }
+
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        if (gatherResourceEntity.getStackVlan() != null) {</span>
+<span class="fc" id="L130">            ResourceCharacteristicSpecification stackVlan = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L131">            stackVlan.setId(&quot;STACK_VLAN&quot;);</span>
+<span class="fc" id="L132">            stackVlan.setValue(&quot;&quot; + gatherResourceEntity.getStackVlan());</span>
+<span class="fc" id="L133">            resourceCharacteristicSpecifications.add(stackVlan);</span>
+        }
+
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        if (gatherResourceEntity.getExternalNetworkOwner() != null) {</span>
+<span class="fc" id="L137">            ResourceCharacteristicSpecification eno = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L138">            eno.setId(&quot;EXTERNAL_NETWORK_OWNER&quot;);</span>
+<span class="fc" id="L139">            eno.setValue(gatherResourceEntity.getExternalNetworkOwner());</span>
+<span class="fc" id="L140">            resourceCharacteristicSpecifications.add(eno);</span>
+        }
+
+<span class="fc" id="L143">        return resourceCharacteristicSpecifications;</span>
+    }
+
+    private LogicalResourceAssociation buildLogicalResources(GatherResourceEntity gatherResourceEntity) {
+<span class="fc" id="L147">        LogicalResourceAssociation logicalResourceAssociation = new LogicalResourceAssociation();</span>
+<span class="fc" id="L148">        List&lt;LogicalResource&gt; logicalResources = logicalResourceAssociation.getLogicalResource();</span>
+
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (gatherResourceEntity.getNameHL() != null) {</span>
+<span class="fc" id="L151">            LogicalResource nameHL = new LogicalResource();</span>
+<span class="fc" id="L152">            nameHL.setName(&quot;NAME_HL&quot;);</span>
+<span class="fc" id="L153">            nameHL.setValue(gatherResourceEntity.getNameHL());</span>
+<span class="fc" id="L154">            logicalResources.add(nameHL);</span>
+        }
+
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">        if (gatherResourceEntity.getVendorHL() != null) {</span>
+<span class="fc" id="L158">            LogicalResource vendorHL = new LogicalResource();</span>
+<span class="fc" id="L159">            vendorHL.setName(&quot;VENDOR_HL&quot;);</span>
+<span class="fc" id="L160">            vendorHL.setValue(gatherResourceEntity.getVendorHL());</span>
+<span class="fc" id="L161">            logicalResources.add(vendorHL);</span>
+        }
+
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">        if (gatherResourceEntity.getHostName() != null) {</span>
+<span class="fc" id="L165">            LogicalResource hostName = new LogicalResource();</span>
+<span class="fc" id="L166">            hostName.setName(&quot;HOSTNAME&quot;);</span>
+<span class="fc" id="L167">            hostName.setValue(gatherResourceEntity.getHostName());</span>
+<span class="fc" id="L168">            logicalResources.add(hostName);</span>
+        }
+
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        if (gatherResourceEntity.getNasip() != null) {</span>
+<span class="fc" id="L172">            LogicalResource nasip = new LogicalResource();</span>
+<span class="fc" id="L173">            nasip.setName(&quot;NASIP&quot;);</span>
+<span class="fc" id="L174">            nasip.setValue(gatherResourceEntity.getNasip());</span>
+<span class="fc" id="L175">            logicalResources.add(nasip);</span>
+
+<span class="fc" id="L177">            LogicalResource fusion = new LogicalResource();</span>
+<span class="fc" id="L178">            fusion.setName(&quot;FUSION_NETWORK&quot;);</span>
+<span class="fc" id="L179">            fusion.setValue(&quot;true&quot;);</span>
+<span class="fc" id="L180">            logicalResources.add(fusion);</span>
+<span class="fc" id="L181">        } else {</span>
+<span class="fc" id="L182">            LogicalResource fusion = new LogicalResource();</span>
+<span class="fc" id="L183">            fusion.setName(&quot;FUSION_NETWORK&quot;);</span>
+<span class="fc" id="L184">            fusion.setValue(&quot;false&quot;);</span>
+<span class="fc" id="L185">            logicalResources.add(fusion);</span>
+        }
+
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">        if (gatherResourceEntity.getSite() != null) {</span>
+<span class="fc" id="L189">            LogicalResource site = new LogicalResource();</span>
+<span class="fc" id="L190">            site.setName(&quot;SITE&quot;);</span>
+<span class="fc" id="L191">            site.setValue(gatherResourceEntity.getSite());</span>
+<span class="fc" id="L192">            logicalResources.add(site);</span>
+        }
+
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">        if (gatherResourceEntity.getNumeroBras() != null) {</span>
+<span class="fc" id="L196">            LogicalResource numeroBras = new LogicalResource();</span>
+<span class="fc" id="L197">            numeroBras.setName(&quot;NUMERO_BRAS&quot;);</span>
+<span class="fc" id="L198">            numeroBras.setValue(gatherResourceEntity.getNumeroBras());</span>
+<span class="fc" id="L199">            logicalResources.add(numeroBras);</span>
+        }
+
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">        if (gatherResourceEntity.getSlotBras() != null) {</span>
+<span class="fc" id="L203">            LogicalResource slotBras = new LogicalResource();</span>
+<span class="fc" id="L204">            slotBras.setName(&quot;SLOT_BRAS&quot;);</span>
+<span class="fc" id="L205">            slotBras.setValue(gatherResourceEntity.getSlotBras());</span>
+<span class="fc" id="L206">            logicalResources.add(slotBras);</span>
+        }
+
+<span class="pc bpc" id="L209" title="1 of 2 branches missed.">        if (gatherResourceEntity.getSubSlotBras() != null) {</span>
+<span class="fc" id="L210">            LogicalResource subSlotBras = new LogicalResource();</span>
+<span class="fc" id="L211">            subSlotBras.setName(&quot;SUBSLOT_BRAS&quot;);</span>
+<span class="fc" id="L212">            subSlotBras.setValue(gatherResourceEntity.getSubSlotBras());</span>
+<span class="fc" id="L213">            logicalResources.add(subSlotBras);</span>
+        }
+
+<span class="pc bpc" id="L216" title="1 of 2 branches missed.">        if (gatherResourceEntity.getPortaBras() != null) {</span>
+<span class="fc" id="L217">            LogicalResource portaBras = new LogicalResource();</span>
+<span class="fc" id="L218">            portaBras.setName(&quot;PORTA_BRAS&quot;);</span>
+<span class="fc" id="L219">            portaBras.setValue(gatherResourceEntity.getPortaBras());</span>
+<span class="fc" id="L220">            logicalResources.add(portaBras);</span>
+        }
+
+<span class="pc bpc" id="L223" title="1 of 2 branches missed.">        if (gatherResourceEntity.getNumeroAgregador() != null) {</span>
+<span class="fc" id="L224">            LogicalResource numeroAgregador = new LogicalResource();</span>
+<span class="fc" id="L225">            numeroAgregador.setName(&quot;NUMERO_AGREGADOR&quot;);</span>
+<span class="fc" id="L226">            numeroAgregador.setValue(gatherResourceEntity.getNumeroAgregador());</span>
+<span class="fc" id="L227">            logicalResources.add(numeroAgregador);</span>
+        }
+
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">        if (gatherResourceEntity.getSlotAgregador() != null) {</span>
+<span class="fc" id="L231">            LogicalResource slotAgregador = new LogicalResource();</span>
+<span class="fc" id="L232">            slotAgregador.setName(&quot;SLOT_AGREGADOR&quot;);</span>
+<span class="fc" id="L233">            slotAgregador.setValue(gatherResourceEntity.getSlotAgregador());</span>
+<span class="fc" id="L234">            logicalResources.add(slotAgregador);</span>
+        }
+
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">        if (gatherResourceEntity.getSubSlotAgregador() != null) {</span>
+<span class="fc" id="L238">            LogicalResource subSlotAgregador = new LogicalResource();</span>
+<span class="fc" id="L239">            subSlotAgregador.setName(&quot;SUBSLOT_AGREGADOR&quot;);</span>
+<span class="fc" id="L240">            subSlotAgregador.setValue(gatherResourceEntity.getSubSlotAgregador());</span>
+<span class="fc" id="L241">            logicalResources.add(subSlotAgregador);</span>
+        }
+
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">        if (gatherResourceEntity.getPortaAgregador() != null) {</span>
+<span class="fc" id="L245">            LogicalResource portaAgregador = new LogicalResource();</span>
+<span class="fc" id="L246">            portaAgregador.setName(&quot;PORTA_AGREGADOR&quot;);</span>
+<span class="fc" id="L247">            portaAgregador.setValue(gatherResourceEntity.getPortaAgregador());</span>
+<span class="fc" id="L248">            logicalResources.add(portaAgregador);</span>
+        }
+
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">        if (gatherResourceEntity.getTipoCategatoriaVlan() != null) {</span>
+<span class="fc" id="L252">            LogicalResource tipoCategoriaVlan = new LogicalResource();</span>
+<span class="fc" id="L253">            tipoCategoriaVlan.setName(&quot;TIPO_CATEGORIA_VLAN&quot;);</span>
+<span class="fc" id="L254">            tipoCategoriaVlan.setValue(gatherResourceEntity.getTipoCategatoriaVlan());</span>
+<span class="fc" id="L255">            logicalResources.add(tipoCategoriaVlan);</span>
+        }
+
+<span class="pc bpc" id="L258" title="1 of 2 branches missed.">        if (gatherResourceEntity.getVlanVod() != null) {</span>
+<span class="fc" id="L259">            LogicalResource vlanVod = new LogicalResource();</span>
+<span class="fc" id="L260">            vlanVod.setName(&quot;VLAN_VOD&quot;);</span>
+<span class="fc" id="L261">            vlanVod.setValue(&quot;&quot; + gatherResourceEntity.getVlanVod());</span>
+<span class="fc" id="L262">            logicalResources.add(vlanVod);</span>
+        }
+
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">        if (gatherResourceEntity.getVlanVoip() != null) {</span>
+<span class="fc" id="L266">            LogicalResource vlanVoip = new LogicalResource();</span>
+<span class="fc" id="L267">            vlanVoip.setName(&quot;VLAN_VOIP&quot;);</span>
+<span class="fc" id="L268">            vlanVoip.setValue(&quot;&quot; + gatherResourceEntity.getVlanVoip());</span>
+<span class="fc" id="L269">            logicalResources.add(vlanVoip);</span>
+        }
+
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">        if (gatherResourceEntity.getVlanMcast() != null) {</span>
+<span class="fc" id="L273">            LogicalResource vlanMcast = new LogicalResource();</span>
+<span class="fc" id="L274">            vlanMcast.setName(&quot;VLAN_MCAST&quot;);</span>
+<span class="fc" id="L275">            vlanMcast.setValue(&quot;&quot; + gatherResourceEntity.getVlanMcast());</span>
+<span class="fc" id="L276">            logicalResources.add(vlanMcast);</span>
+        }
+
+<span class="pc bpc" id="L279" title="1 of 2 branches missed.">        if (gatherResourceEntity.getVlanIptv() != null) {</span>
+<span class="fc" id="L280">            LogicalResource vlanIpTv = new LogicalResource();</span>
+<span class="fc" id="L281">            vlanIpTv.setName(&quot;VLAN_IPTV&quot;);</span>
+<span class="fc" id="L282">            vlanIpTv.setValue(&quot;&quot; + gatherResourceEntity.getVlanIptv());</span>
+<span class="fc" id="L283">            logicalResources.add(vlanIpTv);</span>
+        }
+
+<span class="pc bpc" id="L286" title="1 of 2 branches missed.">        if (gatherResourceEntity.getFusion() != null) {</span>
+<span class="fc" id="L287">            LogicalResource fusion = new LogicalResource();</span>
+<span class="fc" id="L288">            fusion.setName(&quot;FUSION&quot;);</span>
+<span class="fc" id="L289">            fusion.setValue(gatherResourceEntity.getFusion());</span>
+<span class="fc" id="L290">            logicalResources.add(fusion);</span>
+        }
+
+<span class="fc" id="L293">        return logicalResourceAssociation;</span>
+    }
+
+    private GatherResourceEntity executeQuery(GatherResourceInformation gatherResourceInformationIn) throws OSSBusinessException {
+<span class="fc" id="L297">        Splitter splitter = gatherResourceInformationIn.getSplitter();</span>
+<span class="fc" id="L298">        Cabinet cabinet = gatherResourceInformationIn.getCabinet();</span>
+<span class="fc" id="L299">        Shelf shelf = gatherResourceInformationIn.getShelf();</span>
+
+<span class="fc bfc" id="L301" title="All 2 branches covered.">        if (this.isGatherResourceByCabinetAndSpliiter(cabinet, splitter)) {</span>
+<span class="fc" id="L302">            this.ossLogger.log(OSSLogger.INFO, &quot;Buscando recurso no TBS por meio do Armário: &quot; + cabinet.getName() + &quot; e Splitter: &quot; + splitter.getId());</span>
+<span class="fc" id="L303">            return this.gatherResourceInformationRepository.gatherResourceInformationByCabinetAndSplitter(cabinet, splitter);</span>
+<span class="pc bpc" id="L304" title="1 of 2 branches missed.">        } else if (this.isGatherResourceByShelf(shelf)) {</span>
+<span class="fc" id="L305">            PortAdapterCard portAdapterCard = shelf.getHasCards().get(0);</span>
+<span class="fc" id="L306">            this.ossLogger.log(OSSLogger.INFO, &quot;Buscando recurso no TBS por meio do Shelf: &quot; + portAdapterCard.getId());</span>
+<span class="fc" id="L307">            return this.gatherResourceInformationRepository.gatherResourceInformationByEquipment(portAdapterCard);</span>
+        } else {
+<span class="nc" id="L309">            return null;</span>
+        }
+    }
+
+    private boolean foundWithoutError(GatherResourceEntity gatherResourceEntity) {
+<span class="pc bpc" id="L314" title="2 of 6 branches missed.">        return gatherResourceEntity != null &amp;&amp; (gatherResourceEntity.getCodigoRetorno() == null || gatherResourceEntity.getCodigoRetorno() == 0);</span>
+    }
+
+    public ResourceInventoryEntity gatherResource(@GatherResource ResourceInventoryEntity resourceInventoryEntity) throws OSSBusinessException {
+<span class="fc" id="L318">        GatherResourceEntity gatherResourceEntity = this.executeQuery(resourceInventoryEntity.getGatherResourceInformation());</span>
+
+<span class="fc bfc" id="L320" title="All 2 branches covered.">        if (this.foundWithoutError(gatherResourceEntity)) {</span>
+<span class="fc" id="L321">            return this.buildResourceInventoryEntityResponse(gatherResourceEntity);</span>
+<span class="pc bpc" id="L322" title="1 of 2 branches missed.">        } else if (gatherResourceEntity != null) {</span>
+<span class="fc" id="L323">            throw new OSSBusinessException(&quot;ERRO: &quot; + gatherResourceEntity.getMensagemRetorno(), &quot;RITBS-001&quot;, &quot;Erro ao buscar recurso no TBS: &quot; + gatherResourceEntity.getMensagemRetorno());</span>
+        } else {
+<span class="nc" id="L325">            throw new OSSBusinessException(&quot;ERRO: Recurso não encontrado&quot;, &quot;RITBS-001&quot;, &quot;Erro ao buscar recurso no TBS: Recurso não encontrado&quot;);</span>
+        }
+    }
+
+    private boolean isGatherResourceByShelf(Shelf shelf) {
+<span class="pc bpc" id="L330" title="3 of 6 branches missed.">        return shelf != null &amp;&amp; shelf.getHasCards() != null &amp;&amp; shelf.getHasCards().size() &gt; 0;</span>
+    }
+    private boolean isGatherResourceByCabinetAndSpliiter(Cabinet cabinet, Splitter splitter) {
+<span class="pc bpc" id="L333" title="1 of 4 branches missed.">        return cabinet != null &amp;&amp; splitter != null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="ResourceService">
+		<xs:sequence>
+			<!-- Localidade do Número de Serviço -->
+			<xs:element minOccurs="0" name="regionCode" type="st:integer9"></xs:element>
+			<!-- Site do número de serviço -->
+			<xs:element minOccurs="0" name="siteCode" type="st:string40"></xs:element>
+			<!-- Número de Serviço -->
+			<xs:element minOccurs="0" name="identifier" type="st:string60"></xs:element>
+			<!-- Número de Serviço Portado -->
+			<xs:element minOccurs="0" name="portableIdentifier" type="st:string60"></xs:element>
+			<!-- Tipo de Portabilidade (0 - sem portabilidade, 1 - portabilidade externa, 
+				2 - portabilidade interna) -->
+			<xs:element minOccurs="0" name="portableType">
+				<xs:simpleType>
+					<xs:restriction base="st:integer1">
+						<xs:pattern value="0|1|2"></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Empresa Operadora Doadora -->
+			<xs:element minOccurs="0" name="donateCompany" type="st:string5"></xs:element>
+			<!-- Tipo de Serviço -->
+			<xs:element minOccurs="0" name="serviceType" type="st:string30"></xs:element>
+			<!-- Classe de serviço -->
+			<xs:element minOccurs="0" name="serviceClass" type="st:string30"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

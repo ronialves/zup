@@ -1,0 +1,89 @@
+package com.tlf.oss.resourceinventory.cpe.api.v1_0;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.RestInterceptor;
+import com.tlf.oss.resourceinventory.cpe.core.CatalogController;
+import com.tlf.oss.resourceinventory.cpe.entity.CaracteristicaDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.CaracteristicaDispositivoVo;
+import com.tlf.oss.resourceinventory.cpe.entity.CatalogoDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.CatalogoDispositivoVo;
+import com.tlf.oss.resourceinventory.schemas.util.RIConstants;
+
+@Path("/catalog")
+@Stateless
+public class CatalogService extends RestInterceptor {
+
+	@Inject
+	private CatalogController catalogController;
+
+	@GET
+	@Consumes(RIConstants.MEDIA_TYPE_APPLICATION_JSON_UTF8)
+	@Produces(RIConstants.MEDIA_TYPE_APPLICATION_JSON_UTF8)
+	public Response doGet() throws OSSBusinessException {
+
+		List<CatalogoDispositivo> listCatalog = catalogController.listAll();
+		List<CatalogoDispositivoVo> listCatalogVo = new ArrayList<>();
+
+		for (CatalogoDispositivo listCatalogEntity : listCatalog) {
+			listCatalogVo.add(getCatalogoDispositivoVo(listCatalogEntity));
+		}
+
+		GenericEntity<List<CatalogoDispositivoVo>> entity = new GenericEntity<List<CatalogoDispositivoVo>>(listCatalogVo) {};
+		return Response.status(Status.OK).entity(entity).build();
+	}
+
+	@DELETE
+	@Path("/{id}")
+	@Consumes(RIConstants.MEDIA_TYPE_APPLICATION_JSON_UTF8)
+	@Produces(RIConstants.MEDIA_TYPE_APPLICATION_JSON_UTF8)
+	public Response doDelete(@PathParam("id") int id) throws OSSBusinessException {
+		catalogController.delete(id);
+
+		return Response.status(Status.OK).build();
+	}
+
+	private CatalogoDispositivoVo getCatalogoDispositivoVo(CatalogoDispositivo entity) {
+		CatalogoDispositivoVo catalogoDispositivoVo = new CatalogoDispositivoVo();
+		
+		catalogoDispositivoVo.setId(entity.getId());
+		catalogoDispositivoVo.setModelo(entity.getModelo());
+		catalogoDispositivoVo.setFabricante(entity.getFabricante());
+		catalogoDispositivoVo.setRede(entity.getRede());
+		catalogoDispositivoVo.setCategoriaDispositivoId(entity.getCategoriaDispositivoId());
+		catalogoDispositivoVo.setDescricao(entity.getDescricao());
+		catalogoDispositivoVo.setCategoriaDispositivo(entity.getCategoriaDispositivo());
+		
+		List<CaracteristicaDispositivoVo> listCaracteristicaDispositivoVo = new ArrayList<>();
+		
+		for (CaracteristicaDispositivo listCaracteristicaDispositivo : entity.getCaracteristicas()) {
+			
+			CaracteristicaDispositivoVo caracteristicaDispositivoVo = new CaracteristicaDispositivoVo();
+			
+			caracteristicaDispositivoVo.setId(listCaracteristicaDispositivo.getId());
+			caracteristicaDispositivoVo.setNome(listCaracteristicaDispositivo.getNome());
+			caracteristicaDispositivoVo.setValor(listCaracteristicaDispositivo.getValor());
+			caracteristicaDispositivoVo.setCatalagoDispositivoId(listCaracteristicaDispositivo.getCatalagoDispositivoId());
+			
+			listCaracteristicaDispositivoVo.add(caracteristicaDispositivoVo);
+		}
+		
+		catalogoDispositivoVo.setCaracteristicas(listCaracteristicaDispositivoVo);
+		
+		return catalogoDispositivoVo;
+	}
+}

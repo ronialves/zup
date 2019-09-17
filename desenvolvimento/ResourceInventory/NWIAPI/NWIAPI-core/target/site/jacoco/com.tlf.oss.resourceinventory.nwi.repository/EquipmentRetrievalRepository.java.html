@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EquipmentRetrievalRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">NWIAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.nwi.repository</a> &gt; <span class="el_source">EquipmentRetrievalRepository.java</span></div><h1>EquipmentRetrievalRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.nwi.repository;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.StoredProcedureQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.nwi.core.utils.Constants;
+import com.tlf.oss.resourceinventory.nwi.entity.EquipmentRetrievalEntity;
+import com.tlf.oss.resourceinventory.nwi.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.schemas.AtomicNetworkAddress;
+import com.tlf.oss.resourceinventory.schemas.Equipment;
+import com.tlf.oss.resourceinventory.schemas.IPAddress;
+import com.tlf.oss.resourceinventory.schemas.NetworkAddressAssociation;
+import com.tlf.oss.resourceinventory.schemas.PhysicalResource;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="nc" id="L32">public class EquipmentRetrievalRepository {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+<span class="nc" id="L37">	private final String PROC_GET_ELEMENTS_NWI = &quot;EOSR_NWI_OWNER.SP_GET_ELEMENTS_NWI&quot;;</span>
+	
+	@PersistenceContext(name=&quot;nwiDS&quot;)
+	private EntityManager factory;
+
+	/**
+	 * Realiza busca de Equipamentos
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public ResourceInventoryEntity getEquipment(ResourceInventoryEntity entity, String flow) throws OSSBusinessException {
+<span class="nc" id="L51">		logger.log(OSSLogger.INFO, this.getClass().getName() + &quot; -  executando procedure &quot; + PROC_GET_ELEMENTS_NWI);</span>
+
+<span class="nc" id="L53">		List&lt;EquipmentRetrievalEntity&gt; resultList = null;</span>
+<span class="nc" id="L54">		Integer codRetorno = null;</span>
+<span class="nc" id="L55">		String msgRetorno = &quot;&quot;;</span>
+		
+		try {
+
+<span class="nc" id="L59">			StoredProcedureQuery procedureQuery = factory.createStoredProcedureQuery(PROC_GET_ELEMENTS_NWI);</span>
+
+<span class="nc" id="L61">			procedureQuery.registerStoredProcedureParameter(Constants.P_CITY_NAME, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L62">			procedureQuery.registerStoredProcedureParameter(Constants.P_EQUIPMENT, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L63">			procedureQuery.registerStoredProcedureParameter(Constants.CURSOR, void.class, ParameterMode.REF_CURSOR);</span>
+<span class="nc" id="L64">			procedureQuery.registerStoredProcedureParameter(Constants.P_COD_RETORNO, Integer.class, ParameterMode.OUT);</span>
+<span class="nc" id="L65">			procedureQuery.registerStoredProcedureParameter(Constants.P_MSG_RETORNO, String.class, ParameterMode.OUT);</span>
+
+<span class="nc" id="L67">			procedureQuery.setParameter(Constants.P_CITY_NAME, getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, Constants.CNL_ACRONYM));</span>
+<span class="nc" id="L68">			procedureQuery.setParameter(Constants.P_EQUIPMENT, getParamValue(entity, Constants.EQUIPMENT, Constants.HOSTNAME));</span>
+
+<span class="nc" id="L70">			procedureQuery.execute();</span>
+
+<span class="nc" id="L72">			resultList = castToEquipmentRetrievalEntity(</span>
+<span class="nc" id="L73">					(List&lt;Object[]&gt;) procedureQuery.getOutputParameterValue(Constants.CURSOR));</span>
+<span class="nc" id="L74">			codRetorno = (Integer) procedureQuery.getOutputParameterValue(Constants.P_COD_RETORNO);</span>
+<span class="nc" id="L75">			msgRetorno = (String) procedureQuery.getOutputParameterValue(Constants.P_MSG_RETORNO);</span>
+<span class="nc" id="L76">			logger.log(OSSLogger.INFO, &quot;getEquipment codRetorno: &quot; + codRetorno);</span>
+<span class="nc" id="L77">			logger.log(OSSLogger.INFO, &quot;getEquipment msgRetorno: &quot; + msgRetorno);</span>
+<span class="nc" id="L78">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L79">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L80">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L81">							&quot;Erro ao chamar a procedure SP_GET_ELEMENTS_NWI no NWI&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L83">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L84">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L85">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L86">							&quot;Erro ao chamar a procedure SP_GET_ELEMENTS_NWI no NWI&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L88">		} catch (Exception e) {</span>
+<span class="nc" id="L89">			logger.log(OSSLogger.ERROR, &quot;ERROR: &quot; + e);</span>
+<span class="nc" id="L90">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_999.getDescription(),</span>
+<span class="nc" id="L91">					ExceptionInfoEnum.RITBS_999.getCode(), e.getMessage());</span>
+<span class="nc" id="L92">		}</span>
+		
+<span class="nc" id="L94">		logger.log(OSSLogger.INFO, &quot;flow: &quot; + flow);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		if(Constants.CABINET.equals(flow)) {</span>
+<span class="nc" id="L96">			equipmentMapper(entity, codRetorno, msgRetorno, resultList);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">		} else if(Constants.EQUIPMENT.equals(flow)) {</span>
+<span class="nc" id="L98">			equipmentMapperWithHasCards(entity, codRetorno, msgRetorno, resultList);</span>
+		}		
+
+<span class="nc" id="L101">		return entity;</span>
+	}
+	
+	/**
+	 * Recupera os valores da proc e passa para o entity na tag equipment
+	 * @param entity
+	 * @param codRetorno
+	 * @param msgRetorno
+	 * @param resultQuery
+	 */
+	private void equipmentMapperWithHasCards(ResourceInventoryEntity entity, Integer codRetorno,
+			String msgRetorno, List&lt;EquipmentRetrievalEntity&gt; resultQuery) {
+
+		
+<span class="nc bnc" id="L115" title="All 4 branches missed.">		if(resultQuery != null &amp;&amp; !resultQuery.isEmpty()) {</span>
+			
+<span class="nc" id="L117">			List&lt;Equipment&gt; equipments = new ArrayList&lt;Equipment&gt;();</span>
+			
+<span class="nc bnc" id="L119" title="All 2 branches missed.">			for (EquipmentRetrievalEntity resultEquipment : resultQuery) {</span>
+				
+<span class="nc" id="L121">				Equipment equipment = new Equipment();	</span>
+<span class="nc" id="L122">				equipment.setId(String.valueOf(resultEquipment.getEquipmentId()));</span>
+<span class="nc" id="L123">				equipment.setOrigin(Constants.NWI);			</span>
+<span class="nc" id="L124">				equipment.setName(resultEquipment.getHost());</span>
+
+<span class="nc" id="L126">				PhysicalResource physicalResource = new PhysicalResource();</span>
+<span class="nc" id="L127">				physicalResource.setTypeOfResource(resultEquipment.getEquipmentType());</span>
+				
+<span class="nc" id="L129">				List&lt;IPAddress&gt; ipAddressList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L130">				IPAddress ipAddress = new IPAddress();</span>
+<span class="nc" id="L131">				ipAddress.setNetworkNumber(resultEquipment.getIp());</span>
+<span class="nc" id="L132">				ipAddressList.add(ipAddress);			</span>
+				
+<span class="nc" id="L134">				AtomicNetworkAddress atomicNetworkAddress = new AtomicNetworkAddress();</span>
+<span class="nc" id="L135">				atomicNetworkAddress.setHostname(resultEquipment.getIntface());</span>
+				
+<span class="nc" id="L137">				NetworkAddressAssociation networkAddressAssociation = new NetworkAddressAssociation();	 </span>
+<span class="nc" id="L138">				networkAddressAssociation.setIpAddressList(ipAddressList);</span>
+<span class="nc" id="L139">				networkAddressAssociation.setAtomicNetworkAddress(atomicNetworkAddress);</span>
+<span class="nc" id="L140">				physicalResource.setNetworkAddressAssociation(networkAddressAssociation);				</span>
+				
+<span class="nc" id="L142">				PortAdapterCard portAdapterCard = new PortAdapterCard();</span>
+<span class="nc" id="L143">				portAdapterCard.setId(String.valueOf(resultEquipment.getEquipmentId()));</span>
+<span class="nc" id="L144">				portAdapterCard.setName(resultEquipment.getHost());</span>
+<span class="nc" id="L145">				portAdapterCard.setPhysicalResource(physicalResource);</span>
+<span class="nc" id="L146">				portAdapterCard.setVendor(resultEquipment.getSupplier());</span>
+<span class="nc" id="L147">				portAdapterCard.setModel(resultEquipment.getModel());</span>
+<span class="nc" id="L148">				portAdapterCard.setNotes(resultEquipment.getDescription());</span>
+				
+<span class="nc" id="L150">				equipment.setHasCards(Arrays.asList(portAdapterCard));</span>
+			
+<span class="nc" id="L152">				equipments.add(equipment);</span>
+<span class="nc" id="L153">			}</span>
+			
+<span class="nc bnc" id="L155" title="All 2 branches missed.">			if(entity.getEquipment() != null) {</span>
+<span class="nc" id="L156">				entity.getEquipment().addAll(equipments);</span>
+			} else {
+<span class="nc" id="L158">				entity.setEquipment(equipments);</span>
+			}
+			
+		} 
+
+<span class="nc" id="L163">		entity.setCodeReturn(codRetorno);</span>
+<span class="nc" id="L164">		entity.setMessageReturn(msgRetorno);</span>
+		
+<span class="nc" id="L166">	}</span>
+
+	/**
+	 * Recupera os valores da proc e passa para o entity na tag equipment
+	 * 
+	 * @param entity
+	 * @param codRetorno
+	 * @param msgRetorno
+	 * @param resultQuery
+	 */
+	private void equipmentMapper(ResourceInventoryEntity entity, Integer codRetorno, 
+			String msgRetorno, List&lt;EquipmentRetrievalEntity&gt; resultQuery) {
+
+		
+<span class="nc bnc" id="L180" title="All 4 branches missed.">		if(resultQuery != null &amp;&amp; !resultQuery.isEmpty()) {</span>
+			
+<span class="nc" id="L182">			List&lt;Equipment&gt; equipments = new ArrayList&lt;Equipment&gt;();</span>
+			
+<span class="nc bnc" id="L184" title="All 2 branches missed.">			for (EquipmentRetrievalEntity resultEquipment : resultQuery) {</span>
+				
+<span class="nc" id="L186">				Equipment equipment = new Equipment();	</span>
+<span class="nc" id="L187">				equipment.setId(String.valueOf(resultEquipment.getEquipmentId()));</span>
+<span class="nc" id="L188">				equipment.setName(resultEquipment.getHost());</span>
+<span class="nc" id="L189">				equipment.setTypeOfResource(resultEquipment.getEquipmentType());</span>
+<span class="nc" id="L190">				equipment.setIp(resultEquipment.getIp());</span>
+<span class="nc" id="L191">				equipment.setVendor(resultEquipment.getSupplier());</span>
+<span class="nc" id="L192">				equipment.setModel(resultEquipment.getModel());</span>
+<span class="nc" id="L193">				equipment.setOrigin(Constants.NWI);				</span>
+<span class="nc" id="L194">				equipments.add(equipment);</span>
+<span class="nc" id="L195">			}</span>
+			
+<span class="nc bnc" id="L197" title="All 2 branches missed.">			if(entity.getEquipment() != null) {</span>
+<span class="nc" id="L198">				entity.getEquipment().addAll(equipments);</span>
+			} else {
+<span class="nc" id="L200">				entity.setEquipment(equipments);</span>
+			}
+			
+		} 
+
+<span class="nc" id="L205">		entity.setCodeReturn(codRetorno);</span>
+<span class="nc" id="L206">		entity.setMessageReturn(msgRetorno);		</span>
+<span class="nc" id="L207">	}</span>
+
+	/**
+	 * Realizar um parse do retorno da proc para o objeto EquipmentRetrievalEntity
+	 * @param outputParameterValue
+	 * @return
+	 */
+	private List&lt;EquipmentRetrievalEntity&gt; castToEquipmentRetrievalEntity(List&lt;Object[]&gt; outputParameterValue) {
+		
+<span class="nc" id="L216">		List&lt;EquipmentRetrievalEntity&gt; result = new ArrayList&lt;&gt;();</span>
+		
+<span class="nc bnc" id="L218" title="All 2 branches missed.">		for (Object[] objects : outputParameterValue) {</span>
+<span class="nc" id="L219">			logger.log(OSSLogger.INFO, &quot;Retorno &quot; + Constants.CURSOR + &quot;: &quot; + objects.toString());</span>
+<span class="nc" id="L220">			EquipmentRetrievalEntity entity = new EquipmentRetrievalEntity();</span>
+<span class="nc" id="L221">			entity.setEquipmentId(objecToInteger(objects[0]));</span>
+<span class="nc" id="L222">			entity.setName(objectToString(objects[1]));</span>
+<span class="nc" id="L223">			entity.setHost(objectToString(objects[2]));</span>
+<span class="nc" id="L224">			entity.setEquipmentType(objectToString(objects[3]));</span>
+<span class="nc" id="L225">			entity.setIp(objectToString(objects[4]));</span>
+<span class="nc" id="L226">			entity.setSupplier(objectToString(objects[5]));</span>
+<span class="nc" id="L227">			entity.setModel(objectToString(objects[6]));</span>
+<span class="nc" id="L228">			entity.setAcronymCity(objectToString(objects[7]));</span>
+<span class="nc" id="L229">			entity.setDescription(objectToString(objects[8]));</span>
+<span class="nc" id="L230">			logger.log(OSSLogger.INFO, &quot;castToEquipmentRetrievalEntity - entity: &quot; + entity);</span>
+
+<span class="nc" id="L232">			result.add(entity);</span>
+<span class="nc" id="L233">		}</span>
+		
+<span class="nc" id="L235">		return result;</span>
+	}
+	
+	/**
+	 * Transforma o valor do objeto da procedure em Integer
+	 * 
+	 * @param in
+	 * @return
+	 */
+	private Integer objecToInteger(Object in) {
+<span class="nc" id="L245">		Integer result = 0;</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">		if (in != null) {</span>
+<span class="nc" id="L247">			result = Integer.parseInt(in.toString());</span>
+		}
+<span class="nc" id="L249">		return result;</span>
+	}
+	
+	/**
+	 * Transforma o valor do objeto da procedure em String
+	 * @param in
+	 * @return
+	 */
+	private String objectToString(Object in) {
+<span class="nc" id="L258">		String result = &quot;&quot;;</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">		if (in != null ) {</span>
+<span class="nc" id="L260">			result = String.valueOf(in);</span>
+		}
+<span class="nc" id="L262">		return result;</span>
+	}
+
+	/**
+	 * Retorna o valor do Parâmetro do ServiceDescribedBy.
+	 * 
+	 * @param entity
+	 * @param networkOwner
+	 * @param paramName
+	 * @return
+	 */
+	private String getParamValue(ResourceInventoryEntity entity, String networkOwner, String paramName) {
+		
+<span class="nc bnc" id="L275" title="All 2 branches missed.">		for (ServiceDescribedBy sdb : entity.getResourceFacingService().getServiceDescribedBy()) {			</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">			if (networkOwner.equalsIgnoreCase(sdb.getName())) {				</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">				for (ServiceSpecCharDescribes sscd : sdb.getServiceSpecCharDescribes()) {					</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">					if (paramName.equalsIgnoreCase(sscd.getValueType())) {</span>
+<span class="nc" id="L279">						logger.log(OSSLogger.INFO, &quot;EquipmentRetrievalRepository - getParamValue - &quot; + paramName + &quot; : &quot; + sscd.getValue());</span>
+<span class="nc" id="L280">						return sscd.getValue();</span>
+					}					
+<span class="nc" id="L282">				}</span>
+			}
+<span class="nc" id="L284">		}</span>
+		
+<span class="nc" id="L286">		return null;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

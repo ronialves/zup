@@ -1,0 +1,35 @@
+import { Component, OnInit, HostListener} from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class AppComponent implements OnInit{
+  retracted: boolean = false;
+
+  constructor(
+  ) {}
+
+  ngOnInit(): void {
+    this.interfaceAdjust(window.innerWidth);
+  }
+
+  interfaceAdjust(width: number) {
+    if (!this.retracted && width < 670) {
+      this.retracted = true;
+    } else if (width > 670 && this.retracted) {
+      this.retracted = false;
+    }
+  }
+  @HostListener('window:resize', ['$event'])
+  eventResize(event) {
+    this.interfaceAdjust(event.target.innerWidth);
+  }
+  eventRetract() {
+    if (window.innerWidth > 670) {
+      this.retracted = !this.retracted;
+    }
+  }
+  
+}

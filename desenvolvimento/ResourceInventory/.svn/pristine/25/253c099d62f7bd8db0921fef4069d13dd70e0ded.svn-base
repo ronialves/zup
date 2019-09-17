@@ -1,0 +1,61 @@
+package com.tfl.oss.resourceinventory.orchestration.execution
+
+rule "[Determine] - METALICO_VIVO1" extends "BaseRule"
+    agenda-group "DETERMINE"
+    when
+        $inventoryEntity : ResourceInventoryEntity(address!.networkOwner == 'VIVO1')
+        PhysicalLink(eval(accessTechnology.equalsIgnoreCase("METALICO"))) from $inventoryEntity.address.placePhysicalResourceAssoc.physicalLink
+         
+        ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+         
+        $action : Action(name == '1.0_DETERMINE_VIVO1') from $resource.actions
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[Determine] - GPON_VIVO1" extends "BaseRule"
+    agenda-group "DETERMINE"
+    when
+        ResourceInventoryEntity( resourceFacingService == null )
+        $inventoryEntity : ResourceInventoryEntity(address!.networkOwner == 'VIVO1')
+        PhysicalLink(eval(accessTechnology.equalsIgnoreCase("GPON"))) from $inventoryEntity.address.placePhysicalResourceAssoc.physicalLink
+        $action : Action(name == '1.0_DETERMINE_VIVO1') from $resource.actions
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[Determine] - OFFER_EDITION_GPON_VIVO1" extends "BaseRule"
+    agenda-group "DETERMINE"
+    when
+        ResourceInventoryEntity( resourceFacingService != null )
+        $inventoryEntity : ResourceInventoryEntity(address!.networkOwner == 'VIVO1')
+        PhysicalLink(eval(accessTechnology.equalsIgnoreCase("GPON"))) from $inventoryEntity.address.placePhysicalResourceAssoc.physicalLink
+        $action : Action(name == '1.0_DETERMINE_OFFER_EDITION_GPON_VIVO1') from $resource.actions
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[Determine] - GPON_VIVO2" extends "BaseRule"
+	agenda-group "DETERMINE"
+	when
+		$action : Action(name == '1.0_DETERMINE_VIVO2') from $resource.actions
+		$inventoryEntity : ResourceInventoryEntity( address!.networkOwner == 'VIVO2')
+		PhysicalLink(eval(accessTechnology.equalsIgnoreCase("GPON"))) from $inventoryEntity.address.placePhysicalResourceAssoc.physicalLink
+	then	
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[Determine] - METALLIC_VIVO2" extends "BaseRule"
+	agenda-group "DETERMINE"
+	when
+		$action : Action(name == '1.0_DETERMINE_METALLIC_VIVO2') from $resource.actions
+		$inventoryEntity : ResourceInventoryEntity( address!.networkOwner == 'VIVO2')
+		PhysicalLink(eval(accessTechnology.equalsIgnoreCase("METALICO"))) from $inventoryEntity.address.placePhysicalResourceAssoc.physicalLink
+	then	   
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end

@@ -1,0 +1,15 @@
+com/tlf/oss/resourceinventory/tbs/api/v1_0/InstallService.class
+com/tlf/oss/resourceinventory/tbs/api/v1_0/GatherResourceInformationService.class
+com/tlf/oss/resourceinventory/tbs/api/v1_0/UninstallService.class
+com/tlf/oss/resourceinventory/tbs/api/v1_0/FacilityRetrievalService.class
+com/tlf/oss/resourceinventory/tbs/api/v1_0/DetermineAvailabilityService.class
+com/tlf/oss/resourceinventory/tbs/api/faultmanagement/v1_0/RESTConfig.class
+com/tlf/oss/resourceinventory/tbs/api/v1_0/AllocateService.class
+com/tlf/oss/resourceinventory/tbs/api/faultmanagement/v1_0/EquipmentRetrievalService.class
+com/tlf/oss/resourceinventory/tbs/api/faultmanagement/v1_0/CabinetRetrievalService.class
+com/tlf/oss/resourceinventory/tbs/api/v1_0/RestConfig.class
+com/tlf/oss/resourceinventory/tbs/api/v1_0/DeallocateService.class
+com/tlf/oss/resourceinventory/tbs/api/v2_0/FacilityRetrievalV2Service.class
+com/tlf/oss/resourceinventory/tbs/api/v1_0/ReserveService.class
+com/tlf/oss/resourceinventory/tbs/api/v1_0/NetworkInformationRetrievalService.class
+com/tlf/oss/resourceinventory/tbs/api/v2_0/RestConfig.class

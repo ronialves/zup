@@ -1,0 +1,19 @@
+package com.tlf.oss.resourceinventory.cpe.enums;
+
+public enum RoiAction {
+
+    PROVIDE("Provide"),
+    MODIFY("Modify"),
+    CEASE("Cease"),
+    ADD("ADD");
+
+    private final String action;
+
+    private RoiAction(String action) {
+        this.action = action;
+    }
+
+	public String getAction() {
+		return action;
+	}
+}

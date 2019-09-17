@@ -1,0 +1,41 @@
+{
+	"brazilianUrbanPropertyAddress": {
+		"placePhysicalResourceAssoc": {
+			"physicalLink": {
+				"voiceProtocol": "SIP",
+				"accessTecnology": "METALICO"
+			},
+			"cabinet": {
+				"name": "XXX",
+				"terminalBox": {
+					"name": "teste",
+					"pairNumber": "teste2",
+					"cableNumber": "teste3"
+				}
+			}
+		},
+		"cnl": "11037",
+		"telephonicArea": "XN"
+	},
+	"reserveResourceSummary": {
+		"reserveInvolvesRFS": [
+			{
+				"serviceId": "123456789012345",
+				"category": "METALICO",
+				"serviceDescribedBy": {
+					"serviceType": "HOME",
+					"serviceSpecCharDescribes": [
+						{
+							"value": "8",
+							"valueType": "Mb"
+						}
+					]
+				}
+			},
+			{
+				"serviceId": "Feminino",
+				"category": "Phillip"
+			}
+		]
+	}
+}

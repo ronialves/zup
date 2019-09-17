@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrieveFacilityEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.entity</a> &gt; <span class="el_source">RetrieveFacilityEntity.java</span></div><h1>RetrieveFacilityEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+import com.tlf.oss.resourceinventory.sagre.to.ResultTo;
+
+/**
+ * BEATRIXTWO-441 | DEMOSS-2279
+ *
+ * @project Beatrix Fase 2
+ * @author rodrigo.de.freitas
+ * @since 201710
+ */
+@SuppressWarnings(&quot;serial&quot;)
+@Entity
+@NamedStoredProcedureQuery(name = &quot;facilityRetrievalResource&quot;, resultClasses = RetrieveFacilityEntity.class, procedureName = &quot;SAGREMAN.GVT_SP_SOA_FAC_CTRL&quot;, parameters = {
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_cnl&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tec_acesso&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tec_voz&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_id_acesso&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tipo&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_armario&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_caixa&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_equip_gen_1&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_equip_gen_2&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_equip_gen_3&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_nota&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_cod&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_msg&quot;, type = String.class) })
+public class RetrieveFacilityEntity implements Serializable {
+
+	@Basic
+	@Column(name = &quot;p_in_cnl&quot;)
+	private Integer cnl;
+
+	@Basic
+	@Column(name = &quot;p_in_tec_acesso&quot;)
+	private String accessTechnology;
+
+	@Basic
+	@Column(name = &quot;p_in_tec_voz&quot;)
+	private String voiceTechnology;
+
+	@Basic
+	@Column(name = &quot;p_in_id_acesso&quot;)
+	private String accessId;
+
+	@Basic
+	@Column(name = &quot;p_in_tipo&quot;)
+	private String type;
+
+	@Basic
+	@Column(name = &quot;p_out_armario&quot;)
+	private String cabinet;
+
+	@Basic
+	@Column(name = &quot;p_out_caixa&quot;)
+	private String terminalBox;
+
+	@Basic
+	@Column(name = &quot;p_out_equip_gen_1&quot;)
+	private String equipGen1;
+
+	@Basic
+	@Column(name = &quot;p_out_equip_gen_2&quot;)
+	private String equipGen2;
+
+	@Basic
+	@Column(name = &quot;p_out_equip_gen_3&quot;)
+	private String equipGen3;
+
+	@Basic
+	@Column(name = &quot;p_out_nota&quot;)
+	private String note;
+
+	@Id
+	@Basic
+	@Column(name = &quot;p_out_cod&quot;)
+	private Integer resultCode;
+
+	@Basic
+	@Column(name = &quot;p_out_msg&quot;)
+	private String message;
+
+	@Transient
+	private ResultTo result;
+
+	public RetrieveFacilityEntity() {
+<span class="fc" id="L98">		super();</span>
+<span class="fc" id="L99">	}</span>
+
+	public RetrieveFacilityEntity(Integer cnl, String accessTechnology, String voiceTechnology, String accessId,
+			String type, String cabinet, String terminalBox, String equipGen1, String equipGen2, String equipGen3,
+			String note, Integer resultCode, String message, ResultTo result) {
+<span class="nc" id="L104">		super();</span>
+<span class="nc" id="L105">		this.cnl = cnl;</span>
+<span class="nc" id="L106">		this.accessTechnology = accessTechnology;</span>
+<span class="nc" id="L107">		this.voiceTechnology = voiceTechnology;</span>
+<span class="nc" id="L108">		this.accessId = accessId;</span>
+<span class="nc" id="L109">		this.type = type;</span>
+<span class="nc" id="L110">		this.cabinet = cabinet;</span>
+<span class="nc" id="L111">		this.terminalBox = terminalBox;</span>
+<span class="nc" id="L112">		this.equipGen1 = equipGen1;</span>
+<span class="nc" id="L113">		this.equipGen2 = equipGen2;</span>
+<span class="nc" id="L114">		this.equipGen3 = equipGen3;</span>
+<span class="nc" id="L115">		this.note = note;</span>
+<span class="nc" id="L116">		this.resultCode = resultCode;</span>
+<span class="nc" id="L117">		this.message = message;</span>
+<span class="nc" id="L118">		this.result = result;</span>
+<span class="nc" id="L119">	}</span>
+
+	/**
+	 * @return the cnl
+	 */
+	public Integer getCnl() {
+<span class="nc" id="L125">		return cnl;</span>
+	}
+
+	/**
+	 * @param cnl
+	 *            the cnl to set
+	 */
+	public void setCnl(Integer cnl) {
+<span class="fc" id="L133">		this.cnl = cnl;</span>
+<span class="fc" id="L134">	}</span>
+
+	/**
+	 * @return the accessTechnology
+	 */
+	public String getAccessTechnology() {
+<span class="nc" id="L140">		return accessTechnology;</span>
+	}
+
+	/**
+	 * @param accessTechnology
+	 *            the accessTechnology to set
+	 */
+	public void setAccessTechnology(String accessTechnology) {
+<span class="fc" id="L148">		this.accessTechnology = accessTechnology;</span>
+<span class="fc" id="L149">	}</span>
+
+	/**
+	 * @return the voiceTechnology
+	 */
+	public String getVoiceTechnology() {
+<span class="nc" id="L155">		return voiceTechnology;</span>
+	}
+
+	/**
+	 * @param voiceTechnology
+	 *            the voiceTechnology to set
+	 */
+	public void setVoiceTechnology(String voiceTechnology) {
+<span class="fc" id="L163">		this.voiceTechnology = voiceTechnology;</span>
+<span class="fc" id="L164">	}</span>
+
+	/**
+	 * @return the accessId
+	 */
+	public String getAccessId() {
+<span class="nc" id="L170">		return accessId;</span>
+	}
+
+	/**
+	 * @param accessId
+	 *            the accessId to set
+	 */
+	public void setAccessId(String accessId) {
+<span class="fc" id="L178">		this.accessId = accessId;</span>
+<span class="fc" id="L179">	}</span>
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+<span class="nc" id="L185">		return type;</span>
+	}
+
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	public void setType(String type) {
+<span class="fc" id="L193">		this.type = type;</span>
+<span class="fc" id="L194">	}</span>
+
+	/**
+	 * @return the cabinet
+	 */
+	public String getCabinet() {
+<span class="nc" id="L200">		return cabinet;</span>
+	}
+
+	/**
+	 * @param cabinet
+	 *            the cabinet to set
+	 */
+	public void setCabinet(String cabinet) {
+<span class="nc" id="L208">		this.cabinet = cabinet;</span>
+<span class="nc" id="L209">	}</span>
+
+	/**
+	 * @return the terminalBox
+	 */
+	public String getTerminalBox() {
+<span class="nc" id="L215">		return terminalBox;</span>
+	}
+
+	/**
+	 * @param terminalBox
+	 *            the terminalBox to set
+	 */
+	public void setTerminalBox(String terminalBox) {
+<span class="nc" id="L223">		this.terminalBox = terminalBox;</span>
+<span class="nc" id="L224">	}</span>
+
+	/**
+	 * @return the equipGen1
+	 */
+	public String getEquipGen1() {
+<span class="nc" id="L230">		return equipGen1;</span>
+	}
+
+	/**
+	 * @param equipGen1
+	 *            the equipGen1 to set
+	 */
+	public void setEquipGen1(String equipGen1) {
+<span class="fc" id="L238">		this.equipGen1 = equipGen1;</span>
+<span class="fc" id="L239">	}</span>
+
+	/**
+	 * @return the equipGen2
+	 */
+	public String getEquipGen2() {
+<span class="nc" id="L245">		return equipGen2;</span>
+	}
+
+	/**
+	 * @param equipGen2
+	 *            the equipGen2 to set
+	 */
+	public void setEquipGen2(String equipGen2) {
+<span class="fc" id="L253">		this.equipGen2 = equipGen2;</span>
+<span class="fc" id="L254">	}</span>
+
+	/**
+	 * @return the equipGen3
+	 */
+	public String getEquipGen3() {
+<span class="nc" id="L260">		return equipGen3;</span>
+	}
+
+	/**
+	 * @param equipGen3
+	 *            the equipGen3 to set
+	 */
+	public void setEquipGen3(String equipGen3) {
+<span class="fc" id="L268">		this.equipGen3 = equipGen3;</span>
+<span class="fc" id="L269">	}</span>
+
+	/**
+	 * @return the note
+	 */
+	public String getNote() {
+<span class="fc" id="L275">		return note;</span>
+	}
+
+	/**
+	 * @param note
+	 *            the note to set
+	 */
+	public void setNote(String note) {
+<span class="fc" id="L283">		this.note = note;</span>
+<span class="fc" id="L284">	}</span>
+
+	/**
+	 * @return the resultCode
+	 */
+	public Integer getResultCode() {
+<span class="fc" id="L290">		return resultCode;</span>
+	}
+
+	/**
+	 * @param resultCode
+	 *            the resultCode to set
+	 */
+	public void setResultCode(Integer resultCode) {
+<span class="fc" id="L298">		this.resultCode = resultCode;</span>
+<span class="fc" id="L299">	}</span>
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage() {
+<span class="nc" id="L305">		return message;</span>
+	}
+
+	/**
+	 * @param message
+	 *            the message to set
+	 */
+	public void setMessage(String message) {
+<span class="fc" id="L313">		this.message = message;</span>
+<span class="fc" id="L314">	}</span>
+
+	/**
+	 * @return the result
+	 */
+	public ResultTo getResult() {
+<span class="nc" id="L320">		return result;</span>
+	}
+
+	/**
+	 * @param result
+	 *            the result to set
+	 */
+	public void setResult(ResultTo result) {
+<span class="nc" id="L328">		this.result = result;</span>
+<span class="nc" id="L329">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

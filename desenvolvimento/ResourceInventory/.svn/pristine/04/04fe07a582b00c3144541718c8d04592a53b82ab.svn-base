@@ -1,0 +1,116 @@
+package com.tfl.oss.resourceinventory.orchestration.execution
+
+
+rule "[Retrieve] - ADDRESS VIVO1" extends "BaseRule"
+	agenda-group "RETRIEVE"
+	when
+		$action : Action(name == '1.0_RETRIEVE_RESOURCE_INFORMATION_ADDRESS_VIVO1') from $resource.actions
+		
+		ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+		ResourceInventoryEntity( resourceFacingService == null) 
+		ResourceInventoryEntity( customerOrder == null )
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action); 
+		insert( $action );
+end
+
+
+rule "[Retrieve] - RANGE CORPORATE VIVO2" extends "BaseRule"
+	agenda-group "RETRIEVE"
+	when
+		$action : Action(name == '1.0_RETRIEVE_RANGER_CORPORATE_NUMBER_VIVO2') from $resource.actions
+				
+		ResourceInventoryEntity( address!.networkOwner == 'VIVO2')
+		ResourceInventoryEntity( resourceOrder == null, customerOrder != null, customerOrder.purchaseOrderNumber != null)
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action); 
+		insert( $action );
+end
+
+
+rule "[Retrieve] - FACILITY VIVO2" extends "BaseRule"
+	agenda-group "RETRIEVE"
+	when
+		$action : Action(name == '1.0_RETRIEVE_RESOURCE_INFORMATION_VIVO2') from $resource.actions
+		
+		ResourceInventoryEntity( address!.networkOwner == 'VIVO2')		
+		ResourceInventoryEntity( resourceFacingService != null,
+								 resourceFacingService.serviceId != null,
+								 resourceFacingService.serviceId != "" ) 
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[Retrieve] - CUSTOMER VIVO1" extends "BaseRule"
+	agenda-group "RETRIEVE"
+	when
+		$action : Action(name == '1.0_RETRIEVE_RESOURCE_INFORMATION_CUSTOMER_VIVO1') from $resource.actions
+		
+		ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+		ResourceInventoryEntity( address!.placePhysicalResourceAssoc!.physicalLink!.accessTechnology == 'GPON')
+		ResourceInventoryEntity( resourceFacingService != null) 
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action); 
+		insert( $action );
+end
+
+rule "[Retrieve_V2] - CUSTOMER VIVO2" extends "BaseRule"
+	agenda-group "RETRIEVE"
+	when
+		$action : Action(name == '2.0_RETRIEVE_RESOURCE_INFORMATION_CUSTOMER_VIVO2') from $resource.actions
+		
+		ResourceInventoryEntity(address!.networkOwner == 'VIVO2')	
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		
+		insert( $action );
+end
+
+rule "[Retrieve_V2] - CUSTOMER VIVO1 - ResourceFacingService" extends "BaseRule"
+	agenda-group "RETRIEVE"
+	when
+		$action : Action(name == '2.0_RETRIEVE_RESOURCE_INFORMATION_CUSTOMER_VIVO1') from $resource.actions
+		
+		ResourceInventoryEntity(address!.networkOwner == 'VIVO1')
+		ResourceInventoryEntity( resourceFacingService != null, resourceFacingService.serviceId != null )
+ then
+  	   log($logger, drools.getRule().getName(), "Ação gerada = " + $action);  
+       insert( $action );
+   
+end 
+ 
+rule "[Retrieve_V2] - ADDRESS VIVO1 - " extends "BaseRule"
+	agenda-group "RETRIEVE"
+	when
+		$action : Action(name == '2.0_RETRIEVE_RESOURCE_INFORMATION_ADDRESS_VIVO1') from $resource.actions
+		
+		ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+		ResourceInventoryEntity( resourceFacingService ==  null) 
+		ResourceInventoryEntity( customerOrder == null )
+ then
+  		log($logger, drools.getRule().getName(), "Ação gerada = " + $action); 
+  		insert( $action );
+end
+
+rule "[Retrieve] - RESERVE EXPIRED VIVO1 - " extends "BaseRule"
+	agenda-group "RETRIEVE"
+	when
+		$action : Action(name == '1.0_RETRIEVE_RESERVE_EXPIRED_VIVO1') from $resource.actions
+		
+		RetrieveExpiredResources( address!.networkOwner == 'VIVO1')
+ then
+  		log($logger, drools.getRule().getName(), "Ação gerada = " + $action); 
+  		insert( $action );
+end
+
+rule "[Retrieve] - CPE" extends "BaseRule" salience 1
+	agenda-group "RETRIEVE"
+	when
+		$action : Action(name == '2.0_RETRIEVE_CPE') from $resource.actions
+		ResourceInventoryEntity(	resourceOrder!.resourceOrderItem!.name != null,
+									resourceOrder!.resourceOrderItem!.name == 'CPE')
+ then
+  		log($logger, drools.getRule().getName(), "Ação gerada = " + $action); 
+  		insert( $action );
+end

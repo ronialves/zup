@@ -1,0 +1,126 @@
+package com.tlf.oss.resourceinventory.cpe.repository;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.cpe.repository.factory.GenericRepository;
+import com.tlf.oss.resourceinventory.cpe.utils.CpeConstants;
+import com.tlf.oss.resourceinventory.cpe.utils.EntityExtractor;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class ServicoAssinanteRepository extends GenericRepository {
+
+	@Inject
+	private OSSLogger logger;
+
+	public <T> void create(ServicoAssinante entity) throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, "Criando registro na tabela ServicoAssinante: " + entity);
+		super.create(entity);
+	}
+
+	public <T> void update(ServicoAssinante entity) throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, "Atualizando o registro na tabela ServicoAssinante: " + entity);
+		super.update(entity);
+	}
+
+	public <T> void delete(ServicoAssinante entity) throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, "Excluindo o registro na tabela ServicoAssinante: " + entity);
+		super.delete(entity);
+	}
+
+	public ServicoAssinante findById(Integer id) throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, "Buscando o registro na tabela ServicoAssinante com id: " + id);
+		return super.findById(ServicoAssinante.class, id);
+	}
+
+	@SuppressWarnings("unchecked")
+	public ServicoAssinante findByServiceId(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+		logger.log(OSSLogger.INFO, "Extraindo o serviceId da entidade, de acordo com as regras de RFS...");
+
+		final String serviceId = EntityExtractor.extractServiceId(entity);
+
+		if (null != serviceId) {
+			
+			try {
+				
+				logger.log(OSSLogger.INFO, String.format("Buscando o serviceId %s na tabela ServicoAssinante...", serviceId));
+				
+				final Query query = factory.createQuery("SELECT sa FROM ServicoAssinante sa WHERE sa.serviceId = ?1");
+				query.setParameter(1, serviceId);
+			
+				final List<ServicoAssinante> servicoAssinante = query.getResultList();
+				
+				return servicoAssinante.isEmpty() ? null : servicoAssinante.get(0);
+			
+			} catch (PersistenceException e) {
+				throw new OSSBusinessException(FalloutCode.RICPE_002.getDescription(), FalloutCode.RICPE_002.getValue(),
+						String.format(FalloutCode.RICPE_002.getMessage(), "Erro de conexão", e.getMessage()));
+			}
+		} else {
+			return findByAccessId(entity);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public ServicoAssinante findByServiceId(String serviceId) {
+
+		logger.log(OSSLogger.INFO, String.format("Buscando o serviceId %s na tabela ServicoAssinante...", serviceId));
+
+		Query query = factory.createQuery("SELECT sa FROM ServicoAssinante sa WHERE sa.serviceId = ?1");
+		query.setParameter(1, serviceId);
+
+		List<ServicoAssinante> servicoAssinante = query.getResultList();
+
+		return servicoAssinante.isEmpty() ? null : servicoAssinante.get(0);
+	}
+
+	@SuppressWarnings("unchecked")
+	public ServicoAssinante findByAccessId(ResourceInventoryEntity entity) {
+
+		logger.log(OSSLogger.INFO, "Extraindo o accessId da entidade...");
+
+		String accessId = EntityExtractor.extractAccessId(entity);
+
+		if (!CpeConstants.ACCESS_DESIGNATOR_PATTERN.matcher(accessId).find()) {
+			/* Se o accessId extraído não tiver o padrão do designador de acesso (-069),
+			 * a busca está sendo efetuada pelo designador de produto do cliente,
+			 * então deve ser buscado o registro pelo serviceId.
+			 */
+			return findByServiceId(accessId);
+		} else {
+
+    		logger.log(OSSLogger.INFO, String.format("Buscando o accessId %s na tabela ServicoAssinante...", accessId));
+
+    		Query query = factory.createQuery("SELECT sa FROM ServicoAssinante sa WHERE sa.accessId = ?1");
+    		query.setParameter(1, accessId);
+
+    		List<ServicoAssinante> servicoAssinante = query.getResultList();
+
+    		return servicoAssinante.isEmpty() ? null : servicoAssinante.get(0);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ServicoAssinante> findByDispositivoFisico(final DispositivoFisico dispositivoFisico) {
+
+		List<ServicoAssinante> servicos = null;
+		
+		final Query query = factory
+				.createQuery("SELECT df FROM ServicoAssinante sa INNER JOIN RecursoLogico rl ON (sa.id = rl.servicoAssinanteId) WHERE rl.dispositivoFisicoId = ?1");
+		query.setParameter(1, dispositivoFisico.getId());
+
+		
+		servicos = query.getResultList();
+		
+		return servicos;
+	}
+}

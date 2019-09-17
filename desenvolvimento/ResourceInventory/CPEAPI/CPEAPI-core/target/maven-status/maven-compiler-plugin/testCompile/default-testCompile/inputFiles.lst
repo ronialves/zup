@@ -1,0 +1,13 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/InstallSTBControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/UpdateControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/UninstallStbControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/rules/CategoriasRulesTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/AllocateSTBControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/AllocateControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/DeallocateStbControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/InstallControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/DeallocateControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/CatalogControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/UninstallControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/UpdateSTBControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/CPEAPI/CPEAPI-core/src/test/java/com/tlf/oss/resourceinventory/cpe/core/RetrieveControllerTest.java

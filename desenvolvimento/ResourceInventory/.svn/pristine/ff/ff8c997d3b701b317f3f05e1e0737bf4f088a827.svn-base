@@ -1,0 +1,86 @@
+package com.tlf.oss.resourceinventory.granite.core;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.granite.core.entity.ChangeSpeedGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ReserveResourceGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.granite.core.enums.AgendaGroup;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.Operation;
+import com.tlf.oss.resourceinventory.granite.core.repository.ChangeSpeedGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ReserveResourceGponDao;
+import com.tlf.oss.resourceinventory.granite.core.rules.ExecutionRules;
+import com.tlf.oss.resourceinventory.granite.core.utils.Constants;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+
+public class ReservationResourceGponController {
+	
+	@Inject
+	private ReserveResourceGponDao reserveResourceGponDao;
+	
+	@Inject
+	private ChangeSpeedGponDao changeSpeedGponDao;
+	
+	private OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(Code.RIGRANITE_003.getValue(), "",Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+	
+	/**\
+	 * Chama proc que realiza a reserva
+	 */
+	@Transactional(rollbackOn = Exception.class)
+	public ResourceInventoryEntity reserveResource(final ResourceInventoryEntity entity, final Operation operation) throws OSSBusinessException {
+		
+		final Rules rules = new ExecutionRules().getRules(entity, AgendaGroup.SERVICE.getValue());
+		final String code;
+		final String description;
+		if(Operation.OFFER_EDITION.equals(operation)) {
+			ChangeSpeedGponEntity reserveResource = changeSpeedGponDao.reserveOfferEdition(getChangeSpeedGponEntity(entity, rules));
+			code = reserveResource.getCode();
+			description = reserveResource.getDescription();
+			falloutConfig.setOriginAPIDescription(String.format(Code.RIGRANITE_003.getDescription(), ChangeSpeedGponEntity.PRC_NAME));
+			
+		}
+		else {
+			ReserveResourceGponEntity reserveResource = reserveResourceGponDao.reserveResourceGpon(getReserveResourceGponEntity(entity, rules));
+			code = reserveResource.getCode();
+			description = reserveResource.getDescription();
+		    falloutConfig.setOriginAPIDescription(String.format(Code.RIGRANITE_003.getDescription(), ReserveResourceGponEntity.PROC_NAME));
+
+		}
+		
+		if(!Code.SUCCESS.getValue().equals(code)){
+			this.falloutConfig.setErrorCode(code);
+			this.falloutConfig.setErrorMessage(description);
+			this.falloutConfig.setDetailMessage(code.concat(";").concat(description != null ? description : ""));
+			throw OSSExceptionFactory.getOSSBusinessException(this.falloutConfig);
+		}
+
+		return entity;
+	}
+
+	private ReserveResourceGponEntity getReserveResourceGponEntity(final ResourceInventoryEntity entity, final Rules rules) throws OSSBusinessException {
+		ReserveResourceGponEntity reserveEntity = new ReserveResourceGponEntity();
+		reserveEntity.setCnl(entity.getAddress().getCnl());
+		reserveEntity.setSiglaAt(entity.getAddress().getTelephonicArea());
+		reserveEntity.setAccessDesignator(entity.getResourceFacingService().getServiceId());
+		reserveEntity.setPrimaryCable(entity.getCabinet().getPrimaryCable());
+		reserveEntity.setPrimaryFiber(entity.getCabinet().getPrimaryFiber());
+		reserveEntity.setServiceCode(rules.getResult());
+		return reserveEntity;
+	}
+	
+	private ChangeSpeedGponEntity getChangeSpeedGponEntity(final ResourceInventoryEntity entity, final Rules rules) {
+		final ChangeSpeedGponEntity gponEntity = new ChangeSpeedGponEntity();
+		gponEntity.setServiceCode(rules.getResult());
+		gponEntity.setServiceId( entity.getResourceFacingService() != null ? entity.getResourceFacingService().getServiceId() : null );
+		return gponEntity;
+	}
+
+}
+

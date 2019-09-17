@@ -1,0 +1,291 @@
+import { CaracteristicaDispositivo } from './../caracteristica-dispositivo.model';
+import { CatalogService } from './../catalog-list.service';
+import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
+import { CategoriaDispositivo } from '../categoria-dispositivo.model';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CatalogoDispositivo } from '../catalogo-dispositivo.model';
+import { AppHeaderView } from 'src/app/toolbar/app-header-view.model';
+import { MatSnackBar, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { ToolbarService } from 'src/app/toolbar/toolbar.service';
+
+export interface Rede {
+  value: string;
+  viewValue: string;
+}
+
+@Component({
+  selector: 'app-catalog-edit',
+  templateUrl: './catalog-edit.component.html',
+  styleUrls: ['./catalog-edit.component.scss']
+})
+export class CatalogEditComponent implements OnInit {
+
+  redes: Rede[] = [
+    { value: 'VIVO1', viewValue: 'Vivo 1' },
+    { value: 'VIVO2', viewValue: 'Vivo 2' },
+    { value: 'AMBOS', viewValue: 'Ambos' }
+  ];
+  technologies: string[] = [
+    'ADSL',
+    'FIBRA',
+    'ROUTER FIBRA',
+    'TV',
+    'VDSL',
+    'VoIP'
+  ];
+  sips: string[] = [
+    'Não suporta',
+    '1 FXS',
+    '2 FXS',
+    '4 FXS',
+    '8 FXS',
+    '16 FXS',
+    '24 FXS'
+  ];
+  hpnas: string[] = ['Não suporta', 'Suporta', '1 HPNA'];
+  tvTechnologies: string[] = [
+    'Não suporta',
+    'DTH Vivo 1',
+    'DTH Vivo 2',
+    'Hibrido',
+    'Open',
+    'Mediaroom',
+    'Mediaroom/Open'
+  ];
+  dvrs: string[] = ['Não suporta', 'Suporta'];
+  ssls: string[] = ['Não suporta', 'Suporta'];
+  wifis: string[] = ['Não suporta', 'Suporta', '2.4GHz', '5.0GHz'];
+  capacities: string[] = ['Não suporta', 'SD', 'SD/HD', 'SD/HD/UHD'];
+
+  categories: Array<CategoriaDispositivo> = [];
+  vendors: Array<string> = [];
+  allForm: FormGroup;
+  errors: string[];
+  isError: boolean;
+  dataCatalog: CatalogoDispositivo;
+  editMode: boolean = false;
+  @ViewChild('equipment') container: ElementRef;
+
+  constructor(
+    private catalogService: CatalogService,
+    private toolbarService: ToolbarService,
+    private snackBar: MatSnackBar,
+    @Inject(MAT_DIALOG_DATA) private data,
+    public dialogRef: MatDialogRef<CatalogEditComponent>) {
+
+    this.editMode = data != null && data.id != null;
+  }
+
+  ngOnInit() {
+    this.listCategories();
+    this.listVendors();
+
+    this.allForm = new FormGroup({
+      ctrlModel: new FormControl(null, Validators.required),
+      ctrlVendor: new FormControl(null, Validators.required),
+      ctrlRede: new FormControl(null, Validators.required),
+      ctrlCategory: new FormControl(null, Validators.required),
+      ctrlSku: new FormControl(null, Validators.required),
+      ctrlDescription: new FormControl(null, Validators.required),
+      ctrlTechnology: new FormControl(null, Validators.required),
+      ctrlSip: new FormControl(null, Validators.required),
+      ctrlHpna: new FormControl(null, Validators.required),
+      ctrlTvTechnology: new FormControl(null, Validators.required),
+      ctrlDvr: new FormControl(null, Validators.required),
+      ctrlSsl: new FormControl(null, Validators.required),
+      ctrlWifi: new FormControl(null, Validators.required),
+      ctrlCapacity: new FormControl(null, Validators.required)
+    });
+
+    if (this.editMode) {
+      this.getCatalogById(this.data.id);
+    } else {
+      let headerView = new AppHeaderView();
+      headerView.title = "Inserir Equipamento";
+      headerView.icon = "fas fa-hdd";
+      this.toolbarService.changeViewName(headerView);
+    }
+  }
+
+  getCatalogById(id: number) {
+
+    this.catalogService.findById(id).subscribe(
+      (res: CatalogoDispositivo) => {
+        this.isError = false;
+        this.dataCatalog = res;
+        this.setFieldsEquipmentEdit(this.dataCatalog);
+      }, err => {
+        this.errors = [`Status: ${err.status}', '${err.statusText}`];
+        this.isError = true;
+      });
+  }
+
+  setFieldsEquipmentEdit(data: CatalogoDispositivo) {
+
+    this.allForm.controls['ctrlModel'].setValue(data.modelo ? data.modelo : null);
+    this.allForm.controls['ctrlVendor'].setValue(data.fabricante ? data.fabricante : null);
+    this.allForm.controls['ctrlRede'].setValue(data.rede ? data.rede : null);
+
+    this.allForm.controls['ctrlCategory'].setValue(data.categoriaDispositivo.nomeCategoria);
+
+    this.allForm.controls['ctrlSku'].setValue(data.sku ? data.sku : null);
+    this.allForm.controls['ctrlDescription'].setValue(data.descricao ? data.descricao : null);
+
+    const technology = data.caracteristicas.find(x => x.nome === 'Tecnologia');
+    this.allForm.controls['ctrlTechnology'].setValue(technology ? technology.valor : null);
+
+    const sip = data.caracteristicas.find(x => x.nome === 'SIP');
+    this.allForm.controls['ctrlSip'].setValue(sip ? sip.valor : this.sips.find(x => x === 'Não suporta'));
+
+    const hpna = data.caracteristicas.find(x => x.nome === 'HPNA');
+    this.allForm.controls['ctrlHpna'].setValue(hpna ? hpna.valor : this.hpnas.find(x => x === 'Não suporta'));
+
+    const tvTechnology = data.caracteristicas.find(x => x.nome === 'Tecnologia TV');
+    this.allForm.controls['ctrlTvTechnology'].setValue(tvTechnology ? tvTechnology.valor : this.tvTechnologies.find(x => x === 'Não suporta'));
+
+    const dvr = data.caracteristicas.find(x => x.nome === 'DVR');
+    this.allForm.controls['ctrlDvr'].setValue(dvr ? dvr.valor : this.dvrs.find(x => x === 'Não suporta'));
+
+    const ssl = data.caracteristicas.find(x => x.nome === 'SSL');
+    this.allForm.controls['ctrlSsl'].setValue(ssl ? ssl.valor : this.ssls.find(x => x === 'Não suporta'));
+
+    const wiFi = data.caracteristicas.find(x => x.nome === 'WiFi');
+    this.allForm.controls['ctrlWifi'].setValue(wiFi ? wiFi.valor : this.wifis.find(x => x === 'Não suporta'));
+
+    const capacity = data.caracteristicas.find(x => x.nome === 'Capacidade de Vídeo');
+    this.allForm.controls['ctrlCapacity'].setValue(capacity ? capacity.valor : this.capacities.find(x => x === 'Não suporta'));
+  }
+
+  private listCategories() {
+    this.catalogService.listCategories().subscribe(list => {
+      this.isError = false;
+      this.categories = Array.from(list.map(e => { return e; }));
+      this.categories = this.categories.sort((a, b) => {
+        if (a.nomeCategoria < b.nomeCategoria) return -1;
+        if (a.nomeCategoria > b.nomeCategoria) return 1;
+        return 0;
+      });
+    }, err => {
+      this.errors = [`Status: ${err.status}', '${err.statusText}`];
+      this.isError = true;
+    });
+  }
+
+  private listVendors() {
+    this.catalogService.listVendors().subscribe(list => {
+      this.isError = false;
+      this.vendors = Array.from(list.map(e => { return e; }));
+      this.vendors = this.vendors.sort();
+    }, err => {
+      this.errors = [`Status: ${err.status}', '${err.statusText}`];
+      this.isError = true;
+    });
+  }
+
+  private getCatalogoDispositivo() {
+
+    const catalogId = this.editMode ? this.dataCatalog.id : null;
+    const caracteristicas = this.getCaracteristicasDispositivo();
+    const categoriaDispositivo = this.categories.find(x => x.nomeCategoria === this.allForm.controls['ctrlCategory'].value);
+
+    let entity = new CatalogoDispositivo(
+      catalogId,
+      this.allForm.controls['ctrlModel'].value,
+      this.allForm.controls['ctrlVendor'].value,
+      this.allForm.controls['ctrlRede'].value,
+      this.allForm.controls['ctrlDescription'].value,
+      this.allForm.controls['ctrlSku'].value,
+      categoriaDispositivo,
+      caracteristicas,
+      false
+    );
+
+    if (!this.editMode) {
+      delete entity.id;
+    }
+
+    return entity;
+  }
+
+  private getCaracteristicasDispositivo() {
+
+    let caracteristicas = new Array<CaracteristicaDispositivo>();
+    const nomes = ['Tecnologia','SIP','HPNA','Tecnologia TV','DVR','SSL','WiFi','Capacidade de Vídeo'];
+    nomes.forEach(nome => {
+      caracteristicas.push(new CaracteristicaDispositivo(null, nome, null, null));
+    });
+    if (this.editMode) {
+      caracteristicas.forEach(caracteristica => {
+        const data = this.dataCatalog.caracteristicas.find(c => c.nome.localeCompare(caracteristica.nome, undefined, { sensitivity: 'base' }) === 0);
+        if (data) {
+          caracteristica.id = data.id;
+          caracteristica.nome = data.nome;
+          caracteristica.valor = data.valor;
+          caracteristica.catalogoDispositivoId = data.catalogoDispositivoId;
+        }
+      });
+    }
+
+    return this.mountCaracteristicaDispositivos(caracteristicas);
+  }
+
+  private mountCaracteristicaDispositivos(caracteristicas: Array<CaracteristicaDispositivo>) : Array<CaracteristicaDispositivo>{
+
+    caracteristicas.find(x => x.nome === 'Tecnologia').valor = this.allForm.controls['ctrlTechnology'].value;
+    caracteristicas.find(x => x.nome === 'SIP').valor = this.allForm.controls['ctrlSip'].value;
+    caracteristicas.find(x => x.nome === 'HPNA').valor = this.allForm.controls['ctrlHpna'].value;
+    caracteristicas.find(x => x.nome === 'Tecnologia TV').valor = this.allForm.controls['ctrlTvTechnology'].value;
+    caracteristicas.find(x => x.nome === 'DVR').valor = this.allForm.controls['ctrlDvr'].value;
+    caracteristicas.find(x => x.nome === 'SSL').valor = this.allForm.controls['ctrlSsl'].value;
+    caracteristicas.find(x => x.nome === 'WiFi').valor = this.allForm.controls['ctrlWifi'].value;
+    caracteristicas.find(x => x.nome === 'Capacidade de Vídeo').valor = this.allForm.controls['ctrlCapacity'].value;
+
+    return caracteristicas;
+  }
+
+  doPost() {
+    const entity = this.getCatalogoDispositivo();
+    this.catalogService.save(entity).subscribe(
+      sucess => {
+        this.isError = false;
+        this.snackBar.open('Equipamento salvo com sucesso', null, {
+          duration: 3000,
+        });
+
+        this.allForm.reset();
+
+        if(this.editMode) {
+          this.dialogRef.close(true);
+        }
+
+
+      },
+      errors => {
+        if (errors.error.detail) {
+          this.errors = [errors.error.detail];
+        } else {
+          this.errors = [`Status: ${errors.status}', '${errors.statusText}`];
+        }
+        this.isError = true;
+      }
+    );
+    this.goTop();
+  }
+
+  doClear() {
+    if (this.editMode) {
+      this.getCatalogById(this.data.id);
+    } else {
+      this.allForm.reset();
+    }
+    this.goTop();
+  }
+
+  private goTop() {
+    if (this.editMode) {
+      this.container.nativeElement.scrollIntoView();
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }
+}

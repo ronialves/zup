@@ -1,0 +1,132 @@
+<div #equipment [formGroup]="allForm" [ngClass]="{
+    'ui-equipment': true,
+    'ui-equipment-container': !editMode,
+    'ui-equipment-container-edit-mode': editMode
+  }">
+  <div class="ui-equipment-error" *ngIf="isError">
+    <strong>Problemas identificados:</strong>
+    <div *ngFor="let erro of errors">{{erro}}</div>
+  </div>
+  <h3 class="ui-equipment-title">Equipamento</h3>
+  <div class="mat-elevation-z3 ui-equipment-card">
+    <mat-form-field>
+      <input required matInput placeholder="Modelo" formControlName="ctrlModel">
+      <mat-error>Campo Modelo de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input required matInput placeholder="Fabricante" [matAutocomplete]="auto" formControlName="ctrlVendor">
+      <mat-error>Campo Fabricante de preenchimento obrigatório</mat-error>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let vendor of vendors" [value]="vendor">{{vendor}}</mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Rede</mat-label>
+      <mat-select formControlName="ctrlRede" matNativeControl required>
+        <mat-option *ngFor="let rede of redes" [value]="rede.value">
+          {{rede.viewValue}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo Rede de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Categoria</mat-label>
+      <mat-select formControlName="ctrlCategory" matNativeControl required>
+        <mat-option *ngFor="let category of categories" [value]="category.nomeCategoria">
+          {{category.nomeCategoria}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo Categoria de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input required matInput placeholder="SKU" formControlName="ctrlSku">
+      <mat-error>Campo SKU de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea required matInput placeholder="Descrição" formControlName="ctrlDescription"></textarea>
+      <mat-error>Campo Descrição de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+  </div>
+
+  <h3 class="ui-equipment-title">Características</h3>
+  <div class="mat-elevation-z3 ui-equipment-card">
+    <mat-form-field>
+      <mat-label>Tecnologia</mat-label>
+      <mat-select formControlName="ctrlTechnology" matNativeControl required>
+        <mat-option *ngFor="let technology of technologies" [value]="technology">
+          {{technology}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo Tecnologia de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>SIP</mat-label>
+      <mat-select formControlName="ctrlSip" matNativeControl required>
+        <mat-option *ngFor="let sip of sips" [value]="sip">
+          {{sip}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo SIP de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>HPNA</mat-label>
+      <mat-select formControlName="ctrlHpna" matNativeControl required>
+        <mat-option *ngFor="let hpna of hpnas" [value]="hpna">
+          {{hpna}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo HPNA de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Tecnologia de TV</mat-label>
+      <mat-select formControlName="ctrlTvTechnology" matNativeControl required>
+        <mat-option *ngFor="let tvTechnology of tvTechnologies" [value]="tvTechnology">
+          {{tvTechnology}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo Tecnologia de TV de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>DVR</mat-label>
+      <mat-select formControlName="ctrlDvr" matNativeControl required>
+        <mat-option *ngFor="let dvr of dvrs" [value]="dvr">
+          {{dvr}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo DVR de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>SSL</mat-label>
+      <mat-select formControlName="ctrlSsl" matNativeControl required>
+        <mat-option *ngFor="let ssl of ssls" [value]="ssl">
+          {{ssl}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo SSL de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>WiFi</mat-label>
+      <mat-select formControlName="ctrlWifi" matNativeControl required>
+        <mat-option *ngFor="let wifi of wifis" [value]="wifi">
+          {{wifi}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo WiFi de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Capacidade de Vídeo</mat-label>
+      <mat-select formControlName="ctrlCapacity" matNativeControl required>
+        <mat-option *ngFor="let capacity of capacities" [value]="capacity">
+          {{capacity}}
+        </mat-option>
+      </mat-select>
+      <mat-error>Campo Capacidade de Vídeo de preenchimento obrigatório</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="mat-elevation-z3 ui-equipment-card ui-equipment-actions">
+    <button mat-raised-button color="primary" [disabled]="allForm.status !== 'VALID'" (click)="doPost()">Salvar</button>
+    <button mat-button color="warn" (click)="doClear()">Cancelar</button>
+  </div>
+
+</div>

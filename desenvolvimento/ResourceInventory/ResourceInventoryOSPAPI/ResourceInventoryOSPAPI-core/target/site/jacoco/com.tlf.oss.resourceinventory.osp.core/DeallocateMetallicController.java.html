@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeallocateMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">DeallocateMetallicController.java</span></div><h1>DeallocateMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import java.math.BigInteger;
+import java.util.concurrent.TimeoutException;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageresourceprovisioning.facilities.trackmanageresourceprovisioningtypes.ManageResourceProvisioningActivityRequest;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageresourceprovisioning.facilities.trackmanageresourceprovisioningtypes.ManageResourceProvisioningActivityResponse;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageresourceprovisioning.headercontext.WsContext;
+import com.tlf.oss.resourceinventory.osp.core.enums.Code;
+import com.tlf.oss.resourceinventory.osp.core.enums.Message;
+import com.tlf.oss.resourceinventory.osp.core.enums.Operation;
+import com.tlf.oss.resourceinventory.osp.core.service.DeallocateService;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@Logged
+@RequestScoped
+<span class="fc" id="L23">public class DeallocateMetallicController {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private DeallocateService deallocateService;
+
+	public ResourceInventoryEntity deallocate(ResourceInventoryEntity entity, Operation operation) throws OSSBusinessException {
+<span class="fc" id="L32">		logger.log(OSSLogger.INFO, &quot;Started executing deallocate&quot;);</span>
+
+<span class="fc" id="L34">		WsContext wsContext = new WsContext();</span>
+<span class="fc" id="L35">		wsContext.setRegionCode(entity.getAddress().getCnl());</span>
+<span class="fc" id="L36">		wsContext.setCentralOffice(entity.getAddress().getTelephonicArea());</span>
+
+<span class="fc" id="L38">		ManageResourceProvisioningActivityRequest request = createRequest(entity, operation);</span>
+
+		try {
+<span class="fc" id="L41">			ManageResourceProvisioningActivityResponse response = deallocateService</span>
+<span class="fc" id="L42">					.manageResourceProvisioningActivity(request, wsContext);</span>
+
+<span class="fc" id="L44">			validateResult(response);</span>
+<span class="fc" id="L45">		} catch (Exception e) {</span>
+<span class="fc" id="L46">			String description = &quot;Erro ao desalocar o recurso externo&quot;;</span>
+<span class="fc" id="L47">			logger.error(description, e);</span>
+
+<span class="fc" id="L49">			String detail = getErrorDetail(e);</span>
+<span class="fc" id="L50">			throw new OSSBusinessException(description, Code.RIOSP_002.getValue(), detail);</span>
+<span class="fc" id="L51">		}</span>
+
+<span class="fc" id="L53">		logger.log(OSSLogger.INFO, &quot;Finished executing deallocate&quot;);</span>
+<span class="fc" id="L54">		return entity;</span>
+	}
+
+	private void validateResult(ManageResourceProvisioningActivityResponse response) throws OSSBusinessException {
+<span class="fc bfc" id="L58" title="All 4 branches covered.">		if (response.getResult() != null &amp;&amp; response.getResult().getCode() != 0) {</span>
+<span class="fc" id="L59">			throw new OSSBusinessException(response.getResult().getDescription(),</span>
+<span class="fc" id="L60">					String.valueOf(response.getResult().getCode()),</span>
+<span class="fc" id="L61">					String.valueOf(response.getResult().getErrorCode()));</span>
+		}
+<span class="fc" id="L63">	}</span>
+
+	private String getErrorDetail(Exception e) {
+		String detail;
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		if (e instanceof TimeoutException) {</span>
+<span class="fc" id="L68">			detail = Message.BUSINESS_ERROR_TIMEOUT_MSG.getValue();</span>
+		} else {
+<span class="fc" id="L70">			detail = e.getMessage();</span>
+		}
+<span class="fc" id="L72">		return detail;</span>
+	}
+
+	private ManageResourceProvisioningActivityRequest createRequest(ResourceInventoryEntity entity,
+			Operation operation) {
+
+<span class="fc" id="L78">		ManageResourceProvisioningActivityRequest manageResourceProvisioningActivityRequest = new ManageResourceProvisioningActivityRequest();</span>
+
+<span class="fc" id="L80">		manageResourceProvisioningActivityRequest.setResourceOrder(entity.getCustomerOrder().getPurchaseOrderNumber());</span>
+
+<span class="fc" id="L82">		manageResourceProvisioningActivityRequest.setOperation(new BigInteger(operation.getValue()));</span>
+
+<span class="fc" id="L84">		return manageResourceProvisioningActivityRequest;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

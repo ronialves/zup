@@ -1,0 +1,45 @@
+package com.tlf.oss.resourceinventory.orchestration.execution.resourcelifecyclemanagement;
+
+import com.tlf.oss.resourceinventory.schemas.api.resourcelifecyclemanagement.v1_0.GatherResourceInformation;
+
+rule "[Gather and Analisy Resource Information] - GATHER RESOURCE INFORMATION VIVO 2 BY SHELF" extends "BaseRule"
+	agenda-group "GATHERANDANALYSERESOURCEINFORMATION"
+	when
+		$action : Action(name == '1.0_GATHER_RESOURCE_INFORMATION') from $resource.actions
+
+		entity: ResourceInventoryEntity(gatherResourceInformation != null)
+		gatherResourceInformation: GatherResourceInformation(
+		    address!.networkOwner == 'VIVO2',
+		    shelf != null,
+		    shelf.hasCards != null
+        ) from entity.gatherResourceInformation
+
+		ResourceOrder (
+            resourceOrderItem!.name == "RETRIEVE",
+            resourceOrderItem!.action == "GET_RESOURCE"
+        ) from gatherResourceInformation.resourceOrder
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[Gather and Analisy Resource Information] - GATHER RESOURCE INFORMATION VIVO 2 BY CABINET AND SPLITTER" extends "BaseRule"
+	agenda-group "GATHERANDANALYSERESOURCEINFORMATION"
+	when
+        $action : Action(name == '1.0_GATHER_RESOURCE_INFORMATION') from $resource.actions
+
+        entity: ResourceInventoryEntity(gatherResourceInformation != null)
+        gatherResourceInformation: GatherResourceInformation(
+            address!.networkOwner == 'VIVO2',
+            splitter != null,
+            cabinet != null
+        ) from entity.gatherResourceInformation
+
+        ResourceOrder (
+            resourceOrderItem!.name == "RETRIEVE",
+            resourceOrderItem!.action == "GET_RESOURCE"
+        ) from gatherResourceInformation.resourceOrder
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end

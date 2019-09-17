@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://www.cpqd.com.br/etics/facilities/ReportResourceProvisioning"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:rrpt="http://www.cpqd.com.br/etics/facilities/ReportResourceProvisioningTypes"
+	xmlns:head="http://www.cpqd.com.br/etics/headerContext" xmlns:ex="http://www.cpqd.com.br/etics/commonsexceptiontypes"
+	name="ReportResourceProvisioning"
+	targetNamespace="http://www.cpqd.com.br/etics/facilities/ReportResourceProvisioning">
+	<wsdl:types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+			xmlns:tns="http://www.cpqd.com.br/etics/facilities/ReportResourceProvisioning"
+			xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+			xmlns:rrpt="http://www.cpqd.com.br/etics/facilities/ReportResourceProvisioningTypes"
+			xmlns:head="http://www.cpqd.com.br/etics/headerContext" xmlns:ex="http://www.cpqd.com.br/etics/commonsexceptiontypes"
+			targetNamespace="http://www.cpqd.com.br/etics/facilities/ReportResourceProvisioning">
+			
+			<!--
+			<xs:import namespace="http://www.cpqd.com.br/etics/facilities/ReportResourceProvisioningTypes" schemaLocation="http://ospintegracao.telefonica.br/cpqd/ws/oss/ReportResourceProvisioning?xsd=ReportResourceProvisioningTypes.xsd" />
+			<xs:import namespace="http://www.cpqd.com.br/etics/commonsexceptiontypes" schemaLocation="http://ospintegracao.telefonica.br/cpqd/ws/oss/ReportResourceProvisioning?xsd=../schemas/CommonsExceptionTypes.xsd" />
+			<xs:import namespace="http://www.cpqd.com.br/etics/headerContext" schemaLocation="http://ospintegracao.telefonica.br/cpqd/ws/oss/ReportResourceProvisioning?xsd=../schemas/HeaderContext.xsd" />
+			-->
+						 
+ 			<xs:import namespace="http://www.cpqd.com.br/etics/facilities/ReportResourceProvisioningTypes" schemaLocation="http://localhost:8180/cpqd/ws/oss/ReportResourceProvisioning?xsd=ReportResourceProvisioningTypes.xsd" />
+ 			<xs:import namespace="http://www.cpqd.com.br/etics/commonsexceptiontypes" schemaLocation="http://localhost:8180/cpqd/ws/oss/ReportResourceProvisioning?xsd=../schemas/CommonsExceptionTypes.xsd" /> 
+ 			<xs:import namespace="http://www.cpqd.com.br/etics/headerContext" schemaLocation="http://localhost:8180/cpqd/ws/oss/ReportResourceProvisioning?xsd=../schemas/HeaderContext.xsd" /> 
+
+			
+			<xs:element name="distResProvRepoRequest" type="rrpt:ReportResourceProvisioningRequest" />
+			<xs:element name="distFreeResTermRequest" type="rrpt:DistributeFreeResourceTermRequest" /> 
+  <!-- Elemento de resposta comum para as operacoes -->
+			<xs:element name="reportResourceProvisioningResponse"
+				type="rrpt:ReportResourceProvisioningResponse" />
+			<xs:element name="distributeFreeResourceTermResponse"
+				type="rrpt:DistributeFreeResourceTermResponse" /> 
+  <!-- Elemento de Erro -->
+			<xs:element name="faultData" type="ex:CommonsExceptionElementType" />
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="dfrtResponseMsg">
+		<wsdl:part element="tns:distributeFreeResourceTermResponse"
+			name="outputData" />
+	</wsdl:message>
+	<wsdl:message name="rrpResponseMsg">
+		<wsdl:part element="tns:reportResourceProvisioningResponse"
+			name="outputData" />
+	</wsdl:message>
+	<wsdl:message name="facilitiesException">
+		<wsdl:part element="tns:faultData" name="faultData" />
+	</wsdl:message>
+	<wsdl:message name="rrpRequestMsg">
+		<wsdl:part element="tns:distResProvRepoRequest" name="inputData" />
+		<wsdl:part element="head:context" name="context" />
+	</wsdl:message>
+	<wsdl:message name="dfrtRequestMsg">
+		<wsdl:part element="tns:distFreeResTermRequest" name="inputData" />
+		<wsdl:part element="head:context" name="context" />
+	</wsdl:message>
+	<wsdl:portType name="ReportResourceProvisioning">
+		<wsdl:operation name="distributeResourceProvisioningReports">
+			<wsdl:input message="tns:rrpRequestMsg" name="distResProvRepoRequest" />
+			<wsdl:output message="tns:rrpResponseMsg" name="reportResourceProvisioningResponse" />
+			<wsdl:fault message="tns:facilitiesException" name="facilitiesFault" />
+		</wsdl:operation>
+		<wsdl:operation name="distributeFreeResourceTerminalEquipment">
+			<wsdl:input message="tns:dfrtRequestMsg" name="distributeFreeResourceTermRequest" />
+			<wsdl:output message="tns:dfrtResponseMsg" name="distributeFreeResourceTermResponse" />
+			<wsdl:fault message="tns:facilitiesException" name="facilitiesFault" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="ReportResourceProvisioningSoapBinding"
+		type="tns:ReportResourceProvisioning">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="distributeResourceProvisioningReports">
+			<soap:operation soapAction="" />
+			<wsdl:input name="distResProvRepoRequest">
+				<soap:header message="tns:rrpRequestMsg" part="context"
+					use="literal" />
+				<soap:body parts="inputData" use="literal" />
+			</wsdl:input>
+			<wsdl:output name="reportResourceProvisioningResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="facilitiesFault">
+				<soap:fault name="facilitiesFault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="distributeFreeResourceTerminalEquipment">
+			<soap:operation soapAction="" />
+			<wsdl:input name="distributeFreeResourceTermRequest">
+				<soap:header message="tns:dfrtRequestMsg" part="context"
+					use="literal" />
+				<soap:body parts="inputData" use="literal" />
+			</wsdl:input>
+			<wsdl:output name="distributeFreeResourceTermResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="facilitiesFault">
+				<soap:fault name="facilitiesFault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ReportResourceProvisioning">
+		<wsdl:port binding="tns:ReportResourceProvisioningSoapBinding"
+			name="ReportResourceProvisioningPort">
+			<soap:address
+				location="http://localhost:8180/cpqd/ws/oss/ReportResourceProvisioning" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tr="http://www.cpqd.com.br/etics/TerminalResourceTypes" xmlns:rt="http://www.cpqd.com.br/etics/ResourceTypes"
+	xmlns:itr="http://www.cpqd.com.br/etics/IntermediaryResourceTypes"
+	xmlns:ir="http://www.cpqd.com.br/etics/InicialResourceTypes"
+	elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/CustomerResourceTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceTypes"
+		schemaLocation="ResourceTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/InicialResourceTypes"
+		schemaLocation="InicialResourceTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/TerminalResourceTypes"
+		schemaLocation="TerminalResourceTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/IntermediaryResourceTypes"
+		schemaLocation="IntermediaryResourceTypes.xsd" />
+	<xs:complexType name="CustomerResource">
+		<xs:sequence>
+			<!-- Equipamento Adicional -->
+			<xs:element minOccurs="0" name="aditionalResource" type="rt:Resource" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CustomAvailableResources">
+		<xs:sequence>
+			<!-- Equipamento Inicial -->
+			<xs:element minOccurs="0" name="relatedInicialResources"
+				type="ir:CustomInicialResource" />
+			<!-- Equipamento Intermediario -->
+			<xs:element maxOccurs="unbounded" minOccurs="0"
+				name="relatedIntermediaryResources" type="itr:IntermediaryAvailableResource" />
+			<!-- Equipamento Terminal -->
+			<xs:element minOccurs="0" name="relatedTerminalResources"
+				type="tr:TerminalAvailableResource" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

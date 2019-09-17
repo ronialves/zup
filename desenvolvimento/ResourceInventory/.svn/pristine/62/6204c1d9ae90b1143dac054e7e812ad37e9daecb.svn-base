@@ -1,0 +1,464 @@
+package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+
+@Entity
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(name = "retrieveNetworkInfo", resultClasses = NetworkInfoEntity.class, procedureName = "ASAP.TLF_SP_RETRIEVE_FACILITY", parameters = {
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_DESIGNATOR", type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_CIRCUIT_ACTIVITY_IND", type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, name = "CUR1", type = void.class)
+        }) })
+public class NetworkInfoEntity implements Serializable {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Basic
+    @Column(name = "P_DESIGNATOR")
+    private String designator;
+    
+    @Basic
+    @Column(name = "P_CIRCUIT_ACTIVITY_IND")
+    private String circuitActivityInd;
+
+    @Basic
+    @Column(name = "V_INSTANCIA")
+    private String instancia;
+    
+    @Basic
+    @Column(name = "V_V5ID")
+    private String v5id;
+
+    @Basic
+    @Column(name = "V_IP_ADDRESS")
+    private String ipAddress;
+    
+    @Basic
+    @Column(name = "V_SLOT")
+    private String slot;
+    
+    @Basic
+    @Column(name = "V_PORTA_FISICA")
+    private String portaFisica;
+    
+    @Basic
+    @Column(name = "V_PORTA_LOGICA")
+    private Integer portaLogica;
+
+    @Basic
+    @Column(name = "V_NAME_DSLAM")
+    private String nameDslam;
+    
+    @Basic
+    @Column(name = "V_MODEL_DSLAM")
+    private String modelDslam;
+
+    @Basic
+    @Column(name = "V_VENDOR_NAME")
+    private String vendorName;
+   
+    @Basic
+    @Column(name = "V_SVLAN")
+    private String svlan;
+
+    @Basic
+    @Column(name = "V_CVLAN")
+    private String cvlan;
+
+    @Basic
+    @Column(name = "V_DOWNSTREAM")
+    private String downstream;
+
+    @Basic
+    @Column(name = "V_UPSTREAM")
+    private String upstream;
+
+    @Basic
+    @Column(name = "V_MODELO_PLACA")
+    private String modeloPlaca;
+   
+    @Basic
+    @Column(name = "V_EXTERNAL_NETWORK_OWNER")
+    private String externalNetworkOwner;
+
+    @Basic
+    @Column(name = "V_NAME_BRAS")
+    private String nameBRAS;
+
+    @Basic
+    @Column(name = "V_VENDOR_BRAS")
+    private String vendorBRAS;
+
+    @Basic
+    @Column(name = "V_HOSTNAME_BRAS")
+    private String hostNameBRAS;
+
+    @Basic
+    @Column(name = "V_SITE_BRAS")
+    private String siteBRAS;
+    
+    @Basic
+    @Column(name = "V_SHASTA")
+    private String shasta;
+    
+    @Basic
+    @Column(name = "V_NASIP")
+    private String nasIp;
+    
+    @Basic
+    @Column(name = "V_ARMARIO")
+    private String cabinet;
+    
+    @Basic
+    @Column(name = "V_NUMERO_BRAS")
+    private String numeroBRAS;
+
+    @Basic
+    @Column(name = "V_SLOT_BRAS")
+    private String slotBRAS;
+    
+    @Basic
+    @Column(name = "V_SUB_SLOT_BRAS")
+    private String subSlotBRAS;
+    
+    @Basic
+    @Column(name = "V_PORTA_BRAS")
+    private String portaBRAS;
+    
+    @Basic
+    @Column(name = "V_VLAN_VOD")
+    private String vlanVOD;
+    
+    @Basic
+    @Column(name = "V_VLAN_VOIP")
+    private String vlanVOIP;
+    
+    @Basic
+    @Column(name = "V_VLAN_MCAST")
+    private String vlanMCAST;
+    
+    @Basic
+    @Column(name = "V_VLAN_IPTV")
+    private String vlanIPTV;
+    
+    @Basic
+    @Column(name = "V_TECNOLOGIA")
+    private String technology;
+
+    @Id
+    @Basic
+    @Column(name = "V_COD_ERRO")
+    private Integer codErro;
+
+    @Basic
+    @Column(name = "V_MSG_ERRO")
+    private String msgErro;
+
+    @Transient
+    private String typeOfResource;
+
+	public NetworkInfoEntity() {
+		super();
+	}
+
+	public String getDesignator() {
+		return designator;
+	}
+
+	public void setDesignator(String designator) {
+		this.designator = designator;
+	}
+
+	public String getCircuitActivityInd() {
+		return circuitActivityInd;
+	}
+
+	public void setCircuitActivityInd(String circuitActivityInd) {
+		this.circuitActivityInd = circuitActivityInd;
+	}
+
+	public String getInstancia() {
+		return instancia;
+	}
+
+	public void setInstancia(String instancia) {
+		this.instancia = instancia;
+	}
+
+	public String getV5id() {
+		return v5id;
+	}
+
+	public void setV5id(String v5id) {
+		this.v5id = v5id;
+	}
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
+	public String getSlot() {
+		return slot;
+	}
+
+	public void setSlot(String slot) {
+		this.slot = slot;
+	}
+
+	public String getPortaFisica() {
+		return portaFisica;
+	}
+
+	public void setPortaFisica(String portaFisica) {
+		this.portaFisica = portaFisica;
+	}
+
+	public Integer getPortaLogica() {
+		return portaLogica;
+	}
+
+	public void setPortaLogica(Integer portaLogica) {
+		this.portaLogica = portaLogica;
+	}
+
+	public String getNameDslam() {
+		return nameDslam;
+	}
+
+	public void setNameDslam(String nameDslam) {
+		this.nameDslam = nameDslam;
+	}
+
+	public String getModelDslam() {
+		return modelDslam;
+	}
+
+	public void setModelDslam(String modelDslam) {
+		this.modelDslam = modelDslam;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public String getSvlan() {
+		return svlan;
+	}
+
+	public void setSvlan(String svlan) {
+		this.svlan = svlan;
+	}
+
+	public String getCvlan() {
+		return cvlan;
+	}
+
+	public void setCvlan(String cvlan) {
+		this.cvlan = cvlan;
+	}
+
+	public String getDownstream() {
+		return downstream;
+	}
+
+	public void setDownstream(String downstream) {
+		this.downstream = downstream;
+	}
+
+	public String getUpstream() {
+		return upstream;
+	}
+
+	public void setUpstream(String upstream) {
+		this.upstream = upstream;
+	}
+
+	public String getModeloPlaca() {
+		return modeloPlaca;
+	}
+
+	public void setModeloPlaca(String modeloPlaca) {
+		this.modeloPlaca = modeloPlaca;
+	}
+
+	public String getExternalNetworkOwner() {
+		return externalNetworkOwner;
+	}
+
+	public void setExternalNetworkOwner(String externalNetworkOwner) {
+		this.externalNetworkOwner = externalNetworkOwner;
+	}
+
+	public String getNameBRAS() {
+		return nameBRAS;
+	}
+
+	public void setNameBRAS(String nameBRAS) {
+		this.nameBRAS = nameBRAS;
+	}
+
+	public String getVendorBRAS() {
+		return vendorBRAS;
+	}
+
+	public void setVendorBRAS(String vendorBRAS) {
+		this.vendorBRAS = vendorBRAS;
+	}
+
+	public String getHostNameBRAS() {
+		return hostNameBRAS;
+	}
+
+	public void setHostNameBRAS(String hostNameBRAS) {
+		this.hostNameBRAS = hostNameBRAS;
+	}
+
+	public String getSiteBRAS() {
+		return siteBRAS;
+	}
+
+	public void setSiteBRAS(String siteBRAS) {
+		this.siteBRAS = siteBRAS;
+	}
+
+	public String getShasta() {
+		return shasta;
+	}
+
+	public void setShasta(String shasta) {
+		this.shasta = shasta;
+	}
+
+	public String getNasIp() {
+		return nasIp;
+	}
+
+	public void setNasIp(String nasIp) {
+		this.nasIp = nasIp;
+	}
+
+	public String getCabinet() {
+		return cabinet;
+	}
+
+	public void setCabinet(String cabinet) {
+		this.cabinet = cabinet;
+	}
+
+	public String getNumeroBRAS() {
+		return numeroBRAS;
+	}
+
+	public void setNumeroBRAS(String numeroBRAS) {
+		this.numeroBRAS = numeroBRAS;
+	}
+
+	public String getSlotBRAS() {
+		return slotBRAS;
+	}
+
+	public void setSlotBRAS(String slotBRAS) {
+		this.slotBRAS = slotBRAS;
+	}
+
+	public String getSubSlotBRAS() {
+		return subSlotBRAS;
+	}
+
+	public void setSubSlotBRAS(String subSlotBRAS) {
+		this.subSlotBRAS = subSlotBRAS;
+	}
+
+	public String getPortaBRAS() {
+		return portaBRAS;
+	}
+
+	public void setPortaBRAS(String portaBRAS) {
+		this.portaBRAS = portaBRAS;
+	}
+
+	public String getVlanVOD() {
+		return vlanVOD;
+	}
+
+	public void setVlanVOD(String vlanVOD) {
+		this.vlanVOD = vlanVOD;
+	}
+
+	public String getVlanVOIP() {
+		return vlanVOIP;
+	}
+
+	public void setVlanVOIP(String vlanVOIP) {
+		this.vlanVOIP = vlanVOIP;
+	}
+
+	public String getVlanMCAST() {
+		return vlanMCAST;
+	}
+
+	public void setVlanMCAST(String vlanMCAST) {
+		this.vlanMCAST = vlanMCAST;
+	}
+
+	public String getVlanIPTV() {
+		return vlanIPTV;
+	}
+
+	public void setVlanIPTV(String vlanIPTV) {
+		this.vlanIPTV = vlanIPTV;
+	}
+
+	public String getTechnology() {
+		return technology;
+	}
+
+	public void setTechnology(String technology) {
+		this.technology = technology;
+	}
+
+	public Integer getCodErro() {
+		return codErro;
+	}
+
+	public void setCodErro(Integer codErro) {
+		this.codErro = codErro;
+	}
+
+	public String getMsgErro() {
+		return msgErro;
+	}
+
+	public void setMsgErro(String msgErro) {
+		this.msgErro = msgErro;
+	}
+
+	public String getTypeOfResource() {
+		return typeOfResource;
+	}
+
+	public void setTypeOfResource(String typeOfResource) {
+		this.typeOfResource = typeOfResource;
+	}	
+}

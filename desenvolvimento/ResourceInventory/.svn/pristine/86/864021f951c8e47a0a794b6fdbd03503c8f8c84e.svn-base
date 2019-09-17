@@ -1,0 +1,111 @@
+package com.tlf.oss.resourceinventory.granite.core.rules;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.granite.core.enums.AgendaGroup;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ExecutionRulesBroadbandIptvVoipServiceTest {
+
+	private ResourceInventoryEntity entity;
+
+	private ExecutionRules executionRules;
+
+	@Before
+	public void before() {
+		this.entity = new ResourceInventoryEntity();
+		this.executionRules = new ExecutionRules();
+	}
+	
+	@Test
+	public void shouldGetServiceCodeVBIF16() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("16384", "DYNAMIC");
+		final Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBIF16", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeVBIF05() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("25600", "DYNAMIC");
+		final Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBIF05", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeVBIF50() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("51200", "DYNAMIC");
+		final Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBIF50", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeVBIF00() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("102400", "DYNAMIC");
+		final Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBIF00", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeVBIG11() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("204800", "DYNAMIC");
+		final Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBIG11", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeVBIG13() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("307200", "DYNAMIC");
+		final Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBIG13", rules.getResult());
+	}
+	
+	private void setResourceInventoryWithDownstreamAndIpTypeValue(String downStreamValue, String IPType) {
+
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setCategory("BROADBAND");
+
+		ServiceDescribedBy serviceDescribedByDs = new ServiceDescribedBy();
+		serviceDescribedByDs.setName("DOWNSTREAM");
+		ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribes.setValue(downStreamValue);
+		serviceDescribedByDs.getServiceSpecCharDescribes().add(serviceSpecCharDescribes);
+
+		ServiceDescribedBy serviceDescribedByIP = new ServiceDescribedBy();
+		serviceDescribedByIP.setName("IP");
+		ServiceSpecCharDescribes serviceSpecCharDescribesIp = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribesIp.setValue(IPType);
+		serviceDescribedByIP.getServiceSpecCharDescribes().add(serviceSpecCharDescribesIp);
+
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(serviceDescribedByDs);
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(serviceDescribedByIP);
+
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(1).setCategory("IPTV");
+		
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(2).setCategory("VOIP");
+
+		entity.setCustomerFacingService(listOfCustomerFacingService);
+	}
+}

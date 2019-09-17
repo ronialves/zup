@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.tlf.oss.resourceinventory.orchestration.rules.resourcelifecyclemanagement.RetrieveTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.578 sec - in com.tlf.oss.resourceinventory.orchestration.rules.resourcelifecyclemanagement.RetrieveTest

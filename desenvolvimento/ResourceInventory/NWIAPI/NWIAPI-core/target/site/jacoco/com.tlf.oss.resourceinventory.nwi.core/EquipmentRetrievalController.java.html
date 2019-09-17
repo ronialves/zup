@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EquipmentRetrievalController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">NWIAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.nwi.core</a> &gt; <span class="el_source">EquipmentRetrievalController.java</span></div><h1>EquipmentRetrievalController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.nwi.core;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.nwi.core.utils.Constants;
+import com.tlf.oss.resourceinventory.nwi.core.validation.EquipmentRetrieval;
+import com.tlf.oss.resourceinventory.nwi.repository.EquipmentRetrievalRepository;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L17">public class EquipmentRetrievalController {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private EquipmentRetrievalRepository equipmentRetrievalRepository;
+
+	/**
+	 * Consulta os Equipamentos no SIGITM
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity retrieval(@EquipmentRetrieval ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+<span class="fc" id="L34">		logger.log(OSSLogger.INFO, &quot;EquipmentRetrievalController - Iniciando fluxo do retrieval.&quot;);</span>
+<span class="fc" id="L35">		String flow = identifyFlow(entity);		</span>
+<span class="fc" id="L36">		String origin = identifyOrigin(entity);</span>
+		
+<span class="pc bpc" id="L38" title="2 of 6 branches missed.">		if(Constants.CABINET.equals(flow) || (Constants.EQUIPMENT.equals(flow) &amp;&amp; Constants.NWI.equals(origin))) {</span>
+<span class="fc" id="L39">			equipmentRetrievalRepository.getEquipment(entity, flow);</span>
+		} 
+		
+<span class="fc" id="L42">		return entity;</span>
+	}
+	
+	/**
+	 * Verifica o fluxo de Consultas aos Equipamentos.
+	 * @param entity
+	 * @return {@link String}
+	 */
+	private String identifyFlow(ResourceInventoryEntity entity) {
+		
+<span class="fc" id="L52">		logger.log(OSSLogger.INFO, &quot;EquipmentRetrievalController - Identificando tipo de consulta.&quot;);</span>
+		
+<span class="fc" id="L54">		List&lt;ServiceDescribedBy&gt; serviceDescribedBys = entity.getResourceFacingService().getServiceDescribedBy();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		for (ServiceDescribedBy serviceDescribedBy : serviceDescribedBys) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">			if (serviceDescribedBy.getName().equals(Constants.EQUIPMENT)) {</span>
+<span class="fc" id="L57">				Optional&lt;ServiceSpecCharDescribes&gt; serviceSpecCharDescribe = serviceDescribedBy.getServiceSpecCharDescribes().stream().filter(s -&gt; s.getValueType().equals(Constants.HOSTNAME)).findFirst();</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">				if (serviceSpecCharDescribe.get().getValue() != null) {</span>
+<span class="fc" id="L59">					return Constants.EQUIPMENT;</span>
+				}
+			}
+<span class="fc" id="L62">		}</span>
+	
+<span class="fc" id="L64">		return Constants.CABINET;</span>
+	}		
+	
+	/**
+	 * Verifica a origem.
+	 * @param entity
+	 * @return {@link String}
+	 */
+	private String identifyOrigin(ResourceInventoryEntity entity) {
+
+<span class="fc" id="L74">		logger.log(OSSLogger.INFO, &quot;EquipmentRetrievalController - Identificando a origem do equipamento.&quot;);</span>
+
+<span class="fc" id="L76">		String origin = null;</span>
+<span class="fc" id="L77">		List&lt;ServiceDescribedBy&gt; serviceDescribedBys = entity.getResourceFacingService().getServiceDescribedBy();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		for (ServiceDescribedBy serviceDescribedBy : serviceDescribedBys) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">			if (serviceDescribedBy.getName().equals(Constants.EQUIPMENT)) {</span>
+<span class="fc" id="L80">				Optional&lt;ServiceSpecCharDescribes&gt; serviceSpecCharDescribe = serviceDescribedBy.getServiceSpecCharDescribes().stream().filter(s -&gt; s.getValueType().equals(Constants.ORIGIN)).findFirst();</span>
+<span class="pc bpc" id="L81" title="2 of 4 branches missed.">				if (serviceSpecCharDescribe.isPresent() &amp;&amp; serviceSpecCharDescribe.get().getValue() != null) {</span>
+<span class="fc" id="L82">					origin = serviceSpecCharDescribe.get().getValue();</span>
+				}
+			}
+<span class="fc" id="L85">		}</span>
+		
+<span class="fc" id="L87">		logger.log(OSSLogger.DEBUG, &quot;Equipamento com a origem: &quot; + origin);</span>
+
+
+<span class="fc" id="L90">		return origin;</span>
+	}		
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

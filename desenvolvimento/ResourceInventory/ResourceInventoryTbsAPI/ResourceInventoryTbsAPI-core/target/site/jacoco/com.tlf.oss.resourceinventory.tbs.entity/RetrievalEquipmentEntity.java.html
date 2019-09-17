@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrievalEquipmentEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">RetrievalEquipmentEntity.java</span></div><h1>RetrievalEquipmentEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+
+@Entity
+@NamedStoredProcedureQueries({
+	@NamedStoredProcedureQuery(name = RetrievalEquipmentEntity.RETRIEVAL_EQUIPMENT, procedureName = &quot;TLF_SP_SIGITM_GET_ELEMENTO&quot;, resultClasses = RetrievalEquipmentEntity.class, 
+		parameters = {
+			@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_state_code&quot;, type = String.class),
+			@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_site&quot;, type = String.class),
+			@StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, name = &quot;cur1&quot;, type = void.class),
+			@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_cod_retorno&quot;, type = Float.class),
+			@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_msg_retorno&quot;, type = String.class)}) })
+<span class="nc" id="L23">public class RetrievalEquipmentEntity implements Serializable{</span>
+
+	private static final long serialVersionUID = 1L;
+
+	public static final String RETRIEVAL_EQUIPMENT = &quot;retrievalEquipment&quot;;
+	
+	@Basic
+	@Column(name=&quot;HOSTNAME&quot;)
+	private String hostname;
+	
+	@Basic
+	@Column(name=&quot;NASIP&quot;)
+	private String nasip;
+	
+	@Basic
+	@Column(name=&quot;ORIGEM&quot;)
+	private String origem;
+	
+	@Basic
+	@Column(name=&quot;EQUIPMENT_ACRONYM&quot;)
+	private String acronymEquip;
+	
+	@Basic
+	@Column(name=&quot;VENDOR_NAME&quot;)
+	private String vendorName;
+	
+	@Basic
+	@Column(name=&quot;EQUIPMENT_NAME&quot;)
+	private String nameEquip;
+	
+	@Basic
+	@Column(name=&quot;EQUIPSPEC_TYPE&quot;)
+	private String typeEquip;
+
+	@Basic
+	@Column(name=&quot;NOTES&quot;)
+	private String notes;
+	
+	@Id
+	@Basic
+	@Column(name=&quot;EQUIPMENT_ID&quot;)
+	private String idEquip;
+	
+	@Basic
+	@Column(name=&quot;p_cod_retorno&quot;)
+	private Float codRetorno;
+	
+	@Basic
+	@Column(name=&quot;p_msg_retorno&quot;)
+	private String msgRetorno;
+
+	public String getHostname() {
+<span class="nc" id="L75">		return hostname;</span>
+	}
+
+	public void setHostname(String hostname) {
+<span class="nc" id="L79">		this.hostname = hostname;</span>
+<span class="nc" id="L80">	}</span>
+
+	public String getNasip() {
+<span class="nc" id="L83">		return nasip;</span>
+	}
+
+	public void setNasip(String nasip) {
+<span class="nc" id="L87">		this.nasip = nasip;</span>
+<span class="nc" id="L88">	}</span>
+
+	public String getAcronymEquip() {
+<span class="nc" id="L91">		return acronymEquip;</span>
+	}
+
+	public void setAcronymEquip(String acronymEquip) {
+<span class="nc" id="L95">		this.acronymEquip = acronymEquip;</span>
+<span class="nc" id="L96">	}</span>
+
+	public String getVendorName() {
+<span class="nc" id="L99">		return vendorName;</span>
+	}
+
+	public void setVendorName(String vendorName) {
+<span class="nc" id="L103">		this.vendorName = vendorName;</span>
+<span class="nc" id="L104">	}</span>
+
+	public String getNameEquip() {
+<span class="nc" id="L107">		return nameEquip;</span>
+	}
+
+	public void setNameEquip(String nameEquip) {
+<span class="nc" id="L111">		this.nameEquip = nameEquip;</span>
+<span class="nc" id="L112">	}</span>
+
+	public String getTypeEquip() {
+<span class="nc" id="L115">		return typeEquip;</span>
+	}
+
+	public void setTypeEquip(String typeEquip) {
+<span class="nc" id="L119">		this.typeEquip = typeEquip;</span>
+<span class="nc" id="L120">	}</span>
+
+	public String getNotes() {
+<span class="nc" id="L123">		return notes;</span>
+	}
+
+	public void setNotes(String notes) {
+<span class="nc" id="L127">		this.notes = notes;</span>
+<span class="nc" id="L128">	}</span>
+
+	public String getIdEquip() {
+<span class="nc" id="L131">		return idEquip;</span>
+	}
+
+	public void setIdEquip(String idEquip) {
+<span class="nc" id="L135">		this.idEquip = idEquip;</span>
+<span class="nc" id="L136">	}</span>
+	
+	public String getOrigem() {
+<span class="nc" id="L139">		return origem;</span>
+	}
+
+	public void setOrigem(String origem) {
+<span class="nc" id="L143">		this.origem = origem;</span>
+<span class="nc" id="L144">	}</span>
+
+	public Float getCodRetorno() {
+<span class="nc" id="L147">		return codRetorno;</span>
+	}
+
+	public void setCodRetorno(Float codRetorno) {
+<span class="nc" id="L151">		this.codRetorno = codRetorno;</span>
+<span class="nc" id="L152">	}</span>
+
+	public String getMsgRetorno() {
+<span class="nc" id="L155">		return msgRetorno;</span>
+	}
+
+	public void setMsgRetorno(String msgRetorno) {
+<span class="nc" id="L159">		this.msgRetorno = msgRetorno;</span>
+<span class="nc" id="L160">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

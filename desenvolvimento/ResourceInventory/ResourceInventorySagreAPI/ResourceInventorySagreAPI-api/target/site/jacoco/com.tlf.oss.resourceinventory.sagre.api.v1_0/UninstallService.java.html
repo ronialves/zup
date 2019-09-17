@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UninstallService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-api</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.api.v1_0</a> &gt; <span class="el_source">UninstallService.java</span></div><h1>UninstallService.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.api.v1_0;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
+import javax.validation.ConstraintViolationException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.RestInterceptor;
+import com.tlf.oss.resourceinventory.sagre.core.UninstallController;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.util.RIConstants;
+
+@Path(&quot;/uninstall&quot;)
+@Stateless
+@Transactional(value = TxType.NOT_SUPPORTED)
+<span class="nc" id="L25">public class UninstallService extends RestInterceptor {</span>
+
+	@Inject
+	UninstallController uninstallController;
+
+	@POST
+	@Consumes(RIConstants.MEDIA_TYPE_APPLICATION_JSON_UTF8)
+	@Produces(RIConstants.MEDIA_TYPE_APPLICATION_JSON_UTF8)
+	public Response doExecution(ResourceInventoryEntity entity) throws OSSBusinessException {
+		try {
+<span class="nc" id="L35">			uninstallController.uninstall(entity);</span>
+<span class="nc" id="L36">			return Response.status(Status.OK).entity(entity).build();</span>
+<span class="nc" id="L37">		} catch (ConstraintViolationException | OSSBusinessException e) {</span>
+<span class="nc" id="L38">			throw e;</span>
+<span class="nc" id="L39">		} catch (Exception e) {</span>
+<span class="nc" id="L40">			throw new OSSBusinessException(ExceptionInfoEnum.RISAGRE_999.getDescription(),</span>
+<span class="nc" id="L41">					ExceptionInfoEnum.RISAGRE_999.getCode(), e.getMessage());</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

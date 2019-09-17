@@ -1,0 +1,72 @@
+package com.tfl.oss.resourceinventory.orchestration.execution
+
+rule "[Uninstall] - VIVO1" extends "BaseRule"
+	agenda-group "UNINSTALL"
+	when
+		$action : Action(name == '1.0_UNINSTALL_VIVO1') from $resource.actions
+		ResourceInventoryEntity(address!.networkOwner == 'VIVO1')
+		ResourceInventoryEntity(resourceOrder == null || 
+								resourceOrder!.resourceOrderItem == null || 
+								resourceOrder!.resourceOrderItem!.name == null || 
+								(resourceOrder!.resourceOrderItem!.name != 'TSS_FIBER_PHYSICAL_ACCESS' && 
+								 resourceOrder!.resourceOrderItem!.name != 'TSS_FIBER_ACCESS_PORT' && 
+								 !resourceOrder!.resourceOrderItem!.name.toUpperCase().startsWith('R_CPE_')))
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);		
+		insert( $action );
+end
+
+rule "[Internal Uninstall] - VIVO1" extends "BaseRule"
+	agenda-group "UNINSTALL"
+	when
+		$action : Action(name == '1.0_INTERNAL_UNINSTALL_VIVO1') from $resource.actions
+		ResourceInventoryEntity(address!.networkOwner == 'VIVO1', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_ACCESS_PORT')
+
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[External Uninstall] - VIVO1" extends "BaseRule"
+	agenda-group "UNINSTALL"
+	when
+		$action : Action(name == '1.0_EXTERNAL_UNINSTALL_VIVO1') from $resource.actions
+		ResourceInventoryEntity(address!.networkOwner == 'VIVO1', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_PHYSICAL_ACCESS')
+
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[external UNINSTALL] - VIVO2" extends "BaseRule"
+    agenda-group "UNINSTALL"
+    when
+        $action : Action(name == '1.0_EXTERNAL_UNINSTALL_VIVO2') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO2', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_PHYSICAL_ACCESS')
+         
+      then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[internal UNINSTALL] - VIVO2" extends "BaseRule"
+    agenda-group "UNINSTALL"
+    when
+        $action : Action(name == '1.0_INTERNAL_UNINSTALL_VIVO2') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO2', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_ACCESS_PORT')
+         
+      then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[Uninstall] - CPE" extends "BaseRule"
+	agenda-group "UNINSTALL"
+	when
+		$action : Action(name == '1.0_CPE_UNINSTALL') from $resource.actions
+		ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null, 
+            resourceOrder!.resourceOrderItem!.name.contains("R_CPE_"))
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end

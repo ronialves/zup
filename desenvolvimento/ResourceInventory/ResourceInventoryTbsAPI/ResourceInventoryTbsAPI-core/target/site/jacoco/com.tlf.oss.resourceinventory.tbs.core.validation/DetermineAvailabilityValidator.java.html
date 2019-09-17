@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetermineAvailabilityValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core.validation</a> &gt; <span class="el_source">DetermineAvailabilityValidator.java</span></div><h1>DetermineAvailabilityValidator.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core.validation;
+
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+
+<span class="nc" id="L11">public class DetermineAvailabilityValidator extends ValidatorEntity implements ConstraintValidator&lt;DetermineAvailability, ResourceInventoryEntity&gt; {</span>
+
+	@Override
+<span class="nc" id="L14">	public void initialize(DetermineAvailability constraintAnnotation) {}</span>
+
+	@Override
+	public boolean isValid(ResourceInventoryEntity entity, ConstraintValidatorContext context) {
+<span class="nc" id="L18">		boolean isValid = true;</span>
+<span class="nc" id="L19">		context.disableDefaultConstraintViolation();</span>
+		
+		try {
+<span class="nc bnc" id="L22" title="All 2 branches missed.">			if (!checkCoverageWarn(entity)) {</span>
+<span class="nc" id="L23">				validateCabinetName(entity);			</span>
+<span class="nc" id="L24">				validateSwitchedAssociated(entity);	</span>
+			}
+			
+<span class="nc" id="L27">		} catch (OSSBusinessException e) {</span>
+<span class="nc" id="L28">			context.buildConstraintViolationWithTemplate(e.getDetail()).addConstraintViolation();</span>
+<span class="nc" id="L29">			isValid = false;</span>
+<span class="nc" id="L30">		}</span>
+
+<span class="nc" id="L32">		return isValid;</span>
+	}
+
+	/**
+	 * Metodo para validar se o SwitchedAssociated name esta nulo ou vazio 
+	 * @param entity
+	 * @throws OSSBusinessException
+	 */
+	private void validateSwitchedAssociated(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="nc bnc" id="L42" title="All 4 branches missed.">		if(entity.getCabinet() == null || entity.getCabinet().getSwitchesAssociated() == null</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">				|| entity.getCabinet().getSwitchesAssociated().getName() == null</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">				|| entity.getCabinet().getSwitchesAssociated().getName().isEmpty()) {</span>
+<span class="nc" id="L45">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L46">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SWITCHES_ASSOCIATED&quot;));</span>
+		}
+<span class="nc" id="L48">	}</span>
+	
+	private void validateCabinetName(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="nc bnc" id="L52" title="All 4 branches missed.">		if(entity.getCabinet() == null || entity.getCabinet().getName() == null</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">				|| entity.getCabinet().getName().isEmpty()) {</span>
+<span class="nc" id="L54">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L55">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;CABINET_NAME&quot;));</span>
+		}
+<span class="nc" id="L57">	}</span>
+	
+	public static boolean checkCoverageWarn (ResourceInventoryEntity entity) {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">		if(entity.getResourceInventoryWarn() != null) {</span>
+<span class="nc" id="L61">			return 	&quot;RI-0100&quot;.equals(entity.getResourceInventoryWarn().getCode());</span>
+		}
+<span class="nc" id="L63">		return false;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<entry key="p_in_cnl">11000</entry>
+	<entry key="p_in_street_code">65879</entry>
+	<entry key="p_in_address_num">1290</entry>
+	<entry key="p_out_status"/>
+	<entry key="p_out_fail_diag"/>
+	<entry key="p_out_bloqueio_endereco"/>
+	<entry key="p_out_tecnology"/>
+	<entry key="p_out_estacao_telefonica"/>
+	<entry key="p_out_ident_equip1"/>
+	<entry key="p_out_ident_equip2"/>
+	<entry key="p_out_bloqueio_equipamento"/>
+	<entry key="p_out_razao_bloqueio_eqpto"/>
+	<entry key="p_out_equipment_type"/>
+	<entry key="p_out_qtd_fibras"/>
+	<entry key="p_out_switch"/>
+	<entry key="p_out_compartilhamento"/>
+	<entry key="p_out_armario_optico"/>
+	<entry key="p_out_tipo_cobertura"/>
+	<entry key="p_out_cod"/>
+	<entry key="p_out_msg"/>
+</properties>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InstallController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.core</a> &gt; <span class="el_source">InstallController.java</span></div><h1>InstallController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.sagre.core.validation.Install;
+import com.tlf.oss.resourceinventory.sagre.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.InstallResourceEntity;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.sagre.repository.InstallRepository;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+/**
+ * BEATRIXTWO-154 | DEMOSS-2219
+ * @project Beatrix Fase 2
+ * @author renan.n.oliveira
+ * @since 201710
+ */
+
+<span class="fc" id="L25">public class InstallController extends ValidatorEntity implements Serializable {</span>
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Inject InstallRepository installRepository;
+	
+<span class="fc" id="L34">	OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RISAGRE_003.getCode(),</span>
+<span class="fc" id="L35">			String.format(ExceptionInfoEnum.RISAGRE_003.getDescription(), &quot;GVT_SP_SOA_OC_CTRL&quot;),</span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+	private static final int RESULTADO_ESPERADO = 0;
+
+<span class="fc" id="L40">	public static final String P_OUT_MSG = null;</span>
+<span class="fc" id="L41">	public static final Integer P_OUT_COD = null;</span>
+	
+	public ResourceInventoryEntity install(@Install ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L45">		InstallResourceEntity InstallResource = new InstallResourceEntity();</span>
+<span class="fc" id="L46">		InstallResource.setCnl(Integer.valueOf(entity.getAddress().getCnl()));</span>
+<span class="fc" id="L47">		InstallResource.setAccessTechnology(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getAccessTechnology());</span>
+<span class="fc" id="L48">		InstallResource.setVoiceTechnology(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+<span class="fc" id="L49">		InstallResource.setAccessId(entity.getResourceFacingService().getServiceId());</span>
+				
+<span class="fc" id="L51">		InstallResource.setResultCode(P_OUT_COD);</span>
+<span class="fc" id="L52">		InstallResource.setMessage(P_OUT_MSG);</span>
+		
+<span class="fc" id="L54">		return getResourceInventoryEntity(installRepository.install(InstallResource), entity);</span>
+	}
+
+	
+	/**
+	 * Enriquece ResourceInventoryEntity atraves da execucao do InstallDAO.allocate
+	 * 
+	 * @param install
+	 * @param entity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getResourceInventoryEntity(InstallResourceEntity install,
+			ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">		if (RESULTADO_ESPERADO != install.getResultCode()) {</span>
+
+<span class="nc" id="L71">			String errorCode = String.valueOf(install.getResultCode());</span>
+<span class="nc" id="L72">			String errorMessage = install.getMessage();</span>
+<span class="nc" id="L73">			String detailMessage = errorCode + &quot;; &quot; + errorMessage;</span>
+
+<span class="nc" id="L75">		    falloutConfig.setErrorCode(errorCode);</span>
+<span class="nc" id="L76">		    falloutConfig.setErrorMessage(errorMessage);</span>
+<span class="nc" id="L77">			falloutConfig.setDetailMessage(detailMessage);</span>
+<span class="nc" id="L78">			throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+		}
+<span class="fc" id="L80">		return entity;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

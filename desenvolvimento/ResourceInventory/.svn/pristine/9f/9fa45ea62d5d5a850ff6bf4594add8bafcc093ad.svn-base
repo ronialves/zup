@@ -1,0 +1,23 @@
+<resourceInventoryEntity>
+    <customerOrder>
+        <purchaseOrderNumber>8-A882F277CE-1</purchaseOrderNumber>
+    </customerOrder>
+    <address>
+        <networkOwner>VIVO2</networkOwner>
+        <placePhysicalResourceAssoc>
+            <physicalLink>
+                <accessTechnology>METALICO</accessTechnology>
+            </physicalLink>
+        </placePhysicalResourceAssoc>
+    </address>
+    <resourceFacingService>
+        <serviceId>SPO-02335157-069</serviceId>
+        <status>N</status>
+    </resourceFacingService>
+    <resourceOrder>
+        <resourceOrderItem>
+            <name>RETRIEVE</name>
+            <action>GET_FACILITY</action>
+        </resourceOrderItem>
+    </resourceOrder>
+</resourceInventoryEntity>

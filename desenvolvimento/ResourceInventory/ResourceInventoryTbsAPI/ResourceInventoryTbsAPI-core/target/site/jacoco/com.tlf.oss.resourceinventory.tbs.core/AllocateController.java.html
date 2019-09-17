@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AllocateController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core</a> &gt; <span class="el_source">AllocateController.java</span></div><h1>AllocateController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.tbs.core.validation.Allocate;
+import com.tlf.oss.resourceinventory.tbs.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.AllocateEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.AccessEnum;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.tbs.enums.OrderEnum;
+import com.tlf.oss.resourceinventory.tbs.enums.RequestTypeEnum;
+import com.tlf.oss.resourceinventory.tbs.repository.AllocateRepository;
+
+/**
+ * BEATRIXTWO-26 | DEMOSS-2171
+ * BEATFAS-102 | DEMOSS-3331
+ * 
+ * @project Beatrix Fase 2
+ * @author jannayna.c.araujo
+ * @author bruna.barbosa
+ * @since 201709
+ */
+<span class="fc" id="L34">public class AllocateController extends ValidatorEntity implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+	private static final int SUCCESS = 0;
+	
+	@Inject 
+	private AllocateRepository allocateRepository;
+	
+<span class="fc" id="L42">	OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RITBS_003.getCode(),</span>
+<span class="fc" id="L43">			String.format(ExceptionInfoEnum.RITBS_003.getDescription(), &quot;TLF_SP_ALLOCATE&quot;),</span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+	/**
+	 * Retorna atraves do AllocateEntity (preenchido com ResourceInventoryEntity), o ResourceInventoryEntity enriquecido
+	 * 
+	 * @param entity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getAllocate(@Allocate ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+<span class="fc" id="L55">		AllocateEntity allocate = new AllocateEntity();</span>
+		
+<span class="fc" id="L57">		allocate.setPurchaseOrderNumber(entity.getCustomerOrder().getPurchaseOrderNumber());</span>
+<span class="fc" id="L58">		allocate.setAccountNumber(entity.getCustomerOrder().getInvolvesCustomer().getId());</span>
+<span class="fc" id="L59">		allocate.setCustomerLocation(entity.getAddress().getId());</span>
+		
+		
+<span class="fc" id="L62">		allocate.setRequestType(RequestTypeEnum.BROADBAND.getValue());</span>
+<span class="fc" id="L63">		allocate.setActivityInd(OrderEnum.NEW.getValue());</span>
+<span class="fc" id="L64">		allocate.setNoteText(entity.getPhysicalResourceSummary());</span>
+<span class="fc" id="L65">		allocate.setDesignadorAcesso(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L66">		allocate.setSwitchName(entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet().getSwitchesAssociated().getName());</span>
+<span class="fc" id="L67">		allocate.setActivityIndAcesso(AccessEnum.NEW.getValue());</span>
+		
+<span class="fc bfc" id="L69" title="All 2 branches covered.">		for(CustomerFacingService customerFacingService: entity.getCustomerFacingService()){</span>
+<span class="pc bpc" id="L70" title="2 of 4 branches missed.">			if(customerFacingService != null &amp;&amp; customerFacingService.getServiceDescribedBy() != null){</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">				for(ServiceDescribedBy serviceDescribedBy: customerFacingService.getServiceDescribedBy()){</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">					if(serviceDescribedBy != null </span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">							&amp;&amp; serviceDescribedBy.getServiceSpecCharDescribes() != null </span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">							&amp;&amp; !serviceDescribedBy.getServiceSpecCharDescribes().isEmpty() </span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">							&amp;&amp; serviceDescribedBy.getServiceSpecCharDescribes().get(0).getValue() != null){</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">						if(&quot;RPON&quot;.equals(serviceDescribedBy.getName())){</span>
+<span class="fc" id="L77">							allocate.setRpon(serviceDescribedBy.getServiceSpecCharDescribes().get(0).getValue());</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">						} else if(&quot;Downstream&quot;.equals(serviceDescribedBy.getName())){</span>
+<span class="fc" id="L79">							allocate.setRateQuantityD(serviceDescribedBy.getServiceSpecCharDescribes().get(0).getValue());</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">						} else if(&quot;Upstream&quot;.equals(serviceDescribedBy.getName())){</span>
+<span class="fc" id="L81">							allocate.setRateQuantityU(serviceDescribedBy.getServiceSpecCharDescribes().get(0).getValue());</span>
+						}
+						
+					}
+<span class="fc" id="L85">				}</span>
+			}			
+<span class="fc" id="L87">		}</span>
+		
+<span class="fc" id="L89">		return getResourceInventoryEntity(allocateRepository.getAllocate(allocate), entity);</span>
+	}
+
+	/**
+	 * Enriquece ResourceInventoryEntity atraves da execucao do AllocateDAO.getAllocate
+	 * 
+	 * @param allocate
+	 * @param entity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getResourceInventoryEntity(AllocateEntity allocate, ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+		
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">		if(allocate.getDocumentNumber() != null){</span>
+<span class="fc" id="L104">			ResourceOrder resourceOrder = new ResourceOrder();</span>
+<span class="fc" id="L105">			ResourceOrderItem resourceOrderItem = new ResourceOrderItem();</span>
+<span class="fc" id="L106">			resourceOrderItem.setId(allocate.getDocumentNumber().toString());</span>
+<span class="fc" id="L107">			resourceOrder.setResourceOrderItem(resourceOrderItem);</span>
+<span class="fc" id="L108">			entity.setResourceOrder(resourceOrder);	</span>
+<span class="fc" id="L109">			entity.setCabinet(null);</span>
+		}	
+		
+<span class="fc" id="L112">		Integer errorCode = allocate.getReturnCode();</span>
+		
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">		if (SUCCESS != errorCode) {</span>
+<span class="nc" id="L115">		    falloutConfig.setErrorCode(String.valueOf(errorCode));</span>
+<span class="nc" id="L116">		    falloutConfig.setErrorMessage(allocate.getMessage());</span>
+<span class="nc" id="L117">			falloutConfig.setDetailMessage(errorCode + &quot;; &quot; + allocate.getMessage());</span>
+<span class="nc" id="L118">			throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+		}
+
+<span class="fc" id="L121">		return entity;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

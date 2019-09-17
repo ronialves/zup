@@ -1,0 +1,62 @@
+package com.tlf.oss.resourceinventory.cpe.repository;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.Query;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CatalogoDispositivo;
+import com.tlf.oss.resourceinventory.cpe.repository.factory.GenericRepository;
+
+public class CatalogoDispositivoRepository extends GenericRepository {
+
+	@Inject
+	private OSSLogger logger;
+
+	@SuppressWarnings(value = "unchecked")
+	public List<CatalogoDispositivo> findByCategoriaDispositivoIdAndModel(Integer categoriaDispositivoId, String model) {
+		logger.log(OSSLogger.INFO, "Buscando o catálogo de dispositivos com Categoria de id: " + categoriaDispositivoId
+				+ " Modelo: " + model +  "...");
+
+		Query query = factory.createQuery(
+				"SELECT cd FROM CatalogoDispositivo cd WHERE cd.categoriaDispositivoId = ?1 AND UPPER(cd.modelo) = ?2");
+		query.setParameter(1, categoriaDispositivoId);
+		query.setParameter(2, model.toUpperCase());
+
+		List<CatalogoDispositivo> catalogo = query.getResultList();
+
+		logger.log(OSSLogger.INFO, "Encontrados " + catalogo.size() + " equipamentos no catálogo!");
+
+		return catalogo;
+	}
+
+	public CatalogoDispositivo findById(Integer id) throws OSSBusinessException {
+
+		logger.log(OSSLogger.INFO, "Buscando o registro na tabela CatalogoDispositivo com id: " + id);
+
+		return super.findById(CatalogoDispositivo.class, id);
+	}
+
+	@SuppressWarnings(value = "unchecked")
+	public List<CatalogoDispositivo> listAll() {
+
+		logger.log(OSSLogger.INFO, "Buscando o catálogo de dispositivos");
+
+		Query query = factory.createQuery(
+				"SELECT a FROM CatalogoDispositivo a LEFT JOIN a.categoriaDispositivo b LEFT JOIN a.caracteristicas c");
+
+		List<CatalogoDispositivo> catalogo = query.getResultList();
+
+		logger.log(OSSLogger.INFO, "Encontrados " + catalogo.size() + " equipamentos no catálogo!");
+
+		return catalogo;
+
+	}
+
+	public void delete(CatalogoDispositivo id) throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, "Excluindo o registro na tabela CatalogoDispositivo: " + id);
+		super.delete(id);
+	}
+}

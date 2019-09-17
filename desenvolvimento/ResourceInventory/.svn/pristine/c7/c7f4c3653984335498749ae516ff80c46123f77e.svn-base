@@ -1,0 +1,12 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rt="http://www.cpqd.com.br/etics/ResourceTypes" xmlns:lct="http://www.cpqd.com.br/etics/LogicalCableTypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/TerminalResourceTypes">
+<xs:import namespace="http://www.cpqd.com.br/etics/ResourceTypes" schemaLocation="ResourceTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/LogicalCableTypes" schemaLocation="LogicalCableTypes.xsd"/>
+<xs:complexType name="TerminalResource">
+<xs:sequence>
+<!--  Equipamento Terminal  -->
+<xs:element minOccurs="0" name="terminalResource" type="rt:Resource"/>
+<!--  Cabo Lógico Terminal  -->
+<xs:element minOccurs="0" name="terminalLogicalCable" type="lct:LogicalCable"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

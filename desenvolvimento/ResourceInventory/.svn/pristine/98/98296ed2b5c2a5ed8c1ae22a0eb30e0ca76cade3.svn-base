@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<kmodule xmlns="http://www.drools.org/xsd/kmodule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<kbase name="ExecutionKB" packages="com.tfl.oss.resourceinventory.orchestration.execution">
+		<ksession name="ExecutionKS" type="stateless" />
+	</kbase>
+
+</kmodule>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidatorEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">NetcoolAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.netcool.core.validation</a> &gt; <span class="el_source">ValidatorEntity.java</span></div><h1>ValidatorEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.netcool.core.validation;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.netcool.core.utils.Constants;
+import com.tlf.oss.resourceinventory.netcool.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+
+<span class="nc" id="L13">public class ValidatorEntity {</span>
+
+	public void validateServiceDescribedBy(ResourceFacingService resourceFacingService, String... params)
+			throws OSSBusinessException {
+		
+<span class="nc" id="L18">		Optional&lt;ResourceFacingService&gt; resourceFacingServiceValidated = Optional</span>
+<span class="nc" id="L19">				.ofNullable(resourceFacingService);</span>
+		
+<span class="nc bnc" id="L21" title="All 2 branches missed.">		if(!resourceFacingServiceValidated.isPresent()) {</span>
+<span class="nc" id="L22">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L23">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;RESOURCE_FACING_SERVICE&quot;));</span>
+		}
+		
+<span class="nc" id="L26">		Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribedByList = Optional</span>
+<span class="nc" id="L27">				.ofNullable(resourceFacingService.getServiceDescribedBy());</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">		if (!serviceDescribedByList.isPresent())</span>
+<span class="nc" id="L29">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L30">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SERVICE_DESCRIBED_BY&quot;));</span>
+			
+<span class="nc bnc" id="L32" title="All 2 branches missed.">		for (ServiceDescribedBy sdb : resourceFacingService.getServiceDescribedBy()) {</span>
+<span class="nc" id="L33">			Optional&lt;ServiceDescribedBy&gt; serviceDescribedBy = Optional.ofNullable(sdb);</span>
+<span class="nc bnc" id="L34" title="All 4 branches missed.">			if (!serviceDescribedBy.map(ServiceDescribedBy::getName).filter(d -&gt; !d.isEmpty()).isPresent())</span>
+<span class="nc" id="L35">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L36">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;NAME&quot;));</span>
+<span class="nc" id="L37">			validateServiceSpecCharDescribesCabinetRetrieval(sdb, params);</span>
+<span class="nc" id="L38">		}</span>
+<span class="nc" id="L39">	}</span>
+	
+	public void validateServiceSpecCharDescribesCabinetRetrieval(ServiceDescribedBy serviceDescribedBy, String... params)
+			throws OSSBusinessException {
+<span class="nc" id="L43">		Optional&lt;List&lt;ServiceSpecCharDescribes&gt;&gt; serviceSpecCharDescribesList = Optional</span>
+<span class="nc" id="L44">				.ofNullable(serviceDescribedBy.getServiceSpecCharDescribes());</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">		if (!serviceSpecCharDescribesList.isPresent()) {</span>
+<span class="nc" id="L46">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L47">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SERVICE_SPEC_CHAR_DESCRIBES&quot;));</span>
+		}
+
+<span class="nc bnc" id="L50" title="All 2 branches missed.">		for (String param : params) {</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">			if (serviceDescribedBy.getName().equalsIgnoreCase(Constants.NETWORK_OWNER_VIVO2) &amp;&amp; </span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">					serviceDescribedBy.getServiceSpecCharDescribes().stream().noneMatch(s -&gt; s.getValueType().equals(param))) {</span>
+<span class="nc" id="L53">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L54">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param.toUpperCase()));</span>
+			}
+<span class="nc bnc" id="L56" title="All 2 branches missed.">			if (serviceDescribedBy.getName().equalsIgnoreCase(Constants.EQUIPMENT) &amp;&amp; </span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">					serviceDescribedBy.getServiceSpecCharDescribes().stream().noneMatch(s -&gt; s.getValueType().equals(Constants.HOSTNAME))) {</span>
+<span class="nc" id="L58">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L59">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param.toUpperCase()));</span>
+			}
+		}
+		
+<span class="nc bnc" id="L63" title="All 2 branches missed.">		for (ServiceSpecCharDescribes scd : serviceDescribedBy.getServiceSpecCharDescribes()) {</span>
+<span class="nc" id="L64">			Optional&lt;ServiceSpecCharDescribes&gt; serviceSpecCharDescribes = Optional.ofNullable(scd);</span>
+<span class="nc bnc" id="L65" title="All 4 branches missed.">			if (!serviceSpecCharDescribes.map(ServiceSpecCharDescribes::getValue).filter(d -&gt; !d.trim().isEmpty()).isPresent())</span>
+<span class="nc" id="L66">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L67">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), serviceSpecCharDescribes.get().getValueType().toUpperCase()));</span>
+<span class="nc" id="L68">		}</span>
+		
+<span class="nc" id="L70">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

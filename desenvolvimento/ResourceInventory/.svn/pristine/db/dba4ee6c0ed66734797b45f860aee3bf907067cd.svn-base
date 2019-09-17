@@ -1,0 +1,1232 @@
+[
+	{
+		"name": "RETRIEVE",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_RETRIEVE_RESOURCE_INFORMATION_ADDRESS_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "availabilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_RETRIEVE_RANGER_CORPORATE_NUMBER_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-tbsapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "facilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_RETRIEVE_RESOURCE_INFORMATION_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-tbsapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "networkInformationRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_RETRIEVE_RESOURCE_INFORMATION_CUSTOMER_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "facilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+					},
+					{
+				"name": "1.0_RETRIEVE_RESERVE_EXPIRED_VIVO1",
+				"className": "com.tlf.oss.resourceinventory.schemas.RetrieveExpiredResources",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "retrieve/reserve",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+			    "name": "1.0_STATIC_IP_RETRIEVE_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+			            "application": "ri-radiusapi",
+						"version": "1.0",
+						"doExecution": {
+			                "path": "retrieve",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			}			
+		]
+	},
+	{
+		"name": "DETERMINE",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_DETERMINE_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "availabilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "availabilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 2,
+						"application": "ri-televisionapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "determineAvailability",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+		        "name": "1.0_DETERMINE_OFFER_EDITION_GPON_VIVO1",
+		        "execution": [
+		            {
+		                "sequence": 0,
+		                "application": "ri-graniteapi",
+		                "version": "1.0",
+		                "doExecution": {
+		                    "path": "availabilityRetrieval",
+		                    "http_verb": "POST"
+		                },
+		                "undoExecution": null
+		            },
+		    		{
+						"sequence": 1,
+						"application": "ri-televisionapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "determineAvailability",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+	    		]
+    	},
+        {
+				"name": "1.0_DETERMINE_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-sagreapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "determineAvailability",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-televisionapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "determineAvailability",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+			    "name": "1.0_DETERMINE_METALLIC_VIVO2",
+			    "execution": [
+			        {
+			            "sequence": 0,
+			            "application": "ri-sagreapi",
+			            "version": "1.0",
+			            "doExecution": {
+			                "path": "determineAvailability",
+			                "http_verb": "POST"
+			            },
+			            "undoExecution": null
+			        },
+			        {
+			            "sequence": 1,
+			            "application": "ri-tbsapi",
+			            "version": "1.0",
+			            "doExecution": {
+			                "path": "determineAvailability",
+			                "http_verb": "POST"
+			            },
+			            "undoExecution": null
+			        },
+			        {
+			            "sequence": 2,
+			            "application": "ri-televisionapi",
+			            "version": "1.0",
+			            "doExecution": {
+			                "path": "determineAvailability",
+			                "http_verb": "POST"
+			            },
+			            "undoExecution": null
+			        }
+			    ]
+			}
+		]
+	},
+	{
+		"name": "RESERVE",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_RESERVE_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "reserve",
+							"http_verb": "POST"
+						},
+						"undoExecution": {
+							"path": "cancelReserved",
+							"http_verb": "POST"
+						}
+					},
+					{
+						"sequence": 1,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "reserve",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 2,
+						"application": "ri-terusapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "reserve",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_RESERVE_OFFER_EDITION_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "reserve",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_EXTERNAL_RESERVE_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-sagreapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "reserve",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+    			"name": "1.0_RESERVE_METALLIC_VIVO2",
+    			"execution": [
+        			{
+            			"sequence": 0,
+            			"application": "ri-tbsapi",
+            			"version": "1.0",
+            			"doExecution": {
+                		"path": "reserve",
+                		"http_verb": "POST"
+            			},
+            			"undoExecution": null
+        			}
+   			 	]
+			}
+		]
+	},
+	{
+		"name": "RELEASE",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_RELEASE_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "cancelReserved",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "cancelReserved",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 2,
+						"application": "ri-terusapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "cancelReserved",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_EXTERNAL_RELEASE_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-sagreapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "release",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "ALLOCATE",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_ALLOCATE_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_ALLOCATE_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-sagreapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-tbsapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_ALLOCATE_OFFER_EDITION_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_INTERNAL_ALLOCATE_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-sagreapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "facilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-tbsapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_EXTERNAL_ALLOCATE_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-sagreapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_EXTERNAL_ALLOCATE_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_INTERNAL_ALLOCATE_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_CPE_ALLOCATE",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-cpeapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "allocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_CPE_ALLOCATE_STB",
+    			"execution": [
+        			{
+			            "sequence": 0,
+			            "application": "ri-cpeapi",
+			            "version": "1.0",
+			            "doExecution": {
+			                "path": "allocate/stb",
+			                "http_verb": "POST"
+			            },
+			            "undoExecution": null
+					}
+				]
+			}, 
+			{
+			    "name": "1.0_STATIC_IP_ALLOCATE_VIVO2",
+			    "execution": [
+			        {
+			            "sequence": 0,
+			            "application": "ri-radiusapi",
+			            "version": "1.0",
+			            "doExecution": {
+			                "path": "allocate",
+			                "http_verb": "POST"
+			            },
+			            "undoExecution": null
+			        }
+				]
+			}			
+		]
+	},
+	{
+		"name": "INSTALL",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_INSTALL_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "install",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "install",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_INSTALL_OFFER_EDITION_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "install",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_EXTERNAL_INSTALL_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-sagreapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "install",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_INTERNAL_INSTALL_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-tbsapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "install",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_EXTERNAL_INSTALL_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "install",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_INTERNAL_INSTALL_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "install",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},			
+			{
+				"name": "1.0_CPE_INSTALL",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-cpeapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "install",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_CPE_INSTALL_STB",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-cpeapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "install/stb",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			}
+			
+		]
+	},
+	{
+		"name": "UNINSTALL",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_UNINSTALL_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "uninstall",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "uninstall",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 2,
+						"application": "ri-terusapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "uninstall",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_EXTERNAL_UNINSTALL_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "uninstall",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_INTERNAL_UNINSTALL_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "uninstall",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+                "name": "1.0_EXTERNAL_UNINSTALL_VIVO2",
+                "execution": [
+                    {
+                        "sequence": 0,
+                        "application": "ri-sagreapi",
+                        "version": "1.0",
+                        "doExecution": {
+                            "path": "uninstall",
+                            "http_verb": "POST"
+                        },
+                        "undoExecution": null
+                    }
+                ]
+            },
+            {
+			    "name": "1.0_INTERNAL_UNINSTALL_VIVO2",
+ 			    "execution": [
+			        {
+            			"sequence": 0,
+            			"application": "ri-tbsapi",
+            			"version": "1.0",
+            			"doExecution": {
+                			"path": "uninstall",
+                			"http_verb": "POST"
+            			},
+             			"undoExecution": null
+        			}
+    			]
+			},
+			{
+				"name": "1.0_CPE_UNINSTALL",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-cpeapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "uninstall",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+			    "name": "1.0_CPE_UNINSTALL_STB",
+			    "execution": [
+        			{
+			            "sequence": 0,
+			            "application": "ri-cpeapi",
+			            "version": "1.0",
+			            "doExecution": {
+			                "path": "uninstall/stb",
+			                "http_verb": "POST"
+			            },
+			            "undoExecution": null
+        			}
+    			]
+			}
+		]
+	},
+	{
+		"name": "DEALLOCATE",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_DEALLOCATE_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "deallocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "deallocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 2,
+						"application": "ri-terusapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "deallocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_DEALLOCATE_OFFER_EDITION_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "deallocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_EXTERNAL_DEALLOCATE_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "deallocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_INTERNAL_DEALLOCATE_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "deallocate",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+    			"name": "1.0_EXTERNAL_DEALLOCATE_VIVO2",
+                "execution": [
+                    {
+                        "sequence": 0,
+                        "application": "ri-sagreapi",
+                        "version": "1.0",
+                        "doExecution": {
+                            "path": "deallocate",
+                            "http_verb": "POST"
+                        },
+                        "undoExecution": null
+                   
+        			}
+    			]
+			},
+			{
+    			"name": "1.0_INTERNAL_DEALLOCATE_VIVO2",
+    			"execution": [
+        			{
+            			"sequence": 0,
+            			"application": "ri-tbsapi",
+            			"version": "1.0",
+            			"doExecution": {
+                			"path": "deallocate",
+                			"http_verb": "POST"
+            			},
+             			"undoExecution": null
+        			}
+    			]
+			},
+			{
+    			"name": "1.0_CPE_DEALLOCATE",
+                "execution": [
+                    {
+                        "sequence": 0,
+                        "application": "ri-cpeapi",
+                        "version": "1.0",
+                        "doExecution": {
+                            "path": "deallocate",
+                            "http_verb": "POST"
+                        },
+                        "undoExecution": null
+                   
+        			}
+    			]
+			},
+			{
+				"name": "1.0_CPE_DEALLOCATE_STB",
+				"execution": [
+					{	
+						"sequence": 0,
+						"application": "ri-cpeapi",
+						"version": "1.0",
+						"doExecution": {
+							"http_verb": "POST",
+							"path": "deallocate/stb"
+					},
+					"undoExecution": null
+					}
+				]
+			},
+			{
+			  "name": "1.0_STATIC_IP_DEALLOCATE_VIVO2",
+              "execution": [
+                  {
+                       "sequence": 0,
+                       "application": "ri-radiusapi",
+                       "version": "1.0",
+                       "doExecution": {
+                          "path": "deallocate",
+                          "http_verb": "POST"
+                 },
+                "undoExecution": null
+             }
+          ] 
+			}
+		]
+	},
+	{
+		"name": "RETRIEVE",
+		"version": "2.0",
+		"actions": [
+			{
+				"name": "2.0_RETRIEVE_RESOURCE_INFORMATION_CUSTOMER_VIVO2",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-sagreapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "facilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-tbsapi",
+						"version": "2.0",
+						"doExecution": {
+							"path": "facilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "2.0_RETRIEVE_RESOURCE_INFORMATION_CUSTOMER_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "2.0",
+						"doExecution": {
+							"path": "facilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					},
+					{
+						"sequence": 1,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "facilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "2.0_RETRIEVE_RESOURCE_INFORMATION_ADDRESS_VIVO1",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-ospapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "availabilityRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "2.0_RETRIEVE_CPE",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-cpeapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "retrieve",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+			    "name": "2.0_RETRIEVE_INTERNAL_RESOURCE_INFORMATION_VIVO2",
+			    "execution": [
+			        {
+			            "sequence": 0,
+			            "application": "ri-tbsapi",
+			            "version": "2.0",
+			            "doExecution": {
+			                "path": "facilityRetrieval",
+			                "http_verb": "POST"
+			            },
+			            "undoExecution": null
+			        }
+			    ]
+			}
+		]
+	},
+	{
+		"name": "EQUIPMENT",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_RETRIEVE_CPE",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-cpeapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "retrieve",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			}
+			
+		]
+	},
+	{
+		"name": "UPDATE",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_CPE_UPDATE",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-cpeapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "update",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+				"name": "1.0_CPE_UPDATE_STB",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-cpeapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "update/stb",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			}
+		]
+	}, 
+	{
+		"name": "FAULTMANAGEMENT",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_RETRIEVE_EQUIPMENT",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-graniteapi",
+						"version": "faultmanagement/1.0",
+						"doExecution": {
+							"path": "equipmentRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}, {
+						"sequence": 1,
+						"application": "ri-tbsapi",
+						"version": "faultmanagement/1.0",
+						"doExecution": {
+							"path": "equipmentRetrieval",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			},
+			{
+	            "name": "1.0_RETRIEVE_CABINET",
+	            "execution": [
+	                {
+	                    "sequence": 0,
+	                    "application": "ri-tbsapi",
+	                    "version": "faultmanagement/1.0",
+	                    "doExecution": {
+	                        "path": "cabinetRetrieval",
+	                        "http_verb": "POST"
+	                    },
+	                    "undoExecution": null
+	                },
+	                {
+	                    "sequence": 1,
+	                    "application": "ri-nwiapi",
+	                    "version": "faultmanagement/1.0",
+	                    "doExecution": {
+	                        "path": "equipmentRetrieval",
+	                        "http_verb": "POST"
+	                    },
+	                    "undoExecution": null
+	                },
+	                {
+	                    "sequence": 2,
+	                    "application": "ri-netcoolapi",
+	                    "version": "faultmanagement/1.0",
+	                    "doExecution": {
+	                        "path": "equipmentRetrieval",
+	                        "http_verb": "POST"
+	                    },
+	                    "undoExecution": null
+	                } 
+	             ]
+	         }			
+		]
+	},
+	{
+		"name": "GATHERANDANALYSERESOURCEINFORMATION",
+		"version": "1.0",
+		"actions": [
+			{
+				"name": "1.0_GATHER_RESOURCE_INFORMATION",
+				"execution": [
+					{
+						"sequence": 0,
+						"application": "ri-tbsapi",
+						"version": "1.0",
+						"doExecution": {
+							"path": "gatherResourceInformation",
+							"http_verb": "POST"
+						},
+						"undoExecution": null
+					}
+				]
+			}
+		]
+	}
+]

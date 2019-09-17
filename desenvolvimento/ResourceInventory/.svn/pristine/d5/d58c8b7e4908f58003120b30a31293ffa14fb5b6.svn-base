@@ -1,0 +1,27 @@
+package com.tfl.oss.resourceinventory.cpe.execution
+
+import java.util.List;
+import java.lang.String;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.orchestration.core.entity.*;
+import com.tlf.oss.resourceinventory.schemas.api.*;
+import com.tlf.oss.resourceinventory.schemas.*;
+import com.tlf.oss.resourceinventory.cpe.rules.Categoria;
+
+query "defineNomeCategoria"
+        tipoRfs : Categoria()
+end
+
+rule "Main"
+	when
+		$logger 	: OSSLogger()
+		$ruleName   : String()
+		
+	then
+		log($logger, drools.getRule().getName(), "Definindo categoria para: " + $ruleName);
+		drools.getWorkingMemory().setFocus($ruleName);
+end
+
+function void log(OSSLogger logger, String tipoRfs, String message) {
+	logger.log(OSSLogger.DEBUG, "[" + tipoRfs + "] - " + message);
+}

@@ -1,0 +1,103 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CaracteristicaDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.CatalogoDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.CategoriaDispositivo;
+import com.tlf.oss.resourceinventory.cpe.repository.CatalogoDispositivoRepository;
+
+@RunWith(MockitoJUnitRunner.class)
+public class CatalogControllerTest {
+
+	@InjectMocks
+	private CatalogController catalogController;
+	
+	private CatalogoDispositivo catalogoDispositivo;
+	
+	private CaracteristicaDispositivo caracteristicaDispositivo;
+	
+	private CategoriaDispositivo categoriaDispositivo;
+	
+	@Mock
+	private CatalogoDispositivoRepository catalogoDispositivoRepository;
+	
+	@Mock
+	private OSSLogger logger;
+	
+	@Before
+	public void Before() {
+		catalogoDispositivo = new CatalogoDispositivo();
+		
+		catalogoDispositivo.setId(1);
+		catalogoDispositivo.setModelo("DSL-2740E");
+		catalogoDispositivo.setFabricante("D-Link");
+		catalogoDispositivo.setRede("VIVO2");
+		catalogoDispositivo.setCategoriaDispositivoId(13);
+		catalogoDispositivo.setDescricao("D-Link DSL-2740E");
+		
+		categoriaDispositivo = new CategoriaDispositivo();
+		
+		categoriaDispositivo.setId(6);
+		categoriaDispositivo.setTipoRfs("R_CPE_ACCESS");
+		categoriaDispositivo.setNomeCategoria("Modem - SIP WiFi Metalico");
+		
+		catalogoDispositivo.setCategoriaDispositivo(categoriaDispositivo);
+
+		
+		List<CaracteristicaDispositivo> caracteristicaDispositivoList = new ArrayList<CaracteristicaDispositivo>();
+		caracteristicaDispositivo = new CaracteristicaDispositivo();
+		
+		caracteristicaDispositivo.setId(1);
+		caracteristicaDispositivo.setNome("Wifi");
+		caracteristicaDispositivo.setValor("2.4GHz");
+		caracteristicaDispositivo.setCatalogo(catalogoDispositivo);
+		
+		caracteristicaDispositivoList.add(caracteristicaDispositivo);
+		catalogoDispositivo.setCaracteristicas(caracteristicaDispositivoList);
+		
+	}
+	
+	@Test
+	public void testListAll() {
+		List<CatalogoDispositivo> catalogoDispositivoList = new ArrayList<CatalogoDispositivo>();
+		catalogoDispositivoList.add(catalogoDispositivo);
+		
+		when(catalogoDispositivoRepository.listAll()).thenReturn(catalogoDispositivoList);
+		
+		assertNotNull(catalogController.listAll());
+	}
+	
+	@Test
+	public void testDelete() throws OSSBusinessException {
+		CatalogoDispositivo catalogoDispositivo = new CatalogoDispositivo();
+		
+		when(catalogoDispositivoRepository.findById(anyObject())).thenReturn(catalogoDispositivo);
+		
+		catalogController.delete(1);
+		
+	}
+	
+	@Test(expected = OSSBusinessException.class)
+	public void testCatalogNotExist() throws OSSBusinessException {
+		
+		when(catalogoDispositivoRepository.findById(anyObject())).thenReturn(null);
+		
+		catalogController.delete(1);
+	}
+	
+}

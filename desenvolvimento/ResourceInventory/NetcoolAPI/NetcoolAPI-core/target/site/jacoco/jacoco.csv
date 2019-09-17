@@ -1,0 +1,10 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+NetcoolAPI-core,com.tlf.oss.resourceinventory.netcool.enums,ExceptionInfoEnum,101,0,0,0,14,0,7,0,7,0
+NetcoolAPI-core,com.tlf.oss.resourceinventory.netcool.enums,EntityFields,486,0,0,0,47,0,5,0,5,0
+NetcoolAPI-core,com.tlf.oss.resourceinventory.netcool.entity,EquipmentRetrievalEntity,130,0,0,0,32,0,22,0,22,0
+NetcoolAPI-core,com.tlf.oss.resourceinventory.netcool.repository.factory,GenericRepository,40,0,0,0,10,0,4,0,4,0
+NetcoolAPI-core,com.tlf.oss.resourceinventory.netcool.core.utils,Constants,3,0,0,0,1,0,1,0,1,0
+NetcoolAPI-core,com.tlf.oss.resourceinventory.netcool.core.validation,ValidatorEntity,262,0,28,0,40,0,21,0,7,0
+NetcoolAPI-core,com.tlf.oss.resourceinventory.netcool.core.validation,EquipmentRetrievalValidator,36,0,0,0,10,0,3,0,3,0
+NetcoolAPI-core,com.tlf.oss.resourceinventory.netcool.core,EquipmentRetrievalController,0,152,4,14,0,29,4,12,0,7
+NetcoolAPI-core,com.tlf.oss.resourceinventory.netcool.repository,EquipmentRetrievalRepository,553,0,30,0,99,0,21,0,6,0

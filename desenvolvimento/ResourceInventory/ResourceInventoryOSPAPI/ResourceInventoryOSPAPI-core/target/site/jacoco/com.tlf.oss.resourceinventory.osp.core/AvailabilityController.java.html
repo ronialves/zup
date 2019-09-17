@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AvailabilityController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">AvailabilityController.java</span></div><h1>AvailabilityController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresource.FacilitiesException;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.DetermineResourceAvailabilityRequest;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.DetermineResourceAvailabilityRequest.InService;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.DetermineResourceAvailabilityResponse;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.DetermineResourceAvailabilityResponse.QualifiedResources.Resource;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.DetermineResourceAvailabilityResponse.QualifiedResources.Resource.Attributes.Tag;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.headercontext.WsContext;
+import com.tlf.oss.resourceinventory.osp.core.enums.CircuitTypeEnum;
+import com.tlf.oss.resourceinventory.osp.core.enums.Code;
+import com.tlf.oss.resourceinventory.osp.core.enums.Message;
+import com.tlf.oss.resourceinventory.osp.core.enums.ResourceEnum;
+import com.tlf.oss.resourceinventory.osp.core.enums.Warn;
+import com.tlf.oss.resourceinventory.osp.core.mapper.OspRequestMapper;
+import com.tlf.oss.resourceinventory.osp.core.service.AvailabilityService;
+import com.tlf.oss.resourceinventory.osp.core.validation.AvailabilityRetrieval;
+import com.tlf.oss.resourceinventory.osp.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.ResourceInventoryWarn;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.TerminalBox;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@Logged
+@RequestScoped
+<span class="fc" id="L38">public class AvailabilityController extends ValidatorEntity {</span>
+
+	private static final String BLACKLIST = &quot;blacklist&quot;;
+<span class="fc" id="L41">	private static final BigInteger OK = BigInteger.ONE;</span>
+
+	@Inject
+	protected OSSLogger logger;
+
+	@Inject
+	protected AvailabilityService availabilityService;
+
+<span class="fc" id="L49">	private WsContext wsContext = new WsContext();</span>
+
+	public ResourceInventoryEntity availability(@AvailabilityRetrieval ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+<span class="fc" id="L54">		DetermineResourceAvailabilityRequest request = createAvailabilityRequest(entity);</span>
+<span class="fc" id="L55">		DetermineResourceAvailabilityResponse response = null;</span>
+
+		try {
+<span class="fc" id="L58">			response = availabilityService.determineResourceAvailability(request,	wsContext);</span>
+<span class="nc" id="L59">		} catch (FacilitiesException e) {</span>
+<span class="nc" id="L60">			logger.log(OSSLogger.ERROR, e.getMessage());</span>
+<span class="fc" id="L61">		}</span>
+
+<span class="fc" id="L63">		validateResult(response);</span>
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">		if (hasCoverage(response)) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    		if (isGpon(entity)) {</span>
+<span class="fc" id="L67">    			validateAvailabilityResultGpon(response, entity);</span>
+    		} else {
+<span class="fc" id="L69">    			validateAvailabilityResultMetallic(response, entity);</span>
+    		}
+		} else {
+<span class="fc" id="L72">			throw new OSSBusinessException(&quot;Consulta Cobertura&quot;, Code.RIOSP_003.getValue(),</span>
+<span class="fc" id="L73">					Message.BUSINESS_ERROR_UNCOVERED_ADDRESS.getValue());</span>
+		}
+
+<span class="fc" id="L76">		return createResponse(response, entity);</span>
+	}
+	
+	/**
+	 * Metodo reponsavel por criar um request e enviar ao OSP.
+	 * 
+	 * @param entity
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	private DetermineResourceAvailabilityRequest createAvailabilityRequest(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L88">		DetermineResourceAvailabilityRequest determineResourceAvailability = new DetermineResourceAvailabilityRequest();</span>
+<span class="fc" id="L89">		InService inService = new InService();</span>
+
+<span class="fc bfc" id="L91" title="All 4 branches covered.">		if (isClientActive(entity) &amp;&amp; isMetallic(entity)) {</span>
+<span class="fc" id="L92">			inService.setCityCode(Integer.parseInt(entity.getAddress().getCnl()));</span>
+<span class="nc" id="L93">			inService.setIdentifier(getNetworkOwnerID(entity));</span>
+<span class="nc" id="L94">			determineResourceAvailability.setInService(inService);</span>
+		} else {
+<span class="fc" id="L96">			determineResourceAvailability.setAddress(OspRequestMapper.parseAddress(entity.getAddress()));</span>
+		}
+
+<span class="fc" id="L99">		wsContext.setRegionCode(entity.getAddress().getCnl());</span>
+<span class="fc" id="L100">		wsContext.setCentralOffice(entity.getAddress().getTelephonicArea());</span>
+
+<span class="fc" id="L102">		return determineResourceAvailability;</span>
+	}
+
+	private void validateResult(DetermineResourceAvailabilityResponse response) throws OSSBusinessException {
+<span class="pc bpc" id="L106" title="1 of 6 branches missed.">		if (response.getResult() == null || (response.getResult() != null &amp;&amp; response.getResult().getCode() != 0)) {</span>
+<span class="fc" id="L107">			throw new OSSBusinessException(&quot;Consulta Facilidades&quot;, Code.RIOSP_002.getValue(),</span>
+<span class="fc" id="L108">					Message.BUSINESS_ERROR_ADDRESS.getValue());</span>
+		}
+<span class="fc" id="L110">	}</span>
+	
+	/**
+	 * Metodo reponsavel por validar o retorno da consulta disponilidade gpon.
+	 * 
+	 * @param response
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	private void validateAvailabilityResultGpon(DetermineResourceAvailabilityResponse response, ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+<span class="fc" id="L122">		Optional&lt;Resource&gt; resource = hasGponResource(response);</span>
+
+<span class="fc bfc" id="L124" title="All 2 branches covered.">		if (resource.isPresent()) {</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">			if (hasGponCoverage(response)) {</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">				if (!hasGponFeasability(response)) {</span>
+<span class="fc" id="L127">    				entity.setResourceInventoryWarn(determineWarning(response));</span>
+				}
+			} else {
+<span class="nc" id="L130">				throw new OSSBusinessException(&quot;Consulta Cobertura&quot;,</span>
+<span class="nc" id="L131">                    						   Code.RIOSP_003.getValue(),</span>
+<span class="nc" id="L132">                    						   Message.BUSINESS_ERROR_GPON_UNCOVERED_ADDRESS.getValue());</span>
+			}
+		} else {
+<span class="fc" id="L135">			throw new OSSBusinessException(&quot;Consulta Cobertura&quot;,</span>
+<span class="fc" id="L136">										   Code.RIOSP_003.getValue(),</span>
+<span class="fc" id="L137">										   Message.BUSINESS_ERROR_GPON_UNCOVERED_ADDRESS.getValue());</span>
+		}
+<span class="fc" id="L139">	}</span>
+
+	/**
+	 * Metodo reponsavel por validar o retorno da consulta disponilidade metalica.
+	 * 
+	 * @param response
+	 * @throws OSSBusinessException
+	 */
+	private void validateAvailabilityResultMetallic(DetermineResourceAvailabilityResponse response, ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+<span class="pc bpc" id="L149" title="3 of 6 branches missed.">		if ((null != response &amp;&amp; &quot;0&quot; == response.getCoverage().toString()) || null == response.getResult()) {</span>
+<span class="nc" id="L150">			throw new OSSBusinessException(&quot;Consulta Cobertura no Endereço&quot;, Code.RIOSP_003.getValue(),</span>
+<span class="nc" id="L151">					Message.BUSINESS_UNCOVERED_ADDRESS.getValue());</span>
+		}
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">		if (null != response) {</span>
+
+<span class="fc" id="L155">			boolean hasMetallicTopology = response.getQualifiedResources().getResource().stream()</span>
+<span class="fc" id="L156">					.anyMatch(resource -&gt; isMetallicTopology(resource));</span>
+
+<span class="fc" id="L158">			boolean hasResourceCoverage = response.getQualifiedResources().getResource().stream()</span>
+<span class="fc" id="L159">					.anyMatch(resource -&gt; isResourceCoverage(resource));</span>
+			
+<span class="fc" id="L161">			boolean hasMiniDslam = response.getQualifiedResources().getResource().stream()</span>
+<span class="fc" id="L162">					.anyMatch(resource -&gt; isMiniDslam(resource));</span>
+
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">			if (!hasMetallicFeasability(response)) {</span>
+<span class="fc" id="L165">    			entity.setResourceInventoryWarn(determineWarning(response));</span>
+			}
+
+<span class="pc bpc" id="L168" title="4 of 12 branches missed.">			if (!hasMetallicTopology || (hasMetallicTopology &amp;&amp; !hasResourceCoverage) || (hasMetallicTopology &amp;&amp; hasResourceCoverage &amp;&amp; hasMiniDslam)) {</span>
+<span class="fc" id="L169">				throw new OSSBusinessException(&quot;Consulta Cobertura no Endereço&quot;, Code.RIOSP_003.getValue(),</span>
+<span class="fc" id="L170">						Message.BUSINESS_UNCOVERED_ADDRESS.getValue());</span>
+			}
+		}
+<span class="fc" id="L173">	}</span>
+
+	/**
+	 * Metodo reponsavel por criar o response, seja metalico ou gpon.
+	 * 
+	 * @param response, entity
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	private ResourceInventoryEntity createResponse(DetermineResourceAvailabilityResponse response,
+			ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L184">		validateNetType(response, entity);</span>
+<span class="fc" id="L185">		return entity;</span>
+	}
+
+	/**
+	 * Metodo reponsavel por verificar o netType, se for 1 e metalico, se for 2
+	 * gpon.
+	 * 
+	 * @param response, entity
+	 * @throws OSSBusinessException
+	 */
+	private void validateNetType(DetermineResourceAvailabilityResponse response, ResourceInventoryEntity entity) {
+<span class="fc bfc" id="L196" title="All 2 branches covered.">		for (Resource resource : response.getQualifiedResources().getResource()) {</span>
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">			if (resource.getNetType() != null</span>
+<span class="pc bpc" id="L198" title="1 of 4 branches missed.">					&amp;&amp; (isMetallic(entity) &amp;&amp; ResourceEnum.NetType_1.getValue() == resource.getNetType().intValue())) {</span>
+<span class="fc" id="L199">				updateEntity(resource, entity);</span>
+			}
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">			if (resource.getNetType() != null</span>
+<span class="pc bpc" id="L202" title="1 of 4 branches missed.">					&amp;&amp; (isGpon(entity) &amp;&amp; ResourceEnum.NetType_2.getValue() == resource.getNetType().intValue())) {</span>
+<span class="fc" id="L203">				updateEntity(resource, entity);</span>
+			}
+<span class="fc" id="L205">		}</span>
+<span class="fc" id="L206">	}</span>
+
+	/**
+	 * Metodo reponsavel por identificar a tecnologia e atualizar o entity.
+	 * 
+	 * @param response, entity
+	 * @throws OSSBusinessException
+	 */
+	private void updateEntity(Resource resource, ResourceInventoryEntity entity) {
+<span class="fc" id="L215">		Cabinet cabinet = getCabinet(entity);</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">		if (isGpon(entity)) {</span>
+<span class="fc" id="L217">			cabinet.setPrimaryCable(getValueTag(resource, &quot;ALIM_CABLE_NUM&quot;));</span>
+<span class="fc" id="L218">			cabinet.setPrimaryFiber(getValueTag(resource, &quot;ALIM_FIBER_NUM&quot;));</span>
+		} else {
+<span class="fc" id="L220">			cabinet.setDistance(getValueTag(resource, &quot;DISTANCE_TT_CEAS&quot;));</span>
+<span class="fc" id="L221">			cabinet.setName(getValueTag(resource, &quot;CABINET_CODE&quot;));</span>
+<span class="fc" id="L222">			Shelf shelf = new Shelf();</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">			shelf.setTypeOfResource(&quot;MSAN&quot;.equalsIgnoreCase(getValueTag(resource, &quot;HOUSING_TYPE&quot;))</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">					|| &quot;FTTC&quot;.equalsIgnoreCase(getValueTag(resource, &quot;HOUSING_TYPE&quot;)) ? &quot;MSAN&quot; : &quot;DSLAM&quot;);</span>
+<span class="fc" id="L225">			List&lt;Shelf&gt; shelves = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L226">			shelves.add(shelf);</span>
+<span class="fc" id="L227">			cabinet.setHasShelves(shelves);</span>
+<span class="fc" id="L228">			TerminalBox terminalBox = getTerminalBox(entity);</span>
+<span class="fc" id="L229">			terminalBox.setCableNumber(getValueTag(resource, &quot;ALIM_CABLE_NUM&quot;));</span>
+<span class="fc" id="L230">			terminalBox.setPairNumber(getValueTag(resource, &quot;PRIMARY_PAIR&quot;));</span>
+<span class="fc" id="L231">			cabinet.setTerminalBox(terminalBox);</span>
+		}
+<span class="fc" id="L233">		entity.setCabinet(cabinet);</span>
+<span class="fc" id="L234">	}</span>
+
+	private String getValueTag(Resource resource, String label) {
+<span class="fc bfc" id="L237" title="All 2 branches covered.">		for (Tag tag : resource.getAttributes().getTag()) {</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">			if (label.equalsIgnoreCase(tag.getLabel())) {</span>
+<span class="fc" id="L239">				return tag.getValue();</span>
+			}
+<span class="fc" id="L241">		}</span>
+<span class="fc" id="L242">		return null;</span>
+	}
+
+	/**
+	 * Metodo reponsavel por verificar se existe um cliente ativo.
+	 * 
+	 * @param entity
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	private boolean isClientActive(ResourceInventoryEntity entity) throws OSSBusinessException {
+		// Caso o campo NetWorkOwnerId venham nulo, não iremos gerar
+		// exceção, o processo
+		// continua por endereço no metodo create request
+<span class="fc bfc" id="L256" title="All 2 branches covered.">		if (null != entity.getResourceFacingService()) {</span>
+<span class="fc" id="L257">			return true;</span>
+		} else {
+<span class="fc" id="L259">			return false;</span>
+		}
+	}
+	
+	private boolean isResourceFeasibility(final Resource resource) {
+<span class="nc bnc" id="L264" title="All 4 branches missed.">	    return (resource.getResourceFeasibility() != null &amp;&amp; resource.getResourceFeasibility().intValue() == 1);</span>
+	}
+
+	/**
+	 * Metodo reponsavel por validar se existe o cobertura gpon no
+	 * endereco(NetType==2).
+	 * 
+	 * @param resource
+	 * @return
+	 * 
+	 */
+	private boolean isFiberTopology(Resource resource) {
+<span class="nc bnc" id="L276" title="All 4 branches missed.">		return (resource.getNetType() != null &amp;&amp; resource.getNetType().intValue() == ResourceEnum.NetType_2.getValue());</span>
+	}
+
+	/**
+	 * Metodo reponsavel por validar se existe o disponibilidade metalica no
+	 * endereco(NetType==1).
+	 * 
+	 * @param resource
+	 * @return
+	 * 
+	 */
+	private boolean isMetallicTopology(Resource resource) {
+<span class="pc bpc" id="L288" title="1 of 4 branches missed.">		return (resource.getNetType() != null &amp;&amp; resource.getNetType().intValue() == ResourceEnum.NetType_1.getValue());</span>
+	}
+
+	/**
+	 * Metodo reponsavel por validar se existe o cobertura metalica no
+	 * endereco(NetType==1 &amp;&amp; ResourceCoverage==1).
+	 * 
+	 * @param resource
+	 * @return
+	 * 
+	 */
+	private boolean isResourceCoverage(Resource resource) {
+<span class="pc bpc" id="L300" title="1 of 4 branches missed.">		return (resource.getNetType() != null &amp;&amp; (resource.getNetType().intValue() == ResourceEnum.NetType_1.getValue()</span>
+<span class="pc bpc" id="L301" title="1 of 2 branches missed.">				&amp;&amp; resource.getResourceCoverage().intValueExact() == ResourceEnum.ResourceCoverage_1.getValue()));</span>
+	}
+	
+	/**
+	 * Metodo responsavel por validar se a cobertura retornada pelo OSP para o endereço e de um armario mini dslam (nao utilizado pelo PSTN)
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	private boolean isMiniDslam(Resource resource) {
+<span class="fc bfc" id="L311" title="All 2 branches covered.">		return (isMetallicTopology(resource)</span>
+<span class="pc bpc" id="L312" title="1 of 4 branches missed.">				&amp;&amp; (!&quot;MSAN&quot;.equalsIgnoreCase(getValueTag(resource, &quot;HOUSING_TYPE&quot;)) || !&quot;FTTC&quot;.equalsIgnoreCase(getValueTag(resource, &quot;HOUSING_TYPE&quot;)))</span>
+<span class="fc bfc" id="L313" title="All 2 branches covered.">				&amp;&amp; &quot;S&quot;.equalsIgnoreCase(getValueTag(resource, &quot;MINI_DSLAM&quot;)));</span>
+	}
+
+	private boolean hasCoverage(DetermineResourceAvailabilityResponse response) {
+<span class="fc" id="L317">		return OK.equals(response.getCoverage());</span>
+	}
+
+	private boolean hasMetallicCoverage(DetermineResourceAvailabilityResponse response) {
+<span class="nc" id="L321">		Optional&lt;Resource&gt; metallicResource = hasMetallicResource(response);</span>
+
+<span class="nc bnc" id="L323" title="All 2 branches missed.">		if (metallicResource.isPresent()) {</span>
+<span class="nc" id="L324">			return hasResourceCoverage(metallicResource.get());</span>
+		}
+
+<span class="nc" id="L327">		return false;</span>
+	}
+
+	private boolean hasGponCoverage(DetermineResourceAvailabilityResponse response) {
+<span class="fc" id="L331">		Optional&lt;Resource&gt; gponResource = hasGponResource(response);</span>
+
+<span class="pc bpc" id="L333" title="1 of 2 branches missed.">		if (gponResource.isPresent()) {</span>
+<span class="fc" id="L334">			return hasResourceCoverage(gponResource.get());</span>
+		}
+
+<span class="nc" id="L337">		return false;</span>
+	}
+
+	private boolean hasMetallicFeasability(DetermineResourceAvailabilityResponse response) {
+<span class="fc" id="L341">		Optional&lt;Resource&gt; metallicResource = hasMetallicResource(response);</span>
+
+<span class="fc bfc" id="L343" title="All 2 branches covered.">		if (metallicResource.isPresent()) {</span>
+<span class="fc" id="L344">			return hasResourceFeasability(metallicResource.get());</span>
+		}
+
+<span class="fc" id="L347">		return false;</span>
+	}
+
+	private boolean hasGponFeasability(DetermineResourceAvailabilityResponse response) {
+<span class="fc" id="L351">		Optional&lt;Resource&gt; gponResource = hasGponResource(response);</span>
+
+<span class="pc bpc" id="L353" title="1 of 2 branches missed.">		if (gponResource.isPresent()) {</span>
+<span class="fc" id="L354">			return hasResourceFeasability(gponResource.get());</span>
+		}
+
+<span class="nc" id="L357">		return false;</span>
+	}
+
+	private Optional&lt;Resource&gt; hasMetallicResource(DetermineResourceAvailabilityResponse response) {
+<span class="fc" id="L361">		return hasResource(response, CircuitTypeEnum.METALICO);</span>
+	}
+
+	private Optional&lt;Resource&gt; hasGponResource(DetermineResourceAvailabilityResponse response) {
+<span class="fc" id="L365">		return hasResource(response, CircuitTypeEnum.GPON);</span>
+	}
+
+	private Optional&lt;Resource&gt; hasResource(DetermineResourceAvailabilityResponse response, CircuitTypeEnum circuitType) {
+<span class="fc" id="L369">		return response.getQualifiedResources()</span>
+<span class="fc" id="L370">                	   .getResource()</span>
+<span class="fc" id="L371">                	   .stream()</span>
+<span class="fc" id="L372">                	   .filter(resource -&gt; circuitType.getCode().equals(resource.getNetType()))</span>
+<span class="fc" id="L373">                	   .findFirst();</span>
+	}
+
+	private boolean hasResourceCoverage(Resource resource) {
+<span class="fc" id="L377">		return OK.equals(resource.getResourceCoverage());</span>
+	}
+
+	private boolean hasResourceFeasability(Resource resource) {
+<span class="fc" id="L381">		return OK.equals(resource.getResourceFeasibility());</span>
+	}
+
+	private ResourceInventoryWarn determineWarning(DetermineResourceAvailabilityResponse response) {
+<span class="fc" id="L385">		ResourceInventoryWarn warn = new ResourceInventoryWarn();</span>
+
+<span class="pc bpc" id="L387" title="1 of 2 branches missed.">		if(response.getMessages() != null &amp;&amp; </span>
+<span class="nc bnc" id="L388" title="All 2 branches missed.">		   response.getMessages().getMessage() != null &amp;&amp; </span>
+<span class="nc bnc" id="L389" title="All 2 branches missed.">		  !response.getMessages().getMessage().isEmpty() &amp;&amp; </span>
+<span class="nc" id="L390">		   response.getMessages().getMessage().stream()</span>
+<span class="nc bnc" id="L391" title="All 6 branches missed.">											  .anyMatch(m -&gt; null != m.getMessageCode() &amp;&amp; m.getRuleName().toLowerCase().contains(BLACKLIST))) {</span>
+<span class="nc" id="L392">			warn.setCode(Warn.ENDERECO_BLOQUEADO.getCode());</span>
+<span class="nc" id="L393">			warn.setMessage(Warn.ENDERECO_BLOQUEADO.getMessage());</span>
+		} else {
+<span class="fc" id="L395">			warn.setCode(Warn.ENDERECO_SATURADO.getCode());</span>
+<span class="fc" id="L396">			warn.setMessage(Warn.ENDERECO_SATURADO.getMessage());</span>
+		}
+
+<span class="fc" id="L399">		return warn;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

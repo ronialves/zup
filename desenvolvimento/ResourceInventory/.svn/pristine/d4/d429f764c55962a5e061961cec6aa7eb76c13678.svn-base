@@ -1,0 +1,310 @@
+package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.schemas.AtomicNetworkAddress;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.IPAddress;
+import com.tlf.oss.resourceinventory.schemas.LogicalResource;
+import com.tlf.oss.resourceinventory.schemas.LogicalResourceAssociation;
+import com.tlf.oss.resourceinventory.schemas.NetworkAddressAssociation;
+import com.tlf.oss.resourceinventory.schemas.NetworkRoute;
+import com.tlf.oss.resourceinventory.schemas.NetworkRouteAssociation;
+import com.tlf.oss.resourceinventory.schemas.PhysicalPort;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ResourceCharacteristicSpecification;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.core.validation.NetworkInfo;
+import com.tlf.oss.resourceinventory.tbs.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.NetworkInfoEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.RetrieveInfoType;
+import com.tlf.oss.resourceinventory.tbs.repository.NetworkInfoRepository;
+
+public class NetworkInfoController extends ValidatorEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    public NetworkInfoRepository networkInfoRepository;
+
+    public ResourceInventoryEntity getRetrieve(@NetworkInfo ResourceInventoryEntity entity) throws OSSBusinessException {
+
+        ResourceInventoryEntity retrieveNetworkInfoResult = null;
+        ResourceFacingService resourceFacingService = entity.getResourceFacingService();
+        String serviceId = resourceFacingService.getServiceId();
+        String status = resourceFacingService.getStatus();
+
+        NetworkInfoEntity networkInfoEntity = networkInfoRepository.getRetrieveNetworkInfo(serviceId, status);
+
+        if (foundWithoutError(networkInfoEntity)) {
+            networkInfoEntity.setCircuitActivityInd(status);
+            retrieveNetworkInfoResult = this.buildResourceInventoryEntityResponse(networkInfoEntity);
+        } else if (networkInfoEntity != null) {
+            String msg =  RetrieveInfoType.RETRIEVE_NETWORK_INFO.toString() + ": " + networkInfoEntity.getMsgErro();
+            throw new OSSBusinessException("ERRO: " + networkInfoEntity.getCodErro(), "RITBS-001", "" + msg);
+        }
+
+        return retrieveNetworkInfoResult;
+    }
+
+    private ResourceInventoryEntity buildResourceInventoryEntityResponse(NetworkInfoEntity entity) {
+        ResourceInventoryEntity resourceInventoryEntity = new ResourceInventoryEntity();
+
+        ResourceFacingService rfs = new ResourceFacingService();
+        rfs.setServiceId(entity.getInstancia());
+        rfs.setStatus(entity.getCircuitActivityInd());
+
+        resourceInventoryEntity.setResourceFacingService(rfs);
+
+        Cabinet cabinet = new Cabinet();
+
+        Shelf shelf = new Shelf();
+        shelf.setSlotId(entity.getSlot());
+
+        PortAdapterCard portAdapterCard = new PortAdapterCard();
+        portAdapterCard.setModel(entity.getModeloPlaca());
+
+        PhysicalPort physicalPort = new PhysicalPort();
+        physicalPort.setId(entity.getPortaFisica());
+        physicalPort.setLogicalResourceAssociation(this.buildLogicalResources(entity));
+
+        portAdapterCard.setContainsPorts(Arrays.asList(physicalPort));
+
+        IPAddress ipAddress = new IPAddress();
+        ipAddress.setNetworkNumber(entity.getIpAddress());
+
+        shelf.setIpAddress(ipAddress);
+        shelf.setIpController(ipAddress);
+
+        shelf.setHasCards(Arrays.asList(portAdapterCard));
+        shelf.setResourceCharacteristicSpecifications(this.buildResourceCharacteristicSpecifications(entity));
+        shelf.setNetworkAddressAssociation(this.buildNetworkAddressAssociation(entity));
+
+        cabinet.setName(entity.getCabinet());
+        cabinet.setHasShelves(Arrays.asList(shelf));
+        resourceInventoryEntity.setCabinet(cabinet);
+
+        ServiceDescribedBy sdb = new ServiceDescribedBy();
+        sdb.setName("BROADBANDVELOCITY");
+        resourceInventoryEntity.getResourceFacingService().getServiceDescribedBy().add(sdb);
+
+        if(entity.getDownstream() != null) {
+            ServiceSpecCharDescribes sscd = new ServiceSpecCharDescribes();
+            sscd.setId("DOWNLOAD");
+            sscd.setValue(entity.getDownstream());
+            resourceInventoryEntity.getResourceFacingService().getServiceDescribedBy().get(0).getServiceSpecCharDescribes().add(sscd);
+        }
+
+        if(entity.getUpstream() != null) {
+            ServiceSpecCharDescribes sscd = new ServiceSpecCharDescribes();
+            sscd.setId("UPLOAD");
+            sscd.setValue(entity.getUpstream());
+            resourceInventoryEntity.getResourceFacingService().getServiceDescribedBy().get(0).getServiceSpecCharDescribes().add(sscd);
+        }
+
+        if (entity.getTypeOfResource() != null) {
+            shelf.setTypeOfResource(entity.getTypeOfResource());
+        }
+
+        return resourceInventoryEntity;
+    }
+
+    private NetworkAddressAssociation buildNetworkAddressAssociation(NetworkInfoEntity entity) {
+        NetworkAddressAssociation addressAssociation = new NetworkAddressAssociation();
+        AtomicNetworkAddress atomicNetworkAddress = new AtomicNetworkAddress();
+
+        if(entity.getNameDslam() != null) {
+            atomicNetworkAddress.setHostname(entity.getNameDslam());
+        }
+
+        addressAssociation.setAtomicNetworkAddress(atomicNetworkAddress);
+        return addressAssociation;
+    }
+    private List<ResourceCharacteristicSpecification> buildResourceCharacteristicSpecifications(NetworkInfoEntity entity) {
+        List<ResourceCharacteristicSpecification> resourceCharacteristicSpecifications = new ArrayList<>();
+
+        if (entity.getSvlan() != null) {
+            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification("SVLAN", entity.getSvlan()));
+        }
+
+        if (entity.getCvlan() != null) {
+            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification("CVLAN", entity.getCvlan()));
+        }
+
+        if (entity.getNameDslam() != null) {
+            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification("NAME_DSLAM", entity.getNameDslam()));
+        }
+
+        if (entity.getModelDslam() != null) {
+            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification("MODEL_DSLAM", entity.getModelDslam()));
+        }
+
+        if (entity.getVendorName() != null) {
+            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification("VENDOR", entity.getVendorName()));
+        }
+
+        if (entity.getExternalNetworkOwner() != null) {
+            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification("EXTERNAL_NETWORK_OWNER", entity.getExternalNetworkOwner()));
+        }
+        if (entity.getV5id() != null) {
+            resourceCharacteristicSpecifications.add(this.createResourceCharacteristicSpecification("V5ID", entity.getV5id()));
+        }
+
+        return resourceCharacteristicSpecifications;
+    }
+
+    private LogicalResourceAssociation buildLogicalResources(NetworkInfoEntity entity) {
+        LogicalResourceAssociation logicalResourceAssociation = new LogicalResourceAssociation();
+        List<LogicalResource> logicalResources = logicalResourceAssociation.getLogicalResource();
+
+        LogicalResource logicalResource = new LogicalResource();
+        NetworkRouteAssociation networkRouteAssociation = new NetworkRouteAssociation();
+        NetworkRoute networkRoute = new NetworkRoute();
+        networkRoute.setVirtualPort(String.valueOf(entity.getPortaLogica()));
+        networkRoute.setType("INTERNET");
+        networkRouteAssociation.getNetworkRoute().add(networkRoute);
+        logicalResource.setNetworkRouteAssociation(networkRouteAssociation);
+        logicalResources.add(logicalResource);
+
+
+        if (entity.getV5id() != null) {
+            logicalResources.add(this.createLogicalResource("V5ID", entity.getV5id()));
+        }
+
+        if (entity.getSlot() != null) {
+            logicalResources.add(this.createLogicalResource("SLOT_SHELF", entity.getSlot()));
+        }
+
+        if (entity.getPortaFisica() != null) {
+            logicalResources.add(this.createLogicalResource("PHYSICAL_PORT", entity.getPortaFisica()));
+        }
+
+        if (entity.getPortaLogica() != null) {
+            logicalResources.add(this.createLogicalResource("LOGICAL_PORT", entity.getPortaLogica()));
+        }
+
+        if (entity.getSvlan() != null) {
+            networkRoute.setVlanId(entity.getSvlan());
+            logicalResources.add(this.createLogicalResource("VLAN_HSI", entity.getSvlan()));
+            logicalResources.add(this.createLogicalResource("SVLAN", entity.getSvlan()));
+        }
+
+        if (entity.getCvlan() != null) {
+            logicalResources.add(this.createLogicalResource("CVLAN", entity.getCvlan()));
+        }
+
+        if (entity.getCvlanCalculado() != null) {
+            logicalResources.add(this.createLogicalResource("CVLAN_CALCULADO", entity.getCvlanCalculado()));
+        }
+
+        if (entity.getDownstream() != null) {
+            logicalResources.add(this.createLogicalResource("DOWNSTREAM", entity.getDownstream()));
+        }
+
+        if (entity.getUpstream() != null) {
+            logicalResources.add(this.createLogicalResource("UPSTREAM", entity.getUpstream()));
+        }
+
+        if (entity.getModeloPlaca() != null) {
+            logicalResources.add(this.createLogicalResource("MODELO_PLACA", entity.getModeloPlaca()));
+        }
+
+        if (entity.getNameBRAS() != null) {
+            logicalResources.add(this.createLogicalResource("NAME_BRAS", entity.getNameBRAS()));
+        }
+
+        if (entity.getShasta() != null) {
+            logicalResources.add(this.createLogicalResource("NAME_SHASTA", entity.getShasta()));
+        }
+
+        if (entity.getVendorBRAS() != null) {
+            logicalResources.add(this.createLogicalResource("VENDOR_BRAS", entity.getVendorBRAS()));
+        }
+
+        if (entity.getHostNameBRAS() != null) {
+            logicalResources.add(this.createLogicalResource("HOSTNAME_BRAS", entity.getHostNameBRAS()));
+        }
+
+        if (entity.getSiteBRAS() != null) {
+            logicalResources.add(this.createLogicalResource("SITE_BRAS", entity.getSiteBRAS()));
+        }
+
+        if (entity.getNasIp() != null) {
+            logicalResources.add(this.createLogicalResource("NASIP", entity.getNasIp()));
+            logicalResources.add(this.createLogicalResource("FUSION_NETWORK", "true"));
+        } else {
+            logicalResources.add(this.createLogicalResource("FUSION_NETWORK", "false"));
+        }
+
+        if (entity.getCabinet() != null) {
+            logicalResources.add(this.createLogicalResource("CABINET", entity.getCabinet()));
+        }
+
+        if (entity.getNumeroBRAS() != null) {
+            logicalResources.add(this.createLogicalResource("NUMERO_BRAS", entity.getNumeroBRAS()));
+        }
+
+        if (entity.getSlotBRAS() != null) {
+            logicalResources.add(this.createLogicalResource("SLOT_BRAS", entity.getSlotBRAS()));
+        }
+
+        if (entity.getSubSlotBRAS() != null) {
+            logicalResources.add(this.createLogicalResource("SUBSLOT_BRAS", entity.getSubSlotBRAS()));
+        }
+
+        if (entity.getPortaBRAS() != null) {
+            logicalResources.add(this.createLogicalResource("PORTA_BRAS", entity.getPortaBRAS()));
+        }
+
+        if (entity.getVlanVOD() != null) {
+            logicalResources.add(this.createLogicalResource("VLAN_VOD", entity.getVlanVOD()));
+        }
+
+        if (entity.getVlanVOIP() != null) {
+            logicalResources.add(this.createLogicalResource("VLAN_VOIP", entity.getVlanVOIP()));
+        }
+
+        if (entity.getVlanMCAST() != null) {
+            logicalResources.add(this.createLogicalResource("VLAN_MCAST", entity.getVlanMCAST()));
+        }
+
+        if (entity.getVlanIPTV() != null) {
+            logicalResources.add(this.createLogicalResource("VLAN_IPTV", entity.getVlanIPTV()));
+        }
+
+        if (entity.getTechnology() != null) {
+            logicalResources.add(this.createLogicalResource("TECNOLOGIA", entity.getTechnology()));
+        }
+
+        return logicalResourceAssociation;
+    }
+
+    private boolean foundWithoutError(NetworkInfoEntity entity) {
+        return entity != null && (entity.getCodErro() == null || entity.getCodErro() == 0);
+    }
+
+    private LogicalResource createLogicalResource(String name, Object value) {
+        LogicalResource logicalResource = new LogicalResource();
+        logicalResource.setName(name);
+        logicalResource.setValue(value.toString());
+        return logicalResource;
+    }
+
+    private ResourceCharacteristicSpecification createResourceCharacteristicSpecification(String id, String value) {
+        ResourceCharacteristicSpecification resourceCharacteristicSpecification = new ResourceCharacteristicSpecification();
+        resourceCharacteristicSpecification.setId(id);
+        resourceCharacteristicSpecification.setValue(value);
+        return resourceCharacteristicSpecification;
+    }
+
+}

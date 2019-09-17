@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AllocateExternalResourceEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.entity</a> &gt; <span class="el_source">AllocateExternalResourceEntity.java</span></div><h1>AllocateExternalResourceEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+import com.tlf.oss.resourceinventory.sagre.to.ResultTo;
+
+/**
+ * BEATRIXTWO-25 | DEMOSS-2164
+ * @project Beatrix Fase 2
+ * @author rodrigo.de.freitas
+ * @since 201709
+ */
+@Entity
+@NamedStoredProcedureQuery(name = &quot;allocateExternalResource&quot;, resultClasses = AllocateExternalResourceEntity.class, procedureName = &quot;SAGREMAN.GVT_SP_SOA_DS_CTRL&quot;, parameters = {
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_cnl&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tec_acesso_origem&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tec_voz_origem&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_id_acesso_origem&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tec_acesso_destino&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tec_voz_destino&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_id_acesso_destino&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_sos&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_ident_equip1&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_ident_equip2&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_ident_equip3&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_street_code&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_lote&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_pon&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_rpon&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_origem&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_nota&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_cod&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_msg&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tipo_documento&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_classe_servico&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tipo_ordem&quot;, type = String.class) })
+public class AllocateExternalResourceEntity implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	@Basic
+	@Column(name = &quot;p_in_cnl&quot;)
+	private Integer cnl;
+	
+	@Basic
+	@Column(name = &quot;p_in_tec_acesso_origem&quot;)
+	private String accessTechnology;
+	
+	@Basic
+	@Column(name = &quot;p_in_tec_voz_origem&quot;)
+	private String voiceTechnology;
+	
+	@Basic
+	@Column(name = &quot;p_in_id_acesso_origem&quot;)
+	private String accessId;
+	
+	@Basic
+	@Column(name = &quot;p_in_tec_acesso_destino&quot;)
+	private String targetAccessTechnology;
+	
+	@Basic
+	@Column(name = &quot;p_in_tec_voz_destino&quot;)
+	private String targetVoiceTechnology;
+	
+	@Basic
+	@Column(name = &quot;p_in_id_acesso_destino&quot;)
+	private String targetAccessId;
+	
+	@Basic
+	@Column(name = &quot;p_in_sos&quot;)
+	private String sos;
+	
+	@Basic
+	@Column(name = &quot;p_in_ident_equip1&quot;)
+	private String identEquip1;
+	
+	@Basic
+	@Column(name = &quot;p_in_ident_equip2&quot;)
+	private String identEquip2;
+	
+	@Basic
+	@Column(name = &quot;p_in_ident_equip3&quot;)
+	private String identEquip3;
+	
+	@Basic
+	@Column(name = &quot;p_in_street_code&quot;)
+	private String streetCode;
+	
+	@Basic
+	@Column(name = &quot;p_in_lote&quot;)
+	private String lote;
+	
+	@Basic
+	@Column(name = &quot;p_in_pon&quot;)
+	private String pon;
+	
+	@Basic
+	@Column(name = &quot;p_in_rpon&quot;)
+	private String rpon;
+	
+	@Basic
+	@Column(name = &quot;p_in_origem&quot;)
+	private String originSystem;
+	
+	@Basic
+	@Column(name = &quot;p_out_nota&quot;)
+	private String note;
+	
+	@Id
+	@Basic
+	@Column(name = &quot;p_out_cod&quot;)
+	private Integer resultCode;
+	
+	@Basic
+	@Column(name = &quot;p_out_msg&quot;)
+	private String message;
+	
+	@Basic
+	@Column(name = &quot;p_in_tipo_documento&quot;)
+	private String documentType;
+	
+	@Basic
+	@Column(name = &quot;p_in_classe_servico&quot;)
+	private String serviceClass;
+	
+	@Basic
+	@Column(name = &quot;p_in_tipo_ordem&quot;)
+	private String orderType;	
+	
+	@Transient
+	private ResultTo result;
+	
+	public AllocateExternalResourceEntity() {
+<span class="fc" id="L146">		super();</span>
+<span class="fc" id="L147">	}</span>
+
+	public AllocateExternalResourceEntity(Integer cnl, String accessTechnology, String voiceTechnology, String accessId,
+			String targetAccessTechnology, String targetVoiceTechnology, String targetAccessId, String sos,
+			String identEquip1, String identEquip2, String identEquip3, String streetCode, String lote, String pon,
+			String rpon, String originSystem, String note, Integer resultCode, String message, String documentType,
+			String serviceClass, String orderType, ResultTo result) {
+<span class="nc" id="L154">		super();</span>
+<span class="nc" id="L155">		this.cnl = cnl;</span>
+<span class="nc" id="L156">		this.accessTechnology = accessTechnology;</span>
+<span class="nc" id="L157">		this.voiceTechnology = voiceTechnology;</span>
+<span class="nc" id="L158">		this.accessId = accessId;</span>
+<span class="nc" id="L159">		this.targetAccessTechnology = targetAccessTechnology;</span>
+<span class="nc" id="L160">		this.targetVoiceTechnology = targetVoiceTechnology;</span>
+<span class="nc" id="L161">		this.targetAccessId = targetAccessId;</span>
+<span class="nc" id="L162">		this.sos = sos;</span>
+<span class="nc" id="L163">		this.identEquip1 = identEquip1;</span>
+<span class="nc" id="L164">		this.identEquip2 = identEquip2;</span>
+<span class="nc" id="L165">		this.identEquip3 = identEquip3;</span>
+<span class="nc" id="L166">		this.streetCode = streetCode;</span>
+<span class="nc" id="L167">		this.lote = lote;</span>
+<span class="nc" id="L168">		this.pon = pon;</span>
+<span class="nc" id="L169">		this.rpon = rpon;</span>
+<span class="nc" id="L170">		this.originSystem = originSystem;</span>
+<span class="nc" id="L171">		this.note = note;</span>
+<span class="nc" id="L172">		this.resultCode = resultCode;</span>
+<span class="nc" id="L173">		this.message = message;</span>
+<span class="nc" id="L174">		this.documentType = documentType;</span>
+<span class="nc" id="L175">		this.serviceClass = serviceClass;</span>
+<span class="nc" id="L176">		this.orderType = orderType;</span>
+<span class="nc" id="L177">		this.result = result;</span>
+<span class="nc" id="L178">	}</span>
+
+	/**
+	 * @return the cnl
+	 */
+	public Integer getCnl() {
+<span class="nc" id="L184">		return cnl;</span>
+	}
+
+	/**
+	 * @param cnl the cnl to set
+	 */
+	public void setCnl(Integer cnl) {
+<span class="fc" id="L191">		this.cnl = cnl;</span>
+<span class="fc" id="L192">	}</span>
+
+	/**
+	 * @return the accessTechnology
+	 */
+	public String getAccessTechnology() {
+<span class="nc" id="L198">		return accessTechnology;</span>
+	}
+
+	/**
+	 * @param accessTechnology the accessTechnology to set
+	 */
+	public void setAccessTechnology(String accessTechnology) {
+<span class="fc" id="L205">		this.accessTechnology = accessTechnology;</span>
+<span class="fc" id="L206">	}</span>
+
+	/**
+	 * @return the voiceTechnology
+	 */
+	public String getVoiceTechnology() {
+<span class="nc" id="L212">		return voiceTechnology;</span>
+	}
+
+	/**
+	 * @param voiceTechnology the voiceTechnology to set
+	 */
+	public void setVoiceTechnology(String voiceTechnology) {
+<span class="fc" id="L219">		this.voiceTechnology = voiceTechnology;</span>
+<span class="fc" id="L220">	}</span>
+
+	/**
+	 * @return the accessId
+	 */
+	public String getAccessId() {
+<span class="nc" id="L226">		return accessId;</span>
+	}
+
+	/**
+	 * @param accessId the accessId to set
+	 */
+	public void setAccessId(String accessId) {
+<span class="fc" id="L233">		this.accessId = accessId;</span>
+<span class="fc" id="L234">	}</span>
+
+	/**
+	 * @return the targetAccessTechnology
+	 */
+	public String getTargetAccessTechnology() {
+<span class="nc" id="L240">		return targetAccessTechnology;</span>
+	}
+
+	/**
+	 * @param targetAccessTechnology the targetAccessTechnology to set
+	 */
+	public void setTargetAccessTechnology(String targetAccessTechnology) {
+<span class="fc" id="L247">		this.targetAccessTechnology = targetAccessTechnology;</span>
+<span class="fc" id="L248">	}</span>
+
+	/**
+	 * @return the targetVoiceTechnology
+	 */
+	public String getTargetVoiceTechnology() {
+<span class="nc" id="L254">		return targetVoiceTechnology;</span>
+	}
+
+	/**
+	 * @param targetVoiceTechnology the targetVoiceTechnology to set
+	 */
+	public void setTargetVoiceTechnology(String targetVoiceTechnology) {
+<span class="fc" id="L261">		this.targetVoiceTechnology = targetVoiceTechnology;</span>
+<span class="fc" id="L262">	}</span>
+
+	/**
+	 * @return the targetAccessId
+	 */
+	public String getTargetAccessId() {
+<span class="nc" id="L268">		return targetAccessId;</span>
+	}
+
+	/**
+	 * @param targetAccessId the targetAccessId to set
+	 */
+	public void setTargetAccessId(String targetAccessId) {
+<span class="fc" id="L275">		this.targetAccessId = targetAccessId;</span>
+<span class="fc" id="L276">	}</span>
+
+	/**
+	 * @return the sos
+	 */
+	public String getSos() {
+<span class="nc" id="L282">		return sos;</span>
+	}
+
+	/**
+	 * @param sos the sos to set
+	 */
+	public void setSos(String sos) {
+<span class="fc" id="L289">		this.sos = sos;</span>
+<span class="fc" id="L290">	}</span>
+
+	/**
+	 * @return the identEquip1
+	 */
+	public String getIdentEquip1() {
+<span class="nc" id="L296">		return identEquip1;</span>
+	}
+
+	/**
+	 * @param identEquip1 the identEquip1 to set
+	 */
+	public void setIdentEquip1(String identEquip1) {
+<span class="fc" id="L303">		this.identEquip1 = identEquip1;</span>
+<span class="fc" id="L304">	}</span>
+
+	/**
+	 * @return the identEquip2
+	 */
+	public String getIdentEquip2() {
+<span class="nc" id="L310">		return identEquip2;</span>
+	}
+
+	/**
+	 * @param identEquip2 the identEquip2 to set
+	 */
+	public void setIdentEquip2(String identEquip2) {
+<span class="fc" id="L317">		this.identEquip2 = identEquip2;</span>
+<span class="fc" id="L318">	}</span>
+
+	/**
+	 * @return the identEquip3
+	 */
+	public String getIdentEquip3() {
+<span class="nc" id="L324">		return identEquip3;</span>
+	}
+
+	/**
+	 * @param identEquip3 the identEquip3 to set
+	 */
+	public void setIdentEquip3(String identEquip3) {
+<span class="fc" id="L331">		this.identEquip3 = identEquip3;</span>
+<span class="fc" id="L332">	}</span>
+
+	/**
+	 * @return the streetCode
+	 */
+	public String getStreetCode() {
+<span class="nc" id="L338">		return streetCode;</span>
+	}
+
+	/**
+	 * @param streetCode the streetCode to set
+	 */
+	public void setStreetCode(String streetCode) {
+<span class="fc" id="L345">		this.streetCode = streetCode;</span>
+<span class="fc" id="L346">	}</span>
+
+	/**
+	 * @return the lote
+	 */
+	public String getLote() {
+<span class="nc" id="L352">		return lote;</span>
+	}
+
+	/**
+	 * @param lote the lote to set
+	 */
+	public void setLote(String lote) {
+<span class="fc" id="L359">		this.lote = lote;</span>
+<span class="fc" id="L360">	}</span>
+
+	/**
+	 * @return the pon
+	 */
+	public String getPon() {
+<span class="nc" id="L366">		return pon;</span>
+	}
+
+	/**
+	 * @param pon the pon to set
+	 */
+	public void setPon(String pon) {
+<span class="fc" id="L373">		this.pon = pon;</span>
+<span class="fc" id="L374">	}</span>
+
+	/**
+	 * @return the rpon
+	 */
+	public String getRpon() {
+<span class="nc" id="L380">		return rpon;</span>
+	}
+
+	/**
+	 * @param rpon the rpon to set
+	 */
+	public void setRpon(String rpon) {
+<span class="fc" id="L387">		this.rpon = rpon;</span>
+<span class="fc" id="L388">	}</span>
+
+	/**
+	 * @return the originSystem
+	 */
+	public String getOriginSystem() {
+<span class="nc" id="L394">		return originSystem;</span>
+	}
+
+	/**
+	 * @param originSystem the originSystem to set
+	 */
+	public void setOriginSystem(String originSystem) {
+<span class="fc" id="L401">		this.originSystem = originSystem;</span>
+<span class="fc" id="L402">	}</span>
+
+	/**
+	 * @return the note
+	 */
+	public String getNote() {
+<span class="fc" id="L408">		return note;</span>
+	}
+
+	/**
+	 * @param note the note to set
+	 */
+	public void setNote(String note) {
+<span class="fc" id="L415">		this.note = note;</span>
+<span class="fc" id="L416">	}</span>
+
+	/**
+	 * @return the resultCode
+	 */
+	public Integer getResultCode() {
+<span class="fc" id="L422">		return resultCode;</span>
+	}
+
+	/**
+	 * @param resultCode the resultCode to set
+	 */
+	public void setResultCode(Integer resultCode) {
+<span class="fc" id="L429">		this.resultCode = resultCode;</span>
+<span class="fc" id="L430">	}</span>
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage() {
+<span class="nc" id="L436">		return message;</span>
+	}
+
+	/**
+	 * @param message the message to set
+	 */
+	public void setMessage(String message) {
+<span class="fc" id="L443">		this.message = message;</span>
+<span class="fc" id="L444">	}</span>
+
+	/**
+	 * @return the documentType
+	 */
+	public String getDocumentType() {
+<span class="nc" id="L450">		return documentType;</span>
+	}
+
+	/**
+	 * @param documentType the documentType to set
+	 */
+	public void setDocumentType(String documentType) {
+<span class="fc" id="L457">		this.documentType = documentType;</span>
+<span class="fc" id="L458">	}</span>
+
+	/**
+	 * @return the serviceClass
+	 */
+	public String getServiceClass() {
+<span class="nc" id="L464">		return serviceClass;</span>
+	}
+
+	/**
+	 * @param serviceClass the serviceClass to set
+	 */
+	public void setServiceClass(String serviceClass) {
+<span class="fc" id="L471">		this.serviceClass = serviceClass;</span>
+<span class="fc" id="L472">	}</span>
+
+	/**
+	 * @return the orderType
+	 */
+	public String getOrderType() {
+<span class="nc" id="L478">		return orderType;</span>
+	}
+
+	/**
+	 * @param orderType the orderType to set
+	 */
+	public void setOrderType(String orderType) {
+<span class="fc" id="L485">		this.orderType = orderType;</span>
+<span class="fc" id="L486">	}</span>
+
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+<span class="nc" id="L492">		return serialVersionUID;</span>
+	}
+
+	/**
+	 * @return the result
+	 */
+	public ResultTo getResult() {
+<span class="nc" id="L499">		return result;</span>
+	}
+
+	/**
+	 * @param result the result to set
+	 */
+	public void setResult(ResultTo result) {
+<span class="nc" id="L506">		this.result = result;</span>
+<span class="nc" id="L507">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

@@ -1,0 +1,62 @@
+package com.tlf.oss.resourceinventory.netcool.core.validation;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.netcool.core.utils.Constants;
+import com.tlf.oss.resourceinventory.netcool.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+
+public class ValidatorEntity {
+
+	public void validateServiceDescribedBy(ResourceFacingService resourceFacingService, String... params)
+			throws OSSBusinessException {
+		Optional<List<ServiceDescribedBy>> serviceDescribedByList = Optional
+				.ofNullable(resourceFacingService.getServiceDescribedBy());
+		if (!serviceDescribedByList.isPresent())
+			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),
+					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), "SERVICE_DESCRIBED_BY"));
+			
+		for (ServiceDescribedBy sdb : resourceFacingService.getServiceDescribedBy()) {
+			Optional<ServiceDescribedBy> serviceDescribedBy = Optional.ofNullable(sdb);
+			if (!serviceDescribedBy.map(ServiceDescribedBy::getName).filter(d -> !d.isEmpty()).isPresent())
+				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),
+						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), "NAME"));
+			validateServiceSpecCharDescribesCabinetRetrieval(sdb, params);
+		}
+	}
+	
+	public void validateServiceSpecCharDescribesCabinetRetrieval(ServiceDescribedBy serviceDescribedBy, String... params)
+			throws OSSBusinessException {
+		Optional<List<ServiceSpecCharDescribes>> serviceSpecCharDescribesList = Optional
+				.ofNullable(serviceDescribedBy.getServiceSpecCharDescribes());
+		if (!serviceSpecCharDescribesList.isPresent()) {
+			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),
+					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), "SERVICE_SPEC_CHAR_DESCRIBES"));
+		}
+
+		for (String param : params) {
+			if (serviceDescribedBy.getName().equalsIgnoreCase(Constants.NETWORK_OWNER_VIVO2) && 
+					serviceDescribedBy.getServiceSpecCharDescribes().stream().noneMatch(s -> s.getValueType().equals(param))) {
+				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),
+						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param.toUpperCase()));
+			}
+			if (serviceDescribedBy.getName().equalsIgnoreCase(Constants.EQUIPMENT) && 
+					serviceDescribedBy.getServiceSpecCharDescribes().stream().noneMatch(s -> s.getValueType().equals(Constants.HOSTNAME))) {
+				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),
+						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param.toUpperCase()));
+			}
+		}
+		
+		for (ServiceSpecCharDescribes scd : serviceDescribedBy.getServiceSpecCharDescribes()) {
+			Optional<ServiceSpecCharDescribes> serviceSpecCharDescribes = Optional.ofNullable(scd);
+			if (!serviceSpecCharDescribes.map(ServiceSpecCharDescribes::getValue).filter(d -> !d.trim().isEmpty()).isPresent())
+				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),
+						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), serviceSpecCharDescribes.get().getValueType().toUpperCase()));
+		}
+		
+	}
+}

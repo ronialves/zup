@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EntityFields.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RadiusAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.radius.enums</a> &gt; <span class="el_source">EntityFields.java</span></div><h1>EntityFields.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.radius.enums;
+
+<span class="nc" id="L3">public enum EntityFields {</span>
+	
+<span class="nc" id="L5">	SERVER_PROPERTY(&quot;resourceInventory&quot;),</span>
+<span class="nc" id="L6">	LOCAL_FILE(&quot;resourceInventory.properties&quot;),</span>
+<span class="nc" id="L7">	URL_ORCHESTRATION(&quot;ri.orchestration.url&quot;),	</span>
+<span class="nc" id="L8">	OPER_DETERMINE_AVALIABILITY(&quot;determine&quot;),</span>
+<span class="nc" id="L9">	OPER_RESERVE_RESOURCE(&quot;reserve&quot;),</span>
+<span class="nc" id="L10">	OPER_RELEASE_RESOURCE(&quot;release&quot;),</span>
+<span class="nc" id="L11">	OPER_ALLOCATE_RESOURCE(&quot;allocate&quot;),</span>
+<span class="nc" id="L12">	OPER_UNINSTALL_RESOURCE(&quot;uninstall&quot;),</span>
+<span class="nc" id="L13">	OPER_INSTALL_RESOURCE(&quot;install&quot;),</span>
+<span class="nc" id="L14">	OPER_RETRIEVE_RESOURCE_INFORMATION(&quot;retrieve&quot;),</span>
+<span class="nc" id="L15">	OPER_DEALLOCATE_RESOURCE(&quot;deallocate&quot;),</span>
+<span class="nc" id="L16">	OPER_RETRIEVE_ACCESS_INFORMATION(&quot;accessInformation&quot;), </span>
+<span class="nc" id="L17">	OPER_RESOURCE_FACING_SERVICE(&quot;resourceFacingService&quot;),	</span>
+<span class="nc" id="L18">	OPER_RETRIEVE_RESOURCE_INFORMATION_V2(&quot;retrieve_v2&quot;),</span>
+<span class="nc" id="L19">	CNL(&quot;cnl&quot;),</span>
+<span class="nc" id="L20">	CABINET(&quot;cabinet&quot;),</span>
+<span class="nc" id="L21">	ACCESS_TECHNOLOGY(&quot;accessTechnology&quot;),</span>
+<span class="nc" id="L22">	ADDRESS(&quot;address&quot;),</span>
+<span class="nc" id="L23">	STREET_NR_FIRST(&quot;streetNrFirst&quot;),</span>
+<span class="nc" id="L24">	STREET_CODE(&quot;streetCode&quot;),</span>
+<span class="nc" id="L25">	TELEPHONIC_AREA(&quot;telephonicArea&quot;),</span>
+<span class="nc" id="L26">	VOICE_PROTOCOL(&quot;voiceProtocol&quot;),</span>
+<span class="nc" id="L27">	SERVICE_ID(&quot;serviceId&quot;),</span>
+<span class="nc" id="L28">	ID(&quot;id&quot;),</span>
+<span class="nc" id="L29">	NAME(&quot;name&quot;),</span>
+<span class="nc" id="L30">	NETWORK_OWNER(&quot;networkOwner&quot;),</span>
+<span class="nc" id="L31">	PURCHASE_ORDER_NUMBER(&quot;purchaseOrderNumber&quot;),</span>
+<span class="nc" id="L32">	TERMINAL_BOX(&quot;terminalBox&quot;),</span>
+<span class="nc" id="L33">	STATUS(&quot;status&quot;),	</span>
+<span class="nc" id="L34">	IPV4(&quot;IPV4&quot;),</span>
+<span class="nc" id="L35">	IPV6(&quot;IPV6&quot;),	</span>
+<span class="nc" id="L36">	RI_ID(&quot;7.2&quot;),</span>
+<span class="nc" id="L37">	CUSTOMER(&quot;CUSTOMER&quot;),</span>
+<span class="nc" id="L38">	VLAN(&quot;VLAN&quot;),</span>
+<span class="nc" id="L39">	HSI(&quot;HSI&quot;),</span>
+<span class="nc" id="L40">	VOIP(&quot;VOIP&quot;),</span>
+<span class="nc" id="L41">	UNICAST(&quot;VOD&quot;),</span>
+<span class="nc" id="L42">	MULTICAST(&quot;IPTV&quot;),</span>
+<span class="nc" id="L43">	STATIC_IP(&quot;STATIC_IP&quot;),</span>
+<span class="nc" id="L44">	VIRTUAL_PORT(&quot;VIRTUAL_PORT&quot;);</span>
+
+	private final String value;
+
+<span class="nc" id="L48">	private EntityFields(String value) {</span>
+<span class="nc" id="L49">		this.value = value;</span>
+<span class="nc" id="L50">	}</span>
+
+	public String getValue() {
+<span class="nc" id="L53">		return value;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

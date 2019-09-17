@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+NWIAPI-core,com.tlf.oss.resourceinventory.nwi.core.utils,Constants,3,0,0,0,1,0,1,0,1,0
+NWIAPI-core,com.tlf.oss.resourceinventory.nwi.core.validation,ValidatorEntity,1380,0,130,0,236,0,90,0,25,0
+NWIAPI-core,com.tlf.oss.resourceinventory.nwi.core.validation,EquipmentRetrievalValidator,31,0,0,0,10,0,3,0,3,0
+NWIAPI-core,com.tlf.oss.resourceinventory.nwi.repository,EquipmentRetrievalRepository,637,0,34,0,128,0,25,0,8,0
+NWIAPI-core,com.tlf.oss.resourceinventory.nwi.entity,EquipmentRetrievalEntity,130,0,0,0,32,0,22,0,22,0
+NWIAPI-core,com.tlf.oss.resourceinventory.nwi.core,EquipmentRetrievalController,0,148,5,15,0,27,5,11,0,6
+NWIAPI-core,com.tlf.oss.resourceinventory.nwi.enums,EntityFields,497,0,0,0,48,0,5,0,5,0
+NWIAPI-core,com.tlf.oss.resourceinventory.nwi.enums,ExceptionInfoEnum,101,0,0,0,14,0,7,0,7,0

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wls:weblogic-ejb-jar
+	xmlns:wls="http://xmlns.oracle.com/weblogic/weblogic-ejb-jar"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+						http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd 
+						http://xmlns.oracle.com/weblogic/weblogic-ejb-jar 
+						http://xmlns.oracle.com/weblogic/weblogic-ejb-jar/1.4/weblogic-ejb-jar.xsd">
+    <wls:weblogic-enterprise-bean>
+        <wls:ejb-name>com.tlf.oss.resourceinventory.orchestration.core.scheduler.ReleaseResourceSchedule</wls:ejb-name>
+        <wls:singleton-session-descriptor></wls:singleton-session-descriptor>
+        <wls:transaction-descriptor>
+            <wls:trans-timeout-seconds>300</wls:trans-timeout-seconds>
+        </wls:transaction-descriptor>
+        <wls:dispatch-policy>ResourceInventorySchedulerWorkManager</wls:dispatch-policy>
+    </wls:weblogic-enterprise-bean>
+    <wls:weblogic-enterprise-bean>
+        <wls:ejb-name>com.tlf.oss.resourceinventory.orchestration.core.mdb.ReleaseResourceMDB</wls:ejb-name>
+        <wls:message-driven-descriptor></wls:message-driven-descriptor>
+        <wls:transaction-descriptor>
+            <wls:trans-timeout-seconds>300</wls:trans-timeout-seconds>
+        </wls:transaction-descriptor>
+        <wls:dispatch-policy>ResourceInventoryQueueWorkManager</wls:dispatch-policy>
+    </wls:weblogic-enterprise-bean>
+
+</wls:weblogic-ejb-jar>

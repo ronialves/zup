@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TerusService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTERUSAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.terus.core.service</a> &gt; <span class="el_source">TerusService.java</span></div><h1>TerusService.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.terus.core.service;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.common.xml.XMLUtil;
+import com.tlf.oss.resourceinventory.generated.terus.bloqueioportarequest.BloqueioPortaRequestType;
+import com.tlf.oss.resourceinventory.generated.terus.bloqueioportaresponse.BloqueioPortaResponseType;
+import com.tlf.oss.resourceinventory.generated.terus.desbloqueioportarequest.DesbloqueioPortaRequestType;
+import com.tlf.oss.resourceinventory.generated.terus.desbloqueioportaresponse.DesbloqueioPortaResponseType;
+
+import br.com.cpqd.gercentrais.interfacews.terusoperacoes.ejb.TerusOperacoesService;
+
+
+@Logged
+<span class="nc" id="L18">public class TerusService {</span>
+	
+	public static final String UPDATEPOTS = &quot;UPDATEPOTS&quot;;
+	
+	@Inject
+	private OSSLogger logger;
+	
+	public BloqueioPortaResponseType bloqueioPorta(BloqueioPortaRequestType request) throws OSSBusinessException {
+<span class="nc" id="L26">		logger.log(OSSLogger.INFO, &quot;Started call web service (bloqueioPorta)&quot;);</span>
+<span class="nc" id="L27">		TerusOperacoesService service = new TerusOperacoesService();</span>
+	
+<span class="nc" id="L29">		logger.log(OSSLogger.INFO, &quot;Called service (bloqueioPorta) - request &quot; + XMLUtil.getXMLValue(request));</span>
+<span class="nc" id="L30">		BloqueioPortaResponseType response = service.getTerusOperacoesPort().bloqueioPorta(request);</span>
+		
+<span class="nc" id="L32">		logger.log(OSSLogger.INFO, &quot;Called service (allocateResource) - response &quot; + XMLUtil.getXMLValue(response));</span>
+<span class="nc" id="L33">		logger.log(OSSLogger.INFO, &quot;Finished call web service (bloqueioPorta)&quot;);</span>
+<span class="nc" id="L34">		return response;</span>
+	}
+	
+	public DesbloqueioPortaResponseType desbloqueioPorta(DesbloqueioPortaRequestType request) throws OSSBusinessException {
+<span class="nc" id="L38">		logger.log(OSSLogger.INFO, &quot;Started call web service (desbloqueioPorta)&quot;);</span>
+<span class="nc" id="L39">		TerusOperacoesService service = new TerusOperacoesService();</span>
+	
+<span class="nc" id="L41">		logger.log(OSSLogger.INFO, &quot;Called service (desbloqueioPorta) - request &quot; + XMLUtil.getXMLValue(request));</span>
+<span class="nc" id="L42">		DesbloqueioPortaResponseType response = service.getTerusOperacoesPort().desbloqueioPorta(request);</span>
+		
+<span class="nc" id="L44">		logger.log(OSSLogger.INFO, &quot;Called service (desbloqueioPorta) - response &quot; + XMLUtil.getXMLValue(response));</span>
+<span class="nc" id="L45">		logger.log(OSSLogger.INFO, &quot;Finished call web service (desbloqueioPorta)&quot;);</span>
+<span class="nc" id="L46">		return response;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

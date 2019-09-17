@@ -1,0 +1,20 @@
+package com.tlf.oss.resourceinventory.cpe.repository;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CaracteristicaDispositivo;
+import com.tlf.oss.resourceinventory.cpe.repository.factory.GenericRepository;
+
+public class CaracteristicaDispositivoRepository extends GenericRepository {
+
+	@Inject
+	private OSSLogger logger;
+	
+	public void merge(CaracteristicaDispositivo caracteristica) throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, "Mesclando o registro na tabela CaracteristicaDispositivo: " + caracteristica);
+	
+		super.update(caracteristica);
+	}
+}

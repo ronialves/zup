@@ -1,0 +1,154 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatPaginator, MatSidenav } from '@angular/material';
+import { CatalogoDispositivo } from '../catalogo-dispositivo.model';
+import { CatalogService } from '../catalog-list.service';
+import { AppHeaderView } from 'src/app/toolbar/app-header-view.model';
+import { ToolbarService } from 'src/app/toolbar/toolbar.service'
+import { CatalogListFiltersComponent } from './catalog-list-filters.component';
+
+@Component({
+  selector: 'app-catalog-list',
+  templateUrl: './catalog-list.component.html',
+  styleUrls: ['./catalog-list.component.scss']
+})
+export class CatalogListComponent implements OnInit {
+
+  // Colunas]
+  columnsToDisplay = ['modelo', 'detalhes'];
+
+  // Detalhamento
+  detail: CatalogoDispositivo | null;
+
+  // Resource
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  length = 0;
+  currentPage = 1;
+  pageSize = 10;
+  pageSizeOptions: number[] = [10, 20, 50];
+  list: Array<CatalogoDispositivo> = [];
+  listFiltered: Array<CatalogoDispositivo> = [];
+  
+  // Sidebar
+  @ViewChild(MatSidenav) sidenav: MatSidenav;
+  // Filtros
+  @ViewChild(CatalogListFiltersComponent) filters: CatalogListFiltersComponent;
+  filtersOpened: boolean = false;
+  sortBy = new FormControl();
+  sortByOptions: any[] = [
+    { label: 'Modelo', value: 'modelo' },
+    { label: 'Fabricante', value: 'fabricante' },
+    { label: 'Categoria', value: 'categoriaDispositivo' },
+    { label: 'Tecnologia', value: 'tecnologia' }
+  ];
+
+  isLoading: boolean;
+  isError: boolean;
+  msgError: string;
+
+  constructor(
+    private catalogService: CatalogService, 
+    private toolbarService: ToolbarService) {
+
+    this.sortBy.valueChanges.subscribe(newValue => {
+      if (newValue) {
+        this.mountFilteredList();
+      }
+    })
+  }
+
+  ngOnInit() {
+    let headerView = new AppHeaderView();
+    headerView.title = "Catálogo de equipamentos";
+    headerView.icon = "fas fa-stream";
+    this.toolbarService.changeViewName(headerView);
+    this.loadCatalog();
+  }
+
+  loadCatalog() {
+    this.isLoading = true;
+    this.isError = false;
+    this.catalogService.list().subscribe((list) => {
+      this.list = list.map(element => {
+        if (element.caracteristicas.find(this.caracteristicaFind)) {
+          element['tecnologia'] = element.caracteristicas.find(this.caracteristicaFind).valor;
+        }
+        element['detail'] = false;        
+        element['R_CPE_STB'] = element.categoriaDispositivo.tipoRfs === 'R_CPE_STB';
+        element['R_CPE_ACCESS'] = element.categoriaDispositivo.tipoRfs === 'R_CPE_ACCESS';
+        element['R_CPE_VOIP'] = element.categoriaDispositivo.tipoRfs === 'R_CPE_VOIP';
+        return element;
+      });
+
+      this.isLoading = false;
+      this.isError = false;
+      this.currentPage = 1;
+      this.mountFilteredList();
+    },
+    err => {
+      console.error(err);
+      this.msgError = `Status: ${err.status} - ${err.statusText}`;
+      this.isLoading = false;
+      this.isError = true;
+    });
+  }
+
+  caracteristicaFind(element) {
+    return (element.nome === "Tecnologia");
+  }
+
+  mountFilteredList() {
+    if (this.list) {
+      const end = this.currentPage * this.pageSize;
+      const start = (this.currentPage - 1) * this.pageSize;      
+
+      this.list = this.list.sort((a, b) => {
+        let propertie = this.sortBy.value ? this.sortBy.value : 'modelo';
+        if (propertie === 'categoriaDispositivo') {
+          return a.categoriaDispositivo.nomeCategoria < b.categoriaDispositivo.nomeCategoria ? -1 : a.categoriaDispositivo.nomeCategoria > b.categoriaDispositivo.nomeCategoria ? 1 : 0;
+        } else {
+          return a[propertie] < b[propertie] ? -1 : a[propertie] > b[propertie] ? 1 : 0;
+        }
+      });
+
+      this.listFiltered = this.list.slice(start, end);
+    }
+  }
+
+  toggleFilters() {
+    this.sidenav.toggle();
+    this.filtersOpened = !this.filtersOpened;
+    if (this.filtersOpened) {
+      this.filters.mountFilters();
+    }
+  }
+
+  getPaginatorData(event) {
+    if (event) {
+      if (this.pageSize === event.pageSize) {
+        this.currentPage = (event.pageIndex + 1);
+      } else {
+        this.pageSize = event.pageSize;
+        this.currentPage = 1;
+      }
+      this.mountFilteredList();
+    }
+  }
+
+  onFilter(list: Array<CatalogoDispositivo>) {
+    this.currentPage = 1;
+    this.list = list;
+    this.mountFilteredList();
+  }
+
+  onDelete(element: CatalogoDispositivo) {
+    if (element) {
+      this.catalogService.delete(element.id).subscribe(() => {
+        this.loadCatalog();
+      }, (e) => {
+        alert("[RICPE] - Erro ao chamar a consulta => O equipamento no pode ser excludo pois possui um dispositivo vinculado a ele");
+      })
+    }
+  }
+
+}

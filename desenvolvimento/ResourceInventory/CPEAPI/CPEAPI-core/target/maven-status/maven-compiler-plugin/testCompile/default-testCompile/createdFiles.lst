@@ -1,0 +1,13 @@
+com/tlf/oss/resourceinventory/cpe/core/AllocateControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/RetrieveControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/CatalogControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/UninstallControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/DeallocateStbControllerTest.class
+com/tlf/oss/resourceinventory/cpe/rules/CategoriasRulesTest.class
+com/tlf/oss/resourceinventory/cpe/core/UninstallStbControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/InstallSTBControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/DeallocateControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/UpdateControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/InstallControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/AllocateSTBControllerTest.class
+com/tlf/oss/resourceinventory/cpe/core/UpdateSTBControllerTest.class

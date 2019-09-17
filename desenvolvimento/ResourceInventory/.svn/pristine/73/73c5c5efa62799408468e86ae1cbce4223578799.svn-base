@@ -1,0 +1,942 @@
+[
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao realizar reserva na desconexao parcial para o terminal  .*; pkg_allocate.prc_partial_disconnection. Erro:",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Nao ha disponibilidade de recurso de banda suficiente",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao realizar a consulta de disponibilidade para GPON. ERROR: prc_reserve.prc_availability_gpon .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Terminal informado inexistente no inventario ou com STATUS diferente de RESERVADO",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro executar operacao de cancelamento da reserva! Erro: .*",
+		"faultCode":   "RIGRANITE-505"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Terminal informado inexistente no inventario ou com STATUS diferente de RESERVADO",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erros ao buscar informacoes do servico associado! .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao executar operacao de cancelamento da reserva! Erro Oracle: .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao cancelar reserva para o terminal .*; pkg_reserve.prc_cancel_offer_edition. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro executar operacao de cancelamento da alocacao de Recursos! Erro: .*",
+		"faultCode":   "RIGRANITE-505"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao executar operacao de cancelamento da alocacao de Recursos! Erro Oracle: .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Designador de acesso nao informado.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao existe disponibilidade para a nova velocidade.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao atualizar BANDWIDTH para o terminal .*. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Nao foi localizado um PATH do tipo .* para a UDA .* com o valor de .*. ERROR:PKG_PATH.fnc_get_path_id_by_uda.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"Foi localizado mais de um PATH do tipo .* para a UDA .* com o valor de .*. ERROR:PKG_PATH.fnc_get_path_id_by_uda.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "3",
+		"errorMessage":"Nao foi possivel buscar o PATH do tipo .* para a UDA .* com o valor de .*. ERROR:PKG_PATH.fnc_get_path_id_by_uda..*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi encontrado id do grupo de uda .* da uda .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-2",
+		"errorMessage":"Foi encontrado mais de um id do grupo de uda .* da uda .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-3",
+		"errorMessage":"Erro indeterminado na pkg_inventory_attribute.fnc_get_uda_id - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi possivel localizar uma path de acesso para o path .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-2",
+		"errorMessage":"Foi localizado mais de uma path de acesso para o path .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-3",
+		"errorMessage":"Erro indeterminado na pkg_path.fnc_get_id_path .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Nao foi localizado uma PORTA para o PATH .* ERROR:PKG_PORT.fnc_get_id_by_path.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"Foi localizado mais de uma PORTA para o PATH .* ERROR:PKG_PORT.fnc_get_id_by_path.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "3",
+		"errorMessage":"Nao foi possivel buscar uma PORTA para o PATH .* ERROR:PKG_PORT.fnc_get_id_by_path..*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Nao foi localizado um .* para o PATH .* ERROR:PKG_AMO.fnc_get_amo_by_path.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"Foi localizado mais de um .* para o PATH .* ERROR:PKG_AMO.fnc_get_amo_by_path.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "3",
+		"errorMessage":"Nao foi possivel buscar um .* para o PATH .* ERROR:PKG_AMO.fnc_get_amo_by_path..*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Nao foi localizado um equipamento .* para a PORTA .* ERROR:PKG_EQUIPAMENT.fnc_get_id_by_port.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"Foi localizado mais de um equipamento .* para a PORTA .* ERROR:PKG_EQUIPAMENT.fnc_get_id_by_port",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "3",
+		"errorMessage":"Nao foi possivel buscar um equipamento .* para a PORTA .* ERROR:PKG_EQUIPAMENT.fnc_get_id_by_port.*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"VENDOR n�o encontrado para o equipamento .*. pkg_equipament.fnc_get_vendor",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"Erro ao recuperar o VENDOR do equipamento .*. pkg_equipament.fnc_get_vendor. Erro: .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao atualizar o valor da UDA .* e GRUPO_UDA .* na pkg_inventory_attribute.fnc_save_uda - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro indeterminado ao tentar alterar/apagar o recurso da porta_logica/servico_amo na pkg_inventory_attribute.fnc_save_resource_uda .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Nao foi localizado um site para o EQUIPAMENTO .* ERROR:PKG_SITE.fnc_get_name_by_equip.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"Foi localizado mais de um site para o EQUIPAMENTO .* ERROR:PKG_SITE.fnc_get_name_by_equip.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "3",
+		"errorMessage":"Nao foi possivel buscar um site para o EQUIPAMENTO .* ERROR:PKG_SITE.fnc_get_name_by_equip..*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro inesperado ao buscar cliente em pkg_customer.fnc_get_exists_customer_by_nrc .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao ler a tabela val_customer. ERROR: PKG_CUSTOMER.fnc_set_customer. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao deletar  registro na tabela val_customer . .* ERROR: PKG_CUSTOMER.fnc_set_customer. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao deletar  registro na tabela customer_attr_settings . .* ERROR: PKG_CUSTOMER.fnc_set_customer. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao ler a tabela val_customer . ERROR: PKG_CUSTOMER.fnc_set_customer. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Ocorreu erro ao inserir o cliete. ERROR: PKG_CUSTOMER.fnc_set_customer. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao inserir dados na tabela cust_domain_map. ERROR: PKG_CUSTOMER.fnc_set_customer..*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Ocorreu erro ao criar o cliete. ERROR: PKG_CUSTOMER.fnc_set_customer. .*",
+		"faultCode":   "RIGRANITE-"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao buscar site do cliente. ERROR: PKG_SITE.fnc_set_site_customer. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao deletar registro na tabela val_customer .*. ERROR: PKG_SITE.fnc_set_site_customer. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao apagar a associacao do site com o cliente na tabela customer_site. ERROR: PKG_SITE.fnc_set_site_customer. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao buscar valor na sequence site_inst_id. ERROR: PKG_SITE.fnc_set_site_customer. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao inserir dados do site do cliente na tabela site_inst. ERROR: PKG_SITE.fnc_set_site_customer..*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao inserir a associacao do site com o cliente na tabela customer_site. ERROR: PKG_SITE.fnc_set_site_customer..*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao inserir dados na tabela site_domain_map. ERROR: PKG_SITE.fnc_set_site_customer..*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Ocorreu erro ao criar o site para o cliente. ERROR: PKG_SITE.fnc_set_site_customer..*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro inesperado ao buscar cliente em pkg_customer.fnc_get_cust_inst_id_by_nrc .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro inesperado ao buscar cliente em pkg_customer.fnc_get_customer_inst_id_by_nrc .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao recuperar o valor da UDA .* e GRUPO_UDA .* na pkg_inventory_attribute.fnc_get_uda - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Codigo Servico invalido ou nao informado.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "23",
+		"errorMessage":"pkg_amo.fnc_create_service_amo - Erro ao buscar valor na sequence resource_inst_id. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "26",
+		"errorMessage":"pkg_amo.fnc_create_service_amo - Erro ao buscar valor na sequence resource_assoc_id. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "24",
+		"errorMessage":"pkg_amo.fnc_create_service_amo - Erro ao buscar o id do tipo SERVICO_AMO na tabela resource_definition_inst. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "25",
+		"errorMessage":"pkg_amo.fnc_create_service_amo - Erro ao inserir o servico_amo na tabela resource_isnt. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "28",
+		"errorMessage":"pkg_amo.fnc_create_service_amo - Erro ao inserir dados na tabela resource_domain_map. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "27",
+		"errorMessage":"pkg_amo.fnc_create_service_amo - Erro ao inserir dados da associacao do cliente ao servico_amo na tabela resource_associations. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao buscar o valor na sequence resource_assoc_id. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao associar o PATH_SPEEDY_FTTX ao servico_amo. ERROR: PKG_AMO.fnc_create_service_amo .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"pkg_amo.fnc_create_service_amo - Erro ao pegar valor da sequence customer_slid_seq: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"pkg_amo.fnc_create_service_amo - Erro ao atualizar Uda de Servico Amo. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao buscar o valor na sequence circ_path_inst_id. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao inserir path de servico do cliente. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao inserir dados na path_domain_map. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao buscar valor da sequence leg_inst_id. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao buscar site lado a-z do path de transporte fttx. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao inserir dados na path_leg_inst. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao buscar o valor na sequence resource_assoc_id. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro ao associar o path de servico ao servico_amo. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Ocorreu erro ao criar o PATH de SERVICO. ERROR: PKG_PATH.fnc_set_path_service .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Ocorreu um erro ao recuperar o id do bandwidth .*. ERROR: PKG_BANDWIDTH.fnc_get_id_bw_by_name .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "26",
+		"errorMessage":"pkg_inventory_general.fnc_add_path_chan - Erro ao buscar o valor da sequence chan_inst_id. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao inserir o canal do path membro. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao buscar a ultima sequencia de elementos do path membro. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao buscar o valor da sequence element_inst_id. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao inserir o path pai como elemento do path membro. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao obter o identificador de leg do path membro. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao obter os sites a e z do path membro. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao gerar o identificador de leg para o path membro. .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao inserir leg para o path membro. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao obter a ultima sequencia de membro de leg para o path membro. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao inserir dados na tabela path_leg_member. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao adicionar canal de path. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "38",
+		"errorMessage":"pkg_inventory_general.fnc_get_next_path_channel. - Erro ao buscar o proximo canal para o path. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi identificado o IP do agregador relacionado ao path speedy fttx.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi identificado o IP do cliente na porta do path speedy fttx.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":" Erro ao atualizar o status do IP do cliente e do agregador. .*",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "41",
+		"errorMessage":"pkg_inventory_general.fnc_alter_status_ip_plus - Nao foi identificado o IP IPV6 do cliente na porta do path speedy fttx.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao atualizar o status do IP IPV6 do cliente e do agregador. \\( .* - .* \\)",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao atualizar o status do IP Fixo plus. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi encotrada porta do cliente relacionados ao path speedy fttx ou path nao informado",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao identificar os IDs do agregador e da porta do cliente relacionados ao path speedy fttx. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao obter o status para o IP do cliente. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Houve erro ao budcar o id pool.",
+		"faultCode":   "RIGRANITE-512"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Houve erro ao atualizar pool de IP.*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi possivel atualizar o ID do estado.",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi encontrado o pool de IP no path informado",
+		"faultCode":   "RIGRANITE-512"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Houve erro ao atualizar informacoes do pool de IP.*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"pkg_equipament.fnc_valid_aggregator_ipv6. Equipamento informado: .* - Modelo: .* nao e valido para IPV6",
+		"faultCode":   "RIGRANITE-509"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"pkg_equipament.fnc_valid_aggregator_ipv6. Equipamento de ID \\(EQUIP_INST_ID\\): .* nao encontrado no inventario SIGRES.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"pkg_equipament.fnc_valid_aggregator_ipv6. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro na procedure xcom_custom_resource_inst_tpd.Erro: .*",
+		"faultCode":   "RIGRANITE-505"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro Oracle na xcom_custom_resource_inst_tpd. ERROR: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi encontrado servico_amo para o terminal .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-2",
+		"errorMessage":"Foi encontrado mais de um servico_amo para o terminal  .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-3",
+		"errorMessage":"Erro indeterminado na pkg_path.fnc_get_amo_id_by_terminal - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro inesperado na pkg_path.fnc_update_status_serv_amo - .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":".*nao alocado. . pkg_amo.fnc_get_code_serv_amo_by_term.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao recuperar o SERVICO AMO do terminal .*. pkg_amo.fnc_get_code_serv_amo_by_term. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nenhum PATH associado ao terminal .* foi encontrado.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao pesquisar PATHS para o terminal .*. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nenhum PATH associado ao ao CIRC_PATH_INST_ID .* foi encontrado.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao pesquisar PATHS para o CIRC_PATH_INST_ID .*. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Recurso id: .* nao e Recurso GPON: PATH_INTERNET,PATH_VOIP,PATH_IPTV,PATH_SERVICE",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"fnc_del_path_gpon. Erro ao deletar o servico: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao excluir o path e seus elementos do path: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Foram encontrados .* enquanto apagava elementos do Recurso SERVICE AMO.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-2",
+		"errorMessage":"Erro ao excluir o recurso SERVICE AMO. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi possivel encontrar o id do bandwidth para a velocidade .* pkg_path.fnc_set_bw_name",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-2",
+		"errorMessage":"Erro inesperado na pkg_path.fnc_set_bw_name - .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Ocorreu um erro ao ocupacao do terminal .*. ERROR: PKG_BANDWIDTH.fnc_get_occupation_terminal .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Erro nao encotrado codigo de servico .* para calcular Downstream e Upstream",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"pkg_bandwidth.fnc_calc_otb_by_service - Erro ao calcular Downstream e Upstream do codigo de servico: .*. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro na pkg_port.fnc_get_facilities_port .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Porta .* da OLT .* nao esta apta para uso.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao localizada OLT/Porta em .* para o Cabo .* / Fibra .*.",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao buscar porta logica. Erro: .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao realizar a consulta facilidades Otb  ERROR: prc_reserve.fnc_check_otb_facilities .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro inesperado na pkg_path.fnc_update_status_path - .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao foi encontrado cliente para o terminal de acesso informado!",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-2",
+		"errorMessage":"Erro ao buscar cliente para o terminal de acesso informado!.* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro inesperado ao buscar o amo do customer em pkg_customer nome fnc .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro inesperado ao executar a funcao pkg_customer nome fnc .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Cliente e do tipo metalico.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"O site possui outros vinculos alem do cliente e nao pode ser excluido.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-2",
+		"errorMessage":"Foram encontrados .* enquanto apagava o Site do cliente.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-5",
+		"errorMessage":"Erro ao deletar customer. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao disassociar recurso PATH_SPEEDY_FTTX. Erro: .* - .*",
+		"faultCode":   "RIGRANITE-505"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao desassociar recurso PATH_SPEEDY_FTTX. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao gerar o nome para o path  pre-provisionado! Nao localizado parth com o id informado! ID: .*",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-2",
+		"errorMessage":"Erro ao gerar o nome para o path  pre-provisionado! ID: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao desassociar recurso PATH_TRANSPORTE_FTTX! Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"Foram encontrados .* enquanto apagava elementos do Recurso SERVICE AMO.",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-2",
+		"errorMessage":"Erro ao excluir o recurso SERVICE AMO. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Solicitacao de Reserva rejeitada. Terminal com Estado Em Reserva",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Solicitacao de Reserva rejeitada. Terminal com Estado .*",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro na fnc_val_custumer_resource. Erro Oracle: .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao verificar se terminal ja existe no inventario. .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Codigo de servico nao encontrado.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Indisponibilidade de Path Speedy FTTX",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro na pkg_resource.prc_alloc_resource. Erro: .*",
+		"faultCode":   "RIGRANITE-505"
+	},
+	{
+		"errorCode":   "-2044",
+		"errorMessage":"Nao ha disponibilidade de Canal TDM",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro na pkg_resource.prc_alloc_resource. Erro ao buscar PATH_SPEEDY_FTTX.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nao ha disponibilidade de Canal TDM",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao buscar o servico amo. .* - .*",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao buscar o path de transporte. .* - .*",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro na pkg_resource.prc_alloc_resource. Erro: .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro apagar concorrencia do recurso tipo .*. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao adicionar concorrencia .*. Dado ja existe!",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao adicionar concorrencia .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Indisponibilidade de Banda Downstream e Upstream na Porta da OLT",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+	"errorMessage":"Indisponibilidade de Banda Downstream na Porta da OLT",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Indisponibilidade de Banda Upstream na Porta da OLT",
+		"faultCode":   "RIGRANITE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao verificar disponibilidade de banda. Erro: .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao buscar IP. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"pkg_manager_ip.fnc_get_ippcplus_core. A funcionalidade .* nao cadastrada no inventario SIGRES",
+		"faultCode":   "RIGRANITE-509"
+	},
+	{
+		"errorCode":   "3",
+		"errorMessage":"pkg_manager_ip.fnc_get_ippcplus_core. Erro na tentativa de alocar IP  Fixo Plus .*. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-2039",
+		"errorMessage":"Indisponibilidade de IP Fixo Plus",
+		"faultCode":   "RIGRANITE-512"
+	},
+	{
+		"errorCode":   "2386",
+		"errorMessage":"Indisponibilidade de Prefixo IPV6.",
+		"faultCode":   "RIGRANITE-512"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro ao atribuir IP. Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Erro: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"prc_Order_Elements: .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage":"pkg_inventory_general.fnc_check_status_logical_port. ID do PATH nao informado.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "2",
+		"errorMessage":"pkg_inventory_general.fnc_check_status_logical_port. Status da Porta Logica nao informado.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "3",
+		"errorMessage":"pkg_inventory_general.fnc_check_status_logical_port. Parametro a ser validado nao informado.",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"pkg_inventory_general.fnc_check_status_logical_port - Erro na validacao de estado da porta logica. .* - .*",
+		"faultCode":   "RIGRANITE-666"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage": "Erro ao recuperar o path pelo terminal",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "1",
+		"errorMessage": "Erro ao recuperar as facilidades",
+		"faultCode":   "RIGRANITE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage": "ERRO NA FUNCAO pkg_equipment.fnc_retrieve_qty_gpon_ports: .*",
+		"faultCode":   "RIGRANITE-505"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage": "ERRO NA FUNCAO pkg_equipment.fnc_retrieve_qty_gpon_ports, variaveis de entrada nulas",
+		"faultCode":   "RIGRANITE-501"
+	}
+]

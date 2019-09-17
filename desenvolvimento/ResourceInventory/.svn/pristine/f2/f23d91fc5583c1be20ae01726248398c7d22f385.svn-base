@@ -1,0 +1,171 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.persistence.Column;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CatalogoInfo;
+import com.tlf.oss.resourceinventory.cpe.entity.ClientInformation;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoServico;
+import com.tlf.oss.resourceinventory.cpe.repository.RetrieveRepository;
+import com.tlf.oss.resourceinventory.cpe.utils.CpeConstants;
+import com.tlf.oss.resourceinventory.cpe.utils.ReflectionUtils;
+import com.tlf.oss.resourceinventory.cpe.validation.Retrieve;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class RetrieveController {
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private RetrieveRepository retrieveRepository;
+
+	private static final List<String> FIELDS_TO_REMOVE = Arrays.asList("serviceId", "tipoRfs", "status");
+	private static final List<Field> FIELDS = Arrays.asList(ClientInformation.class.getDeclaredFields()).stream()
+			.filter(field -> !FIELDS_TO_REMOVE.contains(field.getName()) && !Modifier.isStatic(field.getModifiers()))
+			.collect(Collectors.toList());
+
+	public ResourceInventoryEntity retrieve(@Retrieve final ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+		if (isRetrieveClientInformation(entity)) {
+			logger.log(OSSLogger.INFO, "Buscando as informações de cliente no CPE...");
+			List<ClientInformation> result = retrieveRepository.retrieveClientInformation(entity,
+					EstadoServico.EM_APROVISIONAMENTO);
+			return mapClientInformation(entity, result);
+
+		} else {
+			logger.log(OSSLogger.INFO, "Buscando as informações de catálogo no CPE...");
+			List<CatalogoInfo> result = retrieveRepository.retrieveCatalog();
+			return mapCatalogoInfo(entity, result);
+		}
+	}
+
+	public boolean isRetrieveClientInformation(ResourceInventoryEntity entity) {
+		if (null == entity.getResourceOrder())
+			return false;
+		return true;
+	}
+
+	private ResourceInventoryEntity mapCatalogoInfo(final ResourceInventoryEntity entity,
+			final List<CatalogoInfo> catalogos) {
+
+		logger.log(OSSLogger.INFO, "Mapeando os registros do banco na entidade ResourceInventoryEntity...");
+
+		if (entity.getResourceFacingService() == null) {
+			entity.setResourceFacingService(new ResourceFacingService());
+		}
+
+		catalogos.forEach(catalog -> {
+
+			if (catalog.getModelo() != null && !catalog.getModelo().isEmpty()) {
+				entity.getResourceFacingService().getServiceDescribedBy()
+						.add(createServiceDescribedBy(CpeConstants.MODELO, catalog.getModelo()));
+			}
+
+			if (catalog.getFabricante() != null && !catalog.getFabricante().isEmpty()) {
+				entity.getResourceFacingService().getServiceDescribedBy()
+						.add(createServiceDescribedBy(CpeConstants.FABRICANTE, catalog.getFabricante()));
+			}
+
+			if (catalog.getRede() != null && !catalog.getRede().isEmpty()) {
+				entity.getResourceFacingService().getServiceDescribedBy()
+						.add(createServiceDescribedBy(CpeConstants.REDE, catalog.getRede()));
+			}
+
+			if (catalog.getTipoDispositivo() != null && !catalog.getTipoDispositivo().isEmpty()) {
+				entity.getResourceFacingService().getServiceDescribedBy()
+						.add(createServiceDescribedBy(CpeConstants.TIPO_DISPOSITIVO, catalog.getTipoDispositivo()));
+			}
+
+			if (catalog.getDescricao() != null && !catalog.getDescricao().isEmpty()) {
+				entity.getResourceFacingService().getServiceDescribedBy()
+						.add(createServiceDescribedBy(CpeConstants.DESCRICAO, catalog.getDescricao()));
+			}
+
+			if (catalog.getTipoRFS() != null && !catalog.getTipoRFS().isEmpty()) {
+				entity.getResourceFacingService().getServiceDescribedBy()
+						.add(createServiceDescribedBy(CpeConstants.TIPO_RFS, catalog.getTipoRFS()));
+			}
+
+			if (catalog.getNomeCategoria() != null && !catalog.getNomeCategoria().isEmpty()) {
+				entity.getResourceFacingService().getServiceDescribedBy()
+						.add(createServiceDescribedBy(CpeConstants.NOME_CATEGORIA, catalog.getNomeCategoria()));
+			}
+
+			if (catalog.getNomeCaracteristica() != null && !catalog.getNomeCaracteristica().isEmpty()) {
+				entity.getResourceFacingService().getServiceDescribedBy().add(
+						createServiceDescribedBy(CpeConstants.NOME_CARACTERISTICA, catalog.getNomeCaracteristica()));
+			}
+
+			if (catalog.getValor() != null && !catalog.getValor().isEmpty()) {
+				entity.getResourceFacingService().getServiceDescribedBy()
+						.add(createServiceDescribedBy(CpeConstants.VALOR, catalog.getValor()));
+			}
+		});
+
+		return entity;
+	}
+
+	private ResourceInventoryEntity mapClientInformation(final ResourceInventoryEntity entity,
+			final List<ClientInformation> clientInformations) {
+
+		logger.log(OSSLogger.INFO, "Mapeando os registros do banco na entidade ResourceInventoryEntity...");
+
+		if (!clientInformations.isEmpty()) {
+			List<CustomerFacingService> cfss = new ArrayList<>();
+
+			clientInformations.forEach(clientInfo -> {
+
+				CustomerFacingService cfs = new CustomerFacingService();
+				ResourceFacingService rfs = new ResourceFacingService();
+				List<ResourceFacingService> rfss = new ArrayList<>();
+				List<ServiceDescribedBy> sdbs = new ArrayList<>();
+
+				cfs.setServiceId(clientInfo.getServiceId());
+				cfs.setResourceFacingService(rfss);
+				rfs.setCategory(clientInfo.getTipoRfs());
+				rfs.setStatus(clientInfo.getStatus());
+
+				FIELDS.forEach(field -> {
+
+					String fieldValue = (String) ReflectionUtils.executeGetter(field, clientInfo);
+
+					if (null != fieldValue) {
+						sdbs.add(createServiceDescribedBy(
+								((Column) ReflectionUtils.getFieldAnnotation(field, Column.class)).name(), fieldValue));
+					}
+				});
+				rfs.setServiceDescribedBy(sdbs);
+				rfss.add(rfs);
+				cfs.setResourceFacingService(rfss);
+				cfss.add(cfs);
+			});
+			entity.setCustomerFacingService(cfss);
+		}
+		return entity;
+	}
+
+	private ServiceDescribedBy createServiceDescribedBy(String name, String value) {
+		ServiceDescribedBy sdb = new ServiceDescribedBy();
+
+		sdb.getServiceSpecCharDescribes().add(new ServiceSpecCharDescribes());
+		sdb.getServiceSpecCharDescribes().get(0).setValue(value);
+		sdb.setName(name);
+
+		return sdb;
+	}
+}

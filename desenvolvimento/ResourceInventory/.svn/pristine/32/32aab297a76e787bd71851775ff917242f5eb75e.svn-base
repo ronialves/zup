@@ -1,0 +1,56 @@
+package com.tlf.oss.resourceinventory.granite.core.rules;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.granite.core.enums.AgendaGroup;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ExecutionRulesIptvVoipServiceTest {
+
+	private ResourceInventoryEntity entity;
+
+	private ExecutionRules executionRules;
+	
+	@Before
+	public void before() {
+		this.entity = new ResourceInventoryEntity();
+		this.executionRules = new ExecutionRules();
+	}
+
+	@Test
+	public void shouldGetServiceCodeVOIPTV() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("25600", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VOIPTV", rules.getResult());
+	}
+	
+	/*
+	 * Cria cenario com Broadband mais VoIP com velocidade e tipo de IP de acordo com os respectivos
+	 * parametros de entrada.
+	 */
+	private void setResourceInventoryWithDownstreamAndIpTypeValue(String downStreamValue, String IPType) {
+
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setCategory("VOIP");
+		
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(1).setCategory("IPTV");
+
+		entity.setCustomerFacingService(listOfCustomerFacingService);
+	}
+}

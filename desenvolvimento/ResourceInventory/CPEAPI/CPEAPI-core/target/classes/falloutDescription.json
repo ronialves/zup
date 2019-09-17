@@ -1,0 +1,63 @@
+[
+    {
+        "faultCode": "RICPE-501",
+        "faultDescription": "PARAMETRO NAO INFORMADO."
+    },
+    {
+        "faultCode": "RICPE-502",
+        "faultDescription": "ERRO DE CONEXAO."
+    },
+    {
+        "faultCode": "RICPE-503",
+        "faultDescription": "PARAMETRO INVALIDO."
+    },
+    {
+        "faultCode": "RICPE-504",
+        "faultDescription": "ERRO DE CADASTRO (IT)."
+    },
+    {
+        "faultCode": "RICPE-509",
+        "faultDescription": "ERRO DE CADASTRO (ENGENHARIA)."
+    },
+    {
+        "faultCode": "RICPE-505",
+        "faultDescription": "ERRO DE SISTEMA."
+    },
+    {
+        "faultCode": "RICPE-506",
+        "faultDescription": "ERRO TRANSACIONAL (IT)."
+    },
+    {
+        "faultCode": "RICPE-507",
+        "faultDescription": "ERRO TRANSACIONAL (ENGENHARIA)."
+    },
+    {
+        "faultCode": "RICPE-508",
+        "faultDescription": "ERRO OPERACIONAL (CAMPO)."
+    },
+    {
+        "faultCode": "RICPE-510",
+        "faultDescription": "ERRO OPERACIONAL (GERENCIA)."
+    },
+    {
+        "faultCode": "RICPE-512",
+        "faultDescription": "ERRO OPERACIONAL (ENGENHARIA)."
+    },
+    {
+        "faultCode": "RICPE-511",
+        "faultDescription": "ERRO DE AMBIENTE."
+    },
+    {
+        "faultCode": "RICPE-666",
+        "faultDescription": "ERRO INTERNO NAO MAPEADO."
+    },
+    {
+        "faultCode": "RICPE-777",
+        "faultDescription": "ACAO NAO DEFINIDA."
+    }
+    ,
+    {
+        "faultCode": "RICPE-999",
+        "faultDescription": "ERRO NAO MAPEADO."
+    }
+]

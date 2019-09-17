@@ -1,0 +1,231 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoRecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoRecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.PhysicalLink;
+import com.tlf.oss.resourceinventory.schemas.PlacePhysicalResourceAssoc;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class DeallocateStbControllerTest {
+
+	@InjectMocks
+	private DeallocateStbController deallocateStbController;
+
+	@Mock
+	private OSSLogger logger;
+
+	@Mock
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Mock
+	private EstadoRecursoLogicoRepository estadoRecursoLogicoRepository;
+
+	@Mock
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Mock
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	private ResourceInventoryEntity entity;
+
+	@Before
+	public void before() {
+		entity = new ResourceInventoryEntity();
+
+		PlacePhysicalResourceAssoc placePhysicalResourceAssoc = new PlacePhysicalResourceAssoc();
+		placePhysicalResourceAssoc.setPhysicalLink(new PhysicalLink());
+		placePhysicalResourceAssoc.getPhysicalLink().setAccessTechnology("GPON");
+
+		entity.setAddress(getBrazilianUrbanPropertyAddress());
+
+		entity.getAddress().setPlacePhysicalResourceAssoc(placePhysicalResourceAssoc);
+
+		entity.setCustomerFacingService(getListCustomerFacingService());
+
+		ResourceFacingService resourceFacingService = new ResourceFacingService();
+		resourceFacingService.setServiceId("333333333333333");
+		entity.setResourceFacingService(resourceFacingService);
+
+		ResourceOrder resourceOrder = new ResourceOrder();
+		resourceOrder.setResourceOrderItem(new ResourceOrderItem());
+
+		entity.setResourceOrder(resourceOrder);
+
+	}
+
+	@Test
+	public void deallocateSuccess() throws OSSBusinessException {
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		EstadoRecursoLogico estadoRecursoLogico = getEstadoRecursoLogico();
+		List<RecursoLogico> recursosLogicos = getRecursoLogicos();
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+
+		when(recursoLogicoRepository.listByServiceId(anyObject())).thenReturn(recursosLogicos);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(String.class))).thenReturn(servicoAssinante);
+		when(dispositivoFisicoRepository.findById(anyObject())).thenReturn(dispositivoFisico);
+		deallocateStbController.deallocate(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = OSSBusinessException.class)
+	public void deallocateException() throws OSSBusinessException {
+		when(deallocateStbController.deallocate(entity)).thenThrow(OSSBusinessException.class);
+
+		deallocateStbController.deallocate(entity);
+	}
+	
+	@Test
+	public void deallocateRecursosLogicosMaiorQueUmSuccess() throws OSSBusinessException {
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		EstadoRecursoLogico estadoRecursoLogico = getEstadoRecursoLogico();
+		List<RecursoLogico> recursosLogicos = getListaDoisRecursoLogicos();
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+
+		when(recursoLogicoRepository.listByServiceId(anyObject())).thenReturn(recursosLogicos);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(String.class))).thenReturn(servicoAssinante);
+		when(dispositivoFisicoRepository.findById(anyObject())).thenReturn(dispositivoFisico);
+		deallocateStbController.deallocate(entity);
+	}
+
+	@Test
+	public void deallocateRecursoLogicoFoundNotFoundSucess() throws OSSBusinessException {
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		EstadoRecursoLogico estadoRecursoLogico = getEstadoRecursoLogico();
+		List<RecursoLogico> recursosLogicos = getRecursoLogicos();
+
+		when(recursoLogicoRepository.listByServiceId(anyObject())).thenReturn(recursosLogicos);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(String.class))).thenReturn(servicoAssinante);
+
+		deallocateStbController.deallocate(entity);
+	}
+
+	@Test
+	public void deallocateRecursoLogicoFoundNotFound() throws OSSBusinessException {
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		EstadoRecursoLogico estadoRecursoLogico = getEstadoRecursoLogico();
+
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(String.class))).thenReturn(servicoAssinante);
+
+		deallocateStbController.deallocate(entity);
+	}
+
+	private BrazilianUrbanPropertyAddress getBrazilianUrbanPropertyAddress() {
+		BrazilianUrbanPropertyAddress brazilianUrbanPropertyAddress = new BrazilianUrbanPropertyAddress();
+		brazilianUrbanPropertyAddress.setStreetCode("237558");
+		brazilianUrbanPropertyAddress.setStreetNrFirst("154");
+		brazilianUrbanPropertyAddress.setCnl("11000");
+		brazilianUrbanPropertyAddress.setNetworkOwner("VIVO1");
+		brazilianUrbanPropertyAddress.setTelephonicArea("AT");
+
+		return brazilianUrbanPropertyAddress;
+	}
+
+	private List<CustomerFacingService> getListCustomerFacingService() {
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setServiceId("333333333333333");
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(new ServiceDescribedBy());
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().get(0).setName("EQUIPMENT_TYPE");
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().get(0).getServiceSpecCharDescribes()
+				.add(new ServiceSpecCharDescribes());
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0)
+				.setValue("HGU");
+
+		return listOfCustomerFacingService;
+	}
+
+	private ServicoAssinante getServicoAssinante() {
+		ServicoAssinante servicoAssinante = new ServicoAssinante();
+		servicoAssinante.setId(421);
+		servicoAssinante.setTipoRfs("R_CPE_ACCESS");
+		servicoAssinante.setEstadoServicoAssinanteId(1);
+		servicoAssinante.setServiceId("123");
+		servicoAssinante.setNrc(null);
+		servicoAssinante.setAccessId("345");
+		servicoAssinante.setNumeroTelefone(null);
+
+		return servicoAssinante;
+	}
+
+	private RecursoLogico getRecursoLogico() {
+		RecursoLogico recursoLogico = new RecursoLogico();
+		recursoLogico.setId(1);
+		recursoLogico.setEstadoRecursoLogicoId(1);
+		recursoLogico.setIdFxs(0);
+		recursoLogico.setDispositivoFisicoId(321);
+		recursoLogico.setServicoAssinanteId(421);
+		recursoLogico.setMainKey(null);
+
+		return recursoLogico;
+	}
+
+	private EstadoRecursoLogico getEstadoRecursoLogico() {
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		estadoRecursoLogico.setEstadoRecurso("DESCONECTADO");
+		return estadoRecursoLogico;
+	}
+
+	private List<RecursoLogico> getRecursoLogicos() {
+		ArrayList<RecursoLogico> recursoLogicos = new ArrayList<RecursoLogico>();
+		RecursoLogico recursoLogico = getRecursoLogico();
+		recursoLogicos.add(recursoLogico);
+		return recursoLogicos;
+	}
+
+	private List<RecursoLogico> getListaDoisRecursoLogicos() {
+		ArrayList<RecursoLogico> listaDoisRecursosLogicos = new ArrayList<RecursoLogico>();
+		RecursoLogico recursoLogico = getRecursoLogico();
+		listaDoisRecursosLogicos.add(recursoLogico);
+		listaDoisRecursosLogicos.add(recursoLogico);
+		return listaDoisRecursosLogicos;
+	}
+
+	private DispositivoFisico getDispositivoFisico() {
+		DispositivoFisico dispositivoFisico = new DispositivoFisico();
+		dispositivoFisico.setId(321);
+		dispositivoFisico.setNumeroSerial(null);
+		dispositivoFisico.setMacAddress(null);
+		dispositivoFisico.setCategoriaDispositivoEsperada(11);
+		dispositivoFisico.setCategoriaDispositivoCorrente(null);
+		dispositivoFisico.setCatalagoDispositivoId(null);
+		dispositivoFisico.setNumeroSerialGpon(null);
+
+		return dispositivoFisico;
+	}
+
+}

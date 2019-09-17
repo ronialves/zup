@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- SAGREMAN.GVT_SP_SOA_LIBERA_FAC_CTRL -->
+	<entry key="p_in_cnl">41000</entry>
+	<entry key="p_in_tec_acesso">GPON</entry>
+	<entry key="p_in_tec_voz">SIP</entry>
+	<entry key="p_in_id_acesso">CTA-02281867-069</entry>
+	<entry key="p_in_tipo">OC</entry>
+	<entry key="p_out_cod"/>
+	<entry key="p_out_msg"/>
+</properties>

@@ -1,0 +1,146 @@
+package com.tlf.oss.resourceinventory.granite.core;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.CancelChangeSpeedGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.DeallocateInternalResourceGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ResourceStatusGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.granite.core.entity.UpdateResourcesServiceAmoEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.AgendaGroup;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.Message;
+import com.tlf.oss.resourceinventory.granite.core.enums.Operation;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.repository.CancelChangeSpeedGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.DeallocateInternalResourceGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ResourceStatusGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.UpdateResourcesServiceAmoDao;
+import com.tlf.oss.resourceinventory.granite.core.rules.ExecutionRules;
+import com.tlf.oss.resourceinventory.granite.core.utils.Constants;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class DeallocateGponController {
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private DeallocateInternalResourceGponDao deallocateGponDao;
+
+	@Inject
+	private CancelChangeSpeedGponDao cancelChangeSpeedGponDao; 
+
+	@Inject 
+	private UpdateResourcesServiceAmoDao updateResourcesServiceAmoDao;
+
+	@Inject
+	private ResourceStatusGponDao resourceStatusGponDao;
+
+	private OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(Code.RIGRANITE_003.getValue(), "",Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+
+	public ResourceInventoryEntity doExecution(ResourceInventoryEntity entity, final Operation operation) throws OSSBusinessException {
+
+		if (Operation.OFFER_EDITION.equals(operation)) {
+
+			UpdateResourcesServiceAmoEntity updateResourcesServiceAmoEntity = new UpdateResourcesServiceAmoEntity();
+
+			final ExecutionRules executionRules = new ExecutionRules();
+			final Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+
+			updateResourcesServiceAmoEntity.setStatus(entity.getResourceFacingService().getStatus());
+			updateResourcesServiceAmoEntity.setServiceCode(rules.getResult());
+			updateResourcesServiceAmoEntity.setAccessDesignator(entity.getResourceFacingService().getServiceId());
+			updateResourcesServiceAmoEntity = updateResourcesServiceAmoDao.updateResourcesServiceAmo(updateResourcesServiceAmoEntity);
+
+			if (Code.SUCCESS.getValue().equals(updateResourcesServiceAmoEntity.getCode())) {
+				final ResourceStatusGponEntity entityGponStatus = resourceStatusGponDao.updateStatus(getResourceStatusGponEntity(entity));
+
+				if (!Code.SUCCESS.getValue().equals(entityGponStatus.getResult().getCode())) {
+					throw getFalloutException(entityGponStatus.getResult().getCode(), entityGponStatus.getResult().getDescription(), ResourceStatusGponEntity.PKG_PATH_PRC_ALTER_STATUS_GPON);
+				}
+
+				logger.log(OSSLogger.INFO, "Executed cancel");
+
+				return entity;
+			} else {
+				throw getFalloutException(updateResourcesServiceAmoEntity.getCode(), updateResourcesServiceAmoEntity.getDescription(), UpdateResourcesServiceAmoEntity.UPDATE_RESOURCE_AMO_PROC);
+			}
+
+		} else {
+			final DeallocateInternalResourceGponEntity deallocateEntity = deallocateResource(entity);
+			if (Message.SUCCESS.getValue().equalsIgnoreCase(deallocateEntity.getCode())) {
+				logger.log(OSSLogger.INFO, "Executed deallocate");
+				return entity;
+			} else {
+				throw getFalloutException(deallocateEntity.getCode(), deallocateEntity.getDescription(), DeallocateInternalResourceGponEntity.PRC_NAME);
+			}
+		}
+	}
+
+	@Transactional(rollbackOn=Exception.class)
+	public DeallocateInternalResourceGponEntity deallocateResource(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+		DeallocateInternalResourceGponEntity deallocateResourceGpon = new DeallocateInternalResourceGponEntity();
+		
+		if(entity.getResourceFacingService() != null && entity.getResourceFacingService().getServiceId() != null){
+			deallocateResourceGpon.setTerminal(entity.getResourceFacingService().getServiceId());
+		}
+		else{
+			throw new OSSBusinessException("Erro ao validar o objeto DeallocateResourceGponEntity", "RIGRANITE-001",
+				"O valor do campo ServiceID eh nulo");
+		}
+		deallocateResourceGpon = deallocateGponDao.getDeallocateInternalResource(deallocateResourceGpon);
+
+		return deallocateResourceGpon;
+	}
+	
+	@Transactional(rollbackOn=Exception.class)
+	public CancelChangeSpeedGponEntity cancelChangeSpeedGpon(ResourceInventoryEntity entity) throws OSSBusinessException{
+		
+		CancelChangeSpeedGponEntity cancelChangeSpeedGpon = new CancelChangeSpeedGponEntity();
+		ExecutionRules executionRules = new ExecutionRules(); 
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		
+		if(entity.getResourceFacingService() != null && entity.getResourceFacingService().getServiceId() != null){
+			cancelChangeSpeedGpon = getCancelChangeSpeedGponEntity(entity, rules);
+		}
+		else{
+			throw new OSSBusinessException("Erro ao validar o objeto CancelChangeSpeedGponEntity", "RIGRANITE-001",
+				"O valor do campo ServiceID eh nulo");
+		}
+		
+		cancelChangeSpeedGpon = cancelChangeSpeedGponDao.cancelResource(cancelChangeSpeedGpon);
+		return cancelChangeSpeedGpon;
+	}
+
+	public CancelChangeSpeedGponEntity getCancelChangeSpeedGponEntity(ResourceInventoryEntity entity, final Rules rules){
+		final CancelChangeSpeedGponEntity gponEntity = new CancelChangeSpeedGponEntity();
+		gponEntity.setServiceCode(rules.getResult());
+		gponEntity.setServiceId(entity.getResourceFacingService().getServiceId());
+	
+		return gponEntity;
+	}
+
+	private ResourceStatusGponEntity getResourceStatusGponEntity(final ResourceInventoryEntity entity) {
+		entity.getResourceFacingService().setStatus(StatusPathType.ACTIVE.getValue());
+		final ResourceStatusGponEntity updateEntity = new ResourceStatusGponEntity();
+		updateEntity.setTerminal(entity.getResourceFacingService().getServiceId());
+		updateEntity.setStatus(entity.getResourceFacingService().getStatus());
+		
+		return updateEntity;
+	}
+	
+	private OSSBusinessException getFalloutException(final String code, final String description, final String procName) {
+		this.falloutConfig.setOriginAPIDescription(String.format(Code.RIGRANITE_003.getDescription(), procName));
+		this.falloutConfig.setErrorCode(code);
+		this.falloutConfig.setErrorMessage(description);
+		this.falloutConfig.setDetailMessage(code.concat(";").concat(description != null ? description : ""));
+		return OSSExceptionFactory.getOSSBusinessException(this.falloutConfig);
+	}
+}

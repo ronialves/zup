@@ -1,0 +1,3 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTERUSAPI/ResourceInventoryTERUSAPI-core/src/test/java/com/tlf/oss/resourceinventory/terus/core/DeallocateControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTERUSAPI/ResourceInventoryTERUSAPI-core/src/test/java/com/tlf/oss/resourceinventory/terus/core/ReservationControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTERUSAPI/ResourceInventoryTERUSAPI-core/src/test/java/com/tlf/oss/resourceinventory/terus/core/CancelReservedControllerTest.java

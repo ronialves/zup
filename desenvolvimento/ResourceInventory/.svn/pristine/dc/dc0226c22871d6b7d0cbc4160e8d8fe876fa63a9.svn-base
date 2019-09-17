@@ -1,0 +1,238 @@
+package com.tlf.oss.resourceinventory.core;
+
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+import javax.xml.ws.Holder;
+
+import com.tlf.oss.common.client.RestClient;
+import com.tlf.oss.common.client.RestClient.Method;
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.header.Header;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.common.properties.Configuration;
+import com.tlf.oss.common.properties.WeblogicConfiguration;
+import com.tlf.oss.common.schemas.entity.Warn;
+import com.tlf.oss.resourceinventory.core.mapping.EntityConverterIn;
+import com.tlf.oss.resourceinventory.core.mapping.EntityConverterOut;
+import com.tlf.oss.resourceinventory.schemas.api.CustomerEntity;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.AllocateResourceIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.AllocateResourceOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.DeallocateResourceIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.DeallocateResourceOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.DetermineResourceAvailabilityIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.DetermineResourceAvailabilityOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.EquipmentServiceIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.EquipmentServiceOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.InstallResourceIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.InstallResourceOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.ReleaseResourceIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.ReleaseResourceOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.ReserveResourceIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.ReserveResourceOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.RetrieveAccessInformationIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.RetrieveAccessInformationOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.RetrieveResourceInformationIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.RetrieveResourceInformationOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.UninstallResourceIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.UninstallResourceOut;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.UpdateResourceIn;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.UpdateResourceOut;
+
+@Logged
+public class ResourceInventoryV1 {
+
+	private static final Configuration CFG = Configuration.getInstance(Constants.SERVER_PROPERTY, Constants.LOCAL_FILE);
+	private static final WeblogicConfiguration WCFG = WeblogicConfiguration.getInstance();
+	private static final String URL = String.format(CFG.get(Constants.URL_ORCHESTRATION), WCFG.getCurrentNodeName(), WCFG.getCurrentPort());
+	private static final String URL_RETRIEVE_CUSTOMER = String.format(CFG.get(Constants.URL_REPOSITORY_CUSTOMER_RETRIEVE), WCFG.getCurrentNodeName(), WCFG.getCurrentPort());
+	
+	@Inject
+	private OSSLogger logger;
+	
+	public DetermineResourceAvailabilityOut determineResourceAvailability(Header header, Holder<Warn> warn, DetermineResourceAvailabilityIn in) throws OSSBusinessException {
+		ResourceInventoryEntity resourceInventoryEntity = EntityConverterIn.toResourceInventoryEntity(in);
+		
+        ResourceInventoryEntity out = RestClient.Builder
+                .newBuilder(logger, header)
+                .target(URL)
+                .entity(resourceInventoryEntity)
+                .pathParam("version", "1.0")
+                .pathParam("action", Constants.DETERMINE_AVALIABILITY)
+                .method(Method.Post)
+                .build()
+                .callService(ResourceInventoryEntity.class);
+		
+        return EntityConverterOut.toDetermineResourceAvailabilityOut(out, warn);
+	}
+
+	public ReserveResourceOut reserveResource(Header header, ReserveResourceIn in) throws OSSBusinessException {
+		ResourceInventoryEntity resourceInventoryEntity = EntityConverterIn.toResourceInventoryEntity(in);
+
+		ResourceInventoryEntity out = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL)
+				.entity(resourceInventoryEntity)
+				.pathParam("version", "1.0")
+				.pathParam("action", Constants.RESERVE_RESOURCE)
+				.method(Method.Post)
+				.build()
+				.callService(ResourceInventoryEntity.class);
+		
+		return EntityConverterOut.toReserveResourceOut(out);
+	}
+
+	public ReleaseResourceOut releaseResource(Header header, ReleaseResourceIn in) throws OSSBusinessException {
+		ResourceInventoryEntity resourceInventoryEntity = EntityConverterIn.toResourceInventoryEntity(in);
+		
+		ResourceInventoryEntity out = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL)
+				.entity(resourceInventoryEntity)
+				.pathParam("version", "1.0")
+				.pathParam("action", Constants.RELEASE_RESOURCE)
+				.method(Method.Post)
+				.build()
+				.callService(ResourceInventoryEntity.class);
+
+		return EntityConverterOut.toReleaseResourceOut(out);
+	}
+
+	public AllocateResourceOut allocateResource(Header header, AllocateResourceIn in) throws OSSBusinessException {
+		ResourceInventoryEntity resourceInventoryEntity = EntityConverterIn.toResourceInventoryEntity(in);
+		
+		ResourceInventoryEntity out = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL)
+				.entity(resourceInventoryEntity)
+				.pathParam("version", "1.0")
+				.pathParam("action", Constants.ALLOCATE_RESOURCE)
+				.method(Method.Post)
+				.build()
+				.callService(ResourceInventoryEntity.class);
+
+		return EntityConverterOut.toAllocateResourceOut(out);
+	}
+
+	public InstallResourceOut installResource(Header header, InstallResourceIn in) throws OSSBusinessException {
+		ResourceInventoryEntity resourceInventoryEntity = EntityConverterIn.toResourceInventoryEntity(in);
+		
+		ResourceInventoryEntity out = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL)
+				.entity(resourceInventoryEntity)
+				.pathParam("version", "1.0")
+				.pathParam("action", Constants.INSTALL_RESOURCE)
+				.method(Method.Post)
+				.build()
+				.callService(ResourceInventoryEntity.class);
+
+		return EntityConverterOut.toInstallResourceOut(out);
+	}
+
+	public RetrieveResourceInformationOut retrieveResourceInformation(Header header, RetrieveResourceInformationIn in)
+			throws OSSBusinessException {
+		ResourceInventoryEntity resourceInventoryEntity = EntityConverterIn.toResourceInventoryEntity(in);
+		
+		ResourceInventoryEntity out = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL)
+				.entity(resourceInventoryEntity)
+				.pathParam("version", "1.0")
+				.pathParam("action", Constants.RETRIEVE_RESOURCE_INFORMATION)
+				.method(Method.Post)
+				.build()
+				.callService(ResourceInventoryEntity.class);
+
+		return EntityConverterOut.toRetrieveResourceInformationOut(out);
+	}
+
+	public DeallocateResourceOut deallocateResource(Header header, DeallocateResourceIn in) throws OSSBusinessException {
+		ResourceInventoryEntity resourceInventoryEntity = EntityConverterIn.toResourceInventoryEntity(in);
+		
+		ResourceInventoryEntity out = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL)
+				.entity(resourceInventoryEntity)
+				.pathParam("version", "1.0")
+				.pathParam("action", Constants.DEALLOCATE_RESOURCE)
+				.method(Method.Post)
+				.build()
+				.callService(ResourceInventoryEntity.class);
+
+		return EntityConverterOut.toDeallocateResourceOut(out);
+	}
+
+	public UninstallResourceOut unistallResourceOut(Header header, UninstallResourceIn in) throws OSSBusinessException {		
+		ResourceInventoryEntity resourceInventoryEntity = EntityConverterIn.toResourceInventoryEntity(in);
+		
+		ResourceInventoryEntity out = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL)
+				.entity(resourceInventoryEntity)
+				.pathParam("version", "1.0")
+				.pathParam("action", Constants.UNINSTALL_RESOURCE)
+				.method(Method.Post)
+				.build()
+				.callService(ResourceInventoryEntity.class);
+		
+		return EntityConverterOut.toUninstallResourceOut(out);
+
+	}
+	
+	public RetrieveAccessInformationOut retrieveAccessInformationOut(Header header, RetrieveAccessInformationIn in) throws OSSBusinessException {
+		
+		Response response = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL_RETRIEVE_CUSTOMER)
+				.pathParam("version", "1.0")
+				.pathParam("entity", "customer")
+				.pathParam("id", in.getResourceFacingService().getServiceId())
+				.method(Method.Get)
+				.validateNotFound(false)
+				.build()
+				.callService(Response.class);
+		
+		if (response.getStatus() == 404) {
+			return null;
+		}
+		
+		CustomerEntity out =  response.readEntity(CustomerEntity.class);
+		return EntityConverterOut.toRetrieveAccessInformationOut(out);		
+	}
+	
+	public EquipmentServiceOut equipmentService(Header header, EquipmentServiceIn in) throws OSSBusinessException {
+		final ResourceInventoryEntity entity = EntityConverterIn.toResourceInventoryEntity(in);
+		
+		ResourceInventoryEntity out = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL)
+				.entity(entity)
+				.pathParam("version", "1.0")
+				.pathParam("action", Constants.EQUIPMENT)
+				.method(Method.Post)
+				.build()
+				.callService(ResourceInventoryEntity.class);
+		
+		
+		return EntityConverterOut.toEquipmentServiceOut(out);
+	}
+
+	public UpdateResourceOut updateResource(Header header, UpdateResourceIn in) throws OSSBusinessException {
+		final ResourceInventoryEntity entity = EntityConverterIn.toResourceInventoryEntity(in);
+		
+		ResourceInventoryEntity out = RestClient.Builder
+				.newBuilder(logger, header)
+				.target(URL)
+				.entity(entity)
+				.pathParam("version", "1.0")
+				.pathParam("action", Constants.UPDATE_RESOURCE)
+				.method(Method.Post)
+				.build()
+				.callService(ResourceInventoryEntity.class);
+		
+		
+		return EntityConverterOut.toUpdateResourceOut(out);
+	}
+}

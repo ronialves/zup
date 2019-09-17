@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReleaseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.core</a> &gt; <span class="el_source">ReleaseController.java</span></div><h1>ReleaseController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.sagre.core.validation.Release;
+import com.tlf.oss.resourceinventory.sagre.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.ReleaseResourceEntity;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.sagre.enums.Status;
+import com.tlf.oss.resourceinventory.sagre.repository.ReleaseRepository;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+/**
+ * BEATRIXTWO-935 | DEMOSS-2995
+ * @project Beatrix Fase 2
+ * @author renan.n.oliveira
+ * @since 201803
+ */
+
+<span class="fc" id="L26">public class ReleaseController extends ValidatorEntity implements Serializable {</span>
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Inject ReleaseRepository releaseRepository;
+	
+<span class="fc" id="L35">	OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RISAGRE_003.getCode(),</span>
+<span class="fc" id="L36">			String.format(ExceptionInfoEnum.RISAGRE_003.getDescription(), &quot;GVT_SP_SOA_LIBERA_FAC_CTRL&quot;),</span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+	private static final int RESULTADO_ESPERADO = 0;
+
+<span class="fc" id="L41">	public static final String P_OUT_MSG = null;</span>
+<span class="fc" id="L42">	public static final Integer P_OUT_COD = null;</span>
+	
+	public ResourceInventoryEntity release(@Release ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L46">		ReleaseResourceEntity releaseResource = new ReleaseResourceEntity();</span>
+<span class="fc" id="L47">		releaseResource.setCnl(Integer.valueOf(entity.getAddress().getCnl()));</span>
+<span class="fc" id="L48">		releaseResource.setAccessTechnology(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getAccessTechnology());</span>
+<span class="fc" id="L49">		releaseResource.setVoiceTechnology(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+<span class="fc" id="L50">		releaseResource.setAccessId(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L51">		releaseResource.setType(Status.RESERVA.getName());</span>
+				
+<span class="fc" id="L53">		releaseResource.setResultCode(P_OUT_COD);</span>
+<span class="fc" id="L54">		releaseResource.setMessage(P_OUT_MSG);</span>
+		
+<span class="fc" id="L56">		return getResourceInventoryEntity(releaseRepository.release(releaseResource), entity);</span>
+	}
+
+	
+	/**
+	 * Enriquece ResourceInventoryEntity atraves da execucao do ReleaseRepository.allocate
+	 * 
+	 * @param release
+	 * @param entity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getResourceInventoryEntity(ReleaseResourceEntity release,
+			ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">		if (RESULTADO_ESPERADO != release.getResultCode()) {</span>
+<span class="nc" id="L72">			String errorCode = String.valueOf(release.getResultCode());</span>
+<span class="nc" id="L73">			String errorMessage = release.getMessage();</span>
+<span class="nc" id="L74">			String detailMessage = errorCode + &quot;; &quot; + errorMessage;</span>
+
+<span class="nc" id="L76">		    falloutConfig.setErrorCode(errorCode);</span>
+<span class="nc" id="L77">		    falloutConfig.setErrorMessage(errorMessage);</span>
+<span class="nc" id="L78">			falloutConfig.setDetailMessage(detailMessage);</span>
+<span class="nc" id="L79">			throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+		}
+<span class="fc" id="L81">		return entity;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

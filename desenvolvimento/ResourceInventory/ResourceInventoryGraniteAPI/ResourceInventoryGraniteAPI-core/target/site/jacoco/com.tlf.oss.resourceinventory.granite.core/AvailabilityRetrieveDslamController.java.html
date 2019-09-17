@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AvailabilityRetrieveDslamController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">AvailabilityRetrieveDslamController.java</span></div><h1>AvailabilityRetrieveDslamController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveAvailabilityDslamEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveUdaEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.Message;
+import com.tlf.oss.resourceinventory.granite.core.enums.UDA;
+import com.tlf.oss.resourceinventory.granite.core.repository.RetrieveAvailabilityDslamDao;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L19">public class AvailabilityRetrieveDslamController {</span>
+
+	@Inject
+	private RetrieveAvailabilityDslamDao availabilityDslamDao;
+	
+	/**
+	 * Metodo responsavel em fazer a consulta disponibilidade
+	 * @throws OSSBusinessException 
+	 * 
+	 */
+	public Collection&lt;RetrieveAvailabilityDslamEntity&gt; getAvailabilityDSLAM(List&lt;RetrieveUdaEntity&gt; listUDA, ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L31">		EnumMap&lt;UDA, RetrieveUdaEntity&gt; udas = getUdas(listUDA);</span>
+		
+<span class="fc" id="L33">		Collection&lt;RetrieveAvailabilityDslamEntity&gt; availabilityResultCollection = availabilityDslamDao.getAvailabilityDSLAM(udas, entity.getAddress());</span>
+		
+<span class="fc" id="L35">		return availabilityResultCollection;</span>
+	}
+
+	private EnumMap&lt;UDA, RetrieveUdaEntity&gt; getUdas(List&lt;RetrieveUdaEntity&gt; listUDA) throws OSSBusinessException {
+<span class="fc" id="L39">		EnumMap&lt;UDA, RetrieveUdaEntity&gt; udas = new EnumMap&lt;&gt;(UDA.class); </span>
+<span class="fc" id="L40">		udas.put(UDA.VPN, getUda(listUDA, UDA.VPN));</span>
+<span class="fc" id="L41">		udas.put(UDA.IP, getUda(listUDA, UDA.IP));</span>
+<span class="fc" id="L42">		udas.put(UDA.TIPO_PORTA, getUda(listUDA, UDA.TIPO_PORTA));</span>
+<span class="fc" id="L43">		udas.put(UDA.TIPO_REDE, getUda(listUDA, UDA.TIPO_REDE));</span>
+<span class="fc" id="L44">		udas.put(UDA.PROTOCOLO, getUda(listUDA, UDA.PROTOCOLO));</span>
+<span class="fc" id="L45">		udas.put(UDA.CNL, getUda(listUDA, UDA.CNL));</span>
+<span class="fc" id="L46">		udas.put(UDA.SIGLA_AT, getUda(listUDA, UDA.SIGLA_AT));</span>
+<span class="fc" id="L47">		return udas;</span>
+	}
+
+	private RetrieveUdaEntity getUda(List&lt;RetrieveUdaEntity&gt; listUDA, UDA uda) throws OSSBusinessException {
+<span class="fc" id="L51">		Optional&lt;RetrieveUdaEntity&gt; udaEntity = listUDA.stream().filter(p -&gt; uda.getValue().equals(p.getUda_nome())).findFirst();</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		if (!udaEntity.isPresent()) {</span>
+<span class="fc" id="L53">			throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), </span>
+<span class="fc" id="L54">					Code.RIGRANITE_001.getValue(),</span>
+<span class="fc" id="L55">					&quot;Erro ao recuperar as informacoes de configuracao da UDA: &quot; + uda.getValue());</span>
+		}
+<span class="fc" id="L57">		return udaEntity.get();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

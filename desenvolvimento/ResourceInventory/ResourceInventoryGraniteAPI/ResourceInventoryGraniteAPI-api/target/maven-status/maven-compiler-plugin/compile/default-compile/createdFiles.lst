@@ -1,0 +1,15 @@
+com/tlf/oss/resourceinventory/granite/api/v1_0/InstallService.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/DeallocateService.class
+com/tlf/oss/resourceinventory/granite/api/v2_0/FacilityRetrievalServiceV2.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/AvailabilityRetrievalService.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/FacilityRetrievalService.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/AccessRetrievalService.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/RESTConfig.class
+com/tlf/oss/resourceinventory/granite/api/faultmanagement/v1_0/RESTConfig.class
+com/tlf/oss/resourceinventory/granite/api/v2_0/RESTConfig.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/ReserveRetrieval.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/ReserveService.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/AllocateService.class
+com/tlf/oss/resourceinventory/granite/api/faultmanagement/v1_0/EquipmentRetrievalService.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/CancelReservedService.class
+com/tlf/oss/resourceinventory/granite/api/v1_0/UninstallService.class

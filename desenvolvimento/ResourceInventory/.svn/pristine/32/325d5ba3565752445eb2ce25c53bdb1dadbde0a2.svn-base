@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/ComplementAddressTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="ComplementAddress">
+		<xs:sequence>
+			<!-- Tipos de Complemento (preconfigurados) -->
+			<xs:element minOccurs="0" name="type1" type="st:string06"></xs:element>
+			<!-- Valor -->
+			<xs:element minOccurs="0" name="value1" type="st:string40"></xs:element>
+			<!-- Tipos de Complemento (preconfigurados) -->
+			<xs:element minOccurs="0" name="type2" type="st:string06"></xs:element>
+			<!-- Valor -->
+			<xs:element minOccurs="0" name="value2" type="st:string40"></xs:element>
+			<!-- Tipos de Complemento (preconfigurados) -->
+			<xs:element minOccurs="0" name="type3" type="st:string06"></xs:element>
+			<!-- Valor -->
+			<xs:element minOccurs="0" name="value3" type="st:string40"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

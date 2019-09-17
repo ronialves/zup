@@ -1,0 +1,5 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTERUSAPI/ResourceInventoryTERUSAPI-api/src/main/java/com/tlf/oss/resourceinventory/terus/api/v1_0/DeallocateService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTERUSAPI/ResourceInventoryTERUSAPI-api/src/main/java/com/tlf/oss/resourceinventory/terus/api/v1_0/ReserveService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTERUSAPI/ResourceInventoryTERUSAPI-api/src/main/java/com/tlf/oss/resourceinventory/terus/api/v1_0/UninstallService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTERUSAPI/ResourceInventoryTERUSAPI-api/src/main/java/com/tlf/oss/resourceinventory/terus/api/v1_0/RESTConfig.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTERUSAPI/ResourceInventoryTERUSAPI-api/src/main/java/com/tlf/oss/resourceinventory/terus/api/v1_0/CancelReservedService.java

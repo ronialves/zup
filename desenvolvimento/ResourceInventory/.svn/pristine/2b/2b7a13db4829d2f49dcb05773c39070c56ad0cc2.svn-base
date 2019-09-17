@@ -1,0 +1,42 @@
+package com.tlf.oss.resourceinventory.cpe.utils;
+
+import java.util.regex.Pattern;
+
+public abstract class CpeConstants {
+
+	public static final String CPE_DATASOURCE = "CPEDS";
+	public static final String FALLOUT_EXCEPTIONS_FILENAME = "falloutException.json";
+	public static final String FALLOUT_DESCRIPTION_FILENAME = "falloutDescription.json";
+	public static final String TELEPHONE = "TELEPHONE";
+	public static final String TELEPHONE_NUMBER = "TELEPHONE_NUMBER";
+	public static final String MACADDRESS = "MACADDRESS";
+	public static final String GPON_SERIAL_NUMBER = "GPON_SERIAL_NUMBER";
+	public static final String SERIAL_NUMBER = "SERIAL_NUMBER";
+	public static final String VOICE_EQUIPMENT_TYPE = "VOICE_EQUIPMENT_TYPE";
+	public static final String VOICE_TOTAL_PORTS = "VOICE_TOTAL_PORTS";
+	public static final String BB_EQUIPMENT_TYPE = "BB_EQUIPMENT_TYPE";
+	public static final String EQUIPMENT_TYPE = "EQUIPMENT_TYPE";
+	public static final String TECHNOLOGY = "TECHNOLOGY";
+	public static final String DVR = "DVR";
+	public static final String HPNA = "HPNA";
+	public static final String EQUIPMENT_MODEL = "EQUIPMENT_MODEL";
+	public static final String EQUIPMENT_VENDOR = "EQUIPMENT_VENDOR";
+	public static final String AMBOS = "AMBOS";
+	public static final String SET_TOP_BOX = "Set Top Box";
+	public static final String STB = "STB";
+	public static final String HGU = "HGU";
+	public static final String IPTV = "IPTV";
+	public static final String MODELO = "MODELO";
+	public static final String FABRICANTE = "FABRICANTE";
+	public static final String REDE = "REDE";
+	public static final String TIPO_DISPOSITIVO = "TIPO_DISPOSITIVO";
+	public static final String DESCRICAO = "DESCRICAO";
+	public static final String TIPO_RFS = "TIPO_RFS";
+	public static final String NOME_CATEGORIA = "NOME_CATEGORIA";
+	public static final String NOME_CARACTERISTICA = "NOME_CARACTERISTICA";
+	public static final String VALOR = "VALOR";
+	public static final String ATA = "ATA";
+	public static final String CASD = "CASD";
+	public static final Pattern ACCESS_DESIGNATOR_PATTERN = Pattern.compile("-069$");
+
+}

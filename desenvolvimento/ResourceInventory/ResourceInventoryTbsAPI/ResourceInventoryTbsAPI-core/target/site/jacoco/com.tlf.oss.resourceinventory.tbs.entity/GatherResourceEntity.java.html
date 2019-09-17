@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GatherResourceEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">GatherResourceEntity.java</span></div><h1>GatherResourceEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+@Entity
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(name = &quot;gatherResource&quot;, resultClasses = GatherResourceEntity.class, procedureName = &quot;ASAP.TLF_SP_ANALISA_FUSION&quot;, parameters = {
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_EQUIPMENT_ID&quot;, type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_ARMARIO&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_SPLITTER_1N&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_NAME_HL&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_VENDOR_HL&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_HOSTNAME&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_NASIP&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SITE&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_IP_ADDRESS&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_MASCARA_IP&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_GERENCIA&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SWITCH_ATENDIMENTO&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_V5ID&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SWITCH_ATENDIMENTO2&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_V5ID2&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SHASTA&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_PROTOCOLO_AGCF&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_NOME_AGCF&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_IP_ADDRESS_AGCF&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_NUMERO_BRAS&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SLOT_BRAS&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SUB_SLOT_BRAS&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_PORTA_BRAS&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_STACK_VLAN&quot;, type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_NUMERO_AGREGADOR&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SLOT_AGREGADOR&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SUB_SLOT_AGREGADOR&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_PORTA_AGREGADOR&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_TIPO_CATEGORIA_VLAN&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_VLAN_VOD&quot;, type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_VLAN_VOIP&quot;, type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_VLAN_MCAST&quot;, type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_VLAN_IPTV&quot;, type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_EXTERNAL_NETWORK_OWNER&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_FUSION&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_COD_RETORNO&quot;, type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_MSG_RETORNO&quot;, type = String.class),
+        })
+})
+public class GatherResourceEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Basic
+    @Column(name = &quot;P_EQUIPMENT_ID&quot;)
+    private Integer equipmentId;
+
+    @Basic
+    @Column(name = &quot;P_ARMARIO&quot;)
+    private String armario;
+
+    @Basic
+    @Column(name = &quot;P_SPLITTER_1N&quot;)
+    private String splitter1n;
+
+    @Basic
+    @Column(name = &quot;P_NAME_HL&quot;)
+    private String nameHL;
+
+    @Basic
+    @Column(name = &quot;P_VENDOR_HL&quot;)
+    private String vendorHL;
+
+    @Basic
+    @Column(name = &quot;P_HOSTNAME&quot;)
+    private String hostName;
+
+    @Basic
+    @Column(name = &quot;P_NASIP&quot;)
+    private String nasip;
+
+    @Basic
+    @Column(name = &quot;P_SITE&quot;)
+    private String site;
+
+
+    @Basic
+    @Column(name = &quot;P_IP_ADDRESS&quot;)
+    private String ipAddress;
+
+    @Basic
+    @Column(name = &quot;P_MASCARA_IP&quot;)
+    private String mascaraIp;
+
+    @Basic
+    @Column(name = &quot;P_GERENCIA&quot;)
+    private String gerencia;
+
+    @Basic
+    @Column(name = &quot;P_SWITCH_ATENDIMENTO&quot;)
+    private String switchAtendimento;
+
+    @Basic
+    @Column(name = &quot;P_V5ID&quot;)
+    private String v5ID;
+
+    @Basic
+    @Column(name = &quot;P_SWITCH_ATENDIMENTO2&quot;)
+    private String switchAtendimento2;
+
+    @Basic
+    @Column(name = &quot;P_V5ID2&quot;)
+    private String v5ID2;
+
+    @Basic
+    @Column(name = &quot;P_SHASTA&quot;)
+    private String shasta;
+
+    @Basic
+    @Column(name = &quot;P_PROTOCOLO_AGCF&quot;)
+    private String protocoloAGCF;
+
+    @Basic
+    @Column(name = &quot;P_NOME_AGCF&quot;)
+    private String nomeAGCF;
+
+    @Basic
+    @Column(name = &quot;P_IP_ADDRESS_AGCF&quot;)
+    private String ipAddressAGCF;
+
+    @Basic
+    @Column(name = &quot;P_NUMERO_BRAS&quot;)
+    private String numeroBras;
+
+    @Basic
+    @Column(name = &quot;P_SLOT_BRAS&quot;)
+    private String slotBras;
+
+    @Basic
+    @Column(name = &quot;P_SUB_SLOT_BRAS&quot;)
+    private String subSlotBras;
+
+    @Basic
+    @Column(name = &quot;P_PORTA_BRAS&quot;)
+    private String portaBras;
+
+    @Basic
+    @Column(name = &quot;P_STACK_VLAN&quot;)
+    private Integer stackVlan;
+
+    @Basic
+    @Column(name = &quot;P_NUMERO_AGREGADOR&quot;)
+    private String numeroAgregador;
+
+    @Basic
+    @Column(name = &quot;P_SLOT_AGREGADOR&quot;)
+    private String slotAgregador;
+
+    @Basic
+    @Column(name = &quot;P_SUB_SLOT_AGREGADOR&quot;)
+    private String subSlotAgregador;
+
+    @Basic
+    @Column(name = &quot;P_PORTA_AGREGADOR&quot;)
+    private String portaAgregador;
+
+    @Basic
+    @Column(name = &quot;P_TIPO_CATEGORIA_VLAN&quot;)
+    private String tipoCategatoriaVlan;
+
+    @Basic
+    @Column(name = &quot;P_VLAN_VOD&quot;)
+    private Integer vlanVod;
+
+    @Basic
+    @Column(name = &quot;P_VLAN_VOIP&quot;)
+    private Integer vlanVoip;
+
+    @Basic
+    @Column(name = &quot;P_VLAN_MCAST&quot;)
+    private Integer vlanMcast;
+
+    @Basic
+    @Column(name = &quot;P_VLAN_IPTV&quot;)
+    private Integer vlanIptv;
+
+    @Basic
+    @Column(name = &quot;P_EXTERNAL_NETWORK_OWNER&quot;)
+    private String externalNetworkOwner;
+
+    @Basic
+    @Column(name = &quot;P_FUSION&quot;)
+    private String fusion;
+
+    @Id
+    @Basic
+    @Column(name = &quot;P_COD_RETORNO&quot;)
+    private Integer codigoRetorno;
+
+    @Basic
+    @Column(name = &quot;P_MSG_RETORNO&quot;)
+    private String mensagemRetorno;
+
+<span class="fc" id="L202">    public  GatherResourceEntity() {}</span>
+
+    public GatherResourceEntity(
+            Integer equipmentId, String armario, String splitter1n, String nameHL, String vendorHL,
+            String hostName, String nasip, String site, String ipAddress, String mascaraIp, String gerencia, String switchAtendimento,
+            String v5ID, String switchAtendimento2, String v5ID2, String shasta, String protocoloAGCF, String nomeAGCF,
+            String ipAddressAGCF, String numeroBras, String slotBras, String subSlotBras, String portaBras,
+            Integer stackVlan, String numeroAgregador, String slotAgregador, String subSlotAgregador,
+            String portaAgregador, String tipoCategatoriaVlan, Integer vlanVod, Integer vlanVoip,
+            Integer vlanMcast, Integer vlanIptv, String externalNetworkOwner, String fusion,
+            Integer codigoRetorno, String mensagemRetorno
+    ) {
+<span class="fc" id="L214">        super();</span>
+<span class="fc" id="L215">        this.equipmentId = equipmentId;</span>
+<span class="fc" id="L216">        this.armario = armario;</span>
+<span class="fc" id="L217">        this.splitter1n = splitter1n;</span>
+<span class="fc" id="L218">        this.nameHL = nameHL;</span>
+<span class="fc" id="L219">        this.vendorHL = vendorHL;</span>
+<span class="fc" id="L220">        this.hostName = hostName;</span>
+<span class="fc" id="L221">        this.nasip = nasip;</span>
+<span class="fc" id="L222">        this.site = site;</span>
+<span class="fc" id="L223">        this.ipAddress = ipAddress;</span>
+<span class="fc" id="L224">        this.mascaraIp = mascaraIp;</span>
+<span class="fc" id="L225">        this.gerencia = gerencia;</span>
+<span class="fc" id="L226">        this.switchAtendimento = switchAtendimento;</span>
+<span class="fc" id="L227">        this.v5ID = v5ID;</span>
+<span class="fc" id="L228">        this.switchAtendimento2 = switchAtendimento2;</span>
+<span class="fc" id="L229">        this.v5ID2 = v5ID2;</span>
+<span class="fc" id="L230">        this.shasta = shasta;</span>
+<span class="fc" id="L231">        this.protocoloAGCF = protocoloAGCF;</span>
+<span class="fc" id="L232">        this.nomeAGCF = nomeAGCF;</span>
+<span class="fc" id="L233">        this.ipAddressAGCF = ipAddressAGCF;</span>
+<span class="fc" id="L234">        this.numeroBras = numeroBras;</span>
+<span class="fc" id="L235">        this.slotBras = slotBras;</span>
+<span class="fc" id="L236">        this.subSlotBras = subSlotBras;</span>
+<span class="fc" id="L237">        this.portaBras = portaBras;</span>
+<span class="fc" id="L238">        this.stackVlan = stackVlan;</span>
+<span class="fc" id="L239">        this.numeroAgregador = numeroAgregador;</span>
+<span class="fc" id="L240">        this.slotAgregador = slotAgregador;</span>
+<span class="fc" id="L241">        this.subSlotAgregador = subSlotAgregador;</span>
+<span class="fc" id="L242">        this.portaAgregador = portaAgregador;</span>
+<span class="fc" id="L243">        this.tipoCategatoriaVlan = tipoCategatoriaVlan;</span>
+<span class="fc" id="L244">        this.vlanVod = vlanVod;</span>
+<span class="fc" id="L245">        this.vlanVoip = vlanVoip;</span>
+<span class="fc" id="L246">        this.vlanMcast = vlanMcast;</span>
+<span class="fc" id="L247">        this.vlanIptv = vlanIptv;</span>
+<span class="fc" id="L248">        this.externalNetworkOwner = externalNetworkOwner;</span>
+<span class="fc" id="L249">        this.fusion = fusion;</span>
+<span class="fc" id="L250">        this.codigoRetorno = codigoRetorno;</span>
+<span class="fc" id="L251">        this.mensagemRetorno = mensagemRetorno;</span>
+<span class="fc" id="L252">    }</span>
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+<span class="nc" id="L261">        StringBuilder builder = new StringBuilder();</span>
+<span class="nc" id="L262">        builder.append(&quot;GatherResourceEntity [&quot;);</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (equipmentId != null) {</span>
+<span class="nc" id="L264">            builder.append(&quot;equimentId=&quot;);</span>
+<span class="nc" id="L265">            builder.append(equipmentId);</span>
+<span class="nc" id="L266">            builder.append(&quot;, &quot;);</span>
+        }
+<span class="nc bnc" id="L268" title="All 2 branches missed.">        if (armario != null) {</span>
+<span class="nc" id="L269">            builder.append(&quot;armario=&quot;);</span>
+<span class="nc" id="L270">            builder.append(armario);</span>
+<span class="nc" id="L271">            builder.append(&quot;, &quot;);</span>
+        }
+<span class="nc bnc" id="L273" title="All 2 branches missed.">        if (splitter1n != null) {</span>
+<span class="nc" id="L274">            builder.append(&quot;splitter1n=&quot;);</span>
+<span class="nc" id="L275">            builder.append(splitter1n);</span>
+<span class="nc" id="L276">            builder.append(&quot;, &quot;);</span>
+        }
+<span class="nc bnc" id="L278" title="All 2 branches missed.">        if (nameHL != null) {</span>
+<span class="nc" id="L279">            builder.append(&quot;nameHL=&quot;);</span>
+<span class="nc" id="L280">            builder.append(nameHL);</span>
+<span class="nc" id="L281">            builder.append(&quot;, &quot;);</span>
+        }
+<span class="nc bnc" id="L283" title="All 2 branches missed.">        if (vendorHL != null) {</span>
+<span class="nc" id="L284">            builder.append(&quot;vendorHL=&quot;);</span>
+<span class="nc" id="L285">            builder.append(vendorHL);</span>
+<span class="nc" id="L286">            builder.append(&quot;, &quot;);</span>
+        }
+<span class="nc bnc" id="L288" title="All 2 branches missed.">        if (hostName != null) {</span>
+<span class="nc" id="L289">            builder.append(&quot;hostName=&quot;);</span>
+<span class="nc" id="L290">            builder.append(hostName);</span>
+<span class="nc" id="L291">            builder.append(&quot;, &quot;);</span>
+        }
+<span class="nc bnc" id="L293" title="All 2 branches missed.">        if (nasip != null) {</span>
+<span class="nc" id="L294">            builder.append(&quot;nasip=&quot;);</span>
+<span class="nc" id="L295">            builder.append(nasip);</span>
+<span class="nc" id="L296">            builder.append(&quot;, &quot;);</span>
+        }
+<span class="nc bnc" id="L298" title="All 2 branches missed.">        if (site != null) {</span>
+<span class="nc" id="L299">            builder.append(&quot;site=&quot;);</span>
+<span class="nc" id="L300">            builder.append(site);</span>
+<span class="nc" id="L301">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L304" title="All 2 branches missed.">        if (ipAddress != null) {</span>
+<span class="nc" id="L305">            builder.append(&quot;ipAddress=&quot;);</span>
+<span class="nc" id="L306">            builder.append(ipAddress);</span>
+<span class="nc" id="L307">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L310" title="All 2 branches missed.">        if (mascaraIp != null) {</span>
+<span class="nc" id="L311">            builder.append(&quot;mascaraIp=&quot;);</span>
+<span class="nc" id="L312">            builder.append(mascaraIp);</span>
+<span class="nc" id="L313">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L316" title="All 2 branches missed.">        if (gerencia != null) {</span>
+<span class="nc" id="L317">            builder.append(&quot;gerencia=&quot;);</span>
+<span class="nc" id="L318">            builder.append(gerencia);</span>
+<span class="nc" id="L319">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L322" title="All 2 branches missed.">        if (switchAtendimento != null) {</span>
+<span class="nc" id="L323">            builder.append(&quot;switchAtendimento=&quot;);</span>
+<span class="nc" id="L324">            builder.append(switchAtendimento);</span>
+<span class="nc" id="L325">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L328" title="All 2 branches missed.">        if (v5ID != null) {</span>
+<span class="nc" id="L329">            builder.append(&quot;v5ID=&quot;);</span>
+<span class="nc" id="L330">            builder.append(v5ID);</span>
+<span class="nc" id="L331">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L334" title="All 2 branches missed.">        if (switchAtendimento2 != null) {</span>
+<span class="nc" id="L335">            builder.append(&quot;switchAtendimento2=&quot;);</span>
+<span class="nc" id="L336">            builder.append(switchAtendimento2);</span>
+<span class="nc" id="L337">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L340" title="All 2 branches missed.">        if (v5ID2 != null) {</span>
+<span class="nc" id="L341">            builder.append(&quot;v5ID2=&quot;);</span>
+<span class="nc" id="L342">            builder.append(v5ID2);</span>
+<span class="nc" id="L343">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L346" title="All 2 branches missed.">        if (shasta != null) {</span>
+<span class="nc" id="L347">            builder.append(&quot;shasta=&quot;);</span>
+<span class="nc" id="L348">            builder.append(shasta);</span>
+<span class="nc" id="L349">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L352" title="All 2 branches missed.">        if (protocoloAGCF != null) {</span>
+<span class="nc" id="L353">            builder.append(&quot;protocoloAGCF=&quot;);</span>
+<span class="nc" id="L354">            builder.append(protocoloAGCF);</span>
+<span class="nc" id="L355">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L358" title="All 2 branches missed.">        if (nomeAGCF != null) {</span>
+<span class="nc" id="L359">            builder.append(&quot;nomeAGCF=&quot;);</span>
+<span class="nc" id="L360">            builder.append(nomeAGCF);</span>
+<span class="nc" id="L361">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L364" title="All 2 branches missed.">        if (ipAddressAGCF != null) {</span>
+<span class="nc" id="L365">            builder.append(&quot;ipAddressAGCF=&quot;);</span>
+<span class="nc" id="L366">            builder.append(ipAddressAGCF);</span>
+<span class="nc" id="L367">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L370" title="All 2 branches missed.">        if (numeroBras != null) {</span>
+<span class="nc" id="L371">            builder.append(&quot;numeroBras=&quot;);</span>
+<span class="nc" id="L372">            builder.append(numeroBras);</span>
+<span class="nc" id="L373">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L376" title="All 2 branches missed.">        if (slotBras != null) {</span>
+<span class="nc" id="L377">            builder.append(&quot;slotBras=&quot;);</span>
+<span class="nc" id="L378">            builder.append(slotBras);</span>
+<span class="nc" id="L379">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L382" title="All 2 branches missed.">        if (subSlotBras != null) {</span>
+<span class="nc" id="L383">            builder.append(&quot;subSlotBras=&quot;);</span>
+<span class="nc" id="L384">            builder.append(subSlotBras);</span>
+<span class="nc" id="L385">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L388" title="All 2 branches missed.">        if (portaBras != null) {</span>
+<span class="nc" id="L389">            builder.append(&quot;portaBras=&quot;);</span>
+<span class="nc" id="L390">            builder.append(portaBras);</span>
+<span class="nc" id="L391">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L394" title="All 2 branches missed.">        if (stackVlan != null) {</span>
+<span class="nc" id="L395">            builder.append(&quot;stackVlan=&quot;);</span>
+<span class="nc" id="L396">            builder.append(stackVlan);</span>
+<span class="nc" id="L397">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L400" title="All 2 branches missed.">        if (numeroAgregador != null) {</span>
+<span class="nc" id="L401">            builder.append(&quot;numeroAgregador=&quot;);</span>
+<span class="nc" id="L402">            builder.append(numeroAgregador);</span>
+<span class="nc" id="L403">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L406" title="All 2 branches missed.">        if (slotAgregador != null) {</span>
+<span class="nc" id="L407">            builder.append(&quot;slotAgregador=&quot;);</span>
+<span class="nc" id="L408">            builder.append(slotAgregador);</span>
+<span class="nc" id="L409">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L412" title="All 2 branches missed.">        if (subSlotAgregador != null) {</span>
+<span class="nc" id="L413">            builder.append(&quot;subSlotAgregador=&quot;);</span>
+<span class="nc" id="L414">            builder.append(subSlotAgregador);</span>
+<span class="nc" id="L415">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L418" title="All 2 branches missed.">        if (portaAgregador != null) {</span>
+<span class="nc" id="L419">            builder.append(&quot;portaAgregador=&quot;);</span>
+<span class="nc" id="L420">            builder.append(portaAgregador);</span>
+<span class="nc" id="L421">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L424" title="All 2 branches missed.">        if (tipoCategatoriaVlan != null) {</span>
+<span class="nc" id="L425">            builder.append(&quot;tipoCategatoriaVlan=&quot;);</span>
+<span class="nc" id="L426">            builder.append(tipoCategatoriaVlan);</span>
+<span class="nc" id="L427">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L430" title="All 2 branches missed.">        if (vlanVod != null) {</span>
+<span class="nc" id="L431">            builder.append(&quot;vlanVod=&quot;);</span>
+<span class="nc" id="L432">            builder.append(vlanVod);</span>
+<span class="nc" id="L433">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L436" title="All 2 branches missed.">        if (vlanVoip != null) {</span>
+<span class="nc" id="L437">            builder.append(&quot;vlanVoip=&quot;);</span>
+<span class="nc" id="L438">            builder.append(vlanVoip);</span>
+<span class="nc" id="L439">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L442" title="All 2 branches missed.">        if (vlanMcast != null) {</span>
+<span class="nc" id="L443">            builder.append(&quot;vlanMcast=&quot;);</span>
+<span class="nc" id="L444">            builder.append(vlanMcast);</span>
+<span class="nc" id="L445">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L448" title="All 2 branches missed.">        if (vlanIptv != null) {</span>
+<span class="nc" id="L449">            builder.append(&quot;vlanIptv=&quot;);</span>
+<span class="nc" id="L450">            builder.append(vlanIptv);</span>
+<span class="nc" id="L451">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L454" title="All 2 branches missed.">        if (externalNetworkOwner != null) {</span>
+<span class="nc" id="L455">            builder.append(&quot;externalNetworkOwner=&quot;);</span>
+<span class="nc" id="L456">            builder.append(externalNetworkOwner);</span>
+<span class="nc" id="L457">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L460" title="All 2 branches missed.">        if (fusion != null) {</span>
+<span class="nc" id="L461">            builder.append(&quot;fusion=&quot;);</span>
+<span class="nc" id="L462">            builder.append(fusion);</span>
+<span class="nc" id="L463">            builder.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L466" title="All 2 branches missed.">        if (codigoRetorno != null) {</span>
+<span class="nc" id="L467">            builder.append(&quot;codigoRetorno=&quot;);</span>
+<span class="nc" id="L468">            builder.append(codigoRetorno);</span>
+<span class="nc" id="L469">            builder.append(&quot;, &quot;);</span>
+        }
+<span class="nc bnc" id="L471" title="All 2 branches missed.">        if (mensagemRetorno != null) {</span>
+<span class="nc" id="L472">            builder.append(&quot;mensagemRetorno=&quot;);</span>
+<span class="nc" id="L473">            builder.append(mensagemRetorno);</span>
+<span class="nc" id="L474">            builder.append(&quot;, &quot;);</span>
+        }
+<span class="nc" id="L476">        builder.append(&quot;]&quot;);</span>
+<span class="nc" id="L477">        return builder.toString();</span>
+    }
+
+    public static long getSerialVersionUID() {
+<span class="nc" id="L481">        return serialVersionUID;</span>
+    }
+
+    public Integer getEquipmentId() {
+<span class="nc" id="L485">        return equipmentId;</span>
+    }
+
+    public void setEquipmentId(Integer equipmentId) {
+<span class="nc" id="L489">        this.equipmentId = equipmentId;</span>
+<span class="nc" id="L490">    }</span>
+
+    public String getArmario() {
+<span class="nc" id="L493">        return armario;</span>
+    }
+
+    public void setArmario(String armario) {
+<span class="nc" id="L497">        this.armario = armario;</span>
+<span class="nc" id="L498">    }</span>
+
+    public String getSplitter1n() {
+<span class="nc" id="L501">        return splitter1n;</span>
+    }
+
+    public void setSplitter1n(String splitter1n) {
+<span class="nc" id="L505">        this.splitter1n = splitter1n;</span>
+<span class="nc" id="L506">    }</span>
+
+    public String getNameHL() {
+<span class="fc" id="L509">        return nameHL;</span>
+    }
+
+    public void setNameHL(String nameHL) {
+<span class="nc" id="L513">        this.nameHL = nameHL;</span>
+<span class="nc" id="L514">    }</span>
+
+    public String getVendorHL() {
+<span class="fc" id="L517">        return vendorHL;</span>
+    }
+
+    public void setVendorHL(String vendorHL) {
+<span class="nc" id="L521">        this.vendorHL = vendorHL;</span>
+<span class="nc" id="L522">    }</span>
+
+    public String getHostName() {
+<span class="fc" id="L525">        return hostName;</span>
+    }
+
+    public void setHostName(String hostName) {
+<span class="nc" id="L529">        this.hostName = hostName;</span>
+<span class="nc" id="L530">    }</span>
+
+    public String getNasip() {
+<span class="fc" id="L533">        return nasip;</span>
+    }
+
+    public void setNasip(String nasip) {
+<span class="nc" id="L537">        this.nasip = nasip;</span>
+<span class="nc" id="L538">    }</span>
+
+    public String getSite() {
+<span class="fc" id="L541">        return site;</span>
+    }
+
+    public void setSite(String site) {
+<span class="nc" id="L545">        this.site = site;</span>
+<span class="nc" id="L546">    }</span>
+
+    public String getIpAddress() {
+<span class="fc" id="L549">        return this.ipAddress;</span>
+    }
+    public void setIpAddress(String ipAddress) {
+<span class="nc" id="L552">        this.ipAddress = ipAddress;</span>
+<span class="nc" id="L553">    }</span>
+
+    public String getMascaraIp() {
+<span class="fc" id="L556">        return this.mascaraIp;</span>
+    }
+    public void setMascaraIp(String mascaraIp) {
+<span class="nc" id="L559">        this.mascaraIp = mascaraIp;</span>
+<span class="nc" id="L560">    }</span>
+
+    public String getGerencia() {
+<span class="fc" id="L563">        return this.gerencia;</span>
+    }
+    public void setGerencia(String gerencia) {
+<span class="nc" id="L566">        this.gerencia = gerencia;</span>
+<span class="nc" id="L567">    }</span>
+
+    public String getSwitchAtendimento() {
+<span class="fc" id="L570">        return this.switchAtendimento;</span>
+    }
+    public void setSwitchAtendimento(String switchAtendimento) {
+<span class="nc" id="L573">        this.switchAtendimento = switchAtendimento;</span>
+<span class="nc" id="L574">    }</span>
+
+    public String getV5ID() {
+<span class="fc" id="L577">        return this.v5ID;</span>
+    }
+    public void setV5ID(String v5ID) {
+<span class="nc" id="L580">        this.v5ID = v5ID;</span>
+<span class="nc" id="L581">    }</span>
+
+    public String getSwitchAtendimento2() {
+<span class="fc" id="L584">        return this.switchAtendimento2;</span>
+    }
+    public void setSwitchAtendimento2(String switchAtendimento2) {
+<span class="nc" id="L587">        this.switchAtendimento2 = switchAtendimento2;</span>
+<span class="nc" id="L588">    }</span>
+
+    public String getV5ID2() {
+<span class="fc" id="L591">        return this.v5ID2;</span>
+    }
+    public void setV5ID2(String v5ID2) {
+<span class="nc" id="L594">        this.v5ID2 = v5ID2;</span>
+<span class="nc" id="L595">    }</span>
+
+    public String getShasta() {
+<span class="fc" id="L598">        return this.shasta;</span>
+    }
+    public void setShasta(String shasta) {
+<span class="nc" id="L601">        this.shasta = shasta;</span>
+<span class="nc" id="L602">    }</span>
+
+    public String getProtocoloAGCF() {
+<span class="fc" id="L605">        return this.protocoloAGCF;</span>
+    }
+    public void setProtocoloAGCF(String protocoloAGCF) {
+<span class="nc" id="L608">        this.protocoloAGCF = protocoloAGCF;</span>
+<span class="nc" id="L609">    }</span>
+
+    public String getNomeAGCF() {
+<span class="fc" id="L612">        return this.nomeAGCF;</span>
+    }
+    public void setNomeAGCF(String nomeAGCF) {
+<span class="nc" id="L615">        this.nomeAGCF = nomeAGCF;</span>
+<span class="nc" id="L616">    }</span>
+
+    public String getIpAddressAGCF() {
+<span class="fc" id="L619">        return this.ipAddressAGCF;</span>
+    }
+    public void setIpAddressAGCF(String ipAddressAGCF) {
+<span class="nc" id="L622">        this.ipAddressAGCF = ipAddressAGCF;</span>
+<span class="nc" id="L623">    }</span>
+
+    public String getNumeroBras() {
+<span class="fc" id="L626">        return this.numeroBras;</span>
+    }
+    public void setNumeroBras(String numeroBras) {
+<span class="nc" id="L629">        this.numeroBras = numeroBras;</span>
+<span class="nc" id="L630">    }</span>
+
+    public String getSlotBras() {
+<span class="fc" id="L633">        return this.slotBras;</span>
+    }
+    public void setSlotBras(String slotBras) {
+<span class="nc" id="L636">        this.slotBras = slotBras;</span>
+<span class="nc" id="L637">    }</span>
+
+    public String getSubSlotBras() {
+<span class="fc" id="L640">        return this.subSlotBras;</span>
+    }
+    public void setSubSlotBras(String subSlotBras) {
+<span class="nc" id="L643">        this.subSlotBras = subSlotBras;</span>
+<span class="nc" id="L644">    }</span>
+
+    public String getPortaBras() {
+<span class="fc" id="L647">        return this.portaBras;</span>
+    }
+    public void setPortaBras(String portaBras) {
+<span class="nc" id="L650">        this.portaBras = portaBras;</span>
+<span class="nc" id="L651">    }</span>
+
+    public Integer getStackVlan() {
+<span class="fc" id="L654">        return this.stackVlan;</span>
+    }
+    public void setStackVlan(Integer stackVlan) {
+<span class="nc" id="L657">        this.stackVlan = stackVlan;</span>
+<span class="nc" id="L658">    }</span>
+
+    public String getNumeroAgregador() {
+<span class="fc" id="L661">        return this.numeroAgregador;</span>
+    }
+    public void setNumeroAgregador(String numeroAgregador) {
+<span class="nc" id="L664">        this.numeroAgregador = numeroAgregador;</span>
+<span class="nc" id="L665">    }</span>
+
+    public String getSlotAgregador() {
+<span class="fc" id="L668">        return this.slotAgregador;</span>
+    }
+    public void setSlotAgregador(String slotAgregador) {
+<span class="nc" id="L671">        this.slotAgregador = slotAgregador;</span>
+<span class="nc" id="L672">    }</span>
+
+    public String getSubSlotAgregador() {
+<span class="fc" id="L675">        return this.subSlotAgregador;</span>
+    }
+    public void setSubSlotAgregador(String subSlotAgregador) {
+<span class="nc" id="L678">        this.subSlotAgregador = subSlotAgregador;</span>
+<span class="nc" id="L679">    }</span>
+
+    public String getPortaAgregador() {
+<span class="fc" id="L682">        return this.portaAgregador;</span>
+    }
+    public void setPortaAgregador(String portaAgregador) {
+<span class="nc" id="L685">        this.portaAgregador = portaAgregador;</span>
+<span class="nc" id="L686">    }</span>
+
+    public String getTipoCategatoriaVlan() {
+<span class="fc" id="L689">        return this.tipoCategatoriaVlan;</span>
+    }
+    public void setTipoCategatoriaVlan(String tipoCategatoriaVlan) {
+<span class="nc" id="L692">        this.tipoCategatoriaVlan = tipoCategatoriaVlan;</span>
+<span class="nc" id="L693">    }</span>
+
+    public Integer getVlanVod() {
+<span class="fc" id="L696">        return this.vlanVod;</span>
+    }
+    public void setVlanVod(Integer vlanVod) {
+<span class="nc" id="L699">        this.vlanVod = vlanVod;</span>
+<span class="nc" id="L700">    }</span>
+
+    public Integer getVlanVoip() {
+<span class="fc" id="L703">        return this.vlanVoip;</span>
+    }
+    public void setVlanVoip(Integer vlanVoip) {
+<span class="nc" id="L706">        this.vlanVoip = vlanVoip;</span>
+<span class="nc" id="L707">    }</span>
+
+    public Integer getVlanMcast() {
+<span class="fc" id="L710">        return this.vlanMcast;</span>
+    }
+    public void setVlanMcast(Integer vlanMcast) {
+<span class="nc" id="L713">        this.vlanMcast = vlanMcast;</span>
+<span class="nc" id="L714">    }</span>
+
+    public Integer getVlanIptv() {
+<span class="fc" id="L717">        return this.vlanIptv;</span>
+    }
+    public void setVlanIptv(Integer vlanIptv) {
+<span class="nc" id="L720">        this.vlanIptv = vlanIptv;</span>
+<span class="nc" id="L721">    }</span>
+
+    public String getExternalNetworkOwner() {
+<span class="fc" id="L724">        return this.externalNetworkOwner;</span>
+    }
+    public void setExternalNetworkOwner(String externalNetworkOwner) {
+<span class="nc" id="L727">        this.externalNetworkOwner = externalNetworkOwner;</span>
+<span class="nc" id="L728">    }</span>
+
+    public String getFusion() {
+<span class="fc" id="L731">        return this.fusion;</span>
+    }
+    public void setFusion(String fusion) {
+<span class="nc" id="L734">        this.fusion = fusion;</span>
+<span class="nc" id="L735">    }</span>
+
+    public Integer getCodigoRetorno() {
+<span class="fc" id="L738">        return codigoRetorno;</span>
+    }
+
+    public void setCodigoRetorno(Integer codigoRetorno) {
+<span class="fc" id="L742">        this.codigoRetorno = codigoRetorno;</span>
+<span class="fc" id="L743">    }</span>
+
+    public String getMensagemRetorno() {
+<span class="fc" id="L746">        return mensagemRetorno;</span>
+    }
+
+    public void setMensagemRetorno(String mensagemRetorno) {
+<span class="fc" id="L750">        this.mensagemRetorno = mensagemRetorno;</span>
+<span class="fc" id="L751">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

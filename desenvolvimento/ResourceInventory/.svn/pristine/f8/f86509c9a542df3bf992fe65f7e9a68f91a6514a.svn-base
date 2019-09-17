@@ -1,0 +1,172 @@
+package com.tlf.oss.resourceinventory.tbs.core;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.IPAddress;
+import com.tlf.oss.resourceinventory.schemas.LogicalResource;
+import com.tlf.oss.resourceinventory.schemas.LogicalResourceAssociation;
+import com.tlf.oss.resourceinventory.schemas.NetworkRoute;
+import com.tlf.oss.resourceinventory.schemas.NetworkRouteAssociation;
+import com.tlf.oss.resourceinventory.schemas.PhysicalPort;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ResourceCharacteristicSpecification;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.NetworkInfoEntity;
+import com.tlf.oss.resourceinventory.tbs.repository.NetworkInfoRepository;
+
+@RunWith(MockitoJUnitRunner.class)
+public class FacilityRetrievalTest {
+
+	@InjectMocks
+	private NetworkInfoController retrieveController;
+
+	@Mock
+	private NetworkInfoRepository retrieveRepository;
+	
+	@Mock
+	private OSSLogger logger;
+
+	private ResourceInventoryEntity resourceInventoryEntity;
+	private NetworkInfoEntity response;
+	private NetworkInfoEntity erroResponse;
+
+	@Before
+	public void before() {
+
+		resourceInventoryEntity = new ResourceInventoryEntity();
+
+		ResourceOrder resourceOrder = new ResourceOrder();
+		ResourceOrderItem resourceOrderItem = new ResourceOrderItem();
+		resourceOrderItem.setId("00000000");
+		resourceOrder.setResourceOrderItem(resourceOrderItem);
+		resourceInventoryEntity.setResourceOrder(resourceOrder);
+
+		Cabinet cabinet = new Cabinet();
+		List<Shelf> hasShelves = new ArrayList<Shelf>();
+		Shelf shelf = new Shelf();
+		List<ResourceCharacteristicSpecification> resourceCharacteristicSpecifications = new ArrayList<ResourceCharacteristicSpecification>();
+		ResourceCharacteristicSpecification rce1 = new ResourceCharacteristicSpecification();
+		ResourceCharacteristicSpecification rce2 = new ResourceCharacteristicSpecification();
+		IPAddress ipController = new IPAddress();
+		List<PortAdapterCard> hasCards = new ArrayList<PortAdapterCard>();
+		PortAdapterCard portAdapterCard = new PortAdapterCard();
+		List<PhysicalPort> containsPorts = new ArrayList<PhysicalPort>();
+		PhysicalPort physicalPort = new PhysicalPort();
+		LogicalResourceAssociation logicalResourceAssociation = new LogicalResourceAssociation();
+		List<LogicalResource> logicalResources = new ArrayList<LogicalResource>();
+		LogicalResource LogicalResource = new LogicalResource();
+		NetworkRouteAssociation networkRouteAssociation = new NetworkRouteAssociation();
+		List<NetworkRoute> networkRoutes = new ArrayList<NetworkRoute>();
+		NetworkRoute networkRoute = new NetworkRoute();
+		networkRoutes.add(networkRoute);
+		networkRouteAssociation.getNetworkRoute().addAll(networkRoutes);
+		LogicalResource.setNetworkRouteAssociation(networkRouteAssociation);
+		logicalResources.add(LogicalResource);
+		logicalResourceAssociation.getLogicalResource().addAll(logicalResources);
+		physicalPort.setLogicalResourceAssociation(logicalResourceAssociation);
+		containsPorts.add(physicalPort);
+		portAdapterCard.setContainsPorts(containsPorts);
+		hasCards.add(portAdapterCard);
+		resourceCharacteristicSpecifications.add(rce1);
+		resourceCharacteristicSpecifications.add(rce2);
+		shelf.setIpController(ipController);
+		shelf.setHasCards(hasCards);
+		shelf.setResourceCharacteristicSpecifications(resourceCharacteristicSpecifications);
+		hasShelves.add(shelf);
+		cabinet.setHasShelves(hasShelves);
+		resourceInventoryEntity.setCabinet(cabinet);
+
+		ResourceFacingService resourceFacingService = new ResourceFacingService();
+		resourceFacingService.setServiceId("CTA-0000000001-069");
+		resourceInventoryEntity.setResourceFacingService(resourceFacingService);
+
+		response = new NetworkInfoEntity();
+		response.setDesignator("");
+		response.setCircuitActivityInd("");
+		response.setInstancia("");
+		response.setIpAddress("");
+		response.setPortaFisica("");
+		response.setPortaLogica(0);
+		response.setSlot("");
+		response.setTypeOfResource("");
+		response.setV5id("");
+		response.setVendorName("");
+		response.setExternalNetworkOwner("00000");
+		response.setCodErro(Integer.valueOf("0"));
+		response.setMsgErro(""); 
+		response.setNameBRAS("testeNameHL");
+		response.setVendorBRAS("testeVendorHL");
+		response.setHostNameBRAS("testeHostNameHL");
+		response.setSiteBRAS("testeSiteHL");
+		response.setNasIp("testeNasIp");
+		response.setNameDslam("testeNameDslam");
+		response.setDownstream("25000");
+		response.setUpstream("25000");
+		
+		erroResponse = new NetworkInfoEntity();
+		erroResponse.setDesignator("");
+		erroResponse.setCircuitActivityInd("");
+		erroResponse.setInstancia("");
+		erroResponse.setIpAddress("");
+		erroResponse.setPortaFisica("");
+		erroResponse.setPortaLogica(0);
+		erroResponse.setSlot("");
+		erroResponse.setTypeOfResource("");
+		erroResponse.setV5id("");
+		erroResponse.setVendorName("");
+		erroResponse.setExternalNetworkOwner("00000");
+		erroResponse.setCodErro(Integer.valueOf("1"));
+		erroResponse.setMsgErro("Erro"); 
+		erroResponse.setNameBRAS("testeNameHL");
+		erroResponse.setVendorBRAS("testeVendorHL");
+		erroResponse.setHostNameBRAS("testeHostNameHL");
+		erroResponse.setSiteBRAS("testeSiteHL");
+	}
+
+	@Test
+	public void testDoExecution() throws OSSBusinessException {
+
+		when(retrieveRepository.getRetrieveNetworkInfo(anyObject(), anyObject())).thenReturn(response);
+		ResourceInventoryEntity out = retrieveController.getRetrieve(resourceInventoryEntity);
+
+		assertNotNull(out);
+		assertTrue("0".equalsIgnoreCase(String.valueOf(response.getCodErro())));
+
+	}
+
+	@Test
+	public void testDoExecutionOSSBusinessException() {
+		OSSBusinessException exception = null;
+		
+		try {
+			when(retrieveRepository.getRetrieveNetworkInfo(anyObject(), anyObject())).thenReturn(erroResponse);
+			retrieveController.getRetrieve(resourceInventoryEntity);
+
+		} catch (Exception e) {
+			exception = new OSSBusinessException("Code: 0", "RITBS-001", "ERRO: " + e.getMessage());
+		}
+
+		assertNotNull(exception);
+	}
+
+}

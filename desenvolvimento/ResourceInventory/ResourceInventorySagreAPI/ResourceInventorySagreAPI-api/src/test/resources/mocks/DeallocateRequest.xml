@@ -1,0 +1,20 @@
+<deallocateResourceIn>
+	<brazilianUrbanPropertyAddress>
+		<cnl>41000</cnl>
+		<networkOwner>VIVO2</networkOwner>
+		<placePhysicalResourceAssoc>
+			<physicalLink>
+				<voiceProtocol>SIP</voiceProtocol>
+				<accessTechnology>GPON</accessTechnology>
+			</physicalLink>
+		</placePhysicalResourceAssoc>
+	</brazilianUrbanPropertyAddress>
+	<resourceFacingService>
+		<serviceId>CTA-01234567-069</serviceId>
+	</resourceFacingService>
+	<resourceOrder>
+		<resourceOrderItem>
+			<name>TSS_FIBER_PHYSICAL_ACCESS</name>
+		</resourceOrderItem>
+	</resourceOrder>
+</deallocateResourceIn>

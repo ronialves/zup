@@ -1,0 +1,321 @@
+package com.tlf.oss.resourceinventory.tbs.core.dao;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.Equipment;
+import com.tlf.oss.resourceinventory.schemas.PhysicalPort;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.core.utils.Constants;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrievalEquipmentDetailTreeEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrievalEquipmentEntity;
+import com.tlf.oss.resourceinventory.tbs.repository.factory.GenericRepository;
+
+/**
+ * Responsável pela comunicação com as Procs do TBS que retornam as informações
+ * dos Equipamentos de Rede.
+ */
+public class EquipmentRetrievalDao extends GenericRepository implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private OSSLogger logger;
+
+	private static final String TLF_SP_SIGITM_GET_ELEMENTO = "TLF_SP_SIGITM_GET_ELEMENTO";
+	private static final String TLF_SP_SIGITM_GET_FILHO = "TLF_SP_SIGITM_GET_FILHO";
+	private static final String TLF_SP_SIGITM_GET_PORTA = "TLF_SP_SIGITM_GET_PORTA";
+	
+	private static final String STATE_OR_PROVINCE = "stateOrProvince";
+	private static final String MICROAREA = "microarea";
+	private static final String EQUIPMENT = "equipment";
+	private static final String HOSTNAME = "Hostname";
+	private static final String P_STATE_CODE = "p_state_code";
+	private static final String P_SITE = "p_site";
+	private static final String P_HOSTNAME = "p_hostname";
+	private static final String P_FUSION = "p_fusion";
+	private static final String P_EQUIPMENT_ID = "p_equipment_id";
+	
+	private static final String TBS = "TBS";
+	private static final String SUB = "SUB";
+	private static final String SLOT = "SLOT";
+	private static final String PORT = "PORT";
+
+	/**
+	 * Fluxo de Consulta dos Equipamentos de uma Localidade.
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public ResourceInventoryEntity getEquipmentByLocation(ResourceInventoryEntity entity) {
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalDao - getEquipmentByLocation - Iniciando chamada a Procedure do TBS.");
+
+		List<RetrievalEquipmentEntity> result;
+
+			TypedQuery<RetrievalEquipmentEntity> query;
+			query = getFactory().createNamedQuery(RetrievalEquipmentEntity.RETRIEVAL_EQUIPMENT, RetrievalEquipmentEntity.class);
+			
+			String stateOrProvince = getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, STATE_OR_PROVINCE);
+			String microArea = getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, MICROAREA);
+
+			if(stateOrProvince != null && !stateOrProvince.isEmpty() && microArea != null && !microArea.isEmpty()) {
+				query.setParameter(P_STATE_CODE, stateOrProvince);
+				query.setParameter(P_SITE, microArea);
+
+				logIn(query, TLF_SP_SIGITM_GET_ELEMENTO);
+
+				result = query.getResultList();
+
+				return equipmentMapper(entity, result);
+			} else {
+
+				return entity;
+			}
+	}
+
+	/**
+	* Metodo responsavel pelo mapeamento das informacoes dos Equipamentos.
+	* 
+	* @param entity
+	* @param resultQuery
+	* @return
+	*/
+	private ResourceInventoryEntity equipmentMapper(ResourceInventoryEntity entity, List<RetrievalEquipmentEntity> resultQuery) {
+			
+		if(resultQuery != null && !resultQuery.isEmpty()) {
+			List<Equipment> equipments = getEquipments(entity);
+			
+		for (RetrievalEquipmentEntity resultEquipment : resultQuery) {
+				
+				Equipment equipment = new Equipment();
+				
+				if(resultEquipment.getTypeEquip() != null)
+					equipment.setTypeOfResource(resultEquipment.getTypeEquip());
+				
+				if(resultEquipment.getHostname() != null)
+					equipment.setName(resultEquipment.getHostname().toLowerCase());
+				
+				if(resultEquipment.getNasip() != null)
+					equipment.setIp(resultEquipment.getNasip());
+				
+				equipment.setOrigin(TBS);
+				
+				if(resultEquipment.getIdEquip() != null)
+					equipment.setId(resultEquipment.getIdEquip());
+				
+				if(resultEquipment.getVendorName() != null)
+					equipment.setVendor(resultEquipment.getVendorName());
+				
+				if(resultEquipment.getAcronymEquip() != null)
+					equipment.setModel(resultEquipment.getAcronymEquip());
+				
+				equipments.add(equipment);
+			}
+			entity.setEquipment(equipments);
+		}
+		return entity;
+	}
+
+	/**
+	 * Fluxo de Consulta de Detalhe de Equipamentos.
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public ResourceInventoryEntity getEquipmentDetail(ResourceInventoryEntity entity) {
+		
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalDao - getEquipmentDetail - Iniciando chamada a Procedure do TBS.");
+		
+		List<RetrievalEquipmentDetailTreeEntity> resultTree = new ArrayList<RetrievalEquipmentDetailTreeEntity>();
+		
+		TypedQuery<RetrievalEquipmentDetailTreeEntity> queryTree = getFactory().createNamedQuery(
+				RetrievalEquipmentDetailTreeEntity.RETRIEVAL_EQUIPMENT_DETAIL_TREE,
+				RetrievalEquipmentDetailTreeEntity.class);
+		
+		String equipmentName = getParamValue(entity, EQUIPMENT, HOSTNAME);
+
+		if(equipmentName != null && !equipmentName.isEmpty()) {
+			queryTree.setParameter(P_HOSTNAME, equipmentName);
+			queryTree.setParameter(P_FUSION, "SIM");
+
+			logIn(queryTree, TLF_SP_SIGITM_GET_FILHO);
+			resultTree = queryTree.getResultList();
+			
+			entity = equipmentTreeMapper(entity, resultTree);			
+		} 
+		return entity;		
+	}
+	
+	private ResourceInventoryEntity equipmentTreeMapper(ResourceInventoryEntity entity, List<RetrievalEquipmentDetailTreeEntity> resultTree) {
+		
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalDao - getEquipmentDetail - Iniciando o mapeamento de dados de retorno do TBS.");
+		
+		if(resultTree != null && !resultTree.isEmpty()) {			
+			
+			List<PortAdapterCard> cards = new ArrayList<PortAdapterCard>();
+						
+			for(RetrievalEquipmentDetailTreeEntity equipTree : resultTree) {				
+				if(null != equipTree.getEquipAcronym()) {
+					if(SLOT.equalsIgnoreCase(equipTree.getEquipAcronym())) {						
+						cards.add(getCard(equipTree, SLOT, resultTree));
+					} else if(SUB.equalsIgnoreCase(equipTree.getEquipAcronym())) {						
+						cards.add(getCard(equipTree, SUB, resultTree));
+					} 
+				}	
+			}			
+			
+			return saveCard(entity, cards);			
+		} else {
+			return entity;
+		}
+	}
+	
+	private PortAdapterCard getCard(RetrievalEquipmentDetailTreeEntity equipTree, String type, List<RetrievalEquipmentDetailTreeEntity> resultTree) {
+		
+		PortAdapterCard card = new PortAdapterCard();
+
+		if (equipTree.getEquipIdParent() != null)
+			card.setSlotId(equipTree.getEquipIdParent());
+
+		if (equipTree.getEquipIdChild() != null)
+			card.setSubSlotId(equipTree.getEquipIdChild());
+
+		if (equipTree.getMountPosNumber() != null) {
+			if (SLOT.equalsIgnoreCase(type)) {
+				card.setSlot(equipTree.getMountPosNumber());
+			} else if (SUB.equalsIgnoreCase(type)) {
+				card.setSubSlot(equipTree.getMountPosNumber());
+				card.setContainsPorts(getContainsPorts(card, resultTree));
+			}
+		}
+
+		card.setOrigin(TBS);
+
+		if (equipTree.getEquipName() != null)
+			card.setName(equipTree.getEquipName());
+
+		return card;
+	}
+	
+	private List<PhysicalPort> getContainsPorts(PortAdapterCard card, List<RetrievalEquipmentDetailTreeEntity> resultTree) {
+		
+		List<PhysicalPort> physicalPorts = new ArrayList<PhysicalPort>();		
+			physicalPorts = getPorts(resultTree, card.getSubSlotId());
+		return physicalPorts;
+	}	
+	
+	private List<PhysicalPort> getPorts(List<RetrievalEquipmentDetailTreeEntity> resultTree, String id) {
+
+		List<PhysicalPort> ports = new ArrayList<PhysicalPort>();
+
+		for (RetrievalEquipmentDetailTreeEntity resultPort : resultTree) {
+			if (PORT.equalsIgnoreCase(resultPort.getEquipAcronym()) && resultPort.getEquipIdChild() != null
+					&& resultPort.getEquipIdParent() != null && id.equalsIgnoreCase(resultPort.getEquipIdParent())) {
+				PhysicalPort physicalPort = new PhysicalPort();
+
+				if (null != resultPort.getMountPosNumber())
+					physicalPort.setId(resultPort.getMountPosNumber());
+
+				if (null != resultPort.getEquipIdChild())
+					physicalPort.setFiberId(resultPort.getEquipIdChild());
+
+				ports.add(physicalPort);
+			}
+		}
+				
+		return ports;		
+	}
+	
+	private ResourceInventoryEntity saveCard(ResourceInventoryEntity entity, List<PortAdapterCard> cards) {
+		
+		if(entity.getEquipment() != null) {
+			Equipment equipment = new Equipment();
+				equipment.setHasCards(cards);
+			entity.getEquipment().add(equipment);
+		} else {
+			List<Equipment> equipments = new ArrayList<Equipment>();
+				Equipment equipment = new Equipment();
+					equipment.setHasCards(cards);
+				equipments.add(equipment);
+			entity.setEquipment(equipments);
+		}
+		
+		return formatEquipments(entity);
+	}
+	
+	private ResourceInventoryEntity formatEquipments(ResourceInventoryEntity entity) {
+		
+		List<PortAdapterCard> formatCards = new ArrayList<PortAdapterCard>();
+		
+		for(Equipment equipment : entity.getEquipment()) {			
+			for(PortAdapterCard card : equipment.getHasCards()) {				
+				
+				if(!formatCards.contains(card)) {
+					formatCards.add(card);
+				}							
+			}			
+		}
+				
+		List<Equipment> equipments = new ArrayList<Equipment>();
+			Equipment equipment = new Equipment();
+				equipment.setHasCards(formatCards);
+			equipments.add(equipment);
+		entity.setEquipment(equipments);
+		
+		return entity;
+	}
+
+	private void logIn(Query query, String procName) {
+		String log = getlogIn(procName, query);
+		logger.log(OSSLogger.INFO, log);
+	}
+	
+	/**
+	 * Retorna o valor do Parâmetro do ServiceDescribedBy.
+	 * 
+	 * @param entity
+	 * @param networkOwner
+	 * @param paramName
+	 * @return
+	 */
+	private String getParamValue(ResourceInventoryEntity entity, String networkOwner, String paramName) {
+		
+		for (ServiceDescribedBy sdb : entity.getResourceFacingService().getServiceDescribedBy()) {			
+			if (networkOwner.equalsIgnoreCase(sdb.getName())) {				
+				for (ServiceSpecCharDescribes sscd : sdb.getServiceSpecCharDescribes()) {					
+					if (paramName.equalsIgnoreCase(sscd.getValueType())) {
+						logger.log(OSSLogger.INFO, "EquipmentRetrievalDao - getParamValue - " + paramName + " : " + sscd.getValue());
+						return sscd.getValue();
+					}					
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	*Validacao do equipamento, caso exista, o mesmo eh retornado.
+	*Caso nao exista, criamos um novo para que nao de Null Pointer Exception. 
+	*
+	*@param entity
+	*@return
+	*/
+	private List<Equipment> getEquipments(ResourceInventoryEntity entity){
+		if (entity.getEquipment() != null) {
+			return entity.getEquipment();
+		} else {
+			return new ArrayList<Equipment>();
+		}
+	}
+	
+}

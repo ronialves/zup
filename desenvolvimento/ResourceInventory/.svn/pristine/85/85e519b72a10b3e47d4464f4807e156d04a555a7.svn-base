@@ -1,0 +1,93 @@
+package com.tlf.oss.resourceinventory.cpe.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "CARACTERISTICA_DISPOSITIVO")
+public class CaracteristicaDispositivo implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@SequenceGenerator(name = "CPE_OWNER.CARACTERISTICA_DISPOSITIVO_SEQ", sequenceName = "CPE_OWNER.CARACTERISTICA_DISPOSITIVO_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CPE_OWNER.CARACTERISTICA_DISPOSITIVO_SEQ")
+	@Column(name = "ID")
+	private Integer id;
+
+	@Basic
+	@Column(name = "NOME")
+	private String nome;
+
+	@Basic
+	@Column(name = "VALOR")
+	private String valor;
+
+	@Basic
+	@Column(name = "CATALOGO_DISPOSITIVO_ID")
+	private Integer catalagoDispositivoId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CATALOGO_DISPOSITIVO_ID", referencedColumnName = "ID", insertable = false, updatable = false)
+	private CatalogoDispositivo catalogo;
+
+	public CaracteristicaDispositivo() {}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getValor() {
+		return valor;
+	}
+
+	public void setValor(String valor) {
+		this.valor = valor;
+	}
+
+	public Integer getCatalagoDispositivoId() {
+		return catalagoDispositivoId;
+	}
+
+	public void setCatalagoDispositivoId(Integer catalagoDispositivoId) {
+		this.catalagoDispositivoId = catalagoDispositivoId;
+	}
+
+	public CatalogoDispositivo getCatalogo() {
+		return catalogo;
+	}
+
+	public void setCatalogo(CatalogoDispositivo catalogo) {
+		this.catalogo = catalogo;
+	}
+
+	@Override
+	public String toString() {
+		return "CategoriaDispositivo [id=" + id + ", nome=" + nome + ", valor=" + valor + ", catalagoDispositivoId="
+				+ catalagoDispositivoId + "]";
+	}
+
+}

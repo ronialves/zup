@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FacilityResourceGponController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">FacilityResourceGponController.java</span></div><h1>FacilityResourceGponController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.osp.reportresourceprovisioning.circuittypes.CircuitReport;
+import com.tlf.oss.resourceinventory.generated.osp.reportresourceprovisioning.headercontext.WsContext;
+import com.tlf.oss.resourceinventory.generated.osp.reportresourceprovisioning.reportresourceprovisioningtypes.ReportResourceProvisioningRequest;
+import com.tlf.oss.resourceinventory.generated.osp.reportresourceprovisioning.reportresourceprovisioningtypes.ReportResourceProvisioningResponse;
+import com.tlf.oss.resourceinventory.generated.osp.reportresourceprovisioning.reportresourceprovisioningtypes.ReportResourceProvisioningResponse.Informations;
+import com.tlf.oss.resourceinventory.generated.osp.reportresourceprovisioning.terminalresourcetypes.TerminalResource;
+import com.tlf.oss.resourceinventory.osp.core.enums.CircuitTypeEnum;
+import com.tlf.oss.resourceinventory.osp.core.enums.OSPWSName;
+import com.tlf.oss.resourceinventory.osp.core.enums.TerminalBoxTypeStrategy;
+import com.tlf.oss.resourceinventory.osp.core.service.FacilityResourceService;
+import com.tlf.oss.resourceinventory.osp.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.osp.factory.OssBusinessExceptionFactory;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.Circuit;
+import com.tlf.oss.resourceinventory.schemas.CustomerOrder;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.TerminalBox;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L30">public class FacilityResourceGponController extends ValidatorEntity{</span>
+
+	@Inject
+	protected OSSLogger logger;
+
+	@Inject
+	protected FacilityResourceService facilityResourceService;
+
+	public ResourceInventoryEntity resourceFacility(ResourceInventoryEntity entity) throws OSSBusinessException {
+		try {
+<span class="fc" id="L40">			WsContext headerContext = new WsContext();</span>
+<span class="fc" id="L41">			headerContext.setRegionCode(entity.getAddress().getCnl());</span>
+<span class="fc" id="L42">			headerContext.setCentralOffice(entity.getAddress().getTelephonicArea());</span>
+			
+<span class="fc" id="L44">			ReportResourceProvisioningRequest request = createRequest(entity);			</span>
+<span class="fc" id="L45">			ReportResourceProvisioningResponse response = facilityResourceService.distributeResourceProvisioningReports(request, headerContext); </span>
+<span class="fc" id="L46">			updateEntity(response, entity);</span>
+<span class="fc" id="L47">			return entity;</span>
+<span class="fc" id="L48">		} catch (Exception e) {</span>
+<span class="fc" id="L49">			String description = &quot;Erro no resource facility&quot;;</span>
+<span class="fc" id="L50">			logger.error(description, e);</span>
+<span class="fc" id="L51">			throw OssBusinessExceptionFactory.getOSSBusinessException(e, OSPWSName.ReportResourceProvisioning);</span>
+		}
+	}
+
+	private ReportResourceProvisioningRequest createRequest(ResourceInventoryEntity entity) {
+
+		
+<span class="fc" id="L58">		ReportResourceProvisioningRequest reportResourceProvisioningRequest = new ReportResourceProvisioningRequest();</span>
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		if(entity.getResourceFacingService() != null ){</span>
+<span class="fc" id="L61">			reportResourceProvisioningRequest.setCircuitId(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L62">			reportResourceProvisioningRequest.setCircuitType(CircuitTypeEnum.parse(CircuitTypeEnum.GPON.getValue()));</span>
+		}
+
+<span class="fc" id="L65">		return reportResourceProvisioningRequest;</span>
+	}
+
+	private void updateEntity(ReportResourceProvisioningResponse response, ResourceInventoryEntity entity)throws OSSBusinessException {
+
+<span class="pc bpc" id="L70" title="1 of 4 branches missed.">		if (response.getResult() != null &amp;&amp; response.getResult().getCode() != 0) {</span>
+<span class="nc" id="L71">			throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(String.valueOf(response.getResult().getErrorCode()), response.getResult().getDescription(), OSPWSName.ReportResourceProvisioning);</span>
+		}
+
+<span class="fc" id="L74">		Circuit circuitRet = new Circuit();</span>
+		
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">		if (entity.getCircuit() != null) {</span>
+<span class="fc" id="L77">			circuitRet = entity.getCircuit();</span>
+		}
+
+<span class="fc" id="L80">		Cabinet cabinet = new Cabinet();</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">		if (entity.getCabinet() != null) {</span>
+<span class="fc" id="L82">			cabinet = entity.getCabinet();</span>
+		}
+<span class="fc" id="L84">		cabinet.setPrimaryCable(null);</span>
+<span class="fc" id="L85">		cabinet.setPrimaryFiber(null);</span>
+		
+<span class="fc" id="L87">		TerminalBox terminalBox = new TerminalBox();</span>
+<span class="pc bpc" id="L88" title="2 of 4 branches missed.">		if (entity.getCabinet() != null &amp;&amp; entity.getCabinet().getTerminalBox() != null) {</span>
+<span class="fc" id="L89">			terminalBox = entity.getCabinet().getTerminalBox();</span>
+		}
+		
+<span class="fc" id="L92">		BrazilianUrbanPropertyAddress bupAddress = new BrazilianUrbanPropertyAddress();		</span>
+<span class="pc bpc" id="L93" title="2 of 4 branches missed.">		if (entity.getCabinet() != null &amp;&amp; entity.getCabinet().getTerminalBox() != null</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">				&amp;&amp; entity.getCabinet().getTerminalBox().getAddress() != null) {</span>
+<span class="fc" id="L95">			bupAddress = entity.getCabinet().getTerminalBox().getAddress();</span>
+		}
+		
+
+<span class="pc bpc" id="L99" title="2 of 4 branches missed.">		if (response.getInformations() != null &amp;&amp; !response.getInformations().isEmpty()) {</span>
+			
+<span class="fc bfc" id="L101" title="All 2 branches covered.">			for (int countInformation = 0; countInformation &lt; response.getInformations().size(); countInformation++) {</span>
+<span class="fc" id="L102">				Informations info = response.getInformations().get(countInformation);</span>
+
+<span class="fc" id="L104">				getResourceOrder(info, entity);</span>
+<span class="fc" id="L105">				getRelatedCircuits(circuitRet, cabinet, terminalBox, bupAddress, info);				</span>
+			}
+		}
+		
+<span class="fc" id="L109">		entity.setCircuit(circuitRet);</span>
+<span class="fc" id="L110">		entity.setCabinet(cabinet);</span>
+		
+<span class="fc" id="L112">	}</span>
+
+	// Valida
+	private void getResourceOrder(Informations info, ResourceInventoryEntity entity) {
+			
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">		if(entity.getCustomerOrder() == null){</span>
+
+<span class="fc" id="L119">			CustomerOrder customerOrder = new CustomerOrder();</span>
+<span class="fc" id="L120">			entity.setCustomerOrder(customerOrder);</span>
+			
+<span class="fc" id="L122">			entity.getCustomerOrder().setPurchaseOrderNumber(info.getResourceOrder());</span>
+		}
+
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">		if(info.getReserveOrder() != null ){</span>
+
+<span class="fc" id="L127">			ServiceDescribedBy serviceDescribedBy = new ServiceDescribedBy();</span>
+<span class="fc" id="L128">			serviceDescribedBy.setName(&quot;NRC&quot;);</span>
+<span class="fc" id="L129">			entity.getResourceFacingService().getServiceDescribedBy().add(serviceDescribedBy);</span>
+			
+<span class="fc" id="L131">			ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();</span>
+<span class="fc" id="L132">			entity.getResourceFacingService().getServiceDescribedBy().get(0).getServiceSpecCharDescribes().add(serviceSpecCharDescribes);				</span>
+<span class="fc" id="L133">			entity.getResourceFacingService().getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0).setValue(info.getReserveOrder());</span>
+			
+		}
+<span class="fc" id="L136">	}</span>
+
+	private void getRelatedCircuits(Circuit circuitRet, Cabinet cabinet, TerminalBox terminalBox,
+			BrazilianUrbanPropertyAddress bupAddress, Informations info) {
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">		if (info.getRelatedCircuits() != null </span>
+<span class="pc bpc" id="L141" title="2 of 4 branches missed.">				&amp;&amp; (info.getRelatedCircuits().getCircuit() != null &amp;&amp; !info.getRelatedCircuits().getCircuit().isEmpty())) {</span>
+
+<span class="fc bfc" id="L143" title="All 2 branches covered.">			for (int countCircuit = 0; countCircuit &lt; info.getRelatedCircuits().getCircuit().size(); countCircuit++) {</span>
+<span class="fc" id="L144">				CircuitReport circuit = info.getRelatedCircuits().getCircuit().get(countCircuit);</span>
+<span class="fc" id="L145">				circuitRet.setId(circuit.getCircuitIdentifier());								</span>
+				
+				//getRelatedIniciallResources(cabinet, circuit);
+
+<span class="fc" id="L149">				getRelatedTerminalResources(cabinet, terminalBox, bupAddress, circuit);</span>
+			}							
+		}
+<span class="fc" id="L152">	}</span>
+
+	private void getRelatedTerminalResources(Cabinet cabinet, TerminalBox terminalBox, BrazilianUrbanPropertyAddress bupAddress,
+			CircuitReport circuit) {
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">		if (circuit.getResources() != null</span>
+<span class="pc bpc" id="L157" title="2 of 4 branches missed.">				&amp;&amp; (circuit.getResources().getRelatedTerminalResources() != null &amp;&amp; !circuit.getResources().getRelatedTerminalResources().isEmpty())) {</span>
+<span class="fc" id="L158">			List&lt;TerminalResource&gt; terminalResources = circuit.getResources().getRelatedTerminalResources();</span>
+
+<span class="pc bpc" id="L160" title="2 of 4 branches missed.">			if (terminalResources != null &amp;&amp; !terminalResources.isEmpty()) {</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">				for (int countTerminalResource = 0; countTerminalResource &lt; terminalResources.size(); countTerminalResource++) {</span>
+<span class="fc" id="L162">					TerminalResource terminalResource = terminalResources.get(countTerminalResource);</span>
+					
+<span class="pc bpc" id="L164" title="2 of 4 branches missed.">					if (terminalResource != null &amp;&amp; terminalResource.getTerminalResource() != null) {</span>
+
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">						terminalBox.setId(terminalResource.getTerminalResource().getCode() != null ? terminalResource.getTerminalResource().getCode() : null);</span>
+						
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">						if (terminalResource.getTerminalResource().getType() != null) {</span>
+<span class="fc" id="L169">							TerminalBoxTypeStrategy terminalBoxTypeStrategy = TerminalBoxTypeStrategy</span>
+<span class="fc" id="L170">									.getType(terminalResource.getTerminalResource().getType().intValue());</span>
+<span class="fc" id="L171">							terminalBox.setType(terminalBoxTypeStrategy.getDescriptionType());</span>
+						}
+						
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">						if (terminalResource.getTerminalResource().getResourceCharacterist() != null) {</span>
+<span class="fc" id="L175">							bupAddress.setAddressType(terminalResource.getTerminalResource().getResourceCharacterist().getStreetType());</span>
+<span class="fc" id="L176">							bupAddress.setStreetName(terminalResource.getTerminalResource().getResourceCharacterist().getStreetName());</span>
+<span class="fc" id="L177">							bupAddress.setStreetNrFirst(terminalResource.getTerminalResource().getResourceCharacterist().getStreetNumber());</span>
+						}
+																	
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">						if (terminalResource.getTerminalLogicalCable() != null) {</span>
+<span class="fc" id="L181">							terminalBox.setCableNumber(terminalResource.getTerminalLogicalCable().getCode());</span>
+<span class="fc" id="L182">							terminalBox.setSideCableNumber(terminalResource.getTerminalLogicalCable().getLateral());										</span>
+						}
+					}
+					
+<span class="fc" id="L186">					terminalBox.setAddress(bupAddress);									</span>
+<span class="fc" id="L187">					cabinet.setTerminalBox(terminalBox);</span>
+				}										
+			}
+		}
+<span class="fc" id="L191">	}</span>
+	
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

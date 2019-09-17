@@ -1,0 +1,690 @@
+package com.tlf.oss.resourceinventory.granite.core.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.QueryHint;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.tlf.oss.resourceinventory.granite.core.to.ResultTo;
+
+@Table(name="circ_path_inst")
+@Entity
+@NamedNativeQueries({
+	@NamedNativeQuery(name="QueryFacility",query="SELECT STATUS,CIRC_PATH_INST_ID,		"+
+			"		HOSTNAME,      			                                            "+
+			"       IP_EQUIPAMENT,                                                      "+
+			"       PROFILE_ACTIVATION,                                                 "+
+			"       IP_CONTROLLER,                                                      "+
+			"       RACK,                                                               "+
+			"       SHELF,                                                              "+
+			"       SUBRACK,                                                            "+
+			"       VIRTUAL_PORT,                                                       "+
+			"       VIRTUAL_CHANNEL,                                                    "+
+			"       SLOT,                                                               "+
+			"       SUBSLOT,                                                            "+
+			"       PORT,                                                               "+
+			"       LIC,                                                                "+
+			"       NETWORK_TYPE,                                                       "+
+			"       VLAN_USER,                                                          "+
+			"       VLAN_NETWORK,                                                       "+
+			"       VLAN_VOIP,                                                          "+
+			"       VENDOR,                                                             "+
+			"       MODEL,                                                              "+
+			"       NASIP,                                                              "+
+			"       NASPORT,                                                            "+
+			"       ACCESS_EQUIP_TYPE,                                                  "+
+			"       HORIZONTAL_1,                                                       "+
+			"       VERTICAL_1,                                                         "+
+			"       PINO_1,                                                             "+
+			"       HORIZONTAL_2,                                                       "+
+			"       VERTICAL_2,                                                         "+
+			"       PINO_2,                                                             "+
+			"       ACCESS_EQUIP_NAME,                                                  "+
+			"       MASCMODEMLAN,                                                       "+
+			"       MASCIPMODEMWAN                                                      "+
+			"  FROM (SELECT CPI.CIRC_PATH_INST_ID PATH,                                 "+
+			"               CPAS.ATTR_VALUE TERMINAL_NUMBER,                            "+
+			"               (SELECT EAS.ATTR_VALUE                                      "+
+			"                  FROM EQUIP_ATTR_SETTINGS EAS, VAL_ATTR_NAME VAN          "+
+			"                 WHERE EAS.EQUIP_INST_ID = EI.EQUIP_INST_ID                "+
+			"                   AND EAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			"                   AND VAN.GROUP_NAME = 'EQUIPAMENTO_ENGENHARIA'           "+
+			"                   AND VAN.ATTR_NAME = 'NOME_EQUIPAMENTO'                  "+
+			"                   AND ROWNUM < 2) HOSTNAME,                               "+
+			"                                                                           "+
+			"               (SELECT EAS.ATTR_VALUE                                      "+
+			"                  FROM EQUIP_ATTR_SETTINGS EAS, VAL_ATTR_NAME VAN          "+
+			"                 WHERE EAS.EQUIP_INST_ID = EI.EQUIP_INST_ID                "+
+			"                   AND EAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			"                   AND VAN.GROUP_NAME = 'EQUIPAMENTO_ENGENHARIA'           "+
+			"                   AND VAN.ATTR_NAME = 'ENDERECO_IP'                       "+
+			"                   AND ROWNUM < 2) IP_EQUIPAMENT,                          "+
+			"                                                                           "+
+			"               (SELECT PAS.ATTR_VALUE                                      "+
+			"                  FROM PORT_ATTR_SETTINGS PAS, VAL_ATTR_NAME VAN           "+
+			"                 WHERE PAS.PORT_INST_ID = EPA.PORT_INST_ID                 "+
+			"                   AND PAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			"                   AND VAN.GROUP_NAME = 'ADSL_PROFILE'                     "+
+			"                   AND VAN.ATTR_NAME = 'NOME'                              "+
+			"                   AND ROWNUM < 2) PROFILE_ACTIVATION,                     "+
+			"                                                                           "+
+			"               (SELECT EAS.ATTR_VALUE                                      "+
+			"                  FROM EQUIP_ATTR_SETTINGS EAS, VAL_ATTR_NAME VAN          "+
+			"                 WHERE EAS.EQUIP_INST_ID = EI.EQUIP_INST_ID                "+
+			"                   AND EAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			"                   AND VAN.GROUP_NAME = 'EQUIPAMENTO_ENGENHARIA'           "+
+			"                   AND VAN.ATTR_NAME = 'ENDERECO_IP_GERENCIA'              "+
+			"                   AND ROWNUM < 2) IP_CONTROLLER,                          "+
+			"                                                                           "+
+			"               EI.FRAME RACK,                                              "+
+			"               EI.SHELF SHELF,                                             "+
+			"               DECODE(EI.VENDOR,                                           "+
+			"                      'ERICSSON',                                          "+
+			"                      EI.SHELF,                                            "+
+			"                      'HUAWEI TECHNOLOGIES',                               "+
+			"                      EI.SHELF,                                            "+
+			"                      NULL) AS SUBRACK,                                    "+
+			"                                                                           "+
+			"               (SELECT PAS.ATTR_VALUE                                      "+
+			"                  FROM PORT_ATTR_SETTINGS PAS, VAL_ATTR_NAME VAN           "+
+			"                 WHERE PAS.PORT_INST_ID = EPA.PORT_INST_ID                 "+
+			"                   AND PAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			"                   AND VAN.GROUP_NAME = 'PORTA'                            "+
+			"                   AND VAN.ATTR_NAME = 'VP'                                "+
+			"                   AND ROWNUM < 2) VIRTUAL_PORT,                           "+
+			"                                                                           "+
+			"               (SELECT PAS.ATTR_VALUE                                      "+
+			"                  FROM PORT_ATTR_SETTINGS PAS, VAL_ATTR_NAME VAN           "+
+			"                 WHERE PAS.PORT_INST_ID = EPA.PORT_INST_ID                 "+
+			"                   AND PAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			"                   AND VAN.GROUP_NAME = 'PORTA'                            "+
+			"                   AND VAN.ATTR_NAME = 'VC'                                "+
+			"                   AND ROWNUM < 2) VIRTUAL_CHANNEL,                        "+
+			"               CASE                                                        "+
+			"               	WHEN CI.SLOT LIKE '%-%' THEN                            "+
+			"                      REGEXP_SUBSTR(CI.SLOT, '[^-]+')                      "+
+			"                   ELSE                                                    "+
+			"                      CI.SLOT                                              "+    
+			"               END AS SLOT,                                                "+
+			"               CASE                                                        "+ 
+			"                   WHEN CI.SLOT LIKE '%-%' THEN                            "+ 
+			"                      REGEXP_SUBSTR(CI.SLOT, '[^-]+$')                     "+ 
+			"               ELSE                                                        "+ 
+			"                  NULL                                                     "+ 
+			"               END AS SUBSLOT,                                             "+
+			"               EPA.PORT_HUM_ID PORT,                                       "+
+			"                                                 							"+
+			"               (SELECT cpm.lic 											"+
+			"               FROM equip_attr_settings eas,								"+
+			"               val_attr_name     											"+
+			"               vaneq,														"+
+			"                conexoes_pots_msan  cpm									"+
+			"               WHERE eas.equip_inst_id = ei.equip_inst_id					"+
+			"               AND vaneq.val_attr_inst_id = eas.val_attr_inst_id			"+
+			"               AND cpm.id_msan = eas.attr_value							"+
+			"               AND cpm.slot_vdsl = ci.slot									"+
+			"                AND cpm.porta_vdsl = epa.port_hum_id						"+	
+			"               AND vaneq.group_name = 'EQUIPAMENTO_ENGENHARIA'				"+
+			"               AND vaneq.attr_name = 'NOME_EQUIPAMENTO'					"+
+			"               AND ROWNUM < 2) LIC,										"+
+			"																			"+
+			"               (SELECT EAS.ATTR_VALUE                                      "+
+			"                  FROM EQUIP_ATTR_SETTINGS EAS, VAL_ATTR_NAME VAN          "+
+			"                 WHERE EAS.EQUIP_INST_ID = EI.EQUIP_INST_ID                "+
+			"                   AND EAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			"                   AND VAN.GROUP_NAME = 'EQUIPAMENTO_GERAL'                "+
+			"                   AND VAN.ATTR_NAME = 'TIPO_REDE'                         "+
+			"                   AND ROWNUM < 2) NETWORK_TYPE,                           "+
+			"                                                                           "+
+			"               (SELECT EAS.ATTR_VALUE                                      "+
+			"                  FROM EQUIP_ATTR_SETTINGS EAS, VAL_ATTR_NAME VAN          "+
+			"                 WHERE EAS.EQUIP_INST_ID = EI.EQUIP_INST_ID                "+
+			"                   AND EAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			"                   AND VAN.GROUP_NAME = 'EQUIPAMENTO_VOIP'                 "+
+			"                   AND VAN.ATTR_NAME = 'VLAN_VOIP'                         "+
+			"                   AND ROWNUM < 2) VLAN_VOIP,                              "+
+			"               EI.TYPE AS ACCESS_EQUIP_TYPE,                               "+
+			"               EI.DESCR AS ACCESS_EQUIP_NAME,                              "+
+			"                                                                           "+
+			"               (SELECT PAS_I.ATTR_VALUE                                    "+
+			"                  FROM PORT_ATTR_SETTINGS PAS_I, VAL_ATTR_NAME VAN_I       "+
+			"                 WHERE PAS_I.PORT_INST_ID = EPA.PORT_INST_ID               "+
+			"                   AND PAS_I.VAL_ATTR_INST_ID = VAN_I.VAL_ATTR_INST_ID     "+
+			"                   AND VAN_I.GROUP_NAME = 'DGFRAME'                        "+
+			"                   AND VAN_I.ATTR_NAME = 'HORIZONTAL'                      "+
+			"                   AND ROWNUM < 2) AS HORIZONTAL_1,                        "+
+			"                                                                           "+
+			"               (SELECT PAS_I.ATTR_VALUE                                    "+
+			"                  FROM PORT_ATTR_SETTINGS PAS_I, VAL_ATTR_NAME VAN_I       "+
+			"                 WHERE PAS_I.PORT_INST_ID = EPA.PORT_INST_ID               "+
+			"                   AND PAS_I.VAL_ATTR_INST_ID = VAN_I.VAL_ATTR_INST_ID     "+
+			"                   AND VAN_I.GROUP_NAME = 'DGFRAME'                        "+
+			"                   AND VAN_I.ATTR_NAME = 'VERTICAL'                        "+
+			"                   AND ROWNUM < 2) AS VERTICAL_1,                          "+
+			"                                                                           "+
+			"               (SELECT PAS_I.ATTR_VALUE                                    "+
+			"                  FROM PORT_ATTR_SETTINGS PAS_I, VAL_ATTR_NAME VAN_I       "+
+			"                 WHERE PAS_I.PORT_INST_ID = EPA.PORT_INST_ID               "+
+			"                   AND PAS_I.VAL_ATTR_INST_ID = VAN_I.VAL_ATTR_INST_ID     "+
+			"                   AND VAN_I.GROUP_NAME = 'DGFRAME'                        "+
+			"                   AND VAN_I.ATTR_NAME = 'TRANSMIT'                        "+
+			"                   AND ROWNUM < 2) AS PINO_1,                              "+
+			"                                                                           "+
+			"               (SELECT PAS_I.ATTR_VALUE                                    "+
+			"                  FROM PORT_ATTR_SETTINGS PAS_I, VAL_ATTR_NAME VAN_I       "+
+			"                 WHERE PAS_I.PORT_INST_ID = EPA.PORT_INST_ID               "+
+			"                   AND PAS_I.VAL_ATTR_INST_ID = VAN_I.VAL_ATTR_INST_ID     "+
+			"                   AND VAN_I.GROUP_NAME = 'DGFRAME'                        "+
+			"                   AND VAN_I.ATTR_NAME = 'HORIZONTAL2'                     "+
+			"                   AND ROWNUM < 2) AS HORIZONTAL_2,                        "+
+			"                                                                           "+
+			"               (SELECT PAS_I.ATTR_VALUE                                    "+
+			"                  FROM PORT_ATTR_SETTINGS PAS_I, VAL_ATTR_NAME VAN_I       "+
+			"                 WHERE PAS_I.PORT_INST_ID = EPA.PORT_INST_ID               "+
+			"                   AND PAS_I.VAL_ATTR_INST_ID = VAN_I.VAL_ATTR_INST_ID     "+
+			"                   AND VAN_I.GROUP_NAME = 'DGFRAME'                        "+
+			"                   AND VAN_I.ATTR_NAME = 'VERTICAL2'                       "+
+			"                   AND ROWNUM < 2) AS VERTICAL_2,                          "+
+			"                                                                           "+
+			"               (SELECT PAS_I.ATTR_VALUE                                    "+
+			"                  FROM PORT_ATTR_SETTINGS PAS_I, VAL_ATTR_NAME VAN_I       "+
+			"                 WHERE PAS_I.PORT_INST_ID = EPA.PORT_INST_ID               "+
+			"                   AND PAS_I.VAL_ATTR_INST_ID = VAN_I.VAL_ATTR_INST_ID     "+
+			"                   AND VAN_I.GROUP_NAME = 'DGFRAME'                        "+
+			"                   AND VAN_I.ATTR_NAME = 'TRANSMIT2'                       "+
+			"                   AND ROWNUM < 2) AS PINO_2  , CPI.STATUS, CPI.CIRC_PATH_INST_ID                 "+
+			"          FROM CIRC_PATH_ELEMENT CPE,                                      "+
+			"               EPA,                                                        "+
+			"               CARD_INST CI,                                               "+
+			"               EQUIP_INST EI,                                              "+
+			"               CIRC_PATH_INST CPI,                                         "+
+			"               CIRC_PATH_ATTR_SETTINGS CPAS,                               "+
+			"               VAL_ATTR_NAME VAN                                           "+
+			"         WHERE CPI.CIRC_PATH_INST_ID = CPAS.CIRC_PATH_INST_ID              "+
+			"           AND EPA.PORT_INST_ID = CPE.PORT_INST_ID                         "+
+			"           AND EI.EQUIP_INST_ID = EPA.EQUIP_INST_ID                        "+
+			"           AND CI.CARD_INST_ID = EPA.CARD_INST_ID                          "+
+			"           AND CI.EQUIP_INST_ID = EI.EQUIP_INST_ID                         "+
+			"           AND CPI.CIRC_PATH_INST_ID = CPAS.CIRC_PATH_INST_ID              "+
+			"           AND CPAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID                "+
+			"           AND VAN.GROUP_NAME = 'LINE'                                     "+
+			"           AND VAN.ATTR_NAME = 'NUMERO_TERMINAL'                           "+
+			" 			AND EI.TYPE  NOT IN (SELECT ret.equip_type          			"+
+			"       FROM retrieve_equipment_type ret                					"+
+			"       WHERE ret.equip_group = 'EQUIPAMENTO TERMINADOR')					"+
+			"           AND CPE.ELEMENT_TYPE = 'E'                                      "+
+			 "           AND CPE.CIRC_PATH_INST_ID = CPAS.CIRC_PATH_INST_ID) ACESSO,     "+
+			 "       (SELECT CPI.CIRC_PATH_INST_ID AS PATH,                              "+
+			 "               CPAS.ATTR_VALUE AS TERMINAL_NUMBER,                         "+
+			 "               (SELECT PAS.ATTR_VALUE                                      "+
+			 "                  FROM PORT_ATTR_SETTINGS PAS, VAL_ATTR_NAME VAN           "+
+			 "                 WHERE PAS.PORT_INST_ID = EPA.PORT_INST_ID                 "+
+			 "                   AND PAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			 "                   AND VAN.GROUP_NAME = 'PORTA'                            "+
+			 "                   AND VAN.ATTR_NAME = 'VLAN_USUARIO'                      "+
+			 "                   AND ROWNUM < 2) VLAN_USER,                              "+
+			 "               (SELECT PAS.ATTR_VALUE                                      "+
+			 "                  FROM PORT_ATTR_SETTINGS PAS, VAL_ATTR_NAME VAN           "+
+			 "                 WHERE PAS.PORT_INST_ID = EPA.PORT_INST_ID                 "+
+			 "                   AND PAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID         "+
+			 "                   AND VAN.GROUP_NAME = 'PORTA'                            "+
+			 "                   AND VAN.ATTR_NAME = 'VLAN_REDE'                         "+
+			 "                   AND ROWNUM < 2) VLAN_NETWORK,                           "+
+			 "               EI.VENDOR VENDOR,                                           "+
+			 "                                                                           "+
+			 "               EI.MODEL MODEL,                                             "+
+			 "                                                                           "+
+			 "               (SELECT CPAS.ATTR_VALUE                                     "+
+			 "                  FROM CIRC_PATH_ATTR_SETTINGS CPAS, VAL_ATTR_NAME VAN     "+
+			 "                 WHERE CPAS.CIRC_PATH_INST_ID = CPI.CIRC_PATH_INST_ID      "+
+			 "                   AND CPAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID        "+
+			 "                   AND VAN.GROUP_NAME = 'PATH_PROCESSO'                    "+
+			 "                   AND VAN.ATTR_NAME = 'NASIP'                             "+
+			 "                   AND ROWNUM < 2) NASIP,                                  "+
+			 "                                                                           "+
+			 "               (SELECT CPAS.ATTR_VALUE                                     "+
+			 "                  FROM CIRC_PATH_ATTR_SETTINGS CPAS, VAL_ATTR_NAME VAN     "+
+			 "                 WHERE CPAS.CIRC_PATH_INST_ID = CPI.CIRC_PATH_INST_ID      "+
+			 "                   AND CPAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID        "+
+			 "                   AND VAN.GROUP_NAME = 'PATH_PROCESSO'                    "+
+			 "                   AND VAN.ATTR_NAME = 'NASPORT_CALCULADO'                 "+
+			 "                   AND ROWNUM < 2) NASPORT,                                "+
+			 "                                                                           "+
+			 "               NVL((SELECT CPAS_I.ATTR_VALUE                               "+
+			 "                     FROM CIRC_PATH_ATTR_SETTINGS CPAS_I,                  "+
+			 "                          VAL_ATTR_NAME           VAN_I                    "+
+			 "                    WHERE CPI.CIRC_PATH_INST_ID = CPAS_I.CIRC_PATH_INST_ID "+
+			 "                      AND CPAS_I.VAL_ATTR_INST_ID = VAN_I.VAL_ATTR_INST_ID "+
+			 "                      AND VAN_I.GROUP_NAME = 'PATH_ENDERECAMENTO'          "+
+			 "                      AND VAN_I.ATTR_NAME = 'MASCIPLAN'                    "+
+			 "                      AND ROWNUM < 2),                                     "+
+			 "                                                                           "+
+			 "                   (SELECT PAS_I.ATTR_VALUE                                "+
+			 "                      FROM PORT_ATTR_SETTINGS PAS_I, VAL_ATTR_NAME VAN_I   "+
+			 "                     WHERE PAS_I.PORT_INST_ID = EPA.PORT_INST_ID           "+
+			 "                       AND PAS_I.VAL_ATTR_INST_ID = VAN_I.VAL_ATTR_INST_ID "+
+			 "                       AND VAN_I.GROUP_NAME = 'PORTA_ENDIP'                "+
+			 "                       AND VAN_I.ATTR_NAME = 'MASC_IP_LAN'                 "+
+			 "                       AND ROWNUM < 2)) AS MASCMODEMLAN,                   "+
+			 "                                                                           "+
+			 "               (SELECT PAS_I.ATTR_VALUE                                    "+
+			 "                  FROM PORT_ATTR_SETTINGS PAS_I, VAL_ATTR_NAME VAN_I       "+
+			 "                 WHERE PAS_I.PORT_INST_ID = EPA.PORT_INST_ID               "+
+			 "                   AND PAS_I.VAL_ATTR_INST_ID = VAN_I.VAL_ATTR_INST_ID     "+
+			 "                   AND VAN_I.GROUP_NAME = 'PORTA_ENDIP'                    "+
+			 "                   AND VAN_I.ATTR_NAME = 'MASC_IP_MODEM_WAN'               "+
+			 "                   AND ROWNUM < 2) AS MASCIPMODEMWAN                       "+
+			 "                                                                           "+
+			 "          FROM CIRC_PATH_ELEMENT CPE,                                      "+
+			 "               EPA,                                                        "+
+			 "               CARD_INST CI,                                               "+
+			 "               EQUIP_INST EI,                                              "+
+			 "               CIRC_PATH_INST CPI,                                         "+
+			 "               CIRC_PATH_ATTR_SETTINGS CPAS,                               "+
+			 "               VAL_ATTR_NAME VAN                                           "+
+			 "         WHERE CPI.CIRC_PATH_INST_ID = CPAS.CIRC_PATH_INST_ID              "+
+			 "           AND EPA.PORT_INST_ID = CPE.PORT_INST_ID                         "+
+			 "           AND EI.EQUIP_INST_ID = EPA.EQUIP_INST_ID                        "+
+			 "           AND CI.CARD_INST_ID = EPA.CARD_INST_ID                          "+
+			 "           AND CI.EQUIP_INST_ID = EI.EQUIP_INST_ID                         "+
+			 "           AND CPI.CIRC_PATH_INST_ID = CPAS.CIRC_PATH_INST_ID              "+
+			 "           AND CPAS.VAL_ATTR_INST_ID = VAN.VAL_ATTR_INST_ID                "+
+			 "           AND VAN.GROUP_NAME = 'LINE'                                     "+
+			 "           AND VAN.ATTR_NAME = 'NUMERO_TERMINAL'                           "+
+			" 			AND EI.TYPE  IN (SELECT ret.equip_type          				"+
+			"       FROM retrieve_equipment_type ret                					"+
+			"       WHERE ret.equip_group = 'EQUIPAMENTO TERMINADOR')					"+
+			 "           AND CPE.ELEMENT_TYPE = 'E'                                      "+
+			 "           AND CPE.CIRC_PATH_INST_ID = CPAS.CIRC_PATH_INST_ID) AGREGADOR   "+
+			 " WHERE ACESSO.PATH = AGREGADOR.PATH(+)                                     "+
+			 "   AND ACESSO.TERMINAL_NUMBER = ?					    " , 
+			 resultClass = RetrieveFacilityEntity.class,
+			 hints = { @QueryHint(name = "eclipselink.query-results-cache", value = "false") 
+	})})
+public class RetrieveFacilityEntity extends EntityCommon<Long> implements Serializable  {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="circ_path_inst_id")
+	private Long circ_path_inst_id;
+	
+	@Column(name="hostname")
+	private String hostname;
+
+	@Column(name="IP_EQUIPAMENT")
+	private String ip_equipamento;
+
+	@Column(name="SHELF")
+	private String id_shelf;
+
+	@Column(name="PROFILE_ACTIVATION")
+	private String profile_activation;
+
+	@Column(name="IP_CONTROLLER")
+	private String ip_controller;
+	@Column(name="rack")
+	private String rack;
+	@Column(name="subrack")
+	private String subrack;
+	@Column(name="virtual_port")
+	private String virtualPort;
+	@Column(name="virtual_channel")
+	private String virtualChannel;
+	@Column(name="slot")
+	private String slot;
+	@Column(name="subslot")
+	private String subslot;
+	@Column(name="port")
+	private String port;
+	@Column(name="network_type")
+	private String networkType;
+	@Column(name="VLAN_USER")
+	private String vlanCustomer;
+	@Column(name="VLAN_NETWORK")
+	private String vlanNetwork;
+	@Column(name="vlan_voip")
+	private String vlanVoip;
+	@Column(name="VENDOR")
+	private String manufacturer;
+	@Column(name="MODEL")
+	private String model;
+	@Column(name="nasip")
+	private String nasip;
+	@Column(name="nasport")
+	private String nasport;
+	@Column(name="ACCESS_EQUIP_TYPE")
+	private String  type;
+	@Column(name="horizontal_1")
+	private String  horizontalOne;
+	@Column(name="vertical_1")
+	private String  verticalOne;
+	@Column(name="pino_1")
+	private String  pinOne;
+	@Column(name="horizontal_2")
+	private String  horizontalTwo;
+	@Column(name="vertical_2")
+	private String  verticalTwo;
+	@Column(name="pino_2")
+	private String  pinTwo;
+	@Column(name="ACCESS_EQUIP_NAME")
+	private String  sigresName;
+	@Column(name="mascmodemlan")
+	private String  mascmodemlan;
+	@Column(name="mascipmodemwan")
+	private String  mascipmodemwan;
+	@Column(name="status")
+	private String  status;
+	@Column(name="LIC")	 
+	private String lic;
+	@Transient
+	private String terminal;
+	@Transient
+	private ResultTo result ;
+
+	public String getTerminal() {
+		return terminal;
+	}
+
+	public void setTerminal(String terminal) {
+		this.terminal = terminal;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getHorizontalOne() {
+		return horizontalOne;
+	}
+
+	public void setHorizontalOne(String horizontalOne) {
+		this.horizontalOne = horizontalOne;
+	}
+
+	public String getVerticalOne() {
+		return verticalOne;
+	}
+
+	public void setVerticalOne(String verticalOne) {
+		this.verticalOne = verticalOne;
+	}
+
+	public String getPinOne() {
+		return pinOne;
+	}
+
+	public void setPinOne(String pinOne) {
+		this.pinOne = pinOne;
+	}
+
+	public String getHorizontalTwo() {
+		return horizontalTwo;
+	}
+
+	public void setHorizontalTwo(String horizontalTwo) {
+		this.horizontalTwo = horizontalTwo;
+	}
+
+	public String getVerticalTwo() {
+		return verticalTwo;
+	}
+
+	public void setVerticalTwo(String verticalTwo) {
+		this.verticalTwo = verticalTwo;
+	}
+
+	public String getPinTwo() {
+		return pinTwo;
+	}
+
+	public void setPinTwo(String pinTwo) {
+		this.pinTwo = pinTwo;
+	}
+
+
+	public String getSigresName() {
+		return sigresName;
+	}
+
+	public void setSigresName(String sigresName) {
+		this.sigresName = sigresName;
+	}
+
+	public String getMascmodemlan() {
+		return mascmodemlan;
+	}
+
+	public void setMascmodemlan(String mascmodemlan) {
+		this.mascmodemlan = mascmodemlan;
+	}
+
+	public String getMascipmodemwan() {
+		return mascipmodemwan;
+	}
+
+	public void setMascipmodemwan(String mascipmodemwan) {
+		this.mascipmodemwan = mascipmodemwan;
+	}
+
+	public String getHostname() {
+		return hostname;
+	}
+
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+
+	public String getIp_equipamento() {
+		return ip_equipamento;
+	}
+
+	public void setIp_equipamento(String ip_equipamento) {
+		this.ip_equipamento = ip_equipamento;
+	}
+
+	public String getProfile_activation() {
+		return profile_activation;
+	}
+
+	public void setProfile_activation(String profile_activation) {
+		this.profile_activation = profile_activation;
+	}
+
+	public String getIp_controller() {
+		return ip_controller;
+	}
+
+	public void setIp_controller(String ip_controller) {
+		this.ip_controller = ip_controller;
+	}
+
+	public String getRack() {
+		return rack;
+	}
+
+	public void setRack(String rack) {
+		this.rack = rack;
+	}
+
+	public String getSubrack() {
+		return subrack;
+	}
+
+	public void setSubrack(String subrack) {
+		this.subrack = subrack;
+	}
+
+	public String getVirtualPort() {
+		return virtualPort;
+	}
+
+	public void setVirtualPort(String virtualPort) {
+		this.virtualPort = virtualPort;
+	}
+
+	public String getVirtualChannel() {
+		return virtualChannel;
+	}
+
+	public void setVirtualChannel(String virtualChannel) {
+		this.virtualChannel = virtualChannel;
+	}
+
+	public String getSlot() {
+		return slot;
+	}
+
+	public void setSlot(String slot) {
+		this.slot = slot;
+	}
+
+	public String getSubslot() {
+		return subslot;
+	}
+
+	public void setSubslot(String subslot) {
+		this.subslot = subslot;
+	}
+
+	public String getPort() {
+		return port;
+	}
+
+	public void setPort(String port) {
+		this.port = port;
+	}
+
+	public String getNetworkType() {
+		return networkType;
+	}
+
+	public void setNetworkType(String networkType) {
+		this.networkType = networkType;
+	}
+
+	public String getVlanCustomer() {
+		return vlanCustomer;
+	}
+
+	public void setVlanCustomer(String vlanCustomer) {
+		this.vlanCustomer = vlanCustomer;
+	}
+
+	public String getVlanNetwork() {
+		return vlanNetwork;
+	}
+
+	public void setVlanNetwork(String vlanNetwork) {
+		this.vlanNetwork = vlanNetwork;
+	}
+
+	public String getVlanVoip() {
+		return vlanVoip;
+	}
+
+	public void setVlanVoip(String vlanVoip) {
+		this.vlanVoip = vlanVoip;
+	}
+
+	public String getManufacturer() {
+		return manufacturer;
+	}
+
+	public void setManufacturer(String manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public String getNasip() {
+		return nasip;
+	}
+
+	public void setNasip(String nasip) {
+		this.nasip = nasip;
+	}
+
+	public String getNasport() {
+		return nasport;
+	}
+
+	public void setNasport(String nasport) {
+		this.nasport = nasport;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	public String getLic() {
+		return lic;
+	}
+
+	public void setLic(String lic) {
+		this.lic = lic;
+	}
+	
+	public Long getCirc_path_inst_id() {
+		return circ_path_inst_id;
+	}
+
+	public void setCirc_path_inst_id(Long circ_path_inst_id) {
+		this.circ_path_inst_id = circ_path_inst_id;
+	}
+
+	public ResultTo getResult() {
+		if(result==null){
+			result= new ResultTo();
+		}
+		return result;
+	}
+
+	public void setResult(ResultTo result) {
+		this.result = result;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getId_shelf() {
+		return id_shelf;
+	}
+
+	public void setId_shelf(String id_shelf) {
+		this.id_shelf = id_shelf;
+	}
+
+	@Override
+	public Long getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setId(Long id) {
+		// TODO Auto-generated method stub
+
+	}
+}

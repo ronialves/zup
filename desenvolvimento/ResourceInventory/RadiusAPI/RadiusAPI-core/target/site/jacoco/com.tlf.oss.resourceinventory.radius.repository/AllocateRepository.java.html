@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AllocateRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RadiusAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.radius.repository</a> &gt; <span class="el_source">AllocateRepository.java</span></div><h1>AllocateRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.radius.repository;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.QueryTimeoutException;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.radius.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.radius.repository.factory.GenericRepository;
+
+/**
+ * REC3635-1110 | REC3635-2042
+ * 
+ * @project Fusion
+ * @author 80629552
+ * @since 20190325
+ */
+<span class="nc" id="L24">public class AllocateRepository extends GenericRepository{</span>
+
+	private static final long serialVersionUID = 6180885890567189585L;
+	
+	@Inject
+	private OSSLogger logger;
+	
+	public String getShastaCity(String desiginadorAcesso) throws OSSBusinessException {
+		
+<span class="nc" id="L33">		logger.log(OSSLogger.INFO, &quot;Buscando o CNL do shasta city na tabela TNETPRO_POOL&quot;);</span>
+		
+<span class="nc" id="L35">		String result = null;</span>
+		
+<span class="nc" id="L37">		StringBuilder sql = new StringBuilder();</span>
+<span class="nc" id="L38">		sql.append(&quot; SELECT DECODE(MAX(SHASTA_CITY), NULL, 'RJO', MAX(SHASTA_CITY)) &quot;);</span>
+<span class="nc" id="L39">		sql.append(&quot; FROM &quot; +RADIUS_SCHEMA +&quot;.TNETPRO_POOL &quot;);</span>
+<span class="nc" id="L40">		sql.append(&quot; WHERE SHASTA_CITY = ? &quot;);</span>
+<span class="nc" id="L41">		sql.append(&quot; AND (RELEASE_DATE &lt; SYSDATE OR RELEASE_DATE IS NULL) &quot;);</span>
+<span class="nc" id="L42">		sql.append(&quot; AND ROWNUM = 1 &quot;);</span>
+		
+		try {
+			
+<span class="nc bnc" id="L46" title="All 4 branches missed.">			if (desiginadorAcesso != null &amp;&amp; !desiginadorAcesso.trim().isEmpty()) {</span>
+<span class="nc" id="L47">				String designador = desiginadorAcesso.substring(0, 3);</span>
+				
+				Query query;
+<span class="nc" id="L50">				query = getFactory().createNativeQuery(sql.toString());</span>
+				
+<span class="nc" id="L52">				query.setParameter(1, designador);</span>
+				
+<span class="nc" id="L54">				result = (String) query.getSingleResult();				</span>
+<span class="nc" id="L55">			}else{</span>
+<span class="nc" id="L56">				logger.log(OSSLogger.ERROR, &quot;O valor do campo SERVICE_ID eh Vazio ou Nulo&quot;);</span>
+<span class="nc" id="L57">				throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_001.getDescription(),</span>
+<span class="nc" id="L58">						ExceptionInfoEnum.RIRADIUS_001.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_001.getMessage(),</span>
+								&quot;O valor do campo SERVICE_ID eh Vazio ou Nulo&quot;));
+			}
+			
+<span class="nc" id="L62">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L63">			logger.log(OSSLogger.ERROR, &quot;Erro ao buscar SHASTA_CITY na tabela TNETPRO_POOL&quot;);</span>
+<span class="nc" id="L64">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L65">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L66">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L68">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L69">			logger.log(OSSLogger.ERROR, &quot;Erro ao buscar SHASTA_CITY na tabela TNETPRO_POOL&quot;);</span>
+<span class="nc" id="L70">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L71">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L72">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));	</span>
+	
+<span class="nc" id="L74">		} catch (Exception e) {</span>
+<span class="nc" id="L75">			logger.log(OSSLogger.ERROR, &quot;Erro ao buscar SHASTA_CITY na tabela TNETPRO_POOL&quot;);</span>
+<span class="nc" id="L76">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_999.getDescription(),</span>
+<span class="nc" id="L77">					ExceptionInfoEnum.RIRADIUS_999.getCode(), e.getMessage());		</span>
+<span class="nc" id="L78">		}</span>
+		
+<span class="nc" id="L80">		return result;</span>
+	}
+	
+	public String getIpAddress(String desiginadorAcesso, String shastaCity) throws OSSBusinessException {
+		
+<span class="nc" id="L85">		logger.log(OSSLogger.INFO, &quot;Buscando ip fixo para o designador, ou proximo ip livre&quot;);</span>
+		
+<span class="nc" id="L87">		String result = null;</span>
+		
+<span class="nc" id="L89">		StringBuilder sql = new StringBuilder();		</span>
+<span class="nc" id="L90">		sql.append(&quot; SELECT IP AS IPADDRESSFIXO &quot;);</span>
+<span class="nc" id="L91">		sql.append(&quot; FROM ( SELECT IP_ADDRESS IP, 1 SEQ &quot;);</span>
+<span class="nc" id="L92">		sql.append(&quot;         FROM &quot; +RADIUS_SCHEMA +&quot;.GVT_NC_TNET_IP_CUSTOMER &quot;);</span>
+<span class="nc" id="L93">		sql.append(&quot;         WHERE DESIGNATOR LIKE ? &quot;);</span>
+<span class="nc" id="L94">		sql.append(&quot; UNION &quot;);</span>
+<span class="nc" id="L95">		sql.append(&quot;     SELECT IPADDRESS IP, 2 SEQ &quot;);</span>
+<span class="nc" id="L96">		sql.append(&quot;     FROM &quot; +RADIUS_SCHEMA +&quot;.TNETPRO_POOL &quot;);</span>
+<span class="nc" id="L97">		sql.append(&quot;     WHERE SHASTA_CITY = ? AND (RELEASE_DATE &lt; SYSDATE OR RELEASE_DATE IS NULL) AND ROWNUM = 1 &quot;);</span>
+<span class="nc" id="L98">		sql.append(&quot;         ORDER BY SEQ ) &quot;);</span>
+<span class="nc" id="L99">		sql.append(&quot; WHERE IP IS NOT NULL AND ROWNUM = 1 &quot;);</span>
+		
+		try {
+			
+			Query query;
+<span class="nc" id="L104">			query = getFactory().createNativeQuery(sql.toString());</span>
+			
+<span class="nc" id="L106">			query.setParameter(1, desiginadorAcesso);</span>
+<span class="nc" id="L107">			query.setParameter(2, shastaCity);</span>
+
+<span class="nc" id="L109">			result = (String) query.getSingleResult();</span>
+			
+<span class="nc" id="L111">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L112">			logger.log(OSSLogger.ERROR, &quot;Erro ao buscar Ip_Address &quot;);</span>
+<span class="nc" id="L113">				throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L114">						ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L115">								&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L117">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L118">			logger.log(OSSLogger.ERROR, &quot;Erro ao buscar Ip_Address &quot;);</span>
+<span class="nc" id="L119">				throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L120">						ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L121">								&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));	</span>
+				
+<span class="nc" id="L123">		} catch (Exception e) {</span>
+<span class="nc" id="L124">			logger.log(OSSLogger.ERROR, &quot;Erro ao buscar Ip_Address &quot;);</span>
+<span class="nc" id="L125">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_999.getDescription(),</span>
+<span class="nc" id="L126">					ExceptionInfoEnum.RIRADIUS_999.getCode(), e.getMessage());		</span>
+			
+<span class="nc" id="L128">		}</span>
+		
+<span class="nc" id="L130">		return result;</span>
+	}
+	
+	public void allocateIp(String ipAddress) throws OSSBusinessException {
+		
+<span class="nc" id="L135">		logger.log(OSSLogger.INFO, &quot;Alocando ip na tabela TNETPRO_POOL&quot;);</span>
+				
+<span class="nc" id="L137">		StringBuilder sql = new StringBuilder();		</span>
+<span class="nc" id="L138">		sql.append(&quot; UPDATE &quot; +RADIUS_SCHEMA +&quot;.TNETPRO_POOL SET RELEASE_DATE = to_date('31/12/2099','DD/MM/YYYY') WHERE IPADDRESS = ? &quot;);</span>
+		
+		try {
+			
+			Query query;
+<span class="nc" id="L143">			query = getFactory().createNativeQuery(sql.toString());</span>
+			
+<span class="nc" id="L145">			query.setParameter(1, ipAddress);</span>
+
+<span class="nc" id="L147">			query.executeUpdate();</span>
+			
+<span class="nc" id="L149">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L150">			logger.log(OSSLogger.ERROR, &quot;Erro ao alocar Ip na tabela TNETPRO_POOL&quot;);</span>
+<span class="nc" id="L151">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L152">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L153">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L155">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L156">			logger.log(OSSLogger.ERROR, &quot;Erro ao alocar Ip na tabela TNETPRO_POOL&quot;);</span>
+<span class="nc" id="L157">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L158">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L159">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));	</span>
+	
+<span class="nc" id="L161">		} catch (Exception e) {</span>
+<span class="nc" id="L162">			logger.log(OSSLogger.ERROR, &quot;Erro ao alocar Ip na tabela TNETPRO_POOL&quot;);</span>
+<span class="nc" id="L163">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_999.getDescription(),</span>
+<span class="nc" id="L164">					ExceptionInfoEnum.RIRADIUS_999.getCode(), e.getMessage());				</span>
+<span class="nc" id="L165">		}</span>
+
+<span class="nc" id="L167">	}</span>
+	
+	public void allocateIpToDesignator(String ipAddress, String designadorAcesso) throws OSSBusinessException {
+		
+<span class="nc" id="L171">		logger.log(OSSLogger.INFO, &quot;Alocando ip ao designador na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+				
+<span class="nc" id="L173">		StringBuilder sql = new StringBuilder();		</span>
+<span class="nc" id="L174">		sql.append(&quot; INSERT INTO &quot; +RADIUS_SCHEMA +&quot;.GVT_NC_TNET_IP_CUSTOMER &quot;);</span>
+<span class="nc" id="L175">		sql.append(&quot; (DESIGNATOR, IP_STATUS, IP_ADDRESS, ACTIVATION_DATE, LAST_MODIFIED_USERID, LAST_MODIFIED_DATE) &quot;);</span>
+<span class="nc" id="L176">		sql.append(&quot; VALUES &quot;);</span>
+<span class="nc" id="L177">		sql.append(&quot; (?, 'A', ?, SYSDATE, 'NEC_RADIUS', SYSDATE) &quot;);</span>
+				
+		try {
+			
+			Query query;
+<span class="nc" id="L182">			query = getFactory().createNativeQuery(sql.toString());</span>
+			
+<span class="nc" id="L184">			query.setParameter(1, designadorAcesso);</span>
+<span class="nc" id="L185">			query.setParameter(2, ipAddress);</span>
+
+<span class="nc" id="L187">			query.executeUpdate();</span>
+			
+<span class="nc" id="L189">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L190">			logger.log(OSSLogger.ERROR, &quot;Erro ao alocar Ip ao Designador na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+<span class="nc" id="L191">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L192">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L193">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L195">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L196">			logger.log(OSSLogger.ERROR, &quot;Erro ao alocar Ip ao Designador na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+<span class="nc" id="L197">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L198">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L199">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));	</span>
+			
+<span class="nc" id="L201">		} catch (Exception e) {</span>
+<span class="nc" id="L202">			logger.log(OSSLogger.ERROR, &quot;Erro ao alocar Ip ao Designador na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+<span class="nc" id="L203">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_999.getDescription(),</span>
+<span class="nc" id="L204">					ExceptionInfoEnum.RIRADIUS_999.getCode(), e.getMessage());			</span>
+<span class="nc" id="L205">		}</span>
+
+<span class="nc" id="L207">	}</span>
+	
+	public void allocateUpdateIpToDesignator(String ipAddress, String designadorAcesso) throws OSSBusinessException {
+		
+<span class="nc" id="L211">		logger.log(OSSLogger.INFO, &quot;Alocando ip ao designador na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+				
+<span class="nc" id="L213">		StringBuilder sql = new StringBuilder();		</span>
+<span class="nc" id="L214">		sql.append(&quot; UPDATE &quot; +RADIUS_SCHEMA +&quot;.GVT_NC_TNET_IP_CUSTOMER &quot;);</span>
+<span class="nc" id="L215">		sql.append(&quot; SET IP_ADDRESS = ? , LAST_MODIFIED_USERID = 'NEC_RADIUS' , LAST_MODIFIED_DATE = SYSDATE &quot;);</span>
+<span class="nc" id="L216">		sql.append(&quot; WHERE DESIGNATOR = ? &quot;);</span>
+<span class="nc" id="L217">		sql.append(&quot; AND IP_STATUS = 'A' &quot;);</span>
+				
+		try {
+			
+			Query query;
+<span class="nc" id="L222">			query = getFactory().createNativeQuery(sql.toString());</span>
+			
+<span class="nc" id="L224">			query.setParameter(1, ipAddress);</span>
+<span class="nc" id="L225">			query.setParameter(2, designadorAcesso);</span>
+
+<span class="nc" id="L227">			query.executeUpdate();</span>
+			
+<span class="nc" id="L229">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L230">			logger.log(OSSLogger.ERROR, &quot;Erro ao alocar Ip ao Designador na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+<span class="nc" id="L231">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L232">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L233">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L235">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L236">			logger.log(OSSLogger.ERROR, &quot;Erro ao alocar Ip ao Designador na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+<span class="nc" id="L237">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L238">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L239">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));	</span>
+			
+<span class="nc" id="L241">		} catch (Exception e) {</span>
+<span class="nc" id="L242">			logger.log(OSSLogger.ERROR, &quot;Erro ao alocar Ip ao Designador na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+<span class="nc" id="L243">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_999.getDescription(),</span>
+<span class="nc" id="L244">					ExceptionInfoEnum.RIRADIUS_999.getCode(), e.getMessage());			</span>
+<span class="nc" id="L245">		}</span>
+
+<span class="nc" id="L247">	}</span>
+	
+	public boolean checkAllocateIpToDesignator(String designadorAcesso, String ipAddress) throws OSSBusinessException{
+		
+<span class="nc" id="L251">		logger.log(OSSLogger.INFO, &quot;Verificando alocação na tabela GVT_NC_TNET_IP_CUSTOMER por DESIGNATOR: '&quot; +designadorAcesso +&quot;' e IP_ADDRESS: '&quot; +ipAddress +&quot;'&quot;);</span>
+		
+<span class="nc" id="L253">		boolean checkIpTodesignator = false;</span>
+		
+<span class="nc" id="L255">		StringBuilder sql = new StringBuilder();</span>
+<span class="nc" id="L256">		sql.append(&quot; SELECT DESIGNATOR, IP_STATUS, IP_ADDRESS &quot;);</span>
+<span class="nc" id="L257">		sql.append(&quot; FROM &quot; +RADIUS_SCHEMA +&quot;.GVT_NC_TNET_IP_CUSTOMER &quot;);</span>
+<span class="nc" id="L258">		sql.append(&quot; WHERE DESIGNATOR LIKE ? AND IP_STATUS = 'A' &quot;);</span>
+		
+		try {
+			
+			Query query;
+<span class="nc" id="L263">			query = getFactory().createNativeQuery(sql.toString());</span>
+			
+<span class="nc" id="L265">			query.setParameter(1, designadorAcesso);</span>
+
+<span class="nc" id="L267">			List&lt;Object[]&gt; object = query.getResultList();</span>
+			
+<span class="nc bnc" id="L269" title="All 4 branches missed.">			if(object != null &amp;&amp; !object.isEmpty()){</span>
+				
+<span class="nc bnc" id="L271" title="All 2 branches missed.">				String ip = object.get(0)[2] != null ? String.valueOf(object.get(0)[2]) : null;</span>
+				
+<span class="nc bnc" id="L273" title="All 4 branches missed.">				if (ip != null &amp;&amp; !ip.equals(ipAddress)) {</span>
+<span class="nc" id="L274">					logger.log(OSSLogger.ERROR, &quot;Erro IP_ADDRESS: '&quot; +ip +&quot;' na Tabela GVT_NC_TNET_IP_CUSTOMER ja alocado.&quot;);</span>
+<span class="nc" id="L275">					throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_004.getDescription(),</span>
+<span class="nc" id="L276">							ExceptionInfoEnum.RIRADIUS_004.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_004.getMessage(),</span>
+									&quot;Erro IP_ADDRESS: '&quot; +ip +&quot;' na Tabela GVT_NC_TNET_IP_CUSTOMER ja alocado.&quot;));
+				}
+				
+<span class="nc" id="L280">				checkIpTodesignator = true;</span>
+			}
+			
+<span class="nc" id="L283">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L284">			logger.log(OSSLogger.ERROR, &quot;Erro ao consultar registro na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+<span class="nc" id="L285">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L286">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L287">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L289">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L290">			logger.log(OSSLogger.ERROR, &quot;Erro ao consultar registro na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+<span class="nc" id="L291">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_002.getDescription(),</span>
+<span class="nc" id="L292">					ExceptionInfoEnum.RIRADIUS_002.getCode(), String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+<span class="nc" id="L293">							&quot;Erro ao executar Query no Radius&quot;, e.getMessage()));	</span>
+			
+<span class="nc" id="L295">		} catch (Exception e) {</span>
+<span class="nc" id="L296">			logger.log(OSSLogger.ERROR, &quot;Erro ao consultar registro na tabela GVT_NC_TNET_IP_CUSTOMER&quot;);</span>
+<span class="nc" id="L297">			throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_999.getDescription(),</span>
+<span class="nc" id="L298">					ExceptionInfoEnum.RIRADIUS_999.getCode(), e.getMessage());			</span>
+<span class="nc" id="L299">		}</span>
+		
+<span class="nc" id="L301">		return checkIpTodesignator;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

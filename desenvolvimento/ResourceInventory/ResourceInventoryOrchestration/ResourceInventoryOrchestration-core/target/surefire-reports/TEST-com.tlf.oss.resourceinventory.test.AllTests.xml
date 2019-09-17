@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tlf.oss.resourceinventory.test.AllTests" time="0.784" tests="41" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/home/roni/Java/jdk1.8.0_144/jre/lib/amd64"/>
+    <property name="java.vm.version" value="25.144-b01"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="maven.multiModuleProjectDirectory" value="/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory"/>
+    <property name="java.vendor.url" value="http://java.oracle.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="BR"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory"/>
+    <property name="java.runtime.version" value="1.8.0_144-b01"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="/home/roni/Java/jdk1.8.0_144/jre/lib/endorsed"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="os.name" value="Linux"/>
+    <property name="classworlds.conf" value="/home/roni/workspace/RESOURCEINVENTORY_ESTEIRA2_QA1/.metadata/.plugins/org.eclipse.m2e.launching/launches/m2conf6472783804807500786.tmp"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="52.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="4.10.0-42-generic"/>
+    <property name="user.home" value="/home/roni"/>
+    <property name="user.timezone" value="America/Sao_Paulo"/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.specification.version" value="1.8"/>
+    <property name="user.name" value="roni"/>
+    <property name="java.class.path" value="/opt/eclipse/plugins/org.eclipse.m2e.maven.runtime_1.8.0.20170516-2042/jars/plexus-classworlds-2.5.2.jar"/>
+    <property name="java.vm.specification.version" value="1.8"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/home/roni/Java/jdk1.8.0_144/jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -B -s /home/roni/.m2/settings_ResourceInventory.xml clean package install"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.language" value="pt"/>
+    <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.8.0_144"/>
+    <property name="java.ext.dirs" value="/home/roni/Java/jdk1.8.0_144/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="securerandom.source" value="file:/dev/./urandom"/>
+    <property name="sun.boot.class.path" value="/home/roni/Java/jdk1.8.0_144/jre/lib/resources.jar:/home/roni/Java/jdk1.8.0_144/jre/lib/rt.jar:/home/roni/Java/jdk1.8.0_144/jre/lib/sunrsasign.jar:/home/roni/Java/jdk1.8.0_144/jre/lib/jsse.jar:/home/roni/Java/jdk1.8.0_144/jre/lib/jce.jar:/home/roni/Java/jdk1.8.0_144/jre/lib/charsets.jar:/home/roni/Java/jdk1.8.0_144/jre/lib/jfr.jar:/home/roni/Java/jdk1.8.0_144/jre/classes"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="maven.home" value="/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/EMBEDDED"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.desktop" value="gnome"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$Determine" time="0.039"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$Determine" time="0.012"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$DetermineGponOfferEdition" time="0.021"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$Reserve" time="0.019"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$Release" time="0.017"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$Allocate" time="0.019"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$Deallocate" time="0.024"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$DeallocateCPEACCESS" time="0.021"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$DeallocateCPEVOIP" time="0.029"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$DeallocateCPESTB" time="0.02"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$Install" time="0.023"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$InstallCPEACCESS" time="0.016"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$InstallCPEVOIP" time="0.017"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$InstallCPESTB" time="0.02"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$Uninstall" time="0.017"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$UninstallCPE" time="0.048"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$RetrieveCustomer" time="0.025"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$RetrieveCustomer" time="0.009"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$RetrieveAddress" time="0.014"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$RetrieveCustomerV2" time="0.013"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$RetrieveAddress2" time="0.014"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$RetrieveCPE" time="0.018"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$ExternalInstall" time="0.021"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$InternalInstall" time="0.017"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$AllocateInternal" time="0.018"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$AllocateExternal" time="0.019"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$AllocateCPE1" time="0.023"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$AllocateCPE2" time="0.016"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$AllocateCPESTB" time="0.032"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$DeallocateInternal" time="0.022"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$DeallocateExternal" time="0.018"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo1ExecutionRulesTest$UpdateCPE" time="0.024"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$Install" time="0.018"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$Reserve" time="0.012"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$Allocate" time="0.013"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$AllocateInternal" time="0.014"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$DetermineResourceAvailabilityMetallic" time="0.019"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$Release" time="0.023"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$Release$Deallocate" time="0.01"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.Vivo2ExecutionRulesTest$Release$Uninstall" time="0.013"/>
+  <testcase name="run" classname="com.tlf.oss.resourceinventory.test.EquipmentExecutionRulesTest$Retrieve" time="0.018"/>
+</testsuite>

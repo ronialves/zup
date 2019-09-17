@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetermineAvailabilityRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.repository</a> &gt; <span class="el_source">DetermineAvailabilityRepository.java</span></div><h1>DetermineAvailabilityRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.repository;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceException;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.StoredProcedureQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.tbs.entity.DetermineAvailabilityEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.tbs.repository.factory.GenericRepository;
+
+@SuppressWarnings(&quot;serial&quot;)
+<span class="nc" id="L22">public class DetermineAvailabilityRepository extends GenericRepository implements Serializable {</span>
+
+	@Inject
+	protected OSSLogger logger;
+	
+<span class="nc" id="L27">	private final String PROC_NAME = &quot;ASAP.TLF_SP_DETERMINE_AVAILABILITY&quot;;</span>
+	
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public List&lt;DetermineAvailabilityEntity&gt; determineAvailability(DetermineAvailabilityEntity entity) throws OSSBusinessException {
+<span class="nc" id="L31">		List&lt;DetermineAvailabilityEntity&gt; resultList = null;</span>
+<span class="nc" id="L32">		logger.log(OSSLogger.INFO, this.getClass().getName() + &quot; -  executando procedure &quot; + PROC_NAME);</span>
+
+		try {
+			
+<span class="nc" id="L36">			StoredProcedureQuery procedureQuery = getFactory().createStoredProcedureQuery(PROC_NAME);</span>
+
+<span class="nc" id="L38">			procedureQuery.registerStoredProcedureParameter(&quot;P_ARMARIO&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L39">			procedureQuery.registerStoredProcedureParameter(&quot;P_TELEFONE&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L40">            procedureQuery.registerStoredProcedureParameter(&quot;P_PROTOCOLO&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L41">            procedureQuery.registerStoredProcedureParameter(&quot;P_SWITCH&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L42">            procedureQuery.registerStoredProcedureParameter(&quot;CUR1&quot;, void.class, ParameterMode.REF_CURSOR);</span>
+<span class="nc" id="L43">            procedureQuery.registerStoredProcedureParameter(&quot;P_COD_RETORNO&quot;, Integer.class, ParameterMode.OUT);</span>
+<span class="nc" id="L44">            procedureQuery.registerStoredProcedureParameter(&quot;P_MSG_RETORNO&quot;, String.class, ParameterMode.OUT);</span>
+            
+<span class="nc" id="L46">            procedureQuery.setParameter(&quot;P_ARMARIO&quot;, entity.getCabinet());</span>
+<span class="nc" id="L47">            procedureQuery.setParameter(&quot;P_TELEFONE&quot;, entity.getTelephoneNumber());</span>
+<span class="nc" id="L48">            procedureQuery.setParameter(&quot;P_PROTOCOLO&quot;, null);</span>
+<span class="nc" id="L49">            procedureQuery.setParameter(&quot;P_SWITCH&quot;, entity.getPSwitch());</span>
+            
+<span class="nc" id="L51">            procedureQuery.execute();</span>
+            
+<span class="nc" id="L53">			resultList = castToDetermineAvailabilityEntity((List&lt;Object[]&gt;) procedureQuery.getOutputParameterValue(&quot;CUR1&quot;));</span>
+<span class="nc" id="L54">			Integer codRetorno = (Integer) procedureQuery.getOutputParameterValue(&quot;P_COD_RETORNO&quot;);</span>
+<span class="nc" id="L55">			String msgRetorno = (String) procedureQuery.getOutputParameterValue(&quot;P_MSG_RETORNO&quot;);</span>
+            
+<span class="nc" id="L57">            updateProcReturnResult(resultList, entity.getCabinet(), entity.getTelephoneNumber(), entity.getPSwitch(), codRetorno, msgRetorno);</span>
+            
+<span class="nc" id="L59">    		logger.log(OSSLogger.INFO, this.getClass().getName() + &quot; -  procedure &quot;+ PROC_NAME + &quot; executada com sucesso&quot;);</span>
+
+<span class="nc" id="L61">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L62">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L63">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L64">							&quot;Erro ao chamar a procedure TLF_SP_DETERMINE_AVAILABILITY no TBS&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L66">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L67">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L68">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L69">							&quot;Erro ao chamar a procedure TLF_SP_DETERMINE_AVAILABILITY no TBS&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L71">		} catch (Exception e) {</span>
+<span class="nc" id="L72">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_999.getDescription(),</span>
+<span class="nc" id="L73">					ExceptionInfoEnum.RITBS_999.getCode(), e.getMessage());</span>
+<span class="nc" id="L74">		}</span>
+		
+<span class="nc" id="L76">		return resultList;</span>
+	}
+
+	private void updateProcReturnResult(List&lt;DetermineAvailabilityEntity&gt; resultList,
+			String cabinet, String telefone, String pSwitch, Integer codRetorno, String msgRetorno) {
+
+<span class="nc bnc" id="L82" title="All 2 branches missed.">		for (DetermineAvailabilityEntity determineAvailabilityEntity : resultList) {</span>
+<span class="nc" id="L83">			determineAvailabilityEntity.setCodeReturn(codRetorno);</span>
+<span class="nc" id="L84">			determineAvailabilityEntity.setMessageReturn(msgRetorno);</span>
+<span class="nc" id="L85">			determineAvailabilityEntity.setCabinet(cabinet);</span>
+<span class="nc" id="L86">			determineAvailabilityEntity.setTelephoneNumber(telefone);</span>
+<span class="nc" id="L87">			determineAvailabilityEntity.setPSwitch(pSwitch);</span>
+<span class="nc" id="L88">		}</span>
+		
+<span class="nc bnc" id="L90" title="All 4 branches missed.">		if(resultList != null &amp;&amp; resultList.isEmpty()) {</span>
+<span class="nc" id="L91">			DetermineAvailabilityEntity entity = new DetermineAvailabilityEntity();</span>
+<span class="nc" id="L92">			entity.setCodeReturn(codRetorno);</span>
+<span class="nc" id="L93">			entity.setMessageReturn(msgRetorno);</span>
+<span class="nc" id="L94">			resultList.add(entity);</span>
+		}
+<span class="nc" id="L96">	}</span>
+
+	private List&lt;DetermineAvailabilityEntity&gt; castToDetermineAvailabilityEntity(List&lt;Object[]&gt; list) {
+<span class="nc" id="L99">		List&lt;DetermineAvailabilityEntity&gt; result = new ArrayList&lt;DetermineAvailabilityEntity&gt;();</span>
+		
+<span class="nc bnc" id="L101" title="All 2 branches missed.">		for (Object[] procResult : list) {</span>
+<span class="nc" id="L102">			DetermineAvailabilityEntity entity = new DetermineAvailabilityEntity();</span>
+<span class="nc" id="L103">			entity.setTlfSwitch(objectToString(procResult[0]));</span>
+<span class="nc" id="L104">			entity.setAvailableCapacityADSL(objecToInteger(procResult[1]));</span>
+<span class="nc" id="L105">			entity.setTotalCapacityADSL(objecToInteger(procResult[2]));</span>
+<span class="nc" id="L106">			entity.setAvailableCapacityVDSL(objecToInteger(procResult[3]));</span>
+<span class="nc" id="L107">			entity.setTotalCapacityVDSL(objecToInteger(procResult[4]));</span>
+<span class="nc" id="L108">			entity.setAvailableCapacityFTTH(objecToInteger(procResult[5]));</span>
+<span class="nc" id="L109">			entity.setTotalCapacityFTTH(objecToInteger(procResult[6]));	</span>
+<span class="nc" id="L110">			entity.setAvailableCapacityADSLSIP(objecToInteger(procResult[7]));</span>
+<span class="nc" id="L111">			entity.setTotalCapacityADSLSIP(objecToInteger(procResult[8]));</span>
+<span class="nc" id="L112">			entity.setAvailableCapacityVDSLSIP(objecToInteger(procResult[9]));</span>
+<span class="nc" id="L113">			entity.setTotalCapacityVDSLSIP(objecToInteger(procResult[10]));</span>
+<span class="nc" id="L114">			entity.setAvailableCapacityADSLAccess(objecToInteger(procResult[11]));</span>
+<span class="nc" id="L115">			entity.setTotalCapacityADSLAccess(objecToInteger(procResult[12]));</span>
+<span class="nc" id="L116">			entity.setAvailableCapacityVDSLAccess(objecToInteger(procResult[13]));</span>
+<span class="nc" id="L117">			entity.setTotalCapacityVDSLAccess(objecToInteger(procResult[14]));</span>
+<span class="nc" id="L118">			entity.setProtocolVoice(objectToString(procResult[15]));</span>
+<span class="nc" id="L119">			entity.setTechnologyAdsl(objectToString(procResult[16]));</span>
+<span class="nc" id="L120">			entity.setCode(objecToInteger(procResult[17]));</span>
+<span class="nc" id="L121">			entity.setMessage(objectToString(procResult[18]));</span>
+			
+<span class="nc" id="L123">			result.add(entity);</span>
+<span class="nc" id="L124">		}</span>
+		
+<span class="nc" id="L126">		return result;</span>
+	}
+	
+	private Integer objecToInteger (Object in) {
+<span class="nc" id="L130">		Integer result = 0;</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">		if (in != null) {</span>
+<span class="nc" id="L132">			result = Integer.parseInt(in.toString());</span>
+		}
+<span class="nc" id="L134">		return result;</span>
+	}
+	
+	private String objectToString (Object in) {
+<span class="nc" id="L138">		String result = &quot;&quot;;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">		if (in != null ) {</span>
+<span class="nc" id="L140">			result = String.valueOf(in);</span>
+		}
+<span class="nc" id="L142">		return result;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

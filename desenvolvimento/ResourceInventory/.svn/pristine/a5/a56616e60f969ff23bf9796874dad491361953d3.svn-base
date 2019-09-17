@@ -1,0 +1,134 @@
+package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.Equipment;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.core.utils.Constants;
+import com.tlf.oss.resourceinventory.tbs.core.validation.CabinetRetrieval;
+import com.tlf.oss.resourceinventory.tbs.repository.CabinetRetrievalRepository;
+
+/**
+ * REC2164-44-RI | REC3164-223
+ * 
+ * @project IONIX-SIGITM
+ * @author 80629552
+ * @since 20190328
+ */
+public class CabinetRetrievalController implements Serializable{
+
+	private static final long serialVersionUID = 1474105269583554588L;
+	
+	@Inject
+	protected OSSLogger logger;
+
+	@Inject
+	private CabinetRetrievalRepository cabinetRetrievalRepository;
+	
+	/**
+	 * Consulta os Equipamentos no SIGITM
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException 
+	 */
+	public ResourceInventoryEntity retrieval(@CabinetRetrieval ResourceInventoryEntity entity) throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, "CabinetRetrievalController - Iniciando fluxo do retrieval.");
+		
+		String flow = identifyFlow(entity);
+		
+		if (Constants.EQUIPMENT.equalsIgnoreCase(flow)) {
+			return getEquipmentTree(entity);
+		} else if (Constants.CABINET.equalsIgnoreCase(flow)) {
+			return getCabinetByLocation(entity);			
+		}
+		
+		return entity;
+	}
+	
+	/**
+	 * Realiza busca de localização dos equipamentos
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	private ResourceInventoryEntity getCabinetByLocation(ResourceInventoryEntity entity) throws OSSBusinessException{
+		logger.log(OSSLogger.INFO, "CabinetRetrievalController - Iniciando fluxo do getCabinetByLocation.");
+		return cabinetRetrievalRepository.getCabinetByLocation(entity);
+	}
+	
+	/**
+	 * Realiza busca de Equipamentos
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	private ResourceInventoryEntity getEquipmentTree(ResourceInventoryEntity entity) throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, "CabinetRetrievalController - Iniciando fluxo do getEquipmentTree.");
+
+		ResourceInventoryEntity resourceInventoryEntity = cabinetRetrievalRepository.getEquipmentTrunk(entity);
+
+		if (resourceInventoryEntity.getEquipment() != null && !resourceInventoryEntity.getEquipment().isEmpty()) {
+
+			List<Equipment> equipments = new ArrayList<Equipment>();
+
+			for (Equipment equipmentResource : resourceInventoryEntity.getEquipment()) {
+
+				Equipment equipment = new Equipment();
+
+				List<PortAdapterCard> hasCards = new ArrayList<PortAdapterCard>();
+
+				hasCards = cabinetRetrievalRepository.getEquipmentTree(equipmentResource);
+
+				equipment.setId(equipmentResource.getId());
+				equipment.setHasCards(hasCards);
+
+				equipments.add(equipment);
+
+			}
+
+			resourceInventoryEntity.setEquipment(equipments);
+
+		}
+
+		resourceInventoryEntity.setCodeReturn(resourceInventoryEntity.getCodeReturn());
+		resourceInventoryEntity.setMessageReturn(resourceInventoryEntity.getMessageReturn());
+
+		return resourceInventoryEntity;
+	}
+	
+	/**
+	 * Verifica o fluxo de Consultas aos Equipamentos.
+	 * @param entity
+	 * @return {@link String}
+	 */
+	private String identifyFlow(ResourceInventoryEntity entity) {
+		
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalController - Identificando tipo de consulta.");
+		
+		List<ServiceDescribedBy> serviceDescribedBys = entity.getResourceFacingService().getServiceDescribedBy();
+		for (ServiceDescribedBy serviceDescribedBy : serviceDescribedBys) {
+			if (serviceDescribedBy.getName().equals(Constants.EQUIPMENT)) {
+				Optional<ServiceSpecCharDescribes> serviceSpecCharDescribe = serviceDescribedBy.getServiceSpecCharDescribes().stream().filter(s -> s.getValueType().equals(Constants.HOSTNAME)).findFirst();
+				if (serviceSpecCharDescribe.get().getValue() != null) {
+					return Constants.EQUIPMENT;
+				}
+			}
+		}
+	
+		return Constants.CABINET;
+	}		
+	
+}

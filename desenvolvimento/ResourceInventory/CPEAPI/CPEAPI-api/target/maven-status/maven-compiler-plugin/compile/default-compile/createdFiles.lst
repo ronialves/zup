@@ -1,0 +1,17 @@
+com/tlf/oss/resourceinventory/cpe/api/v1_0/UninstallStbService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/AllocateStbService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/UninstallService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/InstallService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/CatalogService$3.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/DeallocateStbService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/CatalogService$2.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/InstallStbService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/RetrieveService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/AllocateService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/CatalogService$1.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/UpdateService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/UpdateStbService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/RestConfig.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/DeallocateService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/CatalogService.class
+com/tlf/oss/resourceinventory/cpe/api/v1_0/CatalogService$4.class

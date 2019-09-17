@@ -1,0 +1,537 @@
+[
+	{
+		"errorCode": "-1",
+		"errorMessage": "O PON DEVE SER INFORMADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O RPON DEVE SER INFORMADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PARAMETRO REQUEST TYPE OBRIGATORIO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PARAMETRO P_SWITCH DEVE SER INFORMADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PARAMETRO ACTIVITY IND OBRIGATORIO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O ACCOUNT NUMBER DEVE SER INFORMADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O CUSTOMER LOCATION DEVE SER INFORMADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O REQUEST TYPE DEVE SER INFORMADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O TIPO DE ATIVIDADE DEVE SER INFORMADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ORGANIZACAO DEVE SER INFORMADA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PARA NEW INSTALLATION OR CHANGE, AS INFORMACOES DE BIT RATE SAO OBRIGATORIAS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "TAMANHO DO CAMPO PARAMETRO INVALIDO, DEVE SER 10 E ESTÁ COM .* CARACTERES",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-503"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PARAMETRO INSTANCIA DEVE SER NUMERICO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-503"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PARAMETRO TIPO DEVE SER P(POTS), B(BANDWIDTH),T(TV) OU A(ACCESS)",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-503"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PARAMETRO ACTIVITY IND DEVE SER C(CHANGE/INSERVICE(I)), N(NEW), D(DISCONNECT)",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-503"
+	},
+	{
+		"errorCode": "17",
+		"errorMessage": "A INSTANCIA .* PARA C(CHANGE) OU D(DISCONNECT) ESTA COM O STATUS => .* NA OS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-503"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O REQUEST TYPE DEVE SER (S) PARA ORDEM DE LINHA OU (X) PARA ORDEM DE ADSL/TV",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-503"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "TIPO DE ATIVIDADE INVALIDO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-503"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PARA CIRCUITO DO TIPO P(POTS), INFORMACAO DE BIT RATE DEVE SER NULA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-503"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ORDEM DE SERVICO JA CADASTRADA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ORGANIZACAO INFORMADA NAO CADASTRADA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "18",
+		"errorMessage": "INSTANCIA => .* NAO CADASTRADA NA TABELA ASSIGNED TEL NUM. OS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "WORK QUEUE .* NAO CADASTRADA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "16",
+		"errorMessage": "ENCONTRADO A INSTANCIA .* COM O STATUS => .* NA OS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "19",
+		"errorMessage": ".* => ENCONTRADA COM O STATUS => .* QUANDO O ESPERADO ERA (U,1,B)",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O DESIGNADOR .* NAO FOI ENCONTRADO NA CIRCUIT",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "MAIS DE UM CIRCUITO ENCONTRADO PARA O DESIGNADOR",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "DESIGNADOR JA SE ENCONTRA RELACIONADO NA ORDEM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "DESIGNADOR NAO ENCONTRADO OU SITUACAO INVALIDA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "NAO ENCONTROU A ORDEM DE SERVIÇO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},			
+	{
+		"errorCode": "54",
+		"errorMessage": "DESIGNADOR DO CVP ('||V_DESIG_CVP||') NAO EXISTENTE NO TBS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "55",
+		"errorMessage": "DESIGNADOR DO CVP ('||V_DESIG_CVP||') JA EXISTENTE NO TBS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DA ORDEM (SERV_REQ)",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DA ORDEM (ACCESS_SERVICE_REQUEST)",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DA ORDEM (SPEC_ACCESS)",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA ATUALIZACAO DA ORDEM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DA TAREFA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA ATRIBUICAO DA SEQUENCIA DAS TAREFAS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DO CHECK-LIST DAS TAREFAS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DO SPECIAL ACCESS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DO REMARK",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA CONVERSAO DO UPSTREAM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA CONVERSAO DO DOWNSTREAM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "15",
+		"errorMessage": "ERRO NA INCLUSAO DO TEL NUM INV",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "21",
+		"errorMessage": "ERRO AO GERAR CHAVE PRIMARIA PARA CIRCUIT",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "21",
+		"errorMessage": "ERRO NA INCLUSAO DO CIRCUIT. INSTANCIA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "22",
+		"errorMessage": "ERRO NA INCLUSAO DO SERV ITEM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DO SERV REQ SI",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA SEQUENCIA SQ_ASSIGNED_TEL_NUM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA ATUALIZACAO DA TABELA ATN",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO AO ATUALIZAR ACCESS SERVICE REQUEST",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA ATUALIZACAO DO TEL NUM INV",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSADO SRLOC",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "32",
+		"errorMessage": "ERRO NA INCLUSADO SRSI SR LOC",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "33",
+		"errorMessage": "ERRO NA INCLUSADO SRSI SR LOC",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "34",
+		"errorMessage": "ERRO NA ATUALIZACAO DO SPEC ACCESS AND LINE DETAIL",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "35",
+		"errorMessage": "ERRO AO VINCULAR O CIRCUITO COM A ORDEM NA SRC: OS/CIRCUIT_ID",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA VERIFICACAO DO DESIGNADOR",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA ATUALIZACAO DA VELOCIDADE",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA ATUALIZACAO DO RATE CODE DO CIRCUITO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO AO LOCALIZAR INFORMACAO DA SWITCH INFORMADA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO AO GERAR CHAVE PRIMARIA PARA CIRCUIT",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DO CIRCUIT. INSTANCIA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "48",
+		"errorMessage": "ERRO NA INCLUSAO DO SPECIAL CIRCUIT",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DO TFC",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DO CIRCUITO DE BANDA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DO SERV ITEM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "49",
+		"errorMessage": "PARA NEW INSTALLATION OR CHANGE, AS INFORMACOES DE BIT RATE SAO OBRIGATORIAS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "50",
+		"errorMessage": "ERRO NA INCLUSAO DO SERV REQ SI",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "51",
+		"errorMessage": "ERRO AO VINCULAR O CIRCUITO COM A ORDEM. OS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA IDENTIFICACAO DO CVP",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "56",
+		"errorMessage": "ERRO NA CRIACAO DO CIRCUITO VIRTUAL.",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "57",
+		"errorMessage": "ERRO AO GERAR CHAVE PRIMARIA PARA CIRCUIT",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "58",
+		"errorMessage": "ERRO AO ATUALIZAR O SERV ITEM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "59",
+		"errorMessage": "ERRO AO ATUALIZAR O SERV REQ SI",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "59",
+		"errorMessage": "ERRO AO ATUALIZAR O VIRTUAL CONNECTION",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "57",
+		"errorMessage": "ERRO AO INSERIR REGISTRO NA TABELA SERVICE REQUEST CIRCUIT",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA ASSOCIACAO DO PLANO PARA A ORDEM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DA SRSI_GATEWAY_EVENT",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ERRO NA INCLUSAO DA SERV_REQ_GATEWAY_EVENT",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "NAO FOI POSSIVEL INSERIR INSTANCIA NA NPA_NXX_LOCATION",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "NAO FOI POSSIVEL CORRIGIR O STATUS NA TEL_NUM_INV",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "NAO FOI POSSIVEL CORRIGIR INSTANCIA NO INVENTARIO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PLANO PADRAO NAO LOCALIZADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PROBLEMA NA IDENTIFICACAO DO ARMARIO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "GVT_SP_INSERE_NOTES",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "20",
+		"errorMessage": "PARA MUDANCA DE ENDERECO, STATUS ORIGEM DEVE SER 7",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-506"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O parâmetro PON é um parâmetro obrigatorio",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O Designador é um parâmetro obrigatório",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "Não achou nenhuma Ordem associada ao Pon",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "Não achou o designador: .* valido para o Pon",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-504"
+	},
+	{
+		"errorCode": "51",
+		"errorMessage": "ERRO AO VINCULAR O CIRCUITO COM A ORDEM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "NAO EXISTE CIRCUITO ASSOCIADO PARA A ORDEM",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-506"
+	},
+	{
+		"errorCode": "8",
+		"errorMessage": "ENCONTRADA MAIS DE UMA VELOCIDADE UPSTREAM PARA A ORDEM INFORMADA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PROBLEMA AO INSERIR TABELA TLF_DET_AVAILABILITY",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "O ARMARIO OU O TELEFONE DEVE SER INFORMADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PROBLEMA NA CHAMADA DA SP CONSULTA INSTANCIA => .*",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "GVT_SP_CONSULTA_INSTANCIA  => A INSTANCIA DEVE SER INFORMADA",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-501"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "GVT_SP_CONSULTA_INSTANCIA  => .*",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "GVT_SP_CONSULTA_INSTANCIA  => FORMATO DE TELEFONE INVALIDO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-503"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "GVT_SP_CONSULTA_INSTANCIA  => NAO FOI POSSIVEL LOCALIZAR A SWITCH",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "GVT_SP_CONSULTA_INSTANCIA  => NAO FOI POSSIVEL ATRIBUIR ARMARIO OU SITE",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "GVT_SP_CONSULTA_INSTANCIA  => TELEFONE NAO CADASTRADO OU NAO ATIVO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "GVT_SP_CONSULTA_INSTANCIA  => NAO ENCONTROU CIRCUITO PARA O TELEFONE",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "ARMARIO .* NAO CADASTRADO",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "-1",
+		"errorMessage": "PROBLEMA DE IDENTIFICACAO DO ARMARIO => .*",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	},
+	{
+		"errorCode": "2",
+		"errorMessage": "SP_CAPACIDADE_ADSL >>> ARMARIO .* COM A OPCAO DE N_LIB_ADSL NO TBS",//o padrao '.*' serve para passagem de parametros externos
+		"faultCode": "RITBS-505"
+	}
+]

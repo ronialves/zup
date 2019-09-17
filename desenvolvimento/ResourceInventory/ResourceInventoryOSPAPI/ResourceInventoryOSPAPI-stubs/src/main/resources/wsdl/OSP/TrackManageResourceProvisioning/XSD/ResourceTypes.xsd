@@ -1,0 +1,78 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:rst="http://www.cpqd.com.br/etics/ResourceSpecificationTypes" xmlns:est="http://www.cpqd.com.br/etics/EquipmentStructureTypes" xmlns:at="http://www.cpqd.com.br/etics/AddressTypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/ResourceTypes">
+<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/EquipmentStructureTypes" schemaLocation="EquipmentStructureTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/ResourceSpecificationTypes" schemaLocation="ResourceSpecificationTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/AddressTypes" schemaLocation="AddressTypes.xsd"/>
+<xs:complexType name="Resource">
+<xs:sequence>
+<!--
+ Equipamento (1 - Caixa Terminal, 2 - Caixa Predial, 3 - ONU, 4 - Splitter, 5 - DGO, 6 - tfo, 
+			7 - Armario de Distribuicao, 8 - Armario de Equipamento, 9 - ONT, 10 - DG, 11 - Estacao, 12 - DLC, 13 - Outro, 14 – OLT, 15 – Distribuidor Interno) 
+-->
+<xs:element minOccurs="0" name="type">
+<xs:simpleType>
+<xs:restriction base="xs:integer">
+<xs:pattern value="1|2|3|4|5|6|7|8|9|10|11|12|13|14|15"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<!--  Código  -->
+<xs:element minOccurs="0" name="code" type="st:string50"/>
+<!--  Informações do OLT  -->
+<xs:element minOccurs="0" name="equipmentStructure" type="est:EquipmentStructure"/>
+<!--  Unidade Lógica (Porta, Vertical, Canal, etc)  -->
+<xs:element minOccurs="0" name="logicalUnit" type="st:integer6"/>
+<!--  Atenuação (Intervalo Válido:-999,99 a 999,99)  -->
+<xs:element minOccurs="0" name="atenuation">
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="5"/>
+<xs:fractionDigits value="2"/>
+<xs:minInclusive value="-999.99"/>
+<xs:maxInclusive value="999.99"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<!--  Distancia  -->
+<xs:element minOccurs="0" name="equipamentDistance" type="st:integer6"/>
+<!--  Posição  -->
+<xs:element minOccurs="0" name="equipmentPlace" type="st:string1"/>
+<!--
+ Presença de  Equipamento de Terceiros (Transformador) (0 - Não, 1 - Sim) 
+-->
+<xs:element minOccurs="0" name="thirdEquipmentPresence">
+<xs:simpleType>
+<xs:restriction base="st:string1">
+<xs:pattern value="0|1"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<!--  Indicador de objeto a construir (0 - Não, 1 - Sim)  -->
+<xs:element minOccurs="0" name="buildingFlag" type="st:integerBinary"/>
+<!--
+ Ponto de acesso (1 - Fachada, 2 - Zona T, 3 - Ponto de acesso predial, 4 - Poste, 5 - Lance de Duto, 6 - Base de Armário, 7 - Pedestal, 8 - Caixa Subterrânea, 9 - Site Holder, 10 - Caixa Enterrada, 11 - Ponto de acesso genérico, 12 - Ponto de acesso submerso, 13 - Derivação de Duto, 14 - Ancora, 15 - Torre de Alta Tensão ) 
+-->
+<xs:element minOccurs="0" name="installationPlace">
+<xs:simpleType>
+<xs:restriction base="xs:integer">
+<xs:pattern value="1|2|3|4|5|6|7|8|9|10|11|12|13|14|15"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<!--  Indicador se é conectorizado (0 – Não, 1 – Sim)  -->
+<xs:element minOccurs="0" name="connectorizationType">
+<xs:simpleType>
+<xs:restriction base="xs:integer">
+<xs:pattern value="0|1"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<!--  Função  -->
+<xs:element minOccurs="0" name="function" type="st:integer1"/>
+<!--  Tipo do Equipamento  -->
+<xs:element minOccurs="0" name="resourceSpecification" type="rst:ResourceSpecification"/>
+<!--  Endereço de Instalação do Equipamento  -->
+<xs:element minOccurs="0" name="resourceCharacterist" type="at:Address"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

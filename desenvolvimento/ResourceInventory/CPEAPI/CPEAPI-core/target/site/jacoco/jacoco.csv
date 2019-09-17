@@ -1,0 +1,13 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,UpdateStbController,60,360,13,27,7,86,12,17,0,9
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,UpdateController,84,296,11,21,10,74,10,13,0,7
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,InstallStbController,0,197,0,6,0,49,0,9,0,6
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,UninstallController,5,145,2,12,1,38,2,9,0,4
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,DeallocateController,0,256,1,17,0,60,1,19,0,11
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,InstallController,0,109,0,2,0,29,0,3,0,2
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,AllocateStbController,3,135,5,9,0,30,4,7,0,4
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,DeallocateStbController,0,104,0,6,0,27,0,6,0,3
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,CatalogController,0,157,2,8,0,31,2,11,0,8
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,UninstallStbController,2,307,3,13,0,69,3,17,0,12
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,RetrieveController,20,591,18,78,0,120,17,44,1,12
+CPEAPI-core,com.tlf.oss.resourceinventory.cpe.core,AllocateController,0,305,8,36,0,61,8,21,0,7

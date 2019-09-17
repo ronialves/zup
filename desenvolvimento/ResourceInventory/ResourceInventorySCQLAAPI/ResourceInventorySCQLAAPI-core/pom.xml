@@ -1,0 +1,145 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>ResourceInventorySCQLAAPI-core</artifactId>
+	<name>ResourceInventorySCQLAAPI-core</name>
+	<packaging>ejb</packaging>
+
+	<parent>
+		<groupId>com.tlf.oss.resourceinventory</groupId>
+		<artifactId>ResourceInventorySCQLAAPI</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.tlf.oss.resourceinventory</groupId>
+			<artifactId>ResourceInventorySCQLAAPI-stubs</artifactId>
+			<version>0.0.1-SNAPSHOT</version>			
+		</dependency>
+		
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.cxf</groupId> -->
+		<!-- <artifactId>cxf-codegen-plugin</artifactId> -->
+		<!-- <version>3.1.10</version> -->
+		<!-- </dependency> -->
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.cxf</groupId> -->
+		<!-- <artifactId>cxf-rt-transports-http-hc</artifactId> -->
+		<!-- <version>3.0.0</version> -->
+		<!-- </dependency> -->
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.cxf</groupId> -->
+		<!-- <artifactId>cxf-rt-frontend-jaxrs</artifactId> -->
+		<!-- <version>3.0.0-milestone1</version> -->
+		<!-- </dependency> -->
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.cxf</groupId> -->
+		<!-- <artifactId>cxf-rt-frontend-jaxws</artifactId> -->
+		<!-- <version>3.1.10</version> -->
+		<!-- </dependency> -->
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.6.1</version>
+					<configuration>
+						<source>${java.compile.source}</source>
+						<target>${java.compile.target}</target>
+					</configuration>
+				</plugin>
+				<!-- <plugin> -->
+				<!-- <groupId>org.apache.maven.plugins</groupId> -->
+				<!-- <artifactId>maven-ejb-plugin</artifactId> -->
+				<!-- <version>2.5.1</version> -->
+				<!-- <configuration> -->
+				<!-- <ejbVersion>3.1</ejbVersion> -->
+				<!-- <generateClient>true</generateClient> -->
+				<!-- <clientIncludes> -->
+				<!-- <clientInclude>com/tlf/oss/resourceinventorySCQLA/to/**</clientInclude> -->
+				<!-- </clientIncludes> -->
+				<!-- </configuration> -->
+				<!-- </plugin> -->
+	
+				<!-- Adição de novas pastas ao build_path da aplicação -->
+				<!--
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.0.0</version>
+					<executions>
+						<execution>
+							<id>add-integration-test-sources</id>
+							<phase>generate-test-sources</phase>
+							<goals>
+								<goal>add-test-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>${basedir}/src/test/integration</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				-->
+				<!-- Configuração de testes unitários/Exclusão de classes de teste de integração -->
+				<!--
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.20</version>
+					<dependencies>
+				 	<dependency>
+							<groupId>org.apache.maven.surefire</groupId>
+							<artifactId>surefire-junit47</artifactId>
+							<version>2.20</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<includes>
+							<include>IntegrationTest.class</include>
+						</includes>
+						<excludedGroups>resourceinventorySCQLA/bo/test/IntegrationTest</excludedGroups>
+					</configuration>
+				</plugin>
+				-->	
+				<!-- Configuração de testes integrados -->
+				<!-- 
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>2.20</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.surefire</groupId>
+							<artifactId>surefire-junit47</artifactId>
+							<version>2.20</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<includes>
+							<includes>IntegrationTest.class</includes>
+						</includes>
+						<groups>resourceinventorySCQLA/bo/test/IntegrationTest</groups>
+					</configuration>
+				</plugin> -->
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

@@ -1,0 +1,45 @@
+<allocateResourceIn>
+	<brazilianUrbanPropertyAddress>
+		<city>CURITIBA</city>
+		<streetCode>6587</streetCode>
+		<streetNrFirst>1288</streetNrFirst>
+		<stateOrProvince>RE</stateOrProvince>
+		<cnl>41000</cnl>
+		<networkOwner>VIVO2</networkOwner>
+		<placePhysicalResourceAssoc>
+			<cabinet>
+				<name>PRTCA_01D23</name>
+				<terminalBox>
+					<name>D23G0061</name>
+				</terminalBox>
+			</cabinet>
+			<physicalLink>
+				<voiceProtocol>SIP</voiceProtocol>
+				<accessTechnology>GPON</accessTechnology>
+			</physicalLink>
+		</placePhysicalResourceAssoc>
+	</brazilianUrbanPropertyAddress>
+	<resourceFacingService>
+		<serviceId>CTA-02281861-069</serviceId>
+	</resourceFacingService>
+	<customerFacingServices>
+		<serviceId>1432313236</serviceId>
+		<category>TELEPHONE</category>
+		<serviceDescribedBy>
+			<name>RPON</name>
+			<serviceSpecCharDescribes>
+				<value>C18271821</value>
+			</serviceSpecCharDescribes>
+		</serviceDescribedBy>
+	</customerFacingServices>
+	<customerOrder>
+		<purchaseOrderNumber>8-A4336E869B-1</purchaseOrderNumber>
+	</customerOrder>
+	<resourceOrder>
+		<resourceOrderItem>
+			<id />
+			<name>TSS_FIBER_PHYSICAL_ACCESS</name>
+			<action>ADD</action>
+		</resourceOrderItem>
+	</resourceOrder>
+</allocateResourceIn>

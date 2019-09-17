@@ -1,0 +1,9 @@
+com/tlf/oss/resourceinventory/sagre/core/AllocateExternalResourceTest.class
+com/tlf/oss/resourceinventory/sagre/core/ReserveTest.class
+com/tlf/oss/resourceinventory/sagre/core/AllTests.class
+com/tlf/oss/resourceinventory/sagre/core/DetermineAvailabilityTest.class
+com/tlf/oss/resourceinventory/sagre/core/DeallocateResourceTest.class
+com/tlf/oss/resourceinventory/sagre/core/ReleaseResourceTest.class
+com/tlf/oss/resourceinventory/sagre/core/InstallResourceTest.class
+com/tlf/oss/resourceinventory/sagre/core/RetrieveFacilityResourceTest.class
+com/tlf/oss/resourceinventory/sagre/core/UninstallResourceTest.class

@@ -1,0 +1,13 @@
+<resourceInventoryEntity>
+    <address>
+        <networkOwner>VIVO2</networkOwner>
+    </address>
+    <resourceFacingService>
+        <serviceId>SPO-02334816-069</serviceId>
+    </resourceFacingService>
+    <resourceOrder>
+        <resourceOrderItem>
+            <name>STATIC_IP</name>
+        </resourceOrderItem>
+    </resourceOrder>
+</resourceInventoryEntity>

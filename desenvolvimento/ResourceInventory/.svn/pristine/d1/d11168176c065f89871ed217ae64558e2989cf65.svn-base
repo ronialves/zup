@@ -1,0 +1,138 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoServico;
+import com.tlf.oss.resourceinventory.cpe.enums.TipoRfs;
+import com.tlf.oss.resourceinventory.cpe.mapping.EntityConverter;
+import com.tlf.oss.resourceinventory.cpe.repository.AllocateRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class InstallControllerTest {
+
+	@InjectMocks
+	private InstallController installController;
+	
+	@Spy
+	@InjectMocks
+	private EntityConverter entityConverter = new EntityConverter();
+	
+	@Mock
+	private OSSLogger logger;
+	
+	@Mock
+	private AllocateRepository allocateRepository;
+	
+	@Mock
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+	
+	@Mock
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+	
+	@Mock
+	private RecursoLogicoRepository recursoLogicoRepository;
+	
+	@Mock 
+	private EstadoServicoAssinanteRepository estadoServicoAssinanteRepository;
+	
+	private ResourceInventoryEntity entity;
+
+	@Before
+	public void before() {
+		entity = new ResourceInventoryEntity();
+		ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribes.setValue("VIVO1");
+		ServiceDescribedBy serviceDescribedBy = new ServiceDescribedBy();
+		serviceDescribedBy.setName("NetworkOwner");
+		serviceDescribedBy.getServiceSpecCharDescribes().add(serviceSpecCharDescribes);
+		ResourceFacingService resourceFacingService = new ResourceFacingService();
+		resourceFacingService.getServiceDescribedBy().add(serviceDescribedBy);
+		entity.setResourceFacingService(resourceFacingService);
+		entity.setAddress(new BrazilianUrbanPropertyAddress());
+		ResourceOrderItem resourceOrderItem = new ResourceOrderItem();
+		ResourceOrder resourceOrder = new ResourceOrder();
+		resourceOrder.setResourceOrderItem(resourceOrderItem);
+		entity.setResourceOrder(resourceOrder);
+		
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setCategory("BROADBAND");
+
+		ServiceDescribedBy serviceDescribedByDs = new ServiceDescribedBy();
+		serviceDescribedByDs.setName("DOWNSTREAM");
+
+		serviceDescribedByDs.getServiceSpecCharDescribes().add(serviceSpecCharDescribes);
+
+		ServiceDescribedBy serviceDescribedByIP = new ServiceDescribedBy();
+		serviceDescribedByIP.setName("IP");
+		ServiceSpecCharDescribes serviceSpecCharDescribesIp = new ServiceSpecCharDescribes();
+		serviceDescribedByIP.getServiceSpecCharDescribes().add(serviceSpecCharDescribesIp);
+
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(serviceDescribedByDs);
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(serviceDescribedByIP);
+
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(1).setCategory("IPTV");
+
+		entity.setCustomerFacingService(listOfCustomerFacingService);
+	}
+	
+	@Test
+	public void testInstallAccessSucess() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+		
+		final EstadoServicoAssinante estadoServicoAssinante = new EstadoServicoAssinante();
+		
+		final ServicoAssinante servicoAssinante = new ServicoAssinante();
+		
+		servicoAssinante.setId(1);
+		
+		estadoServicoAssinante.setEstadoServico(EstadoServico.ATIVADO.getValue());
+		estadoServicoAssinante.setId(1);
+		
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class))).thenReturn(servicoAssinante);
+		
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+
+		installController.install(entity);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected=OSSBusinessException.class)
+	public void testInstallException() throws OSSBusinessException {
+		
+		when(installController.install(entity)).thenThrow(OSSBusinessException.class);
+
+		installController.install(entity);
+	}
+}

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AllocateMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">AllocateMetallicController.java</span></div><h1>AllocateMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.circuitlottypes.CircuitLotAllocate;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.AllocateInstallResourceRequest;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.AllocateInstallResourceResponse;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.headercontext.WsContext;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.inicialresourcetypes.InicialResource;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.intermediaryresourcetypes.IntermediaryResource;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.resourceserviceinfotypes.ResourceService;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.supplementaryinformationallocatetypes.SupplementaryInformationIn;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.terminalresourcetypes.TerminalResource;
+import com.tlf.oss.resourceinventory.osp.core.enums.Code;
+import com.tlf.oss.resourceinventory.osp.core.enums.Message;
+import com.tlf.oss.resourceinventory.osp.core.service.AllocateService;
+import com.tlf.oss.resourceinventory.osp.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.PhysicalLink;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.TerminalBox;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@Logged
+@RequestScoped
+<span class="fc" id="L34">public class AllocateMetallicController extends ValidatorEntity {</span>
+
+	@Inject
+	protected OSSLogger logger;
+
+	@Inject
+	protected AllocateService allocateService;
+
+	public ResourceInventoryEntity allocate(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L44">		WsContext headerContext = new WsContext();</span>
+<span class="fc" id="L45">		headerContext.setRegionCode(entity.getAddress().getCnl());</span>
+<span class="fc" id="L46">		headerContext.setCentralOffice(entity.getAddress().getTelephonicArea());</span>
+
+<span class="fc" id="L48">		AllocateInstallResourceRequest request = createRequest(entity);</span>
+
+		try {
+<span class="fc" id="L51">			AllocateInstallResourceResponse allocateInstallResourceResponse = allocateService.allocateResource(request,</span>
+					headerContext);
+
+<span class="fc" id="L54">			updateEntity(allocateInstallResourceResponse, entity);</span>
+
+<span class="nc" id="L56">		} catch (OSSBusinessException e) {</span>
+<span class="nc" id="L57">			throw new OSSBusinessException(e.getDescription(), e.getStatusCode(), e.getDetail());</span>
+<span class="nc" id="L58">		} catch (Exception e) {</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">			if (e instanceof TimeoutException) {</span>
+<span class="nc" id="L60">				throw new OSSBusinessException(Message.ERRO_ALOCAR_RECURSO_EXTERNO.getValue(),</span>
+<span class="nc" id="L61">						Code.RIOSP_002.getValue(), Message.BUSINESS_ERROR_TIMEOUT_MSG.getValue());</span>
+			}
+
+<span class="nc" id="L64">			throw new OSSBusinessException(Message.ERRO_ALOCAR_RECURSO_EXTERNO.getValue(), Code.RIOSP_002.getValue(),</span>
+<span class="nc" id="L65">					e.getMessage());</span>
+<span class="fc" id="L66">		}</span>
+<span class="fc" id="L67">		return entity;</span>
+	}
+
+	private AllocateInstallResourceRequest createRequest(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L71">		AllocateInstallResourceRequest allocateInstallResourceRequest = new AllocateInstallResourceRequest();</span>
+		// NRC
+<span class="fc" id="L73">		allocateInstallResourceRequest.setReserveOrder(getNRC(entity));</span>
+<span class="fc" id="L74">		allocateInstallResourceRequest.setSupplementaryInformation(new SupplementaryInformationIn());</span>
+<span class="fc" id="L75">		allocateInstallResourceRequest.getSupplementaryInformation().setResourceService(new ResourceService());</span>
+		// Terminal
+<span class="fc" id="L77">		allocateInstallResourceRequest.getSupplementaryInformation().getResourceService()</span>
+<span class="fc" id="L78">				.setIdentifier(getNetworkOwnerID(entity));</span>
+<span class="fc" id="L79">		allocateInstallResourceRequest.setResourceOrder(entity.getCustomerOrder().getPurchaseOrderNumber());</span>
+
+<span class="fc" id="L81">		if (&quot;METALICO&quot;</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">				.equals(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getAccessTechnology())) {</span>
+<span class="nc" id="L83">			allocateInstallResourceRequest.setCircuitType(&quot;1&quot;);</span>
+		}
+<span class="fc" id="L85">		return allocateInstallResourceRequest;</span>
+	}
+
+	private String getNRC(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L89">		ResourceFacingService rfsNrc = getResourceFacingService(entity, &quot;NRC&quot;);</span>
+<span class="fc" id="L90">		return rfsNrc.getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0).getValue();</span>
+	}
+
+	private void updateEntity(AllocateInstallResourceResponse response, ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+<span class="pc bpc" id="L96" title="3 of 4 branches missed.">		if (response.getResult() != null &amp;&amp; response.getResult().getCode() != 0) {</span>
+<span class="nc" id="L97">			throw new OSSBusinessException(String.valueOf(response.getResult().getDescription()),</span>
+<span class="nc" id="L98">					String.valueOf(response.getResult().getCode()),</span>
+<span class="nc" id="L99">					String.valueOf(response.getResult().getErrorCode()));</span>
+		}
+
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">		PhysicalLink physicalLink = (entity.getAddress() != null</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">				&amp;&amp; entity.getAddress().getPlacePhysicalResourceAssoc() != null</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">				&amp;&amp; entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink() != null)</span>
+<span class="pc" id="L105">						? entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink() : new PhysicalLink();</span>
+
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">		Cabinet cabinet = entity.getCabinet() != null ? entity.getCabinet() : new Cabinet();</span>
+
+<span class="pc bpc" id="L109" title="3 of 4 branches missed.">		TerminalBox terminalBox = (entity.getCabinet() != null &amp;&amp; entity.getCabinet().getTerminalBox() != null)</span>
+<span class="pc" id="L110">				? entity.getCabinet().getTerminalBox() : new TerminalBox();</span>
+
+<span class="fc" id="L112">		response.getInformations().forEach(info -&gt; {</span>
+
+<span class="fc" id="L114">			physicalLink.setAccessTechnology(info.getCircuitType());</span>
+
+<span class="fc" id="L116">			List&lt;CircuitLotAllocate&gt; circuits = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L117" title="2 of 4 branches missed.">			if (info.getRelatedCircuits().getCircuit() != null &amp;&amp; !info.getRelatedCircuits().getCircuit().isEmpty()) {</span>
+<span class="fc" id="L118">				circuits = info.getRelatedCircuits().getCircuit();</span>
+			}
+
+<span class="pc bpc" id="L121" title="2 of 4 branches missed.">			if (circuits != null &amp;&amp; !circuits.isEmpty()) {</span>
+<span class="fc" id="L122">				circuits.forEach(circuit -&gt; {</span>
+
+<span class="fc" id="L124">					getRelatedInicialResources(cabinet, terminalBox, circuit);</span>
+
+<span class="fc" id="L126">					getRelatedIntermediaryResources(cabinet, circuit);</span>
+
+<span class="fc" id="L128">					getRelatedTerminalResources(cabinet, terminalBox, circuit);</span>
+<span class="fc" id="L129">				});</span>
+			}
+<span class="fc" id="L131">		});</span>
+
+<span class="fc" id="L133">		entity.setCabinet(cabinet);</span>
+<span class="fc" id="L134">		entity.getCabinet().setTerminalBox(terminalBox);</span>
+<span class="fc" id="L135">	}</span>
+
+	private void getRelatedInicialResources(Cabinet cabinet, TerminalBox terminalBox, CircuitLotAllocate circuit) {
+<span class="fc" id="L138">		List&lt;InicialResource&gt; inicialResources = new ArrayList&lt;&gt;();</span>
+
+<span class="pc bpc" id="L140" title="2 of 4 branches missed.">		if (circuit.getResources() != null &amp;&amp; (circuit.getResources().getRelatedInicialResources() != null</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">				&amp;&amp; !circuit.getResources().getRelatedInicialResources().isEmpty())) {</span>
+<span class="fc" id="L142">			inicialResources = circuit.getResources().getRelatedInicialResources();</span>
+		}
+
+<span class="pc bpc" id="L145" title="2 of 4 branches missed.">		if (inicialResources != null &amp;&amp; !inicialResources.isEmpty()) {</span>
+<span class="fc" id="L146">			inicialResources.forEach(inicialResource -&gt; {</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">				terminalBox.setCableNumber(inicialResource.getInitialLogicalCable().getCode() != null</span>
+<span class="pc" id="L148">						? inicialResource.getInitialLogicalCable().getCode() : null);</span>
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">				terminalBox.setSideCableNumber(inicialResource.getInitialLogicalCable().getLateral() != null</span>
+<span class="pc" id="L150">						? inicialResource.getInitialLogicalCable().getLateral() : null);</span>
+<span class="fc" id="L151">				cabinet.setTerminalBox(terminalBox);</span>
+<span class="fc" id="L152">			});</span>
+		}
+<span class="fc" id="L154">	}</span>
+
+	private void getRelatedIntermediaryResources(Cabinet cabinet, CircuitLotAllocate circuit) {
+<span class="fc" id="L157">		List&lt;IntermediaryResource&gt; intermediaryResources = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L158" title="2 of 4 branches missed.">		if (circuit.getResources() != null &amp;&amp; (circuit.getResources().getRelatedIntermediaryResources() != null</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">				&amp;&amp; !circuit.getResources().getRelatedIntermediaryResources().isEmpty())) {</span>
+<span class="nc" id="L160">			intermediaryResources = circuit.getResources().getRelatedIntermediaryResources();</span>
+		}
+
+<span class="pc bpc" id="L163" title="2 of 4 branches missed.">		if (intermediaryResources != null &amp;&amp; !intermediaryResources.isEmpty()) {</span>
+<span class="nc" id="L164">			intermediaryResources.forEach(intermediaryResource -&gt; cabinet</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">					.setName(intermediaryResource.getIntermediaryResource().getCode() != null</span>
+<span class="nc" id="L166">							? intermediaryResource.getIntermediaryResource().getCode() : null));</span>
+		}
+<span class="fc" id="L168">	}</span>
+
+	private void getRelatedTerminalResources(Cabinet cabinet, TerminalBox terminalBox, CircuitLotAllocate circuit) {
+<span class="fc" id="L171">		List&lt;TerminalResource&gt; terminalResources = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L172" title="2 of 4 branches missed.">		if (circuit.getResources() != null &amp;&amp; (circuit.getResources().getRelatedTerminalResources() != null</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">				&amp;&amp; !circuit.getResources().getRelatedTerminalResources().isEmpty())) {</span>
+<span class="nc" id="L174">			terminalResources = circuit.getResources().getRelatedTerminalResources();</span>
+		}
+
+<span class="pc bpc" id="L177" title="2 of 4 branches missed.">		if (terminalResources != null &amp;&amp; !terminalResources.isEmpty()) {</span>
+<span class="nc" id="L178">			terminalResources.forEach(terminalResource -&gt; {</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">				terminalBox.setId(terminalResource.getTerminalResource().getCode() != null</span>
+<span class="nc" id="L180">						? terminalResource.getTerminalResource().getCode() : null);</span>
+<span class="nc" id="L181">				cabinet.setTerminalBox(terminalBox);</span>
+<span class="nc" id="L182">			});</span>
+		}
+<span class="fc" id="L184">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

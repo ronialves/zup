@@ -1,0 +1,7 @@
+[
+	{
+		"errorCode":   "1",
+		"errorMessage":"Não há nenhum registro no inventário CPE",
+		"faultCode":   "RICPE-504"
+	}
+]

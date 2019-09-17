@@ -1,0 +1,947 @@
+[
+	{
+		"errorCode":    "1",
+		"errorMessage": "CONTEXTO REGIONCODE=.* E CENTRALOFFICE=.* INFORMADO E INVALIDO",
+		"faultCode":    "RIOSP-503"
+	},
+	{
+		"errorCode":    "2",
+		"errorMessage": "ATRIBUTO INVALIDO",
+		"faultCode":    "RIOSP-503"
+	},
+	{
+		"errorCode": "500",
+		"errorMessage": " OS ATRIBUTOS ORDEM DE RECURSOS E ORDEM DE RESERVA DE RECURSOS NAO FORAM INFORMADOS, MAS AO MENOS UM DELES E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "501",
+		"errorMessage": "OS ATRIBUTOS IDENTIFICADOR DO CIRCUITO PRINCIPAL E ENDERECO NAO FORAM INFORMADOS, MAS AO MENOS UM DELES E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "503",
+		"errorMessage": "O ATRIBUTO NUMERO DO LOTE DEVE SER INFORMADO QUANDO O CODIGO DO LOGRADOURO ESTIVER PREENCHIDO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "505",
+		"errorMessage": "O SUBATRIBUTO VALOR DO ATRIBUTO COMPLEMENTO DE ENDERECO E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "506",
+		"errorMessage": "O ATRIBUTO TIPO DE SERVICO E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "507",
+		"errorMessage": "O ATRIBUTO CODIGO DA LOCALIDADE E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "508",
+		"errorMessage": "O ATRIBUTO CODIGO DO LOGRADOURO E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "509",
+		"errorMessage": "O ATRIBUTO NUMERO DO LOTE E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "510",
+		"errorMessage": "O SUBATRIBUTO CARACTERISTICA DO ATRIBUTO COMPLEMENTO DE ENDERECO E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "511",
+		"errorMessage": "O SUBATRIBUTO TIPO DO ATRIBUTO COMPLEMENTO DE ENDERECO E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "512",
+		"errorMessage": "OS ATRIBUTOS ORDEM DE RECURSOS E IDENTIFICADOR DO CIRCUITO NAO FORAM INFORMADOS, MAS AO MENOS UM DELES E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "513",
+		"errorMessage": "O ATRIBUTO \"OPERACAO\" E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "516",
+		"errorMessage": "TIPO DE SERVICO INVALIDO PARA O TIPO DE REDE INFORMADO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "517",
+		"errorMessage": "ESTADO DE CIRCUITO INVALIDO PARA TIPO DE CIRCUITO FTT",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "ESTADO DO CIRCUITO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "518",
+		"errorMessage": "ESTADO DO CIRCUITO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "519",
+		"errorMessage": "TIPO DE CIRCUITO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "520",
+		"errorMessage": "OS ATRIBUTOS ORDEM DE RECURSO E IDENTIFICADOR DO CIRCUITO SAO OBRIGATORIOS",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "521",
+		"errorMessage": "RETIRADA JA EXISTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "523",
+		"errorMessage": "FALHA AO CONECTAR COM O OPER",
+		"faultCode": "RIOSP-502"
+	},
+	{
+		"errorCode": "524",
+		"errorMessage": "NAO FOI ENCONTRADO O CIRCUITO ASSOCIADO AO\\(S\\) PARAMETRO\\(S\\) INFORMADO\\(S\\)",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "525",
+		"errorMessage": "QUANTIDADE DE COMPLEMENTO HORIZONTAL EXCEDIDA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "526",
+		"errorMessage": "QUANTIDADE DE COMPLEMENTO VERTICAL EXCEDIDA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "527",
+		"errorMessage": "O ATRIBUTO NUMERO DE SERVICO E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "528",
+		"errorMessage": "CODIGO DE LOGRADOURO NAO ENCONTRADO NA LOCALIDADE INFORMADA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "529",
+		"errorMessage": "NAO FOI POSSIVEL RECUPERAR O CODIGO DA MENSAGEM DE RESPOSTA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "530",
+		"errorMessage": "E NECESSARIO INFORMAR UM EQUIPAMENTO ONT PARA ESTA OPERACAO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "531",
+		"errorMessage": "TIPO DE SERVICO NAO POSSUI VELOCIDADE CONFIGURADA E A MESMA FOI INFORMADA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "532",
+		"errorMessage": "ORDEM DE RESERVA JA EXISTENTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "534",
+		"errorMessage": "NUMERO DE SERVICO INEXISTENTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "536",
+		"errorMessage": "OS ATRIBUTOS ENDERECO, NUMERO DE SERVICO E ORDEM DE RESERVA NAO FORAM INFORMADOS, MAS AO MENOS UM DELES E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "537",
+		"errorMessage": "NUMERO DE SERVICO JA EXISTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "538",
+		"errorMessage": "O ENDERECO EXISTE MAS NAO TEM REPRESENTACAO GRAFICA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "539",
+		"errorMessage": "CODIGO DA LOCALIDADE INEXISTENTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "541",
+		"errorMessage": "ERRO NAO MAPEADO",
+		"faultCode": "RIOSP-999"
+	},
+	{
+		"errorCode": "542",
+		"errorMessage": "BLOQUEADO - ENDERECO COM RESTRICAO DE ATENDIMENTO",
+		"faultCode": "RIOSP-516"
+	},
+	{
+		"errorCode": "545",
+		"errorMessage": "FALTA FACILIDADES",
+		"faultCode": "RIOSP-513"
+	},
+	{
+		"errorCode": "546",
+		"errorMessage": "OCUPACAO NAO ENCONTRADA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "548",
+		"errorMessage": "LOCALIDADE NAO ENCONTRADA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "549",
+		"errorMessage": "VELOCIDADE OBRIGATORIA QUANDO TIPO DE SERVICO POSSUI CONFIGURACAO NO MODULO ADM",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "551",
+		"errorMessage": "ATRIBUTO NUMERO DE SERVICO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "552",
+		"errorMessage": "CONTAGEM NAO ENCONTRADA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "553",
+		"errorMessage": "RECURSO BLOQUEADO",
+		"faultCode": "RIOSP-515"
+	},
+	{
+		"errorCode": "555",
+		"errorMessage": "TIPO COM VELOCIDADE DO SERVICO ADICIONAL NAO EXISTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "556",
+		"errorMessage": "TIPO DE EQUIPAMENTO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "557",
+		"errorMessage": "INFORMACAO DE ONT E OBRIGATORIA",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "559",
+		"errorMessage": "OS VALORES DE ONT NAO DEVEM SER PREENCHIDOS QUANDO EQUIPAMENTO TERMINAL FOR ONU",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "560",
+		"errorMessage": "O CODIGO DO ONT PRECISA SER UNICO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "563",
+		"errorMessage": "OCORREU FALHA NA TENTATIVA DE CANCELAMENTO DA RESERVA DOS RECURSOS DA REDE EXTERNA. ",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "564",
+		"errorMessage": "NAO HOUVE FALHA AO EFETUAR O CANCELAMENTO NA REDE EXTERNA, MAS HOUVE FALHA NA TENTATIVA DE EFETUAR O CANCELAMENTO DE RESERVA DA PORTA PRIMARIA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "565",
+		"errorMessage": "O ATRIBUTO CODIGO DO EQUIPAMENTO ONT E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "566",
+		"errorMessage": "DADOS DE COMPLEMENTO DE ENDERECO NAO ENCONTRADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "567",
+		"errorMessage": "O ATRIBUTO ATENUACAO DO EQUIPAMENTO ONT E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "568",
+		"errorMessage": "AS INFORMACÕES DO TIPO DE EQUIPAMENTO ONT SAO OBRIGATORIAS",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "569",
+		"errorMessage": "O ATRIBUTO MODELO DO EQUIPAMENTO ONT E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "570",
+		"errorMessage": "O ATRIBUTO FABRICANTE DO EQUIPAMENTO ONT E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "571",
+		"errorMessage": "EXISTEM VALORES INCORRETOS REFERENTES AO SERVICO INFORMADO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "575",
+		"errorMessage": "A COORDENADA INFORMADA ESTA FORA DOS EXTENTS DA BASE DE DADOS",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "576",
+		"errorMessage": "O CANCELAMENTO DA RESERVA NA REDE EXTERNA NAO FOI EFETUADO, PORQUE OCORREU UMA FALHA NA TENTATIVA DE EFETUAR O CANCELAMENTO DE RESERVA DA PORTA PRIMARIA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "577",
+		"errorMessage": "O ESTADO DO CIRCUITO INFORMADO NAO PERMITE ASSOCIACAO DE SERVICOS",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "578",
+		"errorMessage": "EQUIPAMENTO TERMINAL NAO ENCONTRADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "581",
+		"errorMessage": "ORDEM DE RESERVA DE RECURSOS NAO ENCONTRADA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "582",
+		"errorMessage": "FORAM ENCONTRADOS MAIS QUE UM LOTE COM A MESMA COMBINACAO DE CEP E NUMERO DO LOTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "583",
+		"errorMessage": "CEP E NUMERO DO LOTE NAO ENCONTRADOS",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "584",
+		"errorMessage": "A COMBINACAO CEP E LOGRADOURO/LOCALIDADE NAO E PERMITIDA, SOMENTE UM DELES DEVE SER INFORMADO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "585",
+		"errorMessage": "APTO NAO IMEDIATO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "586",
+		"errorMessage": "ENDERECO NAO ENCONTRADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "587",
+		"errorMessage": "NENHUM CIRCUITO ENCONTRADO NA BUSCA",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "589",
+		"errorMessage": "NAO EXISTE CADASTRO DE RETIRADA ASSOCIADO AO CIRCUITO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "590",
+		"errorMessage": "MUITOS CIRCUITOS ENCONTRADOS",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "591",
+		"errorMessage": "ESTACAO TELEFONICA NAO ENCONTRADA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "592",
+		"errorMessage": "NUMERO DE RESERVA NAO IDENTIFICADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "593",
+		"errorMessage": "OS ATRIBUTOS ENDERECO E NUMERO DE SERVICO ESTAO PREENCHIDOS, SOMENTE UM DELES DEVE SER INFORMADO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "594",
+		"errorMessage": "ENDERECO SEM COBERTURA",
+		"faultCode": "RIOSP-514"
+	},
+	{
+		"errorCode": "595",
+		"errorMessage": "ATRIBUTO DE ENTRADA DUPLICADO – RESOURCEORDER",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "596",
+		"errorMessage": "ATRIBUTO DE ENTRADA DUPLICADO - CIRCUITID ",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "597",
+		"errorMessage": "RETIRADA NAO ENCONTRADA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "598",
+		"errorMessage": "ATRIBUTO DE ENTRADA INVALIDO - SERVICECLASSCODE",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "599",
+		"errorMessage": "VALOR DE OPERACAO INVALIDO. VALORES VALIDOS SAO 1 E 2",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "600",
+		"errorMessage": "ATRIBUTO DE ENTRADA INVALIDO - IDENTIFIER",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "601",
+		"errorMessage": "ATRIBUTO DE ENTRADA DUPLICADO- IDENTIFIER",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "602",
+		"errorMessage": "ATUAL NUMERO DE SERVICO NAO IDENTIFICADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "603",
+		"errorMessage": "CODIGO DE ONT JA EXISTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "604",
+		"errorMessage": "O ATRIBUTO COORDENADA X NAO FOI INFORMADO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "605",
+		"errorMessage": "O ATRIBUTO COORDENADA Y NAO FOI INFORMADO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "608",
+		"errorMessage": "NAO HOUVE FALHA AO EFETUAR A RESERVA NA REDE EXTERNA, MAS HOUVE FALHA AO EFETUAR A RESERVA DA REDE INTERNA, PORTANTO RESERVA NAO FOI EFETUADA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "612",
+		"errorMessage": "OS ATRIBUTOS ENDERECO E COORDENADA ESTAO PREENCHIDOS, SOMENTE UM DELES DEVE SER INFORMADO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "613",
+		"errorMessage": "O ENDERECO INFORMADO NAO POSSUI REPRESENTACAO GRAFICA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "614",
+		"errorMessage": "COMPLEMENTO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "615",
+		"errorMessage": "NUMERO DE SERVICO PORTADO JA EXISTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "616",
+		"errorMessage": "EMPRESA OPERADORA RECEPTORA E OBRIGATORIA",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "617",
+		"errorMessage": "CABO NAO ENCONTRADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "618",
+		"errorMessage": "O TIPO DO CIRCUITO INFORMADO NAO E COMPATIVEL COM A TECNOLOGIA ASSOCIADA AOS RECURSOS",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "619",
+		"errorMessage": "CIRCUITOS NO ESTADO RESERVADO NAO PODEM SER MANOBRADOS",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "620",
+		"errorMessage": "A MANOBRA EM REDE FTT SOMENTE ?OSS?L NO EQUIPAMENTO TERMINAL",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "621",
+		"errorMessage": "MANOBRA NAO EXECUTADA POIS FORAM ENCONTRADOS MAIS DE UM CIRCUITO COM O MESMO NUMERO DE SERVICO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "622",
+		"errorMessage": "CABO DE DIFERENTE DO CABO PARA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "623",
+		"errorMessage": "EQUIPAMENTO DE DIFERENTE DO EQUIPAMENTO PARA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "624",
+		"errorMessage": "LOCALIDADE INVALIDA",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "625",
+		"errorMessage": "ATRIBUTO DE ENTRADA INEXISTENTE",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "626",
+		"errorMessage": "CIRCUITO NAO ENCONTRADO. VERIFIQUE SE O MESMO ESTA NO ESTADO \"OCUPADO\" OU \"DESIGNADO\"",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "627",
+		"errorMessage": "EXISTE RECURSO ASSOCIADO AO FCT",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "628",
+		"errorMessage": "MDU NAO POSSUI INFORMACAO DE ONT",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "629",
+		"errorMessage": "QUANTIDADE DE PARES INVALIDA",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "630",
+		"errorMessage": "VELOCIDADE SEM VALOR CADASTRADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "631",
+		"errorMessage": "OS ATRIBUTOS ENDERECO, NUMERO DE SERVICO E ORDEM DE RESERVA NAO FORAM INFORMADOS, MAS AO MENOS UM DELES E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "632",
+		"errorMessage": "OS ATRIBUTOS ENDERECO E ORDEM DE RESERVA ESTAO PREENCHIDOS, SOMENTE UM DELES DEVE SER INFORMADO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "633",
+		"errorMessage": "OS ATRIBUTOS NUMERO DE SERVICO E ORDEM DE RESERVA ESTAO PREENCHIDOS, SOMENTE UM DELES DEVE SER INFORMADO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "637",
+		"errorMessage": "CAIXA DESATIVADA",
+		"faultCode": "RIOSP-515"
+	},
+	{
+		"errorCode": "638",
+		"errorMessage": "PAR DESTINO NAO ESTA VAGO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "639",
+		"errorMessage": "ESTACAO DE DIFERENTE DA ESTACAO PARA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "640",
+		"errorMessage": "PAR DESTINO NAO ENCONTRADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "644",
+		"errorMessage": "NAO EXISTE PRIORIDADE CADASTRADA PARA ESTE TIPO DE SERVICO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "645",
+		"errorMessage": "A CONSULTA ATRAVES DE NUMERO DE SERVICO NAO ESTA HABILITADA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "646",
+		"errorMessage": "A CONSULTA ATRAVES DE ORDEM DA RESERVA DE RECURSOS NAO ESTA HABILITADA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "647",
+		"errorMessage": "A CONSULTA ATRAVES DE COMPLEMENTO DE ENDERECO NAO ESTA HABILITADA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "648",
+		"errorMessage": "A CONSULTA ATRAVES DE COMPLEMENTO DE ENDERECO NAO ESTA HABILITADA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "649",
+		"errorMessage": "OS ATRIBUTOS CEP E COORDENADAS ESTAO PREENCHIDOS, SOMENTE UM DELES DEVE SER INFORMADO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "650",
+		"errorMessage": "OS ATRIBUTOS CEP, LOCALIDADE, LOGRADOURO E LOTE NAO FORAM INFORMADOS",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "651",
+		"errorMessage": "NAO E PERMITIDO INFORMAR COMPLEMENTO DE ENDERECO NO MODO DE CONSULTA ATRAVES DE COORDENADAS",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "652",
+		"errorMessage": "OS ATRIBUTOS CEP OU LOCALIDADE/LOGRADOURO SAO OBRIGATORIOS QUANDO O NUMERO DO LOTE FOR INFORMADO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "653",
+		"errorMessage": "TIPO DO DOCUMENTO DO CLIENTE NAO INFORMADO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "654",
+		"errorMessage": "DOCUMENTO DO CLIENTE NAO INFORMADO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "656",
+		"errorMessage": "NAO EXISTEM FACILIDADES PARA ATENDER EM REDE METALICA E O ENDERECO NAO POSSUI COBERTURA EM REDE FTTX",
+		"faultCode": "RIOSP-513"
+	},
+	{
+		"errorCode": "657",
+		"errorMessage": "NAO EXISTEM FACILIDADES PARA ATENDER EM REDE FTTX E O ENDERECO NAO POSSUI COBERTURA EM REDE METALICA",
+		"faultCode": "RIOSP-513"
+	},
+	{
+		"errorCode": "658",
+		"errorMessage": "TIPO DE DOCUMENTO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "659",
+		"errorMessage": "DATA DO DOCUMENTO DEVE SER MENOR OU IGUAL A DATA CORRENTE",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "660",
+		"errorMessage": "DATA DO DOCUMENTO INVALIDA",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "661",
+		"errorMessage": "OS ATRIBUTOS CODIGO E NOME DO CLIENTE SAO OBRIGATORIOS",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "662",
+		"errorMessage": "O ATRIBUTO CODIGO DA ONT E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "663",
+		"errorMessage": "CIRCUITO NAO ESTA NO ESTADO RESERVADO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "664",
+		"errorMessage": "DADOS DO SERVICO ATUAL NAO ENCONTRADOS",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "665",
+		"errorMessage": "TIPO DE SERVICO NOVO INCOMPATIVEL COM TIPO DE CIRCUITO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "666",
+		"errorMessage": "TIPO DE SERVICO NOVO INVALIDO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "667",
+		"errorMessage": "TIPO DE SERVICO NOVO NAO POSSUI VELOCIDADE CONFIGURADA E A MESMA FOI INFORMADA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "668",
+		"errorMessage": "VELOCIDADE NOVA OBRIGATORIA QUANDO TIPO DE SERVICO POSSUI CONFIGURACAO NO MODULO ADM",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "669",
+		"errorMessage": "VELOCIDADE NOVA SEM VALOR CADASTRADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "670",
+		"errorMessage": "CIRCUITO ASSOCIADO A UMA SOLICITACAO DE MUDANCA DE ENDERECO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "671",
+		"errorMessage": "A CONSULTA POR TIPO DE SERVICO NAO ESTA HABILITADA",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "672",
+		"errorMessage": "OCORRERAM ERROS NA CRIACAO DO PROXY DE COMUNICACAO COM O SISTEMA EXTERNO DE BUSCA DE PORTAS PRIMARIAS",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "673",
+		"errorMessage": "OCORRERAM ERROS NA CONSULTA DE PORTAS PRIMARIAS DO SISTEMA EXTERNO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "674",
+		"errorMessage": "NAO EXISTEM MATRIZES ATIVAS NO REPOSITORIO DE REGRAS",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "675",
+		"errorMessage": "EXISTEM UMA OU MAIS PLANILHAS DE REGRAS COM PROBLEMAS DE COMPILACAO, VERIFIQUE O PREENCHIMENTO E EXECUTE NOVAMENTE",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "676",
+		"errorMessage": "FORAM ENCONTRADOS GRUPOS DE REGRAS DEFINIDOS NO WORKFLOW SEM REGRAS ATIVAS NO REPOSITORIO DE REGRAS",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "677",
+		"errorMessage": "NUMERO E TIPO DO SERVICO NOVO NAO FORAM INFORMADOS",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "679",
+		"errorMessage": "TIPO DE SERVICO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "682",
+		"errorMessage": "VELOCIDADE INFORMADA INVALIDA",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "683",
+		"errorMessage": "ATRIBUTO DE ENTRADA DUPLICADO - SERVICENUMBER ",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "684",
+		"errorMessage": "MESMO CABO LOGICO CONECTADO NA ENTRADA E SAIDA DO ARMARIO DE DISTRIBUICAO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "685",
+		"errorMessage": "DIGITO VERIFICADOR INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "686",
+		"errorMessage": "CODIGO\\(S\\) DA\\(S\\) FACILIDADE\\(S\\) INVALIDO\\(S\\) PARA O TIPO DE SERVICO INFORMADO. CODIGO\\(S\\): .*",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "687",
+		"errorMessage": "O CODIGO DO TIPO DE SERVICO E OBRIGATORIO QUANDO O CODIGO DA FACILIDADE FOR INFORMADO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "688",
+		"errorMessage": "O ENDERECO ESTA FORA DA AREA DE TARIFA BASICA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "689",
+		"errorMessage": "O ATRIBUTO \"SITE DA LOCALIDADE\" E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "690",
+		"errorMessage": "O ATRIBUTO \"CODIGO DO OLT\" E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "691",
+		"errorMessage": "OS ATRIBUTOS \"IDENTIFICADOR DO CIRCUITO\" OU \\{LOCALIDADE,SITE,CODIGO\\} DO OLT NAO FORAM INFORMADOS, MAS AO MENOS UM DELES E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "693",
+		"errorMessage": "O ATRIBUTO CONFIGURACAO DO EQUIPAMENTO ONT E OBRIGATORIO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "694",
+		"errorMessage": "FALHA NA INTEGRACAO DO CANCELAMENTO DA PORTA PRIMARIA. CONSULTE O LOG PARA MAIS INFORMACÕES",
+		"faultCode": "RIOSP-502"
+	},
+	{
+		"errorCode": "695",
+		"errorMessage": "ORDEM DE RESERVA DE RECURSOS NAO ENCONTRADA NA CONSULTA VIA PRE-QUALIFICACAO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "696",
+		"errorMessage": "NUMERO DE SERVICO NAO ENCONTRADO NA CONSULTA VIA PRE-QUALIFICACAO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "697",
+		"errorMessage": "OPERACAO NAO PODE SER EXECUTADA PARA MAIS DE UMA UNIDADE LOGICA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "698",
+		"errorMessage": "CARACTERISTICA INVALIDA PARA O TIPO DE CIRCUITO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "699",
+		"errorMessage": "SE O TIPO DE CIRCUITO FOR REDE FTTX E SE O ATRIBUTO UNIDADES DE TRANSMISSAO FOR PREENCHIDO, ESTE VALOR DEVE SER 1",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "707",
+		"errorMessage": "NUMERO DE SERVICO INFORMADO JA EXISTENTE PARA UMA PONTA DE LP EQUIVALENTE",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "708",
+		"errorMessage": "DIGITO VERIFICADOR DO NUMERO DO SERVICO DA OUTRA PONTA DE LP INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "709",
+		"errorMessage": "CONJUGADO DO NUMERO DO SERVICO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "710",
+		"errorMessage": "CONJUGADO DO NUMERO DO SERVICO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "711",
+		"errorMessage": "NUMERO DO SERVICO DA OUTRA PONTA DE LP PERTENCE A UM CIRCUITO NAO LP",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "712",
+		"errorMessage": "COMBINACAO INVALIDA PARA OS ATRIBUTOS LOCALIDADE E SITE DA OUTRA PONTA DE LP",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "713",
+		"errorMessage": "CIRCUITO INFORMADO NAO PERTENCE A NENHUMA DAS PONTAS DE LP COMUNS A MESMA ORDEM DE RECURSOS",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "717",
+		"errorMessage": "MAIS DE UM CIRCUITO LP ASSOCIADO A ORDEM DE RECURSOS. INFORME O IDENTIFICADOR DO CIRCUITO DESEJADO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "718",
+		"errorMessage": "NUMERO MAXIMO DE FIOS NO ENDERECO ATINGIDO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "719",
+		"errorMessage": "FORAM ENCONTRADOS MULTIPLOS CIRCUITOS VINCULADOS A BUSCA REALIZADA",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "720",
+		"errorMessage": "ARMARIO DE DISTRIBUICAO INVALIDO",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "721",
+		"errorMessage": "MANOBRA EXCLUSIVA NO ARMARIO DE DISTRIBUICAO DEVE OCORRER NO MESMO EQUIPAMENTO DE ORIGEM \\(DE\\)",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "722",
+		"errorMessage": "MANOBRA EM CAIXA PREDIAL DEVE OCORRER NO MESMO EQUIPAMENTO DE ORIGEM \\(DE\\) E COM O MESMO CABO LOGICO DO PAR \\(DE\\)",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "723",
+		"errorMessage": "NAO EXISTE ASSOCIACAO ENTRE O ARMARIO DE DISTRIBUICAO E A CAIXA TERMINAL/PREDIAL INFORMADOS",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "724",
+		"errorMessage": "FACILIDADES DESTINO \\(PARA\\) INFORMADAS NAO PERTECEM A MESMA MSAN DAS FACILIDADES DE ORIGEM \\(DE\\)",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "725",
+		"errorMessage": "CODIGO DO TIPO DE DEFEITO DEVE SER INFORMADO",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "726",
+		"errorMessage": "CODIGO DO TIPO DE DEFEITO NAO DEVE SER INFORMADO SE ESTADO DE FOR RA OU VGSS",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "727",
+		"errorMessage": "CDIGO DO TIPO DE DEFEITO NAO ENCONTRADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "728",
+		"errorMessage": "EQUIPAMENTO NAO ENCONTRADO",
+		"faultCode": "RIOSP-504"
+	},
+	{
+		"errorCode": "729",
+		"errorMessage": "OS DADOS DO EQUIPAMENTO INTERMEDIARIO SAO OBRIGATORIOS QUANDO O CIRCUITO DE FOR RIGIDO E O CIRCUITO PARA FOR FLEXIVEL",
+		"faultCode": "RIOSP-501"
+	},
+	{
+		"errorCode": "731",
+		"errorMessage": "A UNIDADE LOGICA INFORMADA ESTA CONECTADA A UM CARRIER, FAVOR INFORMAR OS DADOS DO CARRIER",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "732",
+		"errorMessage": "PARAMETROS INVALIDOS",
+		"faultCode": "RIOSP-503"
+	},
+	{
+		"errorCode": "768",
+		"errorMessage": "A ORDEM DE RECURSOS INFORMADO ESTA ASSOCIADA A MAIS DE UM CIRCUITO. ESPECIFIQUE O CIRCUITO",
+		"faultCode": "RIOSP-505"
+	},
+	{
+		"errorCode": "769",
+		"errorMessage": "EXISTE\\(M\\) PENDENCIA\\(S\\) COM MAIOR PRIORIDADE ASSOCIADA AO\\(S\\) RECURSO\\(S\\) ENCONTRADO\\(S\\)",
+		"faultCode": "RIOSP-505"
+	}
+]

@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<xs:schema xmlns:tns="http://br.com.vivo.indra.scqla.ws/"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+	version="1.0" targetNamespace="http://br.com.vivo.indra.scqla.ws/">
+	<xs:element name="consultaFacilidadeResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="codigo" type="xs:string" minOccurs="0" />
+				<xs:element name="mensagem" type="xs:string" minOccurs="0" />
+				<xs:element name="redeMetalica" type="tns:redeMetalicaType"
+					minOccurs="0" />
+				<xs:element name="fibra" type="tns:fibraType" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="consultarFacilidade" type="tns:consultarFacilidade" />
+	<xs:element name="consultarFacilidadeResponse" type="tns:consultarFacilidadeResponse" />
+	<xs:element name="qualificar" type="tns:qualificar" />
+	<xs:element name="qualificarResponse" type="tns:qualificarResponse" />
+	<xs:element name="qualificarTVA" type="tns:qualificarTVA" />
+	<xs:element name="qualificarTVAResponse" type="tns:qualificarTVAResponse" />
+	<xs:element name="scqlaRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="terminal" type="tns:terminalType"
+					minOccurs="0" />
+				<xs:element name="endereco" type="tns:enderecoType"
+					minOccurs="0" />
+				<xs:element name="consultaPorta" default="0" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="0" />
+							<xs:enumeration value="1" />
+							<xs:enumeration value="2" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="enviaEndereco" default="N" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="S" />
+							<xs:enumeration value="N" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="scqlaResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="codigo" type="xs:string" minOccurs="0" />
+				<xs:element name="mensagem" type="xs:string" minOccurs="0" />
+				<xs:element name="quantidadePortaATM" type="xs:int" />
+				<xs:element name="quantidadePortaETH" type="xs:int" />
+				<xs:element name="digito" type="xs:short" minOccurs="0" />
+				<xs:element name="conjugado" type="xs:short" minOccurs="0" />
+				<xs:element name="produtos" type="tns:produtoListType"
+					minOccurs="0" />
+				<xs:element name="complementos" type="tns:complementoListType"
+					minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="scqlaResponseTVA">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="codigo" type="xs:string" minOccurs="0" />
+				<xs:element name="mensagem" type="xs:string" minOccurs="0" />
+				<xs:element name="terminal" type="tns:terminalTypeTVA"
+					minOccurs="0" />
+				<xs:element name="endereco" type="tns:enderecoType"
+					minOccurs="0" />
+				<xs:element name="fibra" type="tns:fibraType" minOccurs="0" />
+				<xs:element name="tva" type="tns:tvaType" minOccurs="0" />
+				<xs:element name="complementoHorizontal" type="tns:complementoHorizontalListType"
+					minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="qualificarTVA">
+		<xs:sequence>
+			<xs:element name="scqlaRequest" form="unqualified"
+				minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="terminal" type="tns:terminalType"
+							minOccurs="0" />
+						<xs:element name="endereco" type="tns:enderecoType"
+							minOccurs="0" />
+						<xs:element name="consultaPorta" default="0" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="0" />
+									<xs:enumeration value="1" />
+									<xs:enumeration value="2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="enviaEndereco" default="N" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="S" />
+									<xs:enumeration value="N" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="terminalType">
+		<xs:sequence>
+			<xs:element name="ddd" type="xs:int" />
+			<xs:element name="telefone" type="xs:int" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="enderecoType">
+		<xs:sequence>
+			<xs:element name="codigoLogradouro" type="xs:string" />
+			<xs:element name="cnl" type="xs:int" />
+			<xs:element name="numeroLogradouro" type="xs:string" />
+			<xs:element name="at" type="xs:string" />
+			<xs:element name="complementoEndereco" type="xs:string"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="qualificarTVAResponse">
+		<xs:sequence>
+			<xs:element name="scqlaResponseTVA" form="unqualified"
+				minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="codigo" type="xs:string" minOccurs="0" />
+						<xs:element name="mensagem" type="xs:string" minOccurs="0" />
+						<xs:element name="terminal" type="tns:terminalTypeTVA"
+							minOccurs="0" />
+						<xs:element name="endereco" type="tns:enderecoType"
+							minOccurs="0" />
+						<xs:element name="fibra" type="tns:fibraType"
+							minOccurs="0" />
+						<xs:element name="tva" type="tns:tvaType" minOccurs="0" />
+						<xs:element name="complementoHorizontal" type="tns:complementoHorizontalListType"
+							minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="terminalTypeTVA">
+		<xs:sequence>
+			<xs:element name="digito" type="xs:short" />
+			<xs:element name="conjugado" type="xs:short" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="fibraType">
+		<xs:sequence>
+			<xs:element name="caboAlimentador" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="fibraAlimentadora" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="attendance" type="xs:string" minOccurs="0" />
+			<xs:element name="splitterFirstLevelCode" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="splitterFirstLevelAddress" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="distributionLowFiber" type="xs:int"
+				minOccurs="0" />
+			<xs:element name="distributionHighFiber" type="xs:int"
+				minOccurs="0" />
+			<xs:element name="splitterSecondLevelFiberNum" type="xs:int"
+				minOccurs="0" />
+			<xs:element name="splitterSecondLevelCode" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="splitterSecondLevelAddress" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="lateralCableDistribution" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="terminalEquipmentType" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="nome" type="xs:string" minOccurs="0" />
+			<xs:element name="terminalEquipmentAddress" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="opticaTerminal" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="portaClient" type="xs:int" minOccurs="0" />
+			<xs:element name="technology" type="xs:string" minOccurs="0" />
+			<xs:element name="splitterFirstLevelSTCode" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="splitterFirstLevelLotFace" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="splitterSecondLevelSTCode" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="splitterSecondLevelLotFace" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="fttxClient" type="xs:string" minOccurs="0" />
+			<xs:element name="slotUpLink" type="xs:string" minOccurs="0" />
+			<xs:element name="slotClient" type="xs:int" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tvaType">
+		<xs:sequence>
+			<xs:element name="cabo" type="xs:string" minOccurs="0" />
+			<xs:element name="estrutura" type="xs:string" minOccurs="0" />
+			<xs:element name="efm" type="xs:int" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="complementoHorizontalListType">
+		<xs:sequence>
+			<xs:element name="complemento" type="tns:complementoHorizontalType"
+				nillable="true" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="complementoHorizontalType">
+		<xs:sequence>
+			<xs:element name="tipo1" type="xs:string" minOccurs="0" />
+			<xs:element name="valor1" type="xs:string" minOccurs="0" />
+			<xs:element name="tipo2" type="xs:string" minOccurs="0" />
+			<xs:element name="valor2" type="xs:string" minOccurs="0" />
+			<xs:element name="tipo3" type="xs:string" minOccurs="0" />
+			<xs:element name="valor3" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="consultarFacilidade">
+		<xs:sequence>
+			<xs:element name="scqlaRequest" form="unqualified"
+				minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="terminal" type="tns:terminalType"
+							minOccurs="0" />
+						<xs:element name="endereco" type="tns:enderecoType"
+							minOccurs="0" />
+						<xs:element name="consultaPorta" default="0" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="0" />
+									<xs:enumeration value="1" />
+									<xs:enumeration value="2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="enviaEndereco" default="N" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="S" />
+									<xs:enumeration value="N" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="consultarFacilidadeResponse">
+		<xs:sequence>
+			<xs:element name="consultaFacilidadeResponse" form="unqualified"
+				minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="codigo" type="xs:string" minOccurs="0" />
+						<xs:element name="mensagem" type="xs:string" minOccurs="0" />
+						<xs:element name="redeMetalica" type="tns:redeMetalicaType"
+							minOccurs="0" />
+						<xs:element name="fibra" type="tns:fibraType"
+							minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="redeMetalicaType">
+		<xs:sequence>
+			<xs:element name="armario" type="xs:string" minOccurs="0" />
+			<xs:element name="caboPrimario" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="lateralPrimario" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="parPrimario" type="xs:string" minOccurs="0" />
+			<xs:element name="caboSecundario" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="lateralSecundario" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="parSecundario" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="caixa" type="xs:string" minOccurs="0" />
+			<xs:element name="distanciaTotal" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="distanciaCentralCaixa" type="xs:double"
+				minOccurs="0" />
+			<xs:element name="distanciaCaixaAssinante" type="xs:double"
+				minOccurs="0" />
+			<xs:element name="distanciaArmarioCentral" type="xs:double"
+				minOccurs="0" />
+			<xs:element name="distanciaCentralUltimoElemento" type="xs:double"
+				minOccurs="0" />
+			<xs:element name="distanciaRadialCentralCaixa" type="xs:double"
+				minOccurs="0" />
+			<xs:element name="distanciaDslamAssinante" type="xs:double"
+				minOccurs="0" />
+			<xs:element name="quantidadeParalelo" type="xs:int"
+				minOccurs="0" />
+			<xs:element name="delta" type="xs:double" minOccurs="0" />
+			<xs:element name="attenuation" type="xs:double" minOccurs="0" />
+			<xs:element name="resistence" type="xs:double" minOccurs="0" />
+			<xs:element name="lastObjectX" type="xs:double" minOccurs="0" />
+			<xs:element name="lastObjectY" type="xs:double" minOccurs="0" />
+			<xs:element name="identificadorCarrier" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="identificadorArmarioOptico" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="identificadorMuxfin" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="identificadorBobina" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="identificadorRedesobreposta" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="identificadorPopDslam" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="identificadorMiniDslan" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="codigoDslam" type="xs:string" minOccurs="0" />
+			<xs:element name="distanciaMsanCentral" type="xs:double"
+				minOccurs="0" />
+			<xs:element name="distanciaMsanAssinante" type="xs:double"
+				minOccurs="0" />
+			<xs:element name="identificadorMsan" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="identificadorDistanciaAbrigoEstimado"
+				type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="qualificar">
+		<xs:sequence>
+			<xs:element name="scqlaRequest" form="unqualified"
+				minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="terminal" type="tns:terminalType"
+							minOccurs="0" />
+						<xs:element name="endereco" type="tns:enderecoType"
+							minOccurs="0" />
+						<xs:element name="consultaPorta" default="0" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="0" />
+									<xs:enumeration value="1" />
+									<xs:enumeration value="2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="enviaEndereco" default="N" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="S" />
+									<xs:enumeration value="N" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="qualificarResponse">
+		<xs:sequence>
+			<xs:element name="scqlaResponse" form="unqualified"
+				minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="codigo" type="xs:string" minOccurs="0" />
+						<xs:element name="mensagem" type="xs:string" minOccurs="0" />
+						<xs:element name="quantidadePortaATM" type="xs:int" />
+						<xs:element name="quantidadePortaETH" type="xs:int" />
+						<xs:element name="digito" type="xs:short" minOccurs="0" />
+						<xs:element name="conjugado" type="xs:short" minOccurs="0" />
+						<xs:element name="produtos" type="tns:produtoListType"
+							minOccurs="0" />
+						<xs:element name="complementos" type="tns:complementoListType"
+							minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="produtoListType">
+		<xs:sequence>
+			<xs:element name="produto" type="tns:produtoType"
+				nillable="true" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="produtoType">
+		<xs:sequence>
+			<xs:element name="classe" type="xs:string" />
+			<xs:element name="tipo" type="xs:string" />
+			<xs:element name="apto" type="xs:string" />
+			<xs:element name="aptoDescricao" type="xs:string" />
+			<xs:element name="nvt" type="xs:string" />
+			<xs:element name="perfilProduto" type="xs:string" />
+			<xs:element name="sistemaQualificacao" type="xs:string" />
+			<xs:element name="tecnologia" type="xs:string" />
+			<xs:element name="familiaProduto" type="xs:string" />
+			<xs:element name="tipoTecnologia" type="xs:string" />
+			<xs:element name="familiaTecnologia" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="complementoListType">
+		<xs:sequence>
+			<xs:element name="complemento" type="tns:complementoType"
+				nillable="true" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="complementoType">
+		<xs:sequence>
+			<xs:element name="detalhes" type="tns:detalheType"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="detalheType">
+		<xs:sequence>
+			<xs:element name="tipo" type="xs:string" minOccurs="0" />
+			<xs:element name="valor" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

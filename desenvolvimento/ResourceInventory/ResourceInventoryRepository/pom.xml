@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+						http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>ResourceInventoryRepository</name>
+
+	<groupId>com.tlf.oss.resourceinventory</groupId>
+	<artifactId>ResourceInventoryRepository</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>com.tlf.oss</groupId>
+		<artifactId>OSSProjectParent</artifactId>
+		<version>1.1</version>
+	</parent>
+
+	<modules>
+		<module>ResourceInventoryRepository-core</module>
+		<module>ResourceInventoryRepository-api</module>
+		<module>ResourceInventoryRepository-ear</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- Define the version of the WAR so that we don't need to repeat ourselves 
+				in every module -->
+			<dependency>
+				<groupId>com.tlf.oss.resourceinventory</groupId>
+				<artifactId>ResourceInventoryRepository-api</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+			</dependency>
+
+			<!-- Define the version of the core so that we don't need to repeat ourselves 
+				in every module -->
+			<dependency>
+				<groupId>com.tlf.oss.resourceinventory</groupId>
+				<artifactId>ResourceInventoryRepository-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.tlf.oss.resourceinventory</groupId>
+				<artifactId>ResourceInventorySchemas-entities</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.tlf.oss.resourceinventory</groupId>
+				<artifactId>ResourceInventorySchemas-audit</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.tlf.oss.resourceinventory</groupId>
+				<artifactId>ResourceInventorySchemas-customer</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.tlf.oss</groupId>
+				<artifactId>OSSCommons-util</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+			
+		</dependencies>
+	</dependencyManagement>
+
+</project>

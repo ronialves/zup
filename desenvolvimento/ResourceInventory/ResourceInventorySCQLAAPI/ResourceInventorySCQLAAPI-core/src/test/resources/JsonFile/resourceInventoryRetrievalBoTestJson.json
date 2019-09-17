@@ -1,0 +1,16 @@
+{
+	"cnl":"11000",
+	"telephonicArea":"JO",
+	"complementSummary":
+	
+	{
+	    "complement":
+	    [
+	    	{
+	    		"value":"11"
+	    	}	
+	    ]	  
+    },
+	"streetCode":"713805",
+	"streetNrFisrt":"100"
+}

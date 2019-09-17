@@ -1,0 +1,69 @@
+<div class="ui-catalog-filters">
+  <button mat-icon-button (click)="doClose()" class="ui-close-botton">
+    <i class="fas fa-window-close fa-2x"></i>
+  </button>
+  <h3>Filtros</h3>
+  <mat-divider></mat-divider>
+  <mat-grid-list cols="1" rowHeight="58px">
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <mat-form-field class="ui-form-field">
+        <input matInput placeholder="Fabricante" aria-label="Fabricante" [matAutocomplete]="autoFabricante"
+          [formControl]="ctrlFabricante">
+        <mat-autocomplete #autoFabricante="matAutocomplete">
+          <mat-option *ngFor="let item of filteredFabricante | async" [value]="item">
+            <span>{{item}}</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <mat-form-field class="ui-form-field">
+        <input matInput placeholder="Modelo" aria-label="Modelo" [matAutocomplete]="autoModelo"
+          [formControl]="ctrlModelo">
+        <mat-autocomplete #autoModelo="matAutocomplete">
+          <mat-option *ngFor="let item of filteredModelo | async" [value]="item">
+            <span>{{item}}</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <mat-form-field class="ui-form-field">
+        <mat-label>Rede</mat-label>
+        <mat-select [formControl]="ctrlRede">
+          <mat-option *ngFor="let item of redes" [value]="item">
+            {{item}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <mat-form-field class="ui-form-field">
+        <input matInput placeholder="Tecnologia" aria-label="Tecnologia" [matAutocomplete]="autoTecnologia"
+          [formControl]="ctrlTecnologia">
+        <mat-autocomplete #autoTecnologia="matAutocomplete">
+          <mat-option *ngFor="let item of filteredTecnologia | async" [value]="item">
+            <span>{{item}}</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <mat-form-field class="ui-form-field">
+        <input matInput placeholder="Categoria" aria-label="Categoria" [matAutocomplete]="autoCategoria"
+          [formControl]="ctrlCategoria">
+        <mat-autocomplete #autoCategoria="matAutocomplete">
+          <mat-option *ngFor="let item of filteredCategoria | async" [value]="item">
+            <span>{{item}}</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <button mat-raised-button color="primary" (click)="doFilter()">
+        <i class="fas fa-filter"></i> Filtrar
+      </button>
+      <button mat-raised-button color="primary" (click)="doClear()"> Limpar </button>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>

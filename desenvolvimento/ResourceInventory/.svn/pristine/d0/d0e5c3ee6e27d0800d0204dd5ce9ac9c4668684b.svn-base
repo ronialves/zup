@@ -1,0 +1,139 @@
+package com.tlf.oss.resourceinventory.schemas;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "PortAdapterCard", propOrder = { "technology", "freePorts", "maxBroadbandSpeed", "slot", "subSlotId",
+		"containsPorts", "slotId", "model", "physicalResource", "id", "subSlot", "vendor" })
+public class PortAdapterCard {
+
+	@Deprecated //depreciado em 20180430. A ser removido na proxima release. Nao utilizar ou evoluir
+	protected String id;//@movedTo slot
+	protected String slot;//@new @movedFrom id and slotId
+	protected String subSlot;//@new @movedFrom subSlotId
+	protected String vendor;//@new
+	protected String model;//@maintained
+	protected String technology;
+	protected String freePorts;
+	protected String maxBroadbandSpeed;
+	protected String subSlotId;//@movedTo subSlot
+	@XmlElement(name = "containsPorts")
+	protected List<PhysicalPort> containsPorts;//@maintained
+	@Deprecated //depreciado em 20180430. A ser removido na proxima release. Nao utilizar ou evoluir
+	protected String slotId;//@movedTo slot
+	protected PhysicalResource physicalResource;
+
+	public String getTechnology() {
+		return technology;
+	}
+
+	public void setTechnology(String value) {
+		this.technology = value;
+	}
+
+	public String getFreePorts() {
+		return freePorts;
+	}
+
+	public void setFreePorts(String value) {
+		this.freePorts = value;
+	}
+
+	public String getMaxBroadbandSpeed() {
+		return maxBroadbandSpeed;
+	}
+
+	public void setMaxBroadbandSpeed(String value) {
+		this.maxBroadbandSpeed = value;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getSubSlotId() {
+		return subSlotId;
+	}
+
+	public void setSubSlotId(String subSlotId) {
+		this.subSlotId = subSlotId;
+	}
+
+	public List<PhysicalPort> getContainsPorts() {
+		if (containsPorts == null)
+			containsPorts = new ArrayList<PhysicalPort>();
+		return containsPorts;
+	}
+
+	public void setContainsPorts(List<PhysicalPort> containsPorts) {
+		this.containsPorts = containsPorts;
+	}
+
+	public String getSlotId() {
+		return slotId;
+	}
+
+	public void setSlotId(String slotId) {
+		this.slotId = slotId;
+	}
+
+	/**
+	 * @return the model
+	 */
+	public String getModel() {
+		return model;
+	}
+
+	/**
+	 * @param model
+	 *            the model to set
+	 */
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public PhysicalResource getPhysicalResource() {
+		return physicalResource;
+	}
+
+	public void setPhysicalResource(PhysicalResource physicalResource) {
+		this.physicalResource = physicalResource;
+	}
+
+	public String getSlot() {
+		return slot;
+	}
+
+	public void setSlot(String slot) {
+		this.slot = slot;
+	}
+
+	public String getSubSlot() {
+		return subSlot;
+	}
+
+	public void setSubSlot(String subSlot) {
+		this.subSlot = subSlot;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
+	}
+	
+}

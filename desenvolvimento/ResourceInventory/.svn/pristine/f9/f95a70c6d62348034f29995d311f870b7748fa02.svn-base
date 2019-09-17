@@ -1,0 +1,17 @@
+package com.tlf.oss.resourceinventory.granite.core.entity;
+
+public class Rules {
+
+	private String result;
+
+	public Rules() {
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
+	}
+}

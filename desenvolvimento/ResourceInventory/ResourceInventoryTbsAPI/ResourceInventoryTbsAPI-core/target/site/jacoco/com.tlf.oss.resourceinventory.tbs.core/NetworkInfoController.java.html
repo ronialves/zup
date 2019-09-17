@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NetworkInfoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core</a> &gt; <span class="el_source">NetworkInfoController.java</span></div><h1>NetworkInfoController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.schemas.AtomicNetworkAddress;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.IPAddress;
+import com.tlf.oss.resourceinventory.schemas.LogicalResource;
+import com.tlf.oss.resourceinventory.schemas.LogicalResourceAssociation;
+import com.tlf.oss.resourceinventory.schemas.NetworkAddressAssociation;
+import com.tlf.oss.resourceinventory.schemas.NetworkRoute;
+import com.tlf.oss.resourceinventory.schemas.NetworkRouteAssociation;
+import com.tlf.oss.resourceinventory.schemas.PhysicalPort;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ResourceCharacteristicSpecification;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.core.validation.NetworkInfo;
+import com.tlf.oss.resourceinventory.tbs.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.NetworkInfoEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.RetrieveInfoType;
+import com.tlf.oss.resourceinventory.tbs.repository.NetworkInfoRepository;
+
+<span class="fc" id="L33">public class NetworkInfoController extends ValidatorEntity implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    public NetworkInfoRepository networkInfoRepository;
+
+    public ResourceInventoryEntity getRetrieve(@NetworkInfo ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L42">        ResourceInventoryEntity retrieveNetworkInfoResult = null;</span>
+<span class="fc" id="L43">        ResourceFacingService resourceFacingService = entity.getResourceFacingService();</span>
+<span class="fc" id="L44">        String serviceId = resourceFacingService.getServiceId();</span>
+<span class="fc" id="L45">        String status = resourceFacingService.getStatus();</span>
+
+<span class="fc" id="L47">        NetworkInfoEntity networkInfoEntity = networkInfoRepository.getRetrieveNetworkInfo(serviceId, status);</span>
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (foundWithoutError(networkInfoEntity)) {</span>
+<span class="fc" id="L50">            networkInfoEntity.setCircuitActivityInd(status);</span>
+<span class="fc" id="L51">            retrieveNetworkInfoResult = this.buildResourceInventoryEntityResponse(networkInfoEntity);</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        } else if (networkInfoEntity != null) {</span>
+<span class="fc" id="L53">            String msg =  RetrieveInfoType.RETRIEVE_NETWORK_INFO.toString() + &quot;: &quot; + networkInfoEntity.getMsgErro();</span>
+<span class="fc" id="L54">            throw new OSSBusinessException(&quot;ERRO: &quot; + networkInfoEntity.getCodErro(), &quot;RITBS-001&quot;, &quot;&quot; + msg);</span>
+        }
+
+<span class="fc" id="L57">        return retrieveNetworkInfoResult;</span>
+    }
+
+    private ResourceInventoryEntity buildResourceInventoryEntityResponse(NetworkInfoEntity entity) {
+<span class="fc" id="L61">        ResourceInventoryEntity resourceInventoryEntity = new ResourceInventoryEntity();</span>
+
+<span class="fc" id="L63">        ResourceFacingService rfs = new ResourceFacingService();</span>
+<span class="fc" id="L64">        rfs.setServiceId(entity.getInstancia());</span>
+<span class="fc" id="L65">        rfs.setStatus(entity.getCircuitActivityInd());</span>
+
+<span class="fc" id="L67">        resourceInventoryEntity.setResourceFacingService(rfs);</span>
+
+<span class="fc" id="L69">        Cabinet cabinet = new Cabinet();</span>
+
+<span class="fc" id="L71">        Shelf shelf = new Shelf();</span>
+<span class="fc" id="L72">        shelf.setSlotId(entity.getSlot());</span>
+
+<span class="fc" id="L74">        PortAdapterCard portAdapterCard = new PortAdapterCard();</span>
+<span class="fc" id="L75">        portAdapterCard.setModel(entity.getModeloPlaca());</span>
+
+<span class="fc" id="L77">        PhysicalPort physicalPort = new PhysicalPort();</span>
+<span class="fc" id="L78">        physicalPort.setId(entity.getPortaFisica());</span>
+<span class="fc" id="L79">        physicalPort.setLogicalResourceAssociation(this.buildLogicalResources(entity));</span>
+
+<span class="fc" id="L81">        portAdapterCard.setContainsPorts(Arrays.asList(physicalPort));</span>
+
+<span class="fc" id="L83">        IPAddress ipAddress = new IPAddress();</span>
+<span class="fc" id="L84">        ipAddress.setNetworkNumber(entity.getIpAddress());</span>
+
+<span class="fc" id="L86">        shelf.setIpAddress(ipAddress);</span>
+<span class="fc" id="L87">        shelf.setIpController(ipAddress);</span>
+
+<span class="fc" id="L89">        shelf.setHasCards(Arrays.asList(portAdapterCard));</span>
+<span class="fc" id="L90">        shelf.setResourceCharacteristicSpecifications(this.buildResourceCharacteristicSpecifications(entity));</span>
+<span class="fc" id="L91">        shelf.setNetworkAddressAssociation(this.buildNetworkAddressAssociation(entity));</span>
+
+<span class="fc" id="L93">        cabinet.setName(entity.getCabinet());</span>
+<span class="fc" id="L94">        cabinet.setHasShelves(Arrays.asList(shelf));</span>
+<span class="fc" id="L95">        resourceInventoryEntity.setCabinet(cabinet);</span>
+
+<span class="fc" id="L97">        ServiceDescribedBy sdb = new ServiceDescribedBy();</span>
+<span class="fc" id="L98">        sdb.setName(&quot;BROADBANDVELOCITY&quot;);</span>
+<span class="fc" id="L99">        resourceInventoryEntity.getResourceFacingService().getServiceDescribedBy().add(sdb);</span>
+
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if(entity.getDownstream() != null) {</span>
+<span class="fc" id="L102">            ServiceSpecCharDescribes sscd = new ServiceSpecCharDescribes();</span>
+<span class="fc" id="L103">            sscd.setId(&quot;DOWNLOAD&quot;);</span>
+<span class="fc" id="L104">            sscd.setValue(entity.getDownstream());</span>
+<span class="fc" id="L105">            resourceInventoryEntity.getResourceFacingService().getServiceDescribedBy().get(0).getServiceSpecCharDescribes().add(sscd);</span>
+        }
+
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if(entity.getUpstream() != null) {</span>
+<span class="fc" id="L109">            ServiceSpecCharDescribes sscd = new ServiceSpecCharDescribes();</span>
+<span class="fc" id="L110">            sscd.setId(&quot;UPLOAD&quot;);</span>
+<span class="fc" id="L111">            sscd.setValue(entity.getUpstream());</span>
+<span class="fc" id="L112">            resourceInventoryEntity.getResourceFacingService().getServiceDescribedBy().get(0).getServiceSpecCharDescribes().add(sscd);</span>
+        }
+
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if (entity.getTypeOfResource() != null) {</span>
+<span class="fc" id="L116">            shelf.setTypeOfResource(entity.getTypeOfResource());</span>
+        }
+
+<span class="fc" id="L119">        return resourceInventoryEntity;</span>
+    }
+
+    private NetworkAddressAssociation buildNetworkAddressAssociation(NetworkInfoEntity entity) {
+<span class="fc" id="L123">        NetworkAddressAssociation addressAssociation = new NetworkAddressAssociation();</span>
+<span class="fc" id="L124">        AtomicNetworkAddress atomicNetworkAddress = new AtomicNetworkAddress();</span>
+
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if(entity.getNameDslam() != null) {</span>
+<span class="fc" id="L127">            atomicNetworkAddress.setHostname(entity.getNameDslam());</span>
+        }
+
+<span class="fc" id="L130">        addressAssociation.setAtomicNetworkAddress(atomicNetworkAddress);</span>
+<span class="fc" id="L131">        return addressAssociation;</span>
+    }
+    private List&lt;ResourceCharacteristicSpecification&gt; buildResourceCharacteristicSpecifications(NetworkInfoEntity entity) {
+<span class="fc" id="L134">        List&lt;ResourceCharacteristicSpecification&gt; resourceCharacteristicSpecifications = new ArrayList&lt;&gt;();</span>
+
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        if (entity.getSvlan() != null) {</span>
+<span class="nc" id="L137">            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification(&quot;SVLAN&quot;, entity.getSvlan()));</span>
+        }
+
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        if (entity.getCvlan() != null) {</span>
+<span class="nc" id="L141">            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification(&quot;CVLAN&quot;, entity.getCvlan()));</span>
+        }
+
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (entity.getNameDslam() != null) {</span>
+<span class="fc" id="L145">            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification(&quot;NAME_DSLAM&quot;, entity.getNameDslam()));</span>
+        }
+
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">        if (entity.getModelDslam() != null) {</span>
+<span class="nc" id="L149">            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification(&quot;MODEL_DSLAM&quot;, entity.getModelDslam()));</span>
+        }
+
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">        if (entity.getVendorName() != null) {</span>
+<span class="fc" id="L153">            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification(&quot;VENDOR&quot;, entity.getVendorName()));</span>
+        }
+
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">        if (entity.getExternalNetworkOwner() != null) {</span>
+<span class="fc" id="L157">            resourceCharacteristicSpecifications.add(createResourceCharacteristicSpecification(&quot;EXTERNAL_NETWORK_OWNER&quot;, entity.getExternalNetworkOwner()));</span>
+        }
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">        if (entity.getV5id() != null) {</span>
+<span class="fc" id="L160">            resourceCharacteristicSpecifications.add(this.createResourceCharacteristicSpecification(&quot;V5ID&quot;, entity.getV5id()));</span>
+        }
+
+<span class="fc" id="L163">        return resourceCharacteristicSpecifications;</span>
+    }
+
+    private LogicalResourceAssociation buildLogicalResources(NetworkInfoEntity entity) {
+<span class="fc" id="L167">        LogicalResourceAssociation logicalResourceAssociation = new LogicalResourceAssociation();</span>
+<span class="fc" id="L168">        List&lt;LogicalResource&gt; logicalResources = logicalResourceAssociation.getLogicalResource();</span>
+
+<span class="fc" id="L170">        LogicalResource logicalResource = new LogicalResource();</span>
+<span class="fc" id="L171">        NetworkRouteAssociation networkRouteAssociation = new NetworkRouteAssociation();</span>
+<span class="fc" id="L172">        NetworkRoute networkRoute = new NetworkRoute();</span>
+<span class="fc" id="L173">        networkRoute.setVirtualPort(String.valueOf(entity.getPortaLogica()));</span>
+<span class="fc" id="L174">        networkRoute.setType(&quot;INTERNET&quot;);</span>
+<span class="fc" id="L175">        networkRouteAssociation.getNetworkRoute().add(networkRoute);</span>
+<span class="fc" id="L176">        logicalResource.setNetworkRouteAssociation(networkRouteAssociation);</span>
+<span class="fc" id="L177">        logicalResources.add(logicalResource);</span>
+
+
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">        if (entity.getV5id() != null) {</span>
+<span class="fc" id="L181">            logicalResources.add(this.createLogicalResource(&quot;V5ID&quot;, entity.getV5id()));</span>
+        }
+
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">        if (entity.getSlot() != null) {</span>
+<span class="fc" id="L185">            logicalResources.add(this.createLogicalResource(&quot;SLOT_SHELF&quot;, entity.getSlot()));</span>
+        }
+
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">        if (entity.getPortaFisica() != null) {</span>
+<span class="fc" id="L189">            logicalResources.add(this.createLogicalResource(&quot;PHYSICAL_PORT&quot;, entity.getPortaFisica()));</span>
+        }
+
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">        if (entity.getPortaLogica() != null) {</span>
+<span class="fc" id="L193">            logicalResources.add(this.createLogicalResource(&quot;LOGICAL_PORT&quot;, entity.getPortaLogica()));</span>
+        }
+
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">        if (entity.getSvlan() != null) {</span>
+<span class="nc" id="L197">            networkRoute.setVlanId(entity.getSvlan());</span>
+<span class="nc" id="L198">            logicalResources.add(this.createLogicalResource(&quot;VLAN_HSI&quot;, entity.getSvlan()));</span>
+<span class="nc" id="L199">            logicalResources.add(this.createLogicalResource(&quot;SVLAN&quot;, entity.getSvlan()));</span>
+        }
+
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">        if (entity.getCvlan() != null) {</span>
+<span class="nc" id="L203">            logicalResources.add(this.createLogicalResource(&quot;CVLAN&quot;, entity.getCvlan()));</span>
+        }
+
+<span class="pc bpc" id="L206" title="1 of 2 branches missed.">        if (entity.getCvlanCalculado() != null) {</span>
+<span class="nc" id="L207">            logicalResources.add(this.createLogicalResource(&quot;CVLAN_CALCULADO&quot;, entity.getCvlanCalculado()));</span>
+        }
+
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">        if (entity.getDownstream() != null) {</span>
+<span class="fc" id="L211">            logicalResources.add(this.createLogicalResource(&quot;DOWNSTREAM&quot;, entity.getDownstream()));</span>
+        }
+
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">        if (entity.getUpstream() != null) {</span>
+<span class="fc" id="L215">            logicalResources.add(this.createLogicalResource(&quot;UPSTREAM&quot;, entity.getUpstream()));</span>
+        }
+
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">        if (entity.getModeloPlaca() != null) {</span>
+<span class="nc" id="L219">            logicalResources.add(this.createLogicalResource(&quot;MODELO_PLACA&quot;, entity.getModeloPlaca()));</span>
+        }
+
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">        if (entity.getNameBRAS() != null) {</span>
+<span class="fc" id="L223">            logicalResources.add(this.createLogicalResource(&quot;NAME_BRAS&quot;, entity.getNameBRAS()));</span>
+        }
+
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">        if (entity.getShasta() != null) {</span>
+<span class="nc" id="L227">            logicalResources.add(this.createLogicalResource(&quot;NAME_SHASTA&quot;, entity.getShasta()));</span>
+        }
+
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">        if (entity.getVendorBRAS() != null) {</span>
+<span class="fc" id="L231">            logicalResources.add(this.createLogicalResource(&quot;VENDOR_BRAS&quot;, entity.getVendorBRAS()));</span>
+        }
+
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        if (entity.getHostNameBRAS() != null) {</span>
+<span class="fc" id="L235">            logicalResources.add(this.createLogicalResource(&quot;HOSTNAME_BRAS&quot;, entity.getHostNameBRAS()));</span>
+        }
+
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">        if (entity.getSiteBRAS() != null) {</span>
+<span class="fc" id="L239">            logicalResources.add(this.createLogicalResource(&quot;SITE_BRAS&quot;, entity.getSiteBRAS()));</span>
+        }
+
+<span class="pc bpc" id="L242" title="1 of 2 branches missed.">        if (entity.getNasIp() != null) {</span>
+<span class="fc" id="L243">            logicalResources.add(this.createLogicalResource(&quot;NASIP&quot;, entity.getNasIp()));</span>
+<span class="fc" id="L244">            logicalResources.add(this.createLogicalResource(&quot;FUSION_NETWORK&quot;, &quot;true&quot;));</span>
+        } else {
+<span class="nc" id="L246">            logicalResources.add(this.createLogicalResource(&quot;FUSION_NETWORK&quot;, &quot;false&quot;));</span>
+        }
+
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">        if (entity.getCabinet() != null) {</span>
+<span class="nc" id="L250">            logicalResources.add(this.createLogicalResource(&quot;CABINET&quot;, entity.getCabinet()));</span>
+        }
+
+<span class="pc bpc" id="L253" title="1 of 2 branches missed.">        if (entity.getNumeroBRAS() != null) {</span>
+<span class="nc" id="L254">            logicalResources.add(this.createLogicalResource(&quot;NUMERO_BRAS&quot;, entity.getNumeroBRAS()));</span>
+        }
+
+<span class="pc bpc" id="L257" title="1 of 2 branches missed.">        if (entity.getSlotBRAS() != null) {</span>
+<span class="nc" id="L258">            logicalResources.add(this.createLogicalResource(&quot;SLOT_BRAS&quot;, entity.getSlotBRAS()));</span>
+        }
+
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">        if (entity.getSubSlotBRAS() != null) {</span>
+<span class="nc" id="L262">            logicalResources.add(this.createLogicalResource(&quot;SUBSLOT_BRAS&quot;, entity.getSubSlotBRAS()));</span>
+        }
+
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">        if (entity.getPortaBRAS() != null) {</span>
+<span class="nc" id="L266">            logicalResources.add(this.createLogicalResource(&quot;PORTA_BRAS&quot;, entity.getPortaBRAS()));</span>
+        }
+
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">        if (entity.getVlanVOD() != null) {</span>
+<span class="nc" id="L270">            logicalResources.add(this.createLogicalResource(&quot;VLAN_VOD&quot;, entity.getVlanVOD()));</span>
+        }
+
+<span class="pc bpc" id="L273" title="1 of 2 branches missed.">        if (entity.getVlanVOIP() != null) {</span>
+<span class="nc" id="L274">            logicalResources.add(this.createLogicalResource(&quot;VLAN_VOIP&quot;, entity.getVlanVOIP()));</span>
+        }
+
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">        if (entity.getVlanMCAST() != null) {</span>
+<span class="nc" id="L278">            logicalResources.add(this.createLogicalResource(&quot;VLAN_MCAST&quot;, entity.getVlanMCAST()));</span>
+        }
+
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">        if (entity.getVlanIPTV() != null) {</span>
+<span class="nc" id="L282">            logicalResources.add(this.createLogicalResource(&quot;VLAN_IPTV&quot;, entity.getVlanIPTV()));</span>
+        }
+
+<span class="pc bpc" id="L285" title="1 of 2 branches missed.">        if (entity.getTechnology() != null) {</span>
+<span class="nc" id="L286">            logicalResources.add(this.createLogicalResource(&quot;TECNOLOGIA&quot;, entity.getTechnology()));</span>
+        }
+
+<span class="fc" id="L289">        return logicalResourceAssociation;</span>
+    }
+
+    private boolean foundWithoutError(NetworkInfoEntity entity) {
+<span class="pc bpc" id="L293" title="2 of 6 branches missed.">        return entity != null &amp;&amp; (entity.getCodErro() == null || entity.getCodErro() == 0);</span>
+    }
+
+    private LogicalResource createLogicalResource(String name, Object value) {
+<span class="fc" id="L297">        LogicalResource logicalResource = new LogicalResource();</span>
+<span class="fc" id="L298">        logicalResource.setName(name);</span>
+<span class="fc" id="L299">        logicalResource.setValue(value.toString());</span>
+<span class="fc" id="L300">        return logicalResource;</span>
+    }
+
+    private ResourceCharacteristicSpecification createResourceCharacteristicSpecification(String id, String value) {
+<span class="fc" id="L304">        ResourceCharacteristicSpecification resourceCharacteristicSpecification = new ResourceCharacteristicSpecification();</span>
+<span class="fc" id="L305">        resourceCharacteristicSpecification.setId(id);</span>
+<span class="fc" id="L306">        resourceCharacteristicSpecification.setValue(value);</span>
+<span class="fc" id="L307">        return resourceCharacteristicSpecification;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

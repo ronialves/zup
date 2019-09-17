@@ -1,0 +1,9 @@
+com/tlf/oss/resourceinventory/sagre/api/v1_0/ReleaseService.class
+com/tlf/oss/resourceinventory/sagre/api/v1_0/FacilityRetrievalService.class
+com/tlf/oss/resourceinventory/sagre/api/v1_0/DeallocateService.class
+com/tlf/oss/resourceinventory/sagre/api/v1_0/DetermineAvailabilityService.class
+com/tlf/oss/resourceinventory/sagre/api/v1_0/UninstallService.class
+com/tlf/oss/resourceinventory/sagre/api/v1_0/AllocateService.class
+com/tlf/oss/resourceinventory/sagre/api/v1_0/RestConfig.class
+com/tlf/oss/resourceinventory/sagre/api/v1_0/InstallService.class
+com/tlf/oss/resourceinventory/sagre/api/v1_0/ReserveService.class

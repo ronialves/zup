@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:su="http://www.cpqd.com.br/etics/SubUnitTypes" xmlns:st="http://www.cpqd.com.br/etics/simpletypes"
+	elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/FullAddressTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/SubUnitTypes"
+		schemaLocation="SubUnitTypes.xsd"></xs:import>
+	<xs:complexType name="FullAddress">
+		<xs:sequence>
+			<!-- Tipo do Logradouro -->
+			<xs:element minOccurs="0" name="streetType" type="st:string10"></xs:element>
+			<!-- Titulo do Logradouro -->
+			<xs:element minOccurs="0" name="streetTitle" type="st:string10"></xs:element>
+			<!-- Nome do Logradouro -->
+			<xs:element minOccurs="0" name="streetName" type="st:string60"></xs:element>
+			<!-- Código do Logradouro -->
+			<xs:element minOccurs="0" name="streetCode" type="st:string12"></xs:element>
+			<!-- Numeração do Lote -->
+			<xs:element minOccurs="0" name="streetNumber" type="st:string35"></xs:element>
+			<!-- Complemento do Logradouro -->
+			<xs:element minOccurs="0" name="addressComplement" type="st:string45"></xs:element>
+			<!-- Complemento de Endereço -->
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="subUnit"
+				type="su:SubUnit"></xs:element>
+			<!-- Bairro -->
+			<xs:element minOccurs="0" name="neighborhood" type="st:string60"></xs:element>
+			<!-- Cep do Logradouro -->
+			<xs:element minOccurs="0" name="zipCode" type="st:string10"></xs:element>
+			<!-- Cidade do Logradouro -->
+			<xs:element minOccurs="0" name="city" type="st:string60"></xs:element>
+			<!-- Estado do Logradouro -->
+			<xs:element minOccurs="0" name="stateAcronym" type="st:string4"></xs:element>
+			<!-- Pais do Logradouro -->
+			<xs:element minOccurs="0" name="country" type="st:string30"></xs:element>
+			<!-- Localidade do endereço -->
+			<xs:element minOccurs="0" name="regionCode" type="st:integer9"></xs:element>
+			<!-- Cruzamento -->
+			<xs:element minOccurs="0" name="crossingStreetCode" type="st:string12"></xs:element>
+			<!-- Quadra -->
+			<xs:element minOccurs="0" name="block" type="st:string12"></xs:element>
+			<!-- Número da Quadra -->
+			<xs:element minOccurs="0" name="blockNumber" type="st:string35"></xs:element>
+			<!-- Coordenada X -->
+			<xs:element minOccurs="0" name="coordinateX" type="st:GenericCoordType"></xs:element>
+			<!-- Coordenada Y -->
+			<xs:element minOccurs="0" name="coordinateY" type="st:GenericCoordType"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

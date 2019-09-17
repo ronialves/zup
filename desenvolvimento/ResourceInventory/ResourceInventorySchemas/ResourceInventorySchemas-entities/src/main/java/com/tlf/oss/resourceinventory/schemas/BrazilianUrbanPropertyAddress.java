@@ -1,0 +1,249 @@
+package com.tlf.oss.resourceinventory.schemas;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import com.tlf.oss.resourceinventory.schemas.enums.StreetNumberSideEnum;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "BrazilianUrbanPropertyAddress", propOrder = { "id", "city", "addressType", "streetCode", "streetName",
+		"streetNrFirst", "stateOrProvince", "streetType", "postcode", "cnl", "cnlAcronym", "microarea", "networkOwner",
+		"telephonicArea", "centralOffice", "geographicLocation", "locality", "streetNrLast", "streetNrSide",
+		"systemOriginator", "complementSummary", "placePhysicalResourceAssoc", "networkTopology" })
+public class BrazilianUrbanPropertyAddress {
+	
+	protected String id; //@maintained
+	protected String city;//@maintained
+	
+	@Deprecated
+	protected String addressType; //@new modevedFrom streetType Ex: R (Rua)
+	@NotNull
+	@Size(min=1)
+	protected String streetCode;
+	protected String streetName;//@maintained
+	@NotNull
+	@Size(min=1)
+	protected String streetNrFirst;//@maintained
+	protected String stateOrProvince;//@maintained
+	@Deprecated //@deprecated em 20180430. A ser removido na proxima release. Nao utilizar ou evoluir
+	protected String streetType;//@movedTo addressType
+	protected String postcode;//@maintained
+	@NotNull
+	@Size(min=1)
+	protected String cnl;
+	protected String cnlAcronym;
+	protected String microarea;
+	protected String networkOwner;
+	protected String telephonicArea;
+	protected String centralOffice;
+	
+	protected GeographicLocation geographicLocation; 	
+	protected String locality;
+	protected String streetNrLast;
+	protected StreetNumberSideEnum streetNrSide; 
+	protected String systemOriginator;
+	 
+	@Deprecated
+	protected ComplementSummary complementSummary;
+	
+	@NotNull
+	@Valid
+	protected PlacePhysicalResourceAssoc placePhysicalResourceAssoc;
+	
+	@XmlElement(name="networkTopology")
+	protected String networkTopology;
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getStreetName() {
+		return streetName;
+	}
+
+	public void setStreetName(String streetName) {
+		this.streetName = streetName;
+	}
+
+	public String getStateOrProvince() {
+		return stateOrProvince;
+	}
+
+	public void setStateOrProvince(String stateOrProvince) {
+		this.stateOrProvince = stateOrProvince;
+	}
+
+	public String getStreetNrFirst() {
+		return streetNrFirst;
+	}
+
+	public void setStreetNrFirst(String streetNrFirst) {
+		this.streetNrFirst = streetNrFirst;
+	}
+
+	public String getStreetType() {
+		return streetType;
+	}
+
+	public void setStreetType(String streetType) {
+		this.streetType = streetType;
+	}
+
+	public String getPostcode() {
+		return postcode;
+	}
+
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
+	}
+
+	public String getCnl() {
+		return cnl;
+	}
+
+	public void setCnl(String cnl) {
+		this.cnl = cnl;
+	}
+
+	public String getCnlAcronym() {
+		return cnlAcronym;
+	}
+
+	public void setCnlAcronym(String cnlAcronym) {
+		this.cnlAcronym = cnlAcronym;
+	}
+
+	public String getStreetCode() {
+		return streetCode;
+	}
+
+	public void setStreetCode(String streetCode) {
+		this.streetCode = streetCode;
+	}
+
+	public String getMicroarea() {
+		return microarea;
+	}
+
+	public void setMicroarea(String microarea) {
+		this.microarea = microarea;
+	}
+
+	public String getNetworkOwner() {
+		return networkOwner;
+	}
+
+	public void setNetworkOwner(String networkOwner) {
+		this.networkOwner = networkOwner;
+	}
+
+	public String getTelephonicArea() {
+		return telephonicArea;
+	}
+
+	public void setTelephonicArea(String telephonicArea) {
+		this.telephonicArea = telephonicArea;
+	}
+
+	public String getCentralOffice() {
+		return centralOffice;
+	}
+
+	public void setCentralOffice(String centralOffice) {
+		this.centralOffice = centralOffice;
+	}
+
+	@Deprecated
+	public ComplementSummary getComplementSummary() {
+		return complementSummary;
+	}
+
+	@Deprecated
+	public void setComplementSummary(ComplementSummary complementSummary) {
+		this.complementSummary = complementSummary;
+	}
+
+	public PlacePhysicalResourceAssoc getPlacePhysicalResourceAssoc() {
+		return placePhysicalResourceAssoc;
+	}
+
+	public void setPlacePhysicalResourceAssoc(PlacePhysicalResourceAssoc placePhysicalResourceAssoc) {
+		this.placePhysicalResourceAssoc = placePhysicalResourceAssoc;
+	}
+	
+	public String getAddressType() {
+		return addressType;
+	}
+
+	public void setAddressType(String addressType) {
+		this.addressType = addressType;
+	}
+
+	public GeographicLocation getGeographicLocation() {
+		return geographicLocation;
+	}
+
+	public void setGeographicLocation(GeographicLocation geographicLocation) {
+		this.geographicLocation = geographicLocation;
+	}
+
+	public String getLocality() {
+		return locality;
+	}
+
+	public void setLocality(String locality) {
+		this.locality = locality;
+	}
+
+	public String getStreetNrLast() {
+		return streetNrLast;
+	}
+
+	public void setStreetNrLast(String streetNrLast) {
+		this.streetNrLast = streetNrLast;
+	}
+
+	public StreetNumberSideEnum getStreetNrSide() {
+		return streetNrSide;
+	}
+
+	public void setStreetNrSide(StreetNumberSideEnum streetNrSide) {
+		this.streetNrSide = streetNrSide;
+	}
+
+	public String getSystemOriginator() {
+		return systemOriginator;
+	}
+	
+	public void setSystemOriginator(String systemOriginator) {
+		this.systemOriginator = systemOriginator;
+	}
+	
+	public String getNetworkTopology() {
+		return networkTopology;
+	}
+
+	public void setNetworkTopology(String networkTopology) {
+		this.networkTopology = networkTopology;
+	}
+
+}

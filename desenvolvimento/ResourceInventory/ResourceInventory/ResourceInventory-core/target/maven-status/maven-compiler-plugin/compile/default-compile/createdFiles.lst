@@ -1,0 +1,11 @@
+com/tlf/oss/resourceinventory/core/resourceordermanagement/v2_0/ResourceDataCollectionV2.class
+com/tlf/oss/resourceinventory/core/mapping/EntityConverterIn.class
+com/tlf/oss/resourceinventory/core/resourceordermanagement/v1_0/mapping/ResourceDataCollectionMapping.class
+com/tlf/oss/resourceinventory/core/resourceordermanagement/v1_0/mapping/AllocateAndInstallResourceMapping.class
+com/tlf/oss/resourceinventory/core/resourcelifecyclemanagement/v1_0/mapping/GatherAndAnalyseResourceInformationMapping.class
+com/tlf/oss/resourceinventory/core/Constants.class
+com/tlf/oss/resourceinventory/core/faultmanagement/v1_0/mapping/FaultManagementResourceDataCollectionMapping.class
+com/tlf/oss/resourceinventory/core/resourceordermanagement/v1_0/AllocateAndInstallResource.class
+com/tlf/oss/resourceinventory/core/resourcelifecyclemanagement/v1_0/GatherAndAnalyseResourceInformation.class
+com/tlf/oss/resourceinventory/core/resourceordermanagement/v1_0/ResourceDataCollection.class
+com/tlf/oss/resourceinventory/core/faultmanagement/v1_0/FaultManagementResourceDataCollection.class

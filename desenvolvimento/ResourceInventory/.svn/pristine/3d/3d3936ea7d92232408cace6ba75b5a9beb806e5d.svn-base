@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+<!-- 	<persistence-unit transaction-type="JTA" -->
+<!-- 		name="ResourceInventoryPU"> -->
+<!-- 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider> -->
+<!-- 		<jta-data-source>NameOf-JNDI</jta-data-source> -->
+<!-- 		 \\TABELAS MAPEADAS \\ -->
+<!-- 		<class>br.com.indra.commons.jpa.entity.Client</class> -->
+<!-- 		<class>br.com.indra.commons.jpa.entity.Phone</class> -->
+<!-- 		<properties> -->
+<!-- 			\\ <property name="showSql" value="true" /> \\ -->
+<!-- 			<property name="showSql" value="false" /> -->
+<!-- 			<property name="eclipselink.id-validation" value="NULL" /> -->
+<!-- 			<property name="eclipselink.logging.level" value="FINE" /> -->
+<!-- 			<property name="eclipselink.logging.parameters" value="false" /> -->
+<!-- 			<property name="eclipselink.logging.level" value="FINE" /> -->
+<!-- 			\\ <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/> \\ -->
+<!-- 			<property name="eclipselink.ddl-generation" value="create-tables" /> -->
+<!-- 		</properties> -->
+<!-- 	</persistence-unit> -->
+
+	<persistence-unit transaction-type="RESOURCE_LOCAL"	name="Eclipselink_JPA">
+			<class>com.tlf.oss.resourceinventory.granite.entity.EquipInst</class>
+			<class>com.tlf.oss.resourceinventory.granite.entity.ReserveResourceEntity</class>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver" />
+			<property name="javax.persistence.jdbc.url"
+				value="jdbc:oracle:thin:@10.129.181.130:1521:XCOMHM1" />
+			<property name="javax.persistence.jdbc.user" value="resource_inventory" />
+			<property name="javax.persistence.jdbc.password" value="resource_inventory" />
+			<property name="eclipselink.logging.level" value="FINE" />
+		</properties>
+	</persistence-unit>
+
+<!-- 	 <persistence-unit name="Eclipselink_JPA" transaction-type="JTA">
+	 	<class>com.tlf.oss.resourceinventory.granite.entity.EquipInst</class> 
+        <jta-data-source>pstnDS</jta-data-source>
+     </persistence-unit> -->
+
+</persistence>

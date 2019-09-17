@@ -1,0 +1,5 @@
+com/tlf/oss/resourceinventory/api/resourcelifecyclemanagement/v1_0/GatherAndAnalyseResourceInformationWS.class
+com/tlf/oss/resourceinventory/api/resourceordermanagement/v2_0/ResourceDataCollectionV2WS.class
+com/tlf/oss/resourceinventory/api/faultmanagement/v1_0/FaultManagementResourceDataCollectionWS.class
+com/tlf/oss/resourceinventory/api/resourceordermanagement/v1_0/ResourceDataCollectionWS.class
+com/tlf/oss/resourceinventory/api/resourceordermanagement/v1_0/AllocateAndInstallResourceWS.class

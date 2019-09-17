@@ -1,0 +1,711 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CategoriaDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoRecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoServico;
+import com.tlf.oss.resourceinventory.cpe.enums.RoiAction;
+import com.tlf.oss.resourceinventory.cpe.enums.TipoRfs;
+import com.tlf.oss.resourceinventory.cpe.helper.AllocateHelper;
+import com.tlf.oss.resourceinventory.cpe.mapping.EntityConverter;
+import com.tlf.oss.resourceinventory.cpe.repository.AllocateRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.CategoriaDispositivoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoRecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.rules.ExecutionRules;
+import com.tlf.oss.resourceinventory.cpe.utils.CpeConstants;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class AllocateControllerTest {
+
+	@InjectMocks
+	private AllocateController allocateController;
+
+	@Spy
+	@InjectMocks
+	private EntityConverter entityConverter = new EntityConverter();
+
+	@Mock
+	private OSSLogger logger;
+
+	@Mock
+	private AllocateRepository allocateRepository;
+
+	@Mock
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Mock
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	@Mock
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Mock
+	private EstadoServicoAssinanteRepository estadoServicoAssinanteRepository;
+
+	@Mock
+	private EstadoRecursoLogicoRepository estadoRecursoLogicoRepository;
+
+	@Mock
+	private CategoriaDispositivoRepository categoriaDispositivoRepository;
+
+	@Mock
+	private DispositivoFisico dispositivoFisico;
+
+	@Mock
+	private ExecutionRules executionRules;
+
+	@Mock
+	private AllocateHelper helper;
+
+	private ResourceInventoryEntity entity;
+
+	@Before
+	public void before() {
+		entity = new ResourceInventoryEntity();
+
+		ResourceFacingService resourceFacingService = new ResourceFacingService();
+		entity.setResourceFacingService(resourceFacingService);
+		entity.setAddress(new BrazilianUrbanPropertyAddress());
+		ResourceOrderItem resourceOrderItem = new ResourceOrderItem();
+		ResourceOrder resourceOrder = new ResourceOrder();
+		resourceOrder.setResourceOrderItem(resourceOrderItem);
+		entity.setResourceOrder(resourceOrder);
+
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setCategory("BROADBAND");
+		listOfCustomerFacingService.get(0).getServiceDescribedBy()
+				.add(getServiceDescribedBy(CpeConstants.VOICE_EQUIPMENT_TYPE, ""));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy()
+				.add(getServiceDescribedBy(CpeConstants.EQUIPMENT_TYPE, ""));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(getServiceDescribedBy(CpeConstants.HPNA, ""));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy()
+				.add(getServiceDescribedBy(CpeConstants.EQUIPMENT_TYPE, "STB"));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy()
+				.add(getServiceDescribedBy(CpeConstants.EQUIPMENT_TYPE, ""));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(getServiceDescribedBy(CpeConstants.DVR, ""));
+		
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(getServiceDescribedBy(CpeConstants.SERIAL_NUMBER, "100"));
+		entity.setCustomerFacingService(listOfCustomerFacingService);
+	}
+
+	@Test
+	public void testAllocateAccessCeaseSucess() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.CEASE.getAction());
+		
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		
+		DispositivoFisico dispositivoFisico = new DispositivoFisico();
+		dispositivoFisico.setNumeroSerial("100");
+		Optional<DispositivoFisico> dispositivoFisicoOptinal = Optional.of(dispositivoFisico);
+		
+		List<RecursoLogico> listOfRecursoLogico = new ArrayList<RecursoLogico>();
+		listOfRecursoLogico.add(new RecursoLogico());
+		
+		when(dispositivoFisicoRepository.findBySerialNumber(anyObject())).thenReturn(dispositivoFisicoOptinal);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(recursoLogicoRepository.listByServiceId(anyObject())).thenReturn(listOfRecursoLogico);
+		
+		allocateController.allocate(entity);
+	}
+
+	@Test
+	public void testAllocateAccessProvideAndAddSucess() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.PROVIDE.getAction());
+
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+		
+		
+		allocateController.allocate(entity);
+	}
+
+	@Test
+	public void testAllocateVoipATASucess() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.VOIP.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.PROVIDE.getAction());
+
+		List<ResourceFacingService> rfsList = new ArrayList<>();
+		ResourceFacingService rfsVoip = new ResourceFacingService();
+
+		List<ServiceDescribedBy> sdbList = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdList = new ArrayList<>();
+
+		ServiceDescribedBy sdbTelephone = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscd = new ServiceSpecCharDescribes();
+
+		ServiceDescribedBy sdbVoice = new ServiceDescribedBy();
+		ServiceSpecCharDescribes voicesscd = new ServiceSpecCharDescribes();
+
+		sscd.setValue("1129110139");
+		sscdList.add(sscd);
+
+		sdbTelephone.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephone.setServiceSpecCharDescribes(sscdList);
+		sdbList.add(sdbTelephone);
+
+		sdbVoice.setName(CpeConstants.VOICE_EQUIPMENT_TYPE);
+		sdbVoice.setServiceSpecCharDescribes(new ArrayList<>());
+		voicesscd.setValue(CpeConstants.ATA);
+		sdbVoice.getServiceSpecCharDescribes().add(voicesscd);
+		sdbList.add(sdbVoice);
+
+		rfsVoip.setCategory(CpeConstants.TELEPHONE);
+		rfsVoip.setServiceId("CTA-AA012-042");
+		rfsVoip.setServiceDescribedBy(sdbList);
+
+		rfsList.add(rfsVoip);
+
+		entity.getCustomerFacingService().get(0).setResourceFacingService(rfsList);
+		entity.getResourceFacingService().setServiceId("CTA-AA012-069");
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+		
+		when(dispositivoFisicoRepository.findByServiceId(anyObject())).thenReturn(dispositivoFisico);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+		when(dispositivoFisicoRepository.findByAccessId(anyObject())).thenReturn(new DispositivoFisico());
+		allocateController.allocate(entity);
+	}
+
+	@Test
+	public void testAllocateVoipSucess() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.VOIP.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.PROVIDE.getAction());
+
+		List<ResourceFacingService> rfsList = new ArrayList<>();
+		ResourceFacingService rfsVoip = new ResourceFacingService();
+
+		List<ServiceDescribedBy> sdbList = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdList = new ArrayList<>();
+
+		ServiceDescribedBy sdbTelephone = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscd = new ServiceSpecCharDescribes();
+
+		sscd.setValue("1129110139");
+		sscdList.add(sscd);
+
+		sdbTelephone.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephone.setServiceSpecCharDescribes(sscdList);
+		sdbList.add(sdbTelephone);
+
+		rfsVoip.setCategory(CpeConstants.TELEPHONE);
+		rfsVoip.setServiceId("CTA-AA012-042");
+		rfsVoip.setServiceDescribedBy(sdbList);
+
+		rfsList.add(rfsVoip);
+
+		entity.getCustomerFacingService().get(0).setResourceFacingService(rfsList);
+		entity.getResourceFacingService().setServiceId("CTA-AA012-069");
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+		when(dispositivoFisicoRepository.findByServiceId(anyObject())).thenReturn(dispositivoFisico);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+
+		allocateController.allocate(entity);
+	}
+
+	@Test
+	public void testAllocateModifyVoipSucess() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.VOIP.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.MODIFY.getAction());
+
+		List<ResourceFacingService> rfsList = new ArrayList<>();
+		ResourceFacingService rfsVoipCease = new ResourceFacingService();
+		ResourceFacingService rfsVoipProvide = new ResourceFacingService();
+
+		List<ServiceDescribedBy> sdbListCease = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdListCease = new ArrayList<>();
+
+		List<ServiceDescribedBy> sdbListProvide = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdListProvide = new ArrayList<>();
+
+		ServiceDescribedBy sdbTelephoneCease = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscdCease = new ServiceSpecCharDescribes();
+
+		ServiceDescribedBy sdbTelephoneProvide = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscdProvide = new ServiceSpecCharDescribes();
+
+		sscdCease.setValue("1120539787");
+		sscdListCease.add(sscdCease);
+
+		sscdProvide.setValue("1120539780");
+		sscdListProvide.add(sscdProvide);
+
+		sdbTelephoneCease.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephoneCease.setServiceSpecCharDescribes(sscdListCease);
+		sdbListCease.add(sdbTelephoneCease);
+
+		sdbTelephoneProvide.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephoneProvide.setServiceSpecCharDescribes(sscdListProvide);
+		sdbListProvide.add(sdbTelephoneProvide);
+
+		rfsVoipCease.setCategory(CpeConstants.TELEPHONE);
+		rfsVoipCease.setAction(RoiAction.CEASE.getAction());
+		rfsVoipCease.setServiceId("CTA-2019022801M-042");
+		rfsVoipCease.setServiceDescribedBy(sdbListCease);
+
+		rfsVoipProvide.setCategory(CpeConstants.TELEPHONE);
+		rfsVoipProvide.setAction(RoiAction.PROVIDE.getAction());
+		rfsVoipProvide.setServiceId("CTA-2019022801M-042");
+		rfsVoipProvide.setServiceDescribedBy(sdbListProvide);
+
+		rfsList.add(rfsVoipCease);
+		rfsList.add(rfsVoipProvide);
+
+		entity.getCustomerFacingService().get(0).setResourceFacingService(rfsList);
+		entity.getResourceFacingService().setServiceId("CTA-2019022801M-069");
+
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+		
+		when(dispositivoFisicoRepository.findByServiceId(anyObject())).thenReturn(dispositivoFisico);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class)))
+				.thenReturn(servicoAssinante);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+
+		allocateController.allocate(entity);
+	}
+
+	@Test
+	public void testAllocateisVoiceEquipmentTypeAtaSuccess() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.VOIP.getRoiName());
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.PROVIDE.getAction());
+
+		List<ResourceFacingService> rfsList = new ArrayList<>();
+		ResourceFacingService rfsVoip = new ResourceFacingService();
+
+		List<ServiceDescribedBy> sdbList = new ArrayList<>();
+
+		ServiceDescribedBy sdbVoice = new ServiceDescribedBy();
+		ServiceSpecCharDescribes voicesscd = new ServiceSpecCharDescribes();
+
+		sdbVoice.setName(CpeConstants.VOICE_EQUIPMENT_TYPE);
+		sdbVoice.setServiceSpecCharDescribes(new ArrayList<>());
+		voicesscd.setValue(CpeConstants.ATA);
+		sdbVoice.getServiceSpecCharDescribes().add(voicesscd);
+		sdbList.add(sdbVoice);
+
+		rfsVoip.setCategory(CpeConstants.TELEPHONE);
+		rfsVoip.setServiceId("CTA-AA012-042");
+		rfsVoip.setServiceDescribedBy(sdbList);
+
+		rfsList.add(rfsVoip);
+
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0)
+				.setValue(CpeConstants.VOICE_EQUIPMENT_TYPE);
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0)
+				.setId(CpeConstants.ATA);
+		entity.getCustomerFacingService().get(0).setResourceFacingService(rfsList);
+		entity.getCustomerFacingService().get(0).setServiceId("CTA-AA012-069");
+		entity.getResourceFacingService().setServiceId("CTA-AA012-069");
+
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		DispositivoFisico dispositivoFisico1 = getDispositivoFisico();
+		
+		when(dispositivoFisicoRepository.findByServiceId(anyObject())).thenReturn(dispositivoFisico1);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(dispositivoFisicoRepository.findByAccessId(anyObject())).thenReturn(dispositivoFisico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+
+		allocateController.allocate(entity);
+	}
+
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateAccessCeaseRecursoLogicoNullException() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.CEASE.getAction());
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		List<DispositivoFisico> dispositivoFisico = new ArrayList<>();
+		dispositivoFisico.add(new DispositivoFisico());
+		dispositivoFisico.get(0).setNumeroSerial("100");
+		when(dispositivoFisicoRepository.listByServiceId(anyObject())).thenReturn(dispositivoFisico);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(recursoLogicoRepository.findByDispositivoFisicoId(anyObject())).thenReturn(null);
+		
+		allocateController.allocate(entity);
+	}
+
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateAccessProvideAndAddServicoAssinanteNotNullException() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.PROVIDE.getAction());
+
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class))).thenReturn(getServicoAssinante());
+		Mockito.doThrow(OSSBusinessException.class).when(helper).validate(anyObject());
+		when(recursoLogicoRepository.findByServicoAssinanteId(anyObject())).thenReturn(new RecursoLogico());
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+		
+		
+		allocateController.allocate(entity);
+	}
+	
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateModifyVoipExceptionServicoAssinanteNumberCease() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.VOIP.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.MODIFY.getAction());
+
+		List<ResourceFacingService> rfsList = new ArrayList<>();
+		ResourceFacingService rfsVoipCease = new ResourceFacingService();
+		ResourceFacingService rfsVoipProvide = new ResourceFacingService();
+
+		List<ServiceDescribedBy> sdbListCease = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdListCease = new ArrayList<>();
+
+		List<ServiceDescribedBy> sdbListProvide = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdListProvide = new ArrayList<>();
+
+		ServiceDescribedBy sdbTelephoneCease = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscdCease = new ServiceSpecCharDescribes();
+
+		ServiceDescribedBy sdbTelephoneProvide = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscdProvide = new ServiceSpecCharDescribes();
+
+		sscdCease.setValue("1120539787");
+		sscdListCease.add(sscdCease);
+
+		sscdProvide.setValue("1120539780");
+		sscdListProvide.add(sscdProvide);
+
+		sdbTelephoneCease.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephoneCease.setServiceSpecCharDescribes(sscdListCease);
+		sdbListCease.add(sdbTelephoneCease);
+
+		sdbTelephoneProvide.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephoneProvide.setServiceSpecCharDescribes(sscdListProvide);
+		sdbListProvide.add(sdbTelephoneProvide);
+
+		rfsVoipCease.setCategory(CpeConstants.TELEPHONE);
+		rfsVoipCease.setAction(RoiAction.CEASE.getAction());
+		rfsVoipCease.setServiceId("CTA-2019022801M-042");
+		rfsVoipCease.setServiceDescribedBy(sdbListCease);
+
+		rfsVoipProvide.setCategory(CpeConstants.TELEPHONE);
+		rfsVoipProvide.setAction(RoiAction.PROVIDE.getAction());
+		rfsVoipProvide.setServiceId("CTA-2019022801M-042");
+		rfsVoipProvide.setServiceDescribedBy(sdbListProvide);
+
+		rfsList.add(rfsVoipCease);
+		rfsList.add(rfsVoipProvide);
+
+		entity.getCustomerFacingService().get(0).setResourceFacingService(rfsList);
+		entity.getResourceFacingService().setServiceId("CTA-2019022801M-069");
+
+		ServicoAssinante servicoAssinante = getServicoAssinanteEmpty();
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class)))
+				.thenReturn(servicoAssinante);
+
+		allocateController.allocate(entity);
+	}
+
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateModifyVoipExceptionRoiActionMODIFY() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.VOIP.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.CEASE.getAction());
+
+		List<ResourceFacingService> rfsList = new ArrayList<>();
+		ResourceFacingService rfsVoipCease = new ResourceFacingService();
+		ResourceFacingService rfsVoipProvide = new ResourceFacingService();
+
+		List<ServiceDescribedBy> sdbListCease = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdListCease = new ArrayList<>();
+
+		List<ServiceDescribedBy> sdbListProvide = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdListProvide = new ArrayList<>();
+
+		ServiceDescribedBy sdbTelephoneCease = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscdCease = new ServiceSpecCharDescribes();
+
+		ServiceDescribedBy sdbTelephoneProvide = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscdProvide = new ServiceSpecCharDescribes();
+
+		sscdCease.setValue("1120539787");
+		sscdListCease.add(sscdCease);
+
+		sscdProvide.setValue("1120539780");
+		sscdListProvide.add(sscdProvide);
+
+		sdbTelephoneCease.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephoneCease.setServiceSpecCharDescribes(sscdListCease);
+		sdbListCease.add(sdbTelephoneCease);
+
+		sdbTelephoneProvide.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephoneProvide.setServiceSpecCharDescribes(sscdListProvide);
+		sdbListProvide.add(sdbTelephoneProvide);
+
+		rfsVoipCease.setCategory(CpeConstants.TELEPHONE);
+		rfsVoipCease.setAction(RoiAction.CEASE.getAction());
+		rfsVoipCease.setServiceId("CTA-2019022801M-042");
+		rfsVoipCease.setServiceDescribedBy(sdbListCease);
+
+		rfsVoipProvide.setCategory(CpeConstants.TELEPHONE);
+		rfsVoipProvide.setAction(RoiAction.PROVIDE.getAction());
+		rfsVoipProvide.setServiceId("CTA-2019022801M-042");
+		rfsVoipProvide.setServiceDescribedBy(sdbListProvide);
+
+		rfsList.add(rfsVoipCease);
+		rfsList.add(rfsVoipProvide);
+
+		entity.getCustomerFacingService().get(0).setResourceFacingService(rfsList);
+		entity.getResourceFacingService().setServiceId("CTA-2019022801M-069");
+
+		ServicoAssinante servicoAssinante = getServicoAssinanteEmpty();
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class)))
+				.thenReturn(servicoAssinante);
+
+		allocateController.allocate(entity);
+	}
+
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateModifyVoipExceptionServiceAssinanteNull() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.VOIP.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.MODIFY.getAction());
+
+		List<ResourceFacingService> rfsList = new ArrayList<>();
+		ResourceFacingService rfsVoipCease = new ResourceFacingService();
+		ResourceFacingService rfsVoipProvide = new ResourceFacingService();
+
+		List<ServiceDescribedBy> sdbListCease = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdListCease = new ArrayList<>();
+
+		List<ServiceDescribedBy> sdbListProvide = new ArrayList<>();
+		List<ServiceSpecCharDescribes> sscdListProvide = new ArrayList<>();
+
+		ServiceDescribedBy sdbTelephoneCease = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscdCease = new ServiceSpecCharDescribes();
+
+		ServiceDescribedBy sdbTelephoneProvide = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscdProvide = new ServiceSpecCharDescribes();
+
+		sscdCease.setValue("1120539787");
+		sscdListCease.add(sscdCease);
+
+		sscdProvide.setValue("1120539780");
+		sscdListProvide.add(sscdProvide);
+
+		sdbTelephoneCease.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephoneCease.setServiceSpecCharDescribes(sscdListCease);
+		sdbListCease.add(sdbTelephoneCease);
+
+		sdbTelephoneProvide.setName(CpeConstants.TELEPHONE_NUMBER);
+		sdbTelephoneProvide.setServiceSpecCharDescribes(sscdListProvide);
+		sdbListProvide.add(sdbTelephoneProvide);
+
+		rfsVoipCease.setCategory(CpeConstants.TELEPHONE);
+		rfsVoipCease.setAction(RoiAction.CEASE.getAction());
+		rfsVoipCease.setServiceId("CTA-2019022801M-042");
+		rfsVoipCease.setServiceDescribedBy(sdbListCease);
+
+		rfsVoipProvide.setCategory(CpeConstants.TELEPHONE);
+		rfsVoipProvide.setAction(RoiAction.PROVIDE.getAction());
+		rfsVoipProvide.setServiceId("CTA-2019022801M-042");
+		rfsVoipProvide.setServiceDescribedBy(sdbListProvide);
+
+		rfsList.add(rfsVoipCease);
+		rfsList.add(rfsVoipProvide);
+
+		entity.getCustomerFacingService().get(0).setResourceFacingService(rfsList);
+		entity.getResourceFacingService().setServiceId("CTA-2019022801M-069");
+		;
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+
+		ServicoAssinante servicoAssinante = null;
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class)))
+				.thenReturn(servicoAssinante);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+
+		allocateController.allocate(entity);
+	}
+	
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateConditionRoiActionInvalid() throws OSSBusinessException {
+
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction("1234");
+
+		allocateController.allocate(entity);
+	}
+
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateConditionRoiActionEmpty() throws OSSBusinessException {
+
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction("");
+
+		allocateController.allocate(entity);
+	}
+
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateConditionRoiActionAdd() throws OSSBusinessException {
+
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.ADD.getAction());
+
+		allocateController.allocate(entity);
+	}
+
+	@Test
+	public void testAllocateAllConditionsFalse() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.PROVIDE.getAction());
+
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(dispositivoFisicoRepository.findByAccessId(anyObject())).thenReturn(dispositivoFisico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+
+		allocateController.allocate(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateException() throws OSSBusinessException {
+
+		when(allocateController.allocate(entity)).thenThrow(OSSBusinessException.class);
+
+		allocateController.allocate(entity);
+	}
+	
+	// método abaixo
+	@Test(expected = OSSBusinessException.class)
+	public void testeAllocateNumeroTelefoneDiferenteException() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.VOIP.getRoiName());
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.PROVIDE.getAction());
+		
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class))).thenReturn(servicoAssinante);
+		when(dispositivoFisicoRepository.findByServiceId(anyObject())).thenReturn(dispositivoFisico);
+		allocateController.allocate(entity);
+	}
+
+	private EstadoServicoAssinante getEstadoServicoAssinante() {
+		final EstadoServicoAssinante estadoServicoAssinante = new EstadoServicoAssinante();
+		estadoServicoAssinante.setEstadoServico(EstadoServico.EM_APROVISIONAMENTO.getValue());
+		estadoServicoAssinante.setId(1);
+		return estadoServicoAssinante;
+	}
+
+	private CategoriaDispositivo getCategoriaDispositivo() {
+		CategoriaDispositivo categoriaDispositivo = new CategoriaDispositivo();
+		categoriaDispositivo.setId(1);
+		categoriaDispositivo.setNomeCategoria("ATA 16 Portas");
+		categoriaDispositivo.setTipoRfs(entity.getResourceOrder().getResourceOrderItem().getName());
+		return categoriaDispositivo;
+	}
+
+	private ServiceDescribedBy getServiceDescribedBy(String name, String value) {
+		ServiceDescribedBy serviceDescribedByDs = new ServiceDescribedBy();
+		serviceDescribedByDs.setName(name);
+		ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribes.setValue(value);
+		serviceDescribedByDs.getServiceSpecCharDescribes().add(serviceSpecCharDescribes);
+		return serviceDescribedByDs;
+	}
+	
+	private DispositivoFisico getDispositivoFisico() {
+		DispositivoFisico dispositivoFisico = new DispositivoFisico();
+		dispositivoFisico.setId(1);
+		return dispositivoFisico;
+	}
+	
+	private ServicoAssinante getServicoAssinante() {
+		ServicoAssinante servicoAssinante = new ServicoAssinante();
+		servicoAssinante.setNumeroTelefone("1120539787");
+		servicoAssinante.setTipoRfs(TipoRfs.ACCESS.getRoiName());
+		servicoAssinante.setServiceId("100");
+		servicoAssinante.setAccessId("100");
+		return servicoAssinante;
+	}
+
+	private ServicoAssinante getServicoAssinanteEmpty() {
+		ServicoAssinante servicoAssinante = new ServicoAssinante();
+		servicoAssinante.setNumeroTelefone("");
+		return servicoAssinante;
+	}
+
+}

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReserveEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.entity</a> &gt; <span class="el_source">ReserveEntity.java</span></div><h1>ReserveEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+import com.tlf.oss.resourceinventory.sagre.to.ResultTo;
+
+
+/**
+ * BEATRIXTWO-22 | DEMOSS-2155
+ * 
+ * @project Beatrix Fase 2
+ * @author renan.n.Oliveira
+ * @since 201709
+ */
+
+@Entity
+@NamedStoredProcedureQuery(name = &quot;reserve&quot;, resultClasses = ReserveEntity.class, procedureName = &quot;SAGREMAN.GVT_SP_SOA_CRIA_RS_CTRL&quot;, parameters = {
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_cnl&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tec_acesso&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tec_voz&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_id_acesso&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_sos&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_street_code&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_lote&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_ident_equip1&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_ident_equip2&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_ident_equip3&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_tipo_reserva&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_origem&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_aux1&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_cod&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_msg&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN,  name = &quot;p_in_tipo_documento&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_classe_servico&quot;, type = String.class)})
+
+public class ReserveEntity implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Basic
+	@Column(name = &quot;p_in_cnl&quot;)
+	private Integer cnl;
+
+	@Basic
+	@Column(name = &quot;p_in_tec_acesso&quot;)
+	private String tecAcesso;
+
+	@Basic
+	@Column(name = &quot;p_in_tec_voz&quot;)
+	private String tecVoz;
+
+	@Basic
+	@Column(name = &quot;p_in_id_acesso&quot;)
+	private String idAcesso;
+
+	@Basic
+	@Column(name = &quot;p_in_sos&quot;)
+	private String inSos;
+
+	@Basic
+	@Column(name = &quot;p_in_street_code&quot;)
+	private String streetCode;
+
+	@Basic
+	@Column(name = &quot;p_in_lote&quot;)
+	private String inLote;
+
+	@Basic
+	@Column(name = &quot;p_in_ident_equip1&quot;)
+	private String identEquip1;
+
+	@Basic
+	@Column(name = &quot;p_in_ident_equip2&quot;)
+	private String identEquip2;
+
+	@Basic
+	@Column(name = &quot;p_in_ident_equip3&quot;)
+	private String identEquip3;
+
+	@Basic
+	@Column(name = &quot;p_in_tipo_reserva&quot;)
+	private String tipoReserva;
+
+	@Basic
+	@Column(name = &quot;p_in_origem&quot;)
+	private String inOrigem;
+
+	@Basic
+	@Column(name = &quot;p_out_aux1&quot;)
+	private String aux1;
+
+	@Id
+	@Basic
+	@Column(name = &quot;p_out_cod&quot;)
+	private Integer cod;
+
+	@Basic
+	@Column(name = &quot;p_out_msg&quot;)
+	private String msg;
+
+	@Basic
+	@Column(name = &quot;p_in_tipo_documento&quot;)
+	private String tipoDocumento;
+
+	@Basic
+	@Column(name = &quot;p_in_classe_servico&quot;)
+	private String classeServico;
+
+	@Transient
+	private ResultTo result;
+
+	public ReserveEntity() {
+<span class="fc" id="L125">		super();</span>
+<span class="fc" id="L126">	}</span>
+	
+	public ReserveEntity(Integer cnl, String tecAcesso, String tecVoz, String idAcesso,
+			String inSos, String streetCode, String inLote, String identEquip1, String identEquip2,
+			String identEquip3, String tipoReserva, String inOrigem, String aux1,
+			Integer cod, String msg, String tipoDocumento, String classeServico) {
+<span class="nc" id="L132">		super();</span>
+<span class="nc" id="L133">		this.cnl = cnl;</span>
+<span class="nc" id="L134">		this.tecAcesso = tecAcesso;</span>
+<span class="nc" id="L135">		this.tecVoz = tecVoz;</span>
+<span class="nc" id="L136">		this.idAcesso = idAcesso;</span>
+<span class="nc" id="L137">		this.inSos = inSos;</span>
+<span class="nc" id="L138">		this.streetCode = streetCode;</span>
+<span class="nc" id="L139">		this.inLote = inLote;</span>
+<span class="nc" id="L140">		this.identEquip1 = identEquip1;</span>
+<span class="nc" id="L141">		this.identEquip2 = identEquip2;</span>
+<span class="nc" id="L142">		this.identEquip3 = identEquip3;</span>
+<span class="nc" id="L143">		this.tipoReserva = tipoReserva;</span>
+<span class="nc" id="L144">		this.inOrigem = inOrigem;</span>
+<span class="nc" id="L145">		this.aux1 = aux1;</span>
+<span class="nc" id="L146">		this.cod = cod;</span>
+<span class="nc" id="L147">		this.msg = msg;</span>
+<span class="nc" id="L148">		this.tipoDocumento = tipoDocumento;</span>
+<span class="nc" id="L149">		this.classeServico = classeServico;</span>
+<span class="nc" id="L150">	}</span>
+
+	public Integer getCnl() {
+<span class="nc" id="L153">		return cnl;</span>
+	}
+
+	public void setCnl(Integer cnl) {
+<span class="fc" id="L157">		this.cnl = cnl;</span>
+<span class="fc" id="L158">	}</span>
+
+	public String getTecAcesso() {
+<span class="nc" id="L161">		return tecAcesso;</span>
+	}
+
+	public void setTecAcesso(String tecAcesso) {
+<span class="fc" id="L165">		this.tecAcesso = tecAcesso;</span>
+<span class="fc" id="L166">	}</span>
+
+	public String getTecVoz() {
+<span class="nc" id="L169">		return tecVoz;</span>
+	}
+
+	public void setTecVoz(String tecVoz) {
+<span class="fc" id="L173">		this.tecVoz = tecVoz;</span>
+<span class="fc" id="L174">	}</span>
+
+	public String getIdAcesso() {
+<span class="nc" id="L177">		return idAcesso;</span>
+	}
+
+	public void setIdAcesso(String idAcesso) {
+<span class="fc" id="L181">		this.idAcesso = idAcesso;</span>
+<span class="fc" id="L182">	}</span>
+
+	public String getInSos() {
+<span class="nc" id="L185">		return inSos;</span>
+	}
+
+	public void setInSos(String inSos) {
+<span class="fc" id="L189">		this.inSos = inSos;</span>
+
+<span class="fc" id="L191">	}</span>
+
+	public String getStreetCode() {
+<span class="nc" id="L194">		return streetCode;</span>
+	}
+
+	public void setStreetCode(String streetCode) {
+<span class="fc" id="L198">		this.streetCode = streetCode;</span>
+<span class="fc" id="L199">	}</span>
+
+	public String getInLote() {
+<span class="nc" id="L202">		return inLote;</span>
+	}
+
+	public void setInLote(String inLote) {
+<span class="fc" id="L206">		this.inLote = inLote;</span>
+<span class="fc" id="L207">	}</span>
+
+	public String getIdentEquip1() {
+<span class="nc" id="L210">		return identEquip1;</span>
+	}
+
+	public void setIdentEquip1(String identEquip1) {
+<span class="fc" id="L214">		this.identEquip1 = identEquip1;</span>
+<span class="fc" id="L215">	}</span>
+
+	public String getIdentEquip2() {
+<span class="nc" id="L218">		return identEquip2;</span>
+	}
+
+	public void setIdentEquip2(String identEquip2) {
+<span class="fc" id="L222">		this.identEquip2 = identEquip2;</span>
+<span class="fc" id="L223">	}</span>
+
+	public String getIdentEquip3() {
+<span class="nc" id="L226">		return identEquip3;</span>
+	}
+
+	public void setIdentEquip3(String identEquip3) {
+<span class="fc" id="L230">		this.identEquip3 = identEquip3;</span>
+<span class="fc" id="L231">	}</span>
+
+	public String getTipoReserva() {
+<span class="nc" id="L234">		return tipoReserva;</span>
+	}
+
+	public void setTipoReserva(String tipoReserva) {
+<span class="fc" id="L238">		this.tipoReserva = tipoReserva;</span>
+<span class="fc" id="L239">	}</span>
+
+	public String getInOrigem() {
+<span class="nc" id="L242">		return inOrigem;</span>
+	}
+
+	public void setInOrigem(String inOrigem) {
+<span class="fc" id="L246">		this.inOrigem = inOrigem;</span>
+<span class="fc" id="L247">	}</span>
+
+	public String getAux1() {
+<span class="nc" id="L250">		return aux1;</span>
+	}
+
+	public void setAux1(String aux1) {
+<span class="nc" id="L254">		this.aux1 = aux1;</span>
+<span class="nc" id="L255">	}</span>
+
+	public Integer getCod() {
+<span class="fc" id="L258">		return cod;</span>
+	}
+
+	public void setCod(Integer cod) {
+<span class="fc" id="L262">		this.cod = cod;</span>
+<span class="fc" id="L263">	}</span>
+
+	public String getMsg() {
+<span class="nc" id="L266">		return msg;</span>
+	}
+
+	public void setMsg(String msg) {
+<span class="nc" id="L270">		this.msg = msg;</span>
+<span class="nc" id="L271">	}</span>
+
+	public String getTipoDocumento() {
+<span class="nc" id="L274">		return tipoDocumento;</span>
+	}
+
+	public void setTipoDocumento(String tipoDocumento) {
+<span class="fc" id="L278">		this.tipoDocumento = tipoDocumento;</span>
+<span class="fc" id="L279">	}</span>
+
+	public String getClasseServico() {
+<span class="nc" id="L282">		return classeServico;</span>
+	}
+
+	public void setClasseServico(String classeServico) {
+<span class="fc" id="L286">		this.classeServico = classeServico;</span>
+<span class="fc" id="L287">	}</span>
+
+	public ResultTo getResult() {
+<span class="fc" id="L290">		return result;</span>
+	}
+
+	public void setResult(ResultTo result) {
+<span class="fc" id="L294">		this.result = result;</span>
+<span class="fc" id="L295">	}</span>
+
+	public static long getSerialversionuid() {
+<span class="nc" id="L298">		return serialVersionUID;</span>
+	}
+ 
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

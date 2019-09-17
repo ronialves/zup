@@ -1,0 +1,1 @@
+ri.orchestration.url=http://%s:%s/ri-orchestration/1.0/orchestration/{oper}

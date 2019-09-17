@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AllocateEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">AllocateEntity.java</span></div><h1>AllocateEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+import com.tlf.oss.resourceinventory.tbs.to.ResultTo;
+
+/**
+ * BEATRIXTWO-26 | DEMOSS-2171
+ * 
+ * @project Beatrix Fase 2
+ * @author jannayna.c.araujo
+ * @since 201709
+ */
+
+@Entity
+@NamedStoredProcedureQuery(name = &quot;allocate&quot;, resultClasses = AllocateEntity.class, procedureName = &quot;ASAP.TLF_SP_ALLOCATE&quot;, parameters = {
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_PON&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_RPON&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_ACCOUNT_NBR&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_CUSTOMER_LOCATION&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_REQUEST_TYPE&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_ACTIVITY_IND&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_NOTE_TEXT&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_DESIGNADOR_ACESSO&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_SWITCH&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_BIT_RATE_QUANTITY_U&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_BIT_RATE_QUANTITY_D&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_ACTIVITY_IND_ACESSO&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_DOCUMENT_NUMBER&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_COD_RETORNO&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_MSG_RETORNO&quot;, type = String.class) })
+public class AllocateEntity implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Basic
+	@Column(name = &quot;P_PON&quot;)
+	private String purchaseOrderNumber;
+
+	@Basic
+	@Column(name = &quot;P_RPON&quot;)
+	private String rpon;
+
+	@Basic
+	@Column(name = &quot;P_ACCOUNT_NBR&quot;)
+	private String accountNumber;
+
+	@Basic
+	@Column(name = &quot;P_CUSTOMER_LOCATION&quot;)
+	private String customerLocation;
+
+	@Basic
+	@Column(name = &quot;P_REQUEST_TYPE&quot;)
+	private String requestType;
+
+	@Basic
+	@Column(name = &quot;P_ACTIVITY_IND&quot;)
+	private String activityInd;
+
+	@Basic
+	@Column(name = &quot;P_NOTE_TEXT&quot;)
+	private String noteText;
+
+	@Basic
+	@Column(name = &quot;P_DESIGNADOR_ACESSO&quot;)
+	private String designadorAcesso;
+
+	@Basic
+	@Column(name = &quot;P_SWITCH&quot;)
+	private String switchName;
+
+	@Basic
+	@Column(name = &quot;P_BIT_RATE_QUANTITY_U&quot;)
+	private String rateQuantityU;
+
+	@Basic
+	@Column(name = &quot;P_BIT_RATE_QUANTITY_D&quot;)
+	private String rateQuantityD;
+
+	@Basic
+	@Column(name = &quot;P_ACTIVITY_IND_ACESSO&quot;)
+	private String activityIndAcesso;
+
+	@Basic
+	@Column(name = &quot;P_DOCUMENT_NUMBER&quot;)
+	private Integer documentNumber;
+
+	@Id
+	@Basic
+	@Column(name = &quot;P_COD_RETORNO&quot;)
+	private Integer returnCode;
+
+	@Basic
+	@Column(name = &quot;P_MSG_RETORNO&quot;)
+	private String message;
+
+	@Transient
+	private ResultTo result;
+
+	public AllocateEntity() {
+<span class="fc" id="L113">		super();</span>
+<span class="fc" id="L114">	}</span>
+
+	public AllocateEntity(String purchaseOrderNumber, String rpon, String accountNumber, String customerLocation,
+			String requestType, String activityInd, String noteText, String designadorAcesso, String switchName,
+			String rateQuantityU, String rateQuantityD, String activityIndAcesso, Integer documentNumber,
+			Integer returnCode, String message, ResultTo result) {
+<span class="nc" id="L120">		super();</span>
+<span class="nc" id="L121">		this.purchaseOrderNumber = purchaseOrderNumber;</span>
+<span class="nc" id="L122">		this.rpon = rpon;</span>
+<span class="nc" id="L123">		this.accountNumber = accountNumber;</span>
+<span class="nc" id="L124">		this.customerLocation = customerLocation;</span>
+<span class="nc" id="L125">		this.requestType = requestType;</span>
+<span class="nc" id="L126">		this.activityInd = activityInd;</span>
+<span class="nc" id="L127">		this.noteText = noteText;</span>
+<span class="nc" id="L128">		this.designadorAcesso = designadorAcesso;</span>
+<span class="nc" id="L129">		this.switchName = switchName;</span>
+<span class="nc" id="L130">		this.rateQuantityU = rateQuantityU;</span>
+<span class="nc" id="L131">		this.rateQuantityD = rateQuantityD;</span>
+<span class="nc" id="L132">		this.activityIndAcesso = activityIndAcesso;</span>
+<span class="nc" id="L133">		this.documentNumber = documentNumber;</span>
+<span class="nc" id="L134">		this.returnCode = returnCode;</span>
+<span class="nc" id="L135">		this.message = message;</span>
+<span class="nc" id="L136">		this.result = result;</span>
+<span class="nc" id="L137">	}</span>
+
+	public String getPurchaseOrderNumber() {
+<span class="nc" id="L140">		return purchaseOrderNumber;</span>
+	}
+
+	public void setPurchaseOrderNumber(String purchaseOrderNumber) {
+<span class="fc" id="L144">		this.purchaseOrderNumber = purchaseOrderNumber;</span>
+<span class="fc" id="L145">	}</span>
+
+	public String getRpon() {
+<span class="nc" id="L148">		return rpon;</span>
+	}
+
+	public void setRpon(String rpon) {
+<span class="fc" id="L152">		this.rpon = rpon;</span>
+<span class="fc" id="L153">	}</span>
+
+	public String getAccountNumber() {
+<span class="nc" id="L156">		return accountNumber;</span>
+	}
+
+	public void setAccountNumber(String accountNumber) {
+<span class="fc" id="L160">		this.accountNumber = accountNumber;</span>
+<span class="fc" id="L161">	}</span>
+
+	public String getCustomerLocation() {
+<span class="nc" id="L164">		return customerLocation;</span>
+	}
+
+	public void setCustomerLocation(String customerLocation) {
+<span class="fc" id="L168">		this.customerLocation = customerLocation;</span>
+<span class="fc" id="L169">	}</span>
+
+	public String getRequestType() {
+<span class="nc" id="L172">		return requestType;</span>
+	}
+
+	public void setRequestType(String requestType) {
+<span class="fc" id="L176">		this.requestType = requestType;</span>
+<span class="fc" id="L177">	}</span>
+
+	public String getActivityInd() {
+<span class="nc" id="L180">		return activityInd;</span>
+	}
+
+	public void setActivityInd(String activityInd) {
+<span class="fc" id="L184">		this.activityInd = activityInd;</span>
+<span class="fc" id="L185">	}</span>
+
+	public String getNoteText() {
+<span class="nc" id="L188">		return noteText;</span>
+	}
+
+	public void setNoteText(String noteText) {
+<span class="fc" id="L192">		this.noteText = noteText;</span>
+<span class="fc" id="L193">	}</span>
+
+	public String getDesignadorAcesso() {
+<span class="nc" id="L196">		return designadorAcesso;</span>
+	}
+
+	public void setDesignadorAcesso(String designadorAcesso) {
+<span class="fc" id="L200">		this.designadorAcesso = designadorAcesso;</span>
+<span class="fc" id="L201">	}</span>
+
+	public String getSwitchName() {
+<span class="nc" id="L204">		return switchName;</span>
+	}
+
+	public void setSwitchName(String switchName) {
+<span class="fc" id="L208">		this.switchName = switchName;</span>
+<span class="fc" id="L209">	}</span>
+
+	public String getRateQuantityU() {
+<span class="nc" id="L212">		return rateQuantityU;</span>
+	}
+
+	public void setRateQuantityU(String rateQuantityU) {
+<span class="fc" id="L216">		this.rateQuantityU = rateQuantityU;</span>
+<span class="fc" id="L217">	}</span>
+
+	public String getRateQuantityD() {
+<span class="nc" id="L220">		return rateQuantityD;</span>
+	}
+
+	public void setRateQuantityD(String rateQuantityD) {
+<span class="fc" id="L224">		this.rateQuantityD = rateQuantityD;</span>
+<span class="fc" id="L225">	}</span>
+
+	public String getActivityIndAcesso() {
+<span class="nc" id="L228">		return activityIndAcesso;</span>
+	}
+
+	public void setActivityIndAcesso(String activityIndAcesso) {
+<span class="fc" id="L232">		this.activityIndAcesso = activityIndAcesso;</span>
+<span class="fc" id="L233">	}</span>
+
+	public Integer getDocumentNumber() {
+<span class="fc" id="L236">		return documentNumber;</span>
+	}
+
+	public void setDocumentNumber(Integer documentNumber) {
+<span class="fc" id="L240">		this.documentNumber = documentNumber;</span>
+<span class="fc" id="L241">	}</span>
+
+	public Integer getReturnCode() {
+<span class="fc" id="L244">		return returnCode;</span>
+	}
+
+	public void setReturnCode(Integer returnCode) {
+<span class="fc" id="L248">		this.returnCode = returnCode;</span>
+<span class="fc" id="L249">	}</span>
+
+	public String getMessage() {
+<span class="nc" id="L252">		return message;</span>
+	}
+
+	public void setMessage(String message) {
+<span class="nc" id="L256">		this.message = message;</span>
+<span class="nc" id="L257">	}</span>
+
+	public ResultTo getResult() {
+<span class="fc" id="L260">		return result;</span>
+	}
+
+	public void setResult(ResultTo result) {
+<span class="fc" id="L264">		this.result = result;</span>
+<span class="fc" id="L265">	}</span>
+
+	public static long getSerialversionuid() {
+<span class="nc" id="L268">		return serialVersionUID;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

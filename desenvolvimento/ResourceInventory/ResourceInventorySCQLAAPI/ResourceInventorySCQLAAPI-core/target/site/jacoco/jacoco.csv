@@ -1,0 +1,8 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ResourceInventorySCQLAAPI-core,com.tlf.oss.resourceinventory.scqla.core.enums,Message,0,92,0,0,0,12,0,3,0,3
+ResourceInventorySCQLAAPI-core,com.tlf.oss.resourceinventory.scqla.core.enums,EntityFields,0,136,0,0,0,16,0,3,0,3
+ResourceInventorySCQLAAPI-core,com.tlf.oss.resourceinventory.scqla.core.enums,Code,0,48,0,0,0,8,0,3,0,3
+ResourceInventorySCQLAAPI-core,com.tlf.oss.resourceinventory.scqla.core,RetrievalController,0,262,3,25,0,54,3,20,0,9
+ResourceInventorySCQLAAPI-core,com.tlf.oss.resourceinventory.scqla.core.service,AvailabilityRetrievalService,50,0,0,0,10,0,2,0,2,0
+ResourceInventorySCQLAAPI-core,com.tlf.oss.resourceinventory.scqla.core.validation,RetrievalValidator,121,0,10,0,15,0,8,0,3,0
+ResourceInventorySCQLAAPI-core,com.tlf.oss.resourceinventory.scqla.core.validation,ValidatorEntity,407,213,50,22,71,35,35,14,7,6

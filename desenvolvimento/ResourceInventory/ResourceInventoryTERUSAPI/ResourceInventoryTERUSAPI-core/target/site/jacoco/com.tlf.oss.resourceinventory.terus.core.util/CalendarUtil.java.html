@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CalendarUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTERUSAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.terus.core.util</a> &gt; <span class="el_source">CalendarUtil.java</span></div><h1>CalendarUtil.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.terus.core.util;
+
+import java.util.Date;
+import java.util.GregorianCalendar;
+import javax.inject.Inject;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import com.tlf.oss.common.log.OSSLogger;
+
+<span class="nc" id="L10">public class CalendarUtil {</span>
+	
+	@Inject
+	protected static OSSLogger logger;
+	
+	public static XMLGregorianCalendar getCurrentTime() {
+<span class="fc" id="L16">		XMLGregorianCalendar xMLGregorianCalendar = null;</span>
+		try {
+<span class="fc" id="L18">			GregorianCalendar c = new GregorianCalendar();</span>
+<span class="fc" id="L19">			c.setTime(new Date());</span>
+<span class="fc" id="L20">			xMLGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);</span>
+<span class="nc" id="L21">		} catch (Exception e) {</span>
+<span class="nc" id="L22">			logger.log(OSSLogger.DEBUG, &quot;CalendarUtil:getCurrentTime - &quot; + e.getMessage());</span>
+<span class="fc" id="L23">		}</span>
+<span class="fc" id="L24">		return xMLGregorianCalendar;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

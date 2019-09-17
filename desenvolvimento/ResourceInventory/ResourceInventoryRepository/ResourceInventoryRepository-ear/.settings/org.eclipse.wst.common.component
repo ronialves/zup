@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="ResourceInventoryRepository-ear-0.0.1-SNAPSHOT">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/application" tag="defaultRootSource"/>
+        <dependent-module archiveName="ResourceInventoryRepository-api.war" deploy-path="/" handle="module:/resource/ResourceInventoryRepository-api/ResourceInventoryRepository-api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventoryRepository-core.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventoryRepository-core/ResourceInventoryRepository-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventorySchemas-entities.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventorySchemas-entities/ResourceInventorySchemas-entities">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventorySchemas-audit.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventorySchemas-audit/ResourceInventorySchemas-audit">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventorySchemas-customer.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventorySchemas-customer/ResourceInventorySchemas-customer">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="OSSCommons-util.jar" deploy-path="/APP-INF/lib" handle="module:/resource/OSSCommons-util/OSSCommons-util">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-core.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/logback/logback-core/1.2.3/logback-core-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-classic.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-api.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/slf4j-api/1.7.25/slf4j-api-1.7.25.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="gson.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/code/gson/gson/2.3/gson-2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

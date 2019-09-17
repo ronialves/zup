@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrchestrationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOrchestration-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.orchestration.core</a> &gt; <span class="el_source">OrchestrationController.java</span></div><h1>OrchestrationController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.orchestration.core;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+
+import com.tlf.oss.common.client.RestClient;
+import com.tlf.oss.common.client.RestClient.Method;
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.exception.OSSException;
+import com.tlf.oss.common.header.Header;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.common.properties.WeblogicConfiguration;
+import com.tlf.oss.resourceinventory.orchestration.core.entity.Action;
+import com.tlf.oss.resourceinventory.orchestration.core.entity.Execution;
+import com.tlf.oss.resourceinventory.orchestration.core.entity.ResourceDoUndo;
+import com.tlf.oss.resourceinventory.orchestration.core.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.orchestration.core.rules.ExecutionRules;
+import com.tlf.oss.resourceinventory.schemas.util.RIConstants;
+
+@RequestScoped
+@Logged
+<span class="nc" id="L28">public class OrchestrationController {</span>
+	
+<span class="nc" id="L30">	private static final WeblogicConfiguration WCFG = WeblogicConfiguration.getInstance();</span>
+
+	@Inject
+	private OSSLogger logger;
+	
+	@Inject
+	private Header header;
+	
+	@Inject
+	private ExecutionRules executionRules;
+	
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public &lt;T&gt; T execute(String version, String action, Object entity) throws Exception {
+		
+<span class="nc" id="L44">		Action resourceAction = executionRules.getAction(version, action, entity);</span>
+		
+<span class="nc" id="L46">		Class&lt;?&gt; expectedReturnType = Class.forName(resourceAction.getClassName());</span>
+
+<span class="nc bnc" id="L48" title="All 2 branches missed.">		if (!expectedReturnType.equals(entity.getClass())) {</span>
+<span class="nc" id="L49">			throw new OSSBusinessException(ExceptionInfoEnum.RIO_004.getDescription(),ExceptionInfoEnum.RIO_004.getCode(), &quot;O objeto de entrada [&quot; </span>
+<span class="nc" id="L50">					+ entity.getClass().getName() + &quot;] é incompativel com a classe definida nas regras [&quot; + resourceAction.getClassName() + &quot;]&quot;);</span>
+		}
+		
+<span class="nc" id="L53">		Queue&lt;Execution&gt; doExecution = new LinkedList&lt;&gt;();</span>
+		
+<span class="nc bnc" id="L55" title="All 2 branches missed.">		for (Execution execution : resourceAction.getExecution()) {</span>
+<span class="nc" id="L56">			doExecution.offer(execution);</span>
+<span class="nc" id="L57">		}</span>
+		
+<span class="nc" id="L59">		return (T) execute(doExecution, entity, expectedReturnType);</span>
+	}
+	
+	private Object execute(Queue&lt;Execution&gt; doExecution, Object entity, Class&lt;?&gt; expectedReturnType) throws Exception {
+<span class="nc" id="L63">		logger.log(OSSLogger.INFO, &quot;Executando orquestração&quot;);</span>
+		
+		/** The undo execution. */
+<span class="nc" id="L66">		Stack&lt;Execution&gt; undoExecution = new Stack&lt;&gt;();</span>
+
+<span class="nc" id="L68">		Exception error = null;</span>
+		
+<span class="nc bnc" id="L70" title="All 2 branches missed.">		for (Execution execution : doExecution) {</span>
+			try {
+<span class="nc" id="L72">				Response response = callService(execution.getApplication(), execution.getVersion(), execution.getDoExecution(), entity);</span>
+				
+				//Valida se é uma parada na execução da orquestração
+<span class="nc bnc" id="L75" title="All 2 branches missed.">				if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {</span>
+<span class="nc" id="L76">					return expectedReturnType.newInstance();</span>
+				}
+				
+<span class="nc bnc" id="L79" title="All 2 branches missed.">				if (!RIConstants.DELETE.equals(execution.getDoExecution().getHttp_verb())) {</span>
+<span class="nc" id="L80">					entity = response.readEntity(expectedReturnType);</span>
+					
+<span class="nc bnc" id="L82" title="All 2 branches missed.">					if (entity == null) {</span>
+<span class="nc" id="L83">						error = new OSSBusinessException(ExceptionInfoEnum.RIO_004.getDescription(),ExceptionInfoEnum.RIO_004.getCode(), </span>
+<span class="nc" id="L84">								&quot;Não foi encontrado o objeto do tipo &quot; + expectedReturnType.getName() + &quot; no retorno da API.&quot;);</span>
+<span class="nc" id="L85">						throw error;</span>
+					}
+				}
+				
+<span class="nc" id="L89">				undoExecution.push(execution);</span>
+<span class="nc" id="L90">			} catch (Exception e) {</span>
+<span class="nc" id="L91">				logger.error(&quot;Erro ao realizar orquestração&quot;, e);</span>
+<span class="nc" id="L92">				rollback(undoExecution, entity);</span>
+				
+<span class="nc bnc" id="L94" title="All 2 branches missed.">				if (error != null) {</span>
+<span class="nc" id="L95">					throw error;</span>
+				}
+<span class="nc bnc" id="L97" title="All 4 branches missed.">				if (OSSException.class.isInstance(e) || OSSBusinessException.class.isInstance(e)) {	</span>
+						
+<span class="nc" id="L99">					throw e;</span>
+				}
+				
+<span class="nc" id="L102">				throw new OSSException(&quot;Erro na orquestração&quot;, e.getMessage());</span>
+<span class="nc" id="L103">			}</span>
+<span class="nc" id="L104">		}</span>
+
+<span class="nc" id="L106">		return entity;</span>
+	}
+
+	private void rollback(Stack&lt;Execution&gt; undoExecution, Object entity) {
+<span class="nc" id="L110">		logger.log(OSSLogger.INFO, &quot;Executando rollback da orquestração&quot;);</span>
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">		for (Execution execution : undoExecution) {</span>
+			try {
+<span class="nc bnc" id="L114" title="All 2 branches missed.">				if (execution.getUndoExecution() == null) {</span>
+<span class="nc" id="L115">					logger.log(OSSLogger.INFO, &quot;Sem definição de rollback para a execution &quot; + execution);</span>
+<span class="nc" id="L116">					continue;</span>
+				}
+				
+<span class="nc" id="L119">				callService(execution.getApplication(), execution.getVersion(), execution.getUndoExecution(), entity);</span>
+<span class="nc" id="L120">			} catch (Exception e) {</span>
+<span class="nc" id="L121">				logger.error(&quot;Erro ao realizar rollback da orquestração&quot;, e);</span>
+<span class="nc" id="L122">			}</span>
+<span class="nc" id="L123">		}</span>
+<span class="nc" id="L124">	}</span>
+	
+	private Response callService(String application, String version, ResourceDoUndo resourceDoUndo, Object entity) throws OSSBusinessException {
+<span class="nc" id="L127">		String url = new PathBuilder()</span>
+<span class="nc" id="L128">							.setProtocol(&quot;http://&quot;)</span>
+							//.setNode(WCFG.getCurrentNodeName())
+<span class="nc" id="L130">							.setNode(&quot;localhost&quot;)</span>
+<span class="nc" id="L131">							.setPort(WCFG.getCurrentPort())</span>
+<span class="nc" id="L132">							.setApplication(application)</span>
+<span class="nc" id="L133">							.setVersion(version)</span>
+<span class="nc" id="L134">							.setPath(resourceDoUndo.getPath())</span>
+<span class="nc" id="L135">							.toString();</span>
+		
+<span class="nc" id="L137">		RestClient.Builder builder = RestClient.Builder.newBuilder(logger, header).target(url);</span>
+		
+<span class="nc bnc" id="L139" title="All 2 branches missed.">		if (RIConstants.POST.equals(resourceDoUndo.getHttp_verb())) {</span>
+<span class="nc" id="L140">			builder = builder.method(Method.Post);</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">		} else if (RIConstants.PUT.equals(resourceDoUndo.getHttp_verb())) {</span>
+<span class="nc" id="L142">			builder = builder.method(Method.Put);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">		} else if (RIConstants.DELETE.equals(resourceDoUndo.getHttp_verb())) {</span>
+<span class="nc" id="L144">			builder = builder.method(Method.Delete);</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">		} else if (RIConstants.GET.equals(resourceDoUndo.getHttp_verb())) {</span>
+<span class="nc" id="L146">			builder = builder.method(Method.Get);</span>
+		}
+		
+<span class="nc" id="L149">		return builder.entity(entity).build().callService(Response.class);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

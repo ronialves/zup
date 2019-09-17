@@ -1,0 +1,46 @@
+<?xml version="1.0" ?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:rs="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes" xmlns:ro="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes" xmlns:ce="http://www.cpqd.com.br/etics/customelements" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/SupplementaryInformationManageServTypes">
+	
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"></xs:import>	
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes" schemaLocation="ResourceOrderInfoTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes" schemaLocation="ResourceServiceInfoTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/customelements" schemaLocation="CustomElements.xsd"></xs:import>	
+	
+	<xs:complexType name="SupplementaryInformationIn">
+        <xs:sequence>
+			
+			<!-- Dados do Número de Serviço -->		
+            <xs:element minOccurs="0" name="resourceService" type="rs:ResourceService"></xs:element>	
+							
+			<!-- Documento -->
+            <xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo"></xs:element>
+			          
+			<!-- Lista de campos de tipo chave-valor -->
+			<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"></xs:element>            
+			
+        </xs:sequence>
+    </xs:complexType>
+	
+	<xs:complexType name="SupplementaryInformationOut">
+        <xs:sequence>
+			
+			<!-- Tipo de serviço -->
+            <xs:element minOccurs="0" name="serviceType" type="st:string1"></xs:element>
+			
+			<!-- Identificação do Tipo de Serviço -->
+            <xs:element minOccurs="0" name="adServiceType" type="st:string30"></xs:element>
+						
+			<!-- Documento -->
+            <xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo"></xs:element>
+			
+			<!-- Ordem de Recursos -->
+            <xs:element minOccurs="0" name="resourceOrder" type="st:string40"></xs:element>
+						
+			<!-- Data e hora do processamento -->
+            <xs:element minOccurs="0" name="timeStamp" type="st:string19"></xs:element>
+			
+			<!-- Lista de campos de tipo chave-valor -->
+			<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"></xs:element>	
+				
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

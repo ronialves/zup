@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidatorEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySCQLAAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.scqla.core.validation</a> &gt; <span class="el_source">ValidatorEntity.java</span></div><h1>ValidatorEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.scqla.core.validation;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.scqla.core.enums.Code;
+import com.tlf.oss.resourceinventory.scqla.core.enums.Message;
+
+<span class="fc" id="L21">public abstract class ValidatorEntity {</span>
+
+	/**
+	 * Metodo Generico responsavel por validar a lista de customerFacingService
+	 * para reserva, a unica informação necessaria no customerFacing e as
+	 * informação de banda (velocidade) = BROADBAND
+	 * @param entity (payload de entrada), CustomerFacingService (BROADBAND),valueList (parametros que deseja recuperar da lista) 
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	protected CustomerFacingService getCustomerFacingService(ResourceInventoryEntity entity, String customerFacingCategory, String... valueList) throws OSSBusinessException {
+
+<span class="fc" id="L33">		CustomerFacingService customerFacingService = new CustomerFacingService();</span>
+
+<span class="fc" id="L35">		Optional&lt;List&lt;CustomerFacingService&gt;&gt; customerFacingServiceList = Optional.ofNullable(entity.getCustomerFacingService());</span>
+
+		//Chega uma lista BROADBAND/TELEPHONE, atualmente pegamos apenas a valocidade do BROADBAND
+<span class="fc bfc" id="L38" title="All 2 branches covered.">		for (CustomerFacingService customer : customerFacingServiceList.get()) {</span>
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">			if(customer.getCategory().equalsIgnoreCase(customerFacingCategory)){</span>
+<span class="fc" id="L41">				customerFacingService.setCategory(customer.getCategory());</span>
+<span class="fc" id="L42">				customerFacingService.setServiceId(customer.getServiceId());</span>
+
+				//É passado um ou uma lista de parametros, para recuperar o valor
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">				for (String valueServiceDescribe : valueList) {</span>
+
+<span class="nc" id="L47">					customerFacingService.getServiceDescribedBy().add(getServiceDescribedBy(customer.getServiceDescribedBy(),valueServiceDescribe));</span>
+				}
+			}
+<span class="fc" id="L50">		}</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		if(null==customerFacingService.getCategory()</span>
+<span class="fc bfc" id="L53" title="All 4 branches covered.">				||null==customerFacingService.getServiceId() || customerFacingService.getServiceId().isEmpty())</span>
+<span class="fc" id="L54">			throw new OSSBusinessException(Message.ERRO_RESOURCE_INVENTORY_ENTITY.getValue(), Code.RI_SCQLA_002.getValue(), &quot;O valor do campo customerfacingService {&quot;+customerFacingCategory+&quot;} eh nulo&quot;);</span>
+
+<span class="fc" id="L56">		return customerFacingService;</span>
+	}
+
+	/**
+	 * Metodo reponsavel por valdiar as informacoes do resourceFacingService
+	 * @param entity
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	protected ResourceFacingService getResourceFacingService(ResourceInventoryEntity entity, String... valueList) throws OSSBusinessException {
+
+<span class="fc" id="L67">		ResourceFacingService ResourceFacingService = new ResourceFacingService();</span>
+
+<span class="fc" id="L69">		Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribe = Optional.ofNullable(entity.getResourceFacingService().getServiceDescribedBy());</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">		for (String valueServiceDescribe : valueList) {</span>
+
+<span class="fc" id="L73">			ResourceFacingService.getServiceDescribedBy().add(getServiceDescribedBy(serviceDescribe.get(), valueServiceDescribe));</span>
+		}
+
+<span class="fc" id="L76">		return ResourceFacingService;</span>
+	}
+
+	/**
+	 * Metodo reponsavel por valdiar as informacoes do serviceDescribedByList
+	 * @param entity
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	protected ServiceDescribedBy getServiceDescribedBy(List&lt;ServiceDescribedBy&gt; serviceDescribedByList, String value) throws OSSBusinessException {
+
+<span class="fc" id="L87">		ServiceDescribedBy serviceDescribedByTerminal = new ServiceDescribedBy();</span>
+
+<span class="fc" id="L89">		Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribe = Optional.ofNullable(serviceDescribedByList);</span>
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">		if(Optional.ofNullable(serviceDescribe.get()).map(List::size).orElse(0) == 0)</span>
+<span class="fc" id="L92">			throw new OSSBusinessException(&quot;Erro ao validar o objeto ReserveResourceService&quot;, &quot;RISCQLA-001&quot;, &quot;O tamanho da lista serviceDescribedBy eh 0&quot;);</span>
+
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		for (ServiceDescribedBy serviceDescribedBy : serviceDescribe.get()) {</span>
+
+<span class="fc" id="L96">			Optional&lt;ServiceDescribedBy&gt; name = Optional.ofNullable(serviceDescribedBy);</span>
+
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">			if(name.map(ServiceDescribedBy::getName).filter(d -&gt; d.equalsIgnoreCase(value)).isPresent()){</span>
+
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">				for (ServiceSpecCharDescribes serviceSpecCharDescribe : serviceDescribedBy.getServiceSpecCharDescribes()) {</span>
+
+<span class="fc" id="L102">					Optional&lt;ServiceSpecCharDescribes&gt; resourceServiceSpecCharDescribe = Optional.ofNullable(serviceSpecCharDescribe);</span>
+
+<span class="pc bpc" id="L104" title="2 of 4 branches missed.">					if(!resourceServiceSpecCharDescribe.map(ServiceSpecCharDescribes::getValue).filter(d -&gt; !d.isEmpty()).isPresent())</span>
+<span class="nc" id="L105">						throw new OSSBusinessException(&quot;Erro ao validar o objeto ReserveResourceService&quot;, &quot;RISCQLA-001&quot;, &quot;O valor do campo serviceDescribedBy.serviceSpecCharDescribes.value eh nulo&quot;);</span>
+
+<span class="fc" id="L107">					serviceDescribedBy.getServiceSpecCharDescribes().clear();</span>
+<span class="fc" id="L108">					serviceDescribedBy.getServiceSpecCharDescribes().add(serviceSpecCharDescribe);</span>
+
+<span class="fc" id="L110">					serviceDescribedByTerminal = serviceDescribedBy;</span>
+<span class="fc" id="L111">					break;</span>
+				}
+
+			}
+<span class="fc" id="L115">		}</span>
+
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">		if(null==serviceDescribedByTerminal.getName()){</span>
+<span class="nc" id="L118">			throw new OSSBusinessException(&quot;Erro ao validar o objeto ReserveResourceService&quot;, &quot;RISCQLA-001&quot;, &quot;O valor do campo serviceDescribedBy.name {&quot;+value+&quot;} eh nulo&quot;);</span>
+		}
+
+<span class="fc" id="L121">		return serviceDescribedByTerminal;</span>
+	}
+
+	/**
+	 * Metodo reponsavel por validar as informaçoes de address do payload de entrada
+	 * @param entity
+	 * @return OSSBusinessException
+	 * @throws OSSBusinessException 
+	 */
+	protected void validatorAdress(ResourceInventoryEntity entity, String... valueList) throws OSSBusinessException {
+
+<span class="nc" id="L132">		Optional&lt;BrazilianUrbanPropertyAddress&gt; address = Optional.ofNullable(entity.getAddress());</span>
+<span class="nc" id="L133">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L134">		Set&lt;ConstraintViolation&lt;BrazilianUrbanPropertyAddress&gt;&gt; constraintViolations = null;</span>
+
+<span class="nc bnc" id="L136" title="All 2 branches missed.">		if (!address.isPresent())</span>
+<span class="nc" id="L137">			throw new OSSBusinessException(Message.ERRO_RESOURCE_INVENTORY_ENTITY.getValue(), Code.RI_SCQLA_001.getValue(),</span>
+					&quot;O valor do campo address eh nulo&quot;);
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">		for (String param : valueList) {</span>
+
+<span class="nc" id="L142">			constraintViolations = validator.validateProperty(address.get(),param);</span>
+
+<span class="nc bnc" id="L144" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L145">				throw new OSSBusinessException(Message.ERRO_RESOURCE_INVENTORY_ENTITY.getValue(), Code.RI_SCQLA_001.getValue(),</span>
+						&quot;O valor do campo {&quot;+param+&quot;} eh nulo&quot;);
+		}
+
+<span class="nc" id="L149">	}</span>
+
+	/**
+	 * Metodo responsavel por validar as informações de customerFacingService
+	 * informação de banda (velocidade) = BROADBAND
+	 * @param entity (payload de entrada), CustomerFacingService (BROADBAND),valueList (parametros que deseja recuperar da lista) 
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	protected boolean validatorCustomerFacingService(ResourceInventoryEntity entity, String... valueList) throws OSSBusinessException {
+<span class="nc" id="L159">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L160">		Set&lt;ConstraintViolation&lt;CustomerFacingService&gt;&gt; constraintViolations = null;</span>
+
+<span class="nc" id="L162">		Optional&lt;List&lt;CustomerFacingService&gt;&gt; customerFacingServiceList = Optional.ofNullable(entity.getCustomerFacingService());</span>
+
+<span class="nc bnc" id="L164" title="All 2 branches missed.">		if (!customerFacingServiceList.isPresent()) {</span>
+<span class="nc" id="L165">			return false;</span>
+		}
+
+		//Chega uma lista BROADBAND/TELEPHONE, atualmente pegamos apenas a valocidade do BROADBAND
+<span class="nc bnc" id="L169" title="All 2 branches missed.">		for (CustomerFacingService customer : customerFacingServiceList.get()) {</span>
+
+			//É passado um ou uma lista de parametros, para recuperar o valor
+<span class="nc bnc" id="L172" title="All 2 branches missed.">			for (String param : valueList) {</span>
+
+<span class="nc" id="L174">				constraintViolations = validator.validateProperty(customer,param);</span>
+
+<span class="nc bnc" id="L176" title="All 2 branches missed.">				if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L177">					return false;</span>
+
+			}
+<span class="nc" id="L180">		}</span>
+<span class="nc" id="L181">		return true;</span>
+	}
+
+	/**
+	 * Metodo reponsavel por validar as informaçoes ResourceFacingService do payload de entrada
+	 * @param entity
+	 * @return OSSBusinessException
+	 * @throws OSSBusinessException 
+	 */
+	protected boolean validatorResourceFacingService(ResourceInventoryEntity entity, String... valueList) throws OSSBusinessException {
+<span class="nc" id="L191">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L192">		Set&lt;ConstraintViolation&lt;ResourceFacingService&gt;&gt; constraintViolations = null;</span>
+
+<span class="nc" id="L194">		Optional&lt;ResourceFacingService&gt; facingService = Optional.ofNullable(entity.getResourceFacingService());</span>
+
+<span class="nc bnc" id="L196" title="All 2 branches missed.">		if (!facingService.isPresent()) {</span>
+<span class="nc" id="L197">			return false;</span>
+		}
+
+<span class="nc bnc" id="L200" title="All 2 branches missed.">		for (String param : valueList) {</span>
+
+<span class="nc" id="L202">			constraintViolations = validator.validateProperty(facingService.get(),param);</span>
+
+<span class="nc bnc" id="L204" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L205">				return false;</span>
+		}
+		
+<span class="nc" id="L208">		return true;</span>
+
+	}
+
+	/**
+	 * Metodo reponsavel por validar as informaçoes do ServiceDescriBy do payload de entrada
+	 * @param entity
+	 * @return OSSBusinessException
+	 * @throws OSSBusinessException 
+	 */
+	protected boolean validatorServiceDescribedBy(List&lt;ServiceDescribedBy&gt; entity, String... valueList) throws OSSBusinessException {
+<span class="nc" id="L219">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L220">		Set&lt;ConstraintViolation&lt;ServiceDescribedBy&gt;&gt; constraintViolations = null;</span>
+
+<span class="nc" id="L222">		Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribe = Optional.ofNullable(entity);</span>
+
+<span class="nc bnc" id="L224" title="All 2 branches missed.">		if(Optional.ofNullable(serviceDescribe.get()).map(List::size).orElse(0) == 0)</span>
+<span class="nc" id="L225">			return false;</span>
+
+<span class="nc bnc" id="L227" title="All 2 branches missed.">		for (String param : valueList) {</span>
+
+<span class="nc bnc" id="L229" title="All 2 branches missed.">			for (ServiceDescribedBy valueServiceDescribe : serviceDescribe.get()) {</span>
+
+<span class="nc" id="L231">				constraintViolations = validator.validateProperty(valueServiceDescribe,param);</span>
+
+<span class="nc bnc" id="L233" title="All 2 branches missed.">				if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L234">					return false;</span>
+<span class="nc" id="L235">			}</span>
+		}
+<span class="nc" id="L237">		return true;</span>
+	}
+
+
+	/**
+	 * Metodo reponsavel por validar as informaçoes do ServiceSpecCharDescribes do payload de entrada
+	 * @param entity
+	 * @return OSSBusinessException
+	 * @throws OSSBusinessException 
+	 */
+	protected boolean validatorServiceSpecCharDescribes(List&lt;ServiceDescribedBy&gt; entity, String... valueList) throws OSSBusinessException {
+<span class="nc" id="L248">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L249">		Set&lt;ConstraintViolation&lt;ServiceSpecCharDescribes&gt;&gt; constraintViolations = null;</span>
+
+<span class="nc" id="L251">		Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribe = Optional.ofNullable(entity);</span>
+
+<span class="nc bnc" id="L253" title="All 2 branches missed.">		if(Optional.ofNullable(serviceDescribe.get()).map(List::size).orElse(0) == 0)</span>
+<span class="nc" id="L254">			return false;</span>
+
+<span class="nc bnc" id="L256" title="All 2 branches missed.">		for (String param : valueList) {</span>
+
+<span class="nc bnc" id="L258" title="All 2 branches missed.">			for (ServiceDescribedBy valueServiceDescribe : serviceDescribe.get()) {</span>
+
+<span class="nc bnc" id="L260" title="All 2 branches missed.">				if(Optional.ofNullable(valueServiceDescribe.getServiceSpecCharDescribes()).map(List::size).orElse(0) == 0)</span>
+<span class="nc" id="L261">					return false;</span>
+
+<span class="nc bnc" id="L263" title="All 2 branches missed.">				for (ServiceSpecCharDescribes valueServiceDescribeChar : valueServiceDescribe.getServiceSpecCharDescribes()) {</span>
+
+<span class="nc" id="L265">					constraintViolations = validator.validateProperty(valueServiceDescribeChar,param);</span>
+
+<span class="nc bnc" id="L267" title="All 2 branches missed.">					if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L268">						return false;</span>
+<span class="nc" id="L269">				}</span>
+
+<span class="nc" id="L271">			}</span>
+		}
+<span class="nc" id="L273">		return true;</span>
+	}
+
+	/**
+	 * Metodo reponsavel por validar as informaçoes do ServiceDescribedBy do CustomerFacingService payload de entrada
+	 * @param entity
+	 * @return OSSBusinessException
+	 * @throws OSSBusinessException 
+	 */
+	protected boolean validatorCustomerFacingServiceDescribedBy(List&lt;CustomerFacingService&gt; entity, String... valueList) throws OSSBusinessException {
+
+<span class="nc bnc" id="L284" title="All 2 branches missed.">		for (CustomerFacingService customer : entity) {</span>
+
+<span class="nc" id="L286">			Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribe = Optional.ofNullable(customer.getServiceDescribedBy());</span>
+
+<span class="nc" id="L288">			return validatorServiceDescribedBy(serviceDescribe.get(), valueList);</span>
+
+		}
+<span class="nc" id="L291">		return false;</span>
+	}
+
+	/**
+	 * Metodo reponsavel por validar as informaçoes do ServiceSpecCharDescribes do CustomerFacingService do payload de entrada
+	 * @param entity
+	 * @return OSSBusinessException
+	 * @throws OSSBusinessException 
+	 */
+	protected boolean validatorCustomerFacingServiceSpecCharDescribes(List&lt;CustomerFacingService&gt; entity, String... valueList) throws OSSBusinessException {
+<span class="nc bnc" id="L301" title="All 2 branches missed.">		for (CustomerFacingService customer : entity) {</span>
+
+<span class="nc" id="L303">			Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribe = Optional.ofNullable(customer.getServiceDescribedBy());</span>
+
+<span class="nc" id="L305">			return validatorServiceSpecCharDescribes(serviceDescribe.get(), valueList);</span>
+		}
+<span class="nc" id="L307">		return false;</span>
+	}
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

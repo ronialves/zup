@@ -1,0 +1,108 @@
+package com.tlf .oss.resourceinventory.orchestration.execution.resourceordermanagement;
+
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+
+rule "[Allocate] - OFFER EDITION VIVO1" extends "BaseRule"
+    agenda-group "ALLOCATE"
+    when
+		$action : Action(name == '1.0_ALLOCATE_OFFER_EDITION_VIVO1') from $resource.actions
+		ResourceInventoryEntity( address!.networkOwner == 'VIVO1')      
+		ResourceInventoryEntity( 'Edição de Oferta' == customerOrder!.customerOrderType)
+		ResourceInventoryEntity( address!.placePhysicalResourceAssoc!.physicalLink!.accessTechnology == 'METALICO')
+    then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[Allocate] - VIVO1" extends "BaseRule"
+	agenda-group "ALLOCATE"
+	when
+		$action : Action(name == '1.0_ALLOCATE_VIVO1') from $resource.actions
+	 	ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+		ResourceInventoryEntity( 'Edição de Oferta' != customerOrder!.customerOrderType)
+		ResourceInventoryEntity( address!.placePhysicalResourceAssoc!.physicalLink!.accessTechnology == 'METALICO')
+    then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[Internal Allocate] - VIVO1" extends "BaseRule"
+	agenda-group "ALLOCATE"
+	when
+		$action : Action(name == '1.0_INTERNAL_ALLOCATE_VIVO1') from $resource.actions
+		ResourceInventoryEntity(address!.networkOwner == 'VIVO1', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_ACCESS_PORT')
+	 
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[External Allocate] - VIVO1" extends "BaseRule"
+	agenda-group "ALLOCATE"
+	when
+		$action : Action(name == '1.0_EXTERNAL_ALLOCATE_VIVO1') from $resource.actions
+		ResourceInventoryEntity(address!.networkOwner == 'VIVO1', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_PHYSICAL_ACCESS')
+
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+	end
+
+rule "[External Allocate] - VIVO2" extends "BaseRule"
+	agenda-group "ALLOCATE"
+	when
+		$action : Action(name == '1.0_EXTERNAL_ALLOCATE_VIVO2') from $resource.actions
+	 	ResourceInventoryEntity(address!.networkOwner == 'VIVO2', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_PHYSICAL_ACCESS')
+	 
+      then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end 
+
+rule "[Internal Allocate] - VIVO2" extends "BaseRule"
+	agenda-group "ALLOCATE"
+	when
+		$action : Action(name == '1.0_INTERNAL_ALLOCATE_VIVO2') from $resource.actions
+	 	ResourceInventoryEntity(address!.networkOwner == 'VIVO2', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_ACCESS_PORT')
+	 
+      then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end 
+
+rule "[Allocate] - CPE" extends "BaseRule"
+    agenda-group "ALLOCATE"
+    when
+        $action : Action(name == '1.0_CPE_ALLOCATE') from $resource.actions
+        ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null,
+                                resourceOrder!.resourceOrderItem!.name == 'R_CPE_ACCESS' ||
+                                resourceOrder!.resourceOrderItem!.name == 'R_CPE_VOIP')
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);      
+        insert( $action );
+end
+ 
+rule "[Allocate STB] - CPE" extends "BaseRule"
+    agenda-group "ALLOCATE"
+    when
+        $action : Action(name == '1.0_CPE_ALLOCATE_STB') from $resource.actions
+        ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null,
+                                resourceOrder!.resourceOrderItem!.name == 'R_CPE_STB')
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);      
+        insert( $action );
+end
+
+rule "[Allocate] - STATIC IP VIVO2" extends "BaseRule"
+    agenda-group "ALLOCATE"
+    when
+        $action : Action(name == '1.0_STATIC_IP_ALLOCATE_VIVO2') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO2', 
+        	resourceOrder!.resourceOrderItem!.name != null,
+            resourceOrder!.resourceOrderItem!.name == "STATIC_IP")
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end

@@ -1,0 +1,87 @@
+@import "../app.component.scss";
+
+.ui-system-logo {
+    display: flex;
+    align-content: center;
+    align-items: center;
+}
+.ui-system-logo img {
+    margin: 10px auto;
+    width: 200px;
+}
+.ui-system-logo-retracted {
+    display: flex;
+    align-content: center;
+    align-items: center;
+}
+.ui-system-logo-retracted img {
+    margin: 22px auto 42px;
+    width: 60px;
+}
+.ui-appname {
+    width: 100%;
+    text-align: center;
+    padding-top: 5px;
+    height: 35px;
+    color: #f9fcff;
+    font-size: 14px
+}
+.ui-appname-retracted {
+    visibility: hidden;
+}
+.ui-divisor {
+    float: left;
+    width: 90%;
+    border-bottom: 1px solid #e6e6e6;
+    margin-left: 5%;
+}
+.ui-options {
+    float: left;
+    height: calc(100% - 165px);
+    width: 100%;
+    padding: 20px 0;
+}
+.ui-option {
+    width: 260px;
+    height: 42px;
+    padding: 0px;
+    border-left: 4px solid rgba(0,0,0, 0);
+    transition: width 0.3s ease-out;
+}
+.ui-option-retracted {
+    width: 64px;
+    height: 42px;
+    transition: width 0.3s ease-out;
+}
+.ui-option-retracted:hover {
+    background: #303030 !important;
+    z-index: 1000;
+    width: 260px !important;
+    transition: width 0.3s ease-out;
+}
+.ui-option-retracted:hover .ui-option-name-retracted {
+    visibility: visible;
+    transition: visibility 0.3s ease-out;
+}
+.ui-option-active {
+    background: $ui-active-shadow-color;
+    border-left: 4px solid $ui-primary-color;
+}
+.ui-option-icon {
+    float: left;
+    font-size: 18px;
+    line-height: 42px;
+    color: $ui-white-color;
+    margin-left: 15px;
+}
+.ui-option-name {
+    float: left;
+    margin-left: 20px;
+    font-size: 14px;
+    line-height: 42px;
+    height: 42px;
+    color: $ui-white-color;
+}
+.ui-option-name-retracted {
+    visibility: hidden;
+}

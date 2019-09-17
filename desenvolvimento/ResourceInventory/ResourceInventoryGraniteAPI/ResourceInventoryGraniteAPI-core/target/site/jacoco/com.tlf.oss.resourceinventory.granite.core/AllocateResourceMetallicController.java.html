@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AllocateResourceMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">AllocateResourceMetallicController.java</span></div><h1>AllocateResourceMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.AllocateResourceEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ResourceStatusEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrievePathEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.Message;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.repository.AllocateResourceDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ResourceStatusDao;
+import com.tlf.oss.resourceinventory.granite.core.service.PathService;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L26">public class AllocateResourceMetallicController extends ValidatorEntity implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private AllocateResourceDao allocateResourceDao;
+	
+	@Inject
+	private ResourceStatusDao resourceStatusDao;
+
+	@Inject
+	private PathService pathService;
+
+	/**
+	 * Metodo responsavel por confirmar a reserva de Recurso
+	 * @throws OSSBusinessException 
+	 */
+	@Transactional(rollbackOn=Exception.class)
+	public void allocateResource(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L49">		validateRequest(entity);</span>
+		
+<span class="fc" id="L51">		ResourceStatusEntity resourceStatusEntity = this.chooseScenarioAndUpdatePath(entity);</span>
+		
+<span class="fc" id="L53">		AllocateResourceEntity allocateResourceEntity = getAllocateResourceEntity(entity, resourceStatusEntity);</span>
+		
+<span class="fc" id="L55">		AllocateResourceEntity allocateResource = allocateResourceDao.allocateResource(allocateResourceEntity);</span>
+		
+<span class="fc bfc" id="L57" title="All 2 branches covered.">		if (allocateResource.getCode() != 0) {</span>
+<span class="fc" id="L58">			throw new OSSBusinessException(&quot;Erro ao retornar o objeto ResourceInventoryConfirmReserved&quot;, Code.RIGRANITE_001.getValue(), allocateResource.getCode() + &quot; - &quot; + allocateResource.getDescription());</span>
+		}
+<span class="fc" id="L60">	}</span>
+	
+	private AllocateResourceEntity getAllocateResourceEntity(ResourceInventoryEntity entity, ResourceStatusEntity resourceStatusEntity) throws OSSBusinessException {
+<span class="fc" id="L63">		AllocateResourceEntity allocateEntity = new AllocateResourceEntity();</span>
+<span class="fc" id="L64">		allocateEntity.setCnl(entity.getAddress().getCnl());</span>
+<span class="fc" id="L65">		allocateEntity.setSiglaAt(entity.getAddress().getTelephonicArea());</span>
+<span class="fc" id="L66">		allocateEntity.setRack(&quot;&quot;);</span>
+<span class="fc" id="L67">		allocateEntity.setCircPathInstId(resourceStatusEntity.getCircPathInstId());</span>
+<span class="fc" id="L68">		allocateEntity.setSpeed(getDownloadSpeed(entity));</span>
+<span class="fc" id="L69">		allocateEntity.setUnit(&quot;KB&quot;);</span>
+<span class="fc" id="L70">		allocateEntity.setProtocol(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+<span class="fc" id="L71">		allocateEntity.setCustomer(getNRC(entity));</span>
+<span class="fc" id="L72">		allocateEntity.setProduct(getProduct(entity));</span>
+<span class="fc" id="L73">		return allocateEntity;</span>
+	}
+
+	private String getProduct(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L77">		CustomerFacingService customerFacingService = getCustomerFacingService(entity, &quot;BROADBAND&quot;);</span>
+<span class="fc" id="L78">		return customerFacingService.getCategory();</span>
+	}
+
+	private String getDownloadSpeed(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L82">		CustomerFacingService customerFacingService = getCustomerFacingService(entity, &quot;BROADBAND&quot;, &quot;Downstream&quot;);</span>
+<span class="fc" id="L83">		return customerFacingService.getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0).getValue();</span>
+	}
+
+	private String getNRC(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L87">		ResourceFacingService rfsNrc=  getResourceFacingService(entity, &quot;NRC&quot;);</span>
+<span class="fc" id="L88">		return rfsNrc.getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0).getValue();</span>
+	}
+	
+	/**
+	 * Metodo responsavel por fazer a busca dos paths, identificar o cenario e atualizar o estado do path
+	 * @param entity
+	 * @return ResourceStatusEntity
+	 * @throws OSSBusinessException7
+	 */
+	private ResourceStatusEntity chooseScenarioAndUpdatePath(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L98">    	logger.log(OSSLogger.INFO, &quot;initialized method chooseScenarioAndUpdatePath&quot;);</span>
+    	
+<span class="fc" id="L100">    	RetrievePathEntity path = pathService.getPath(entity, StatusPathType.RESERVED);</span>
+<span class="fc" id="L101">    	logger.log(OSSLogger.INFO, &quot;Path retrieved: &quot; + path);</span>
+    	
+<span class="fc" id="L103">    	ResourceStatusEntity resourceStatusEntity = new ResourceStatusEntity(path.getCircPathInstId(), StatusPathType.IN_CONFIGURATION.getValue());</span>
+
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">    	if (StatusPathType.RESERVED.equals(path.getStatus())) {</span>
+<span class="fc" id="L106">    		updateStatus(resourceStatusEntity);</span>
+    	}
+    	
+<span class="fc" id="L109">    	logger.log(OSSLogger.INFO, &quot;finalized method chooseScenarioAndUpdatePath&quot;);</span>
+<span class="fc" id="L110">    	return resourceStatusEntity;</span>
+    }
+
+	private void updateStatus(ResourceStatusEntity resourceStatusEntity) throws OSSBusinessException {
+<span class="fc" id="L114">		logger.log(OSSLogger.INFO, &quot;executing updateStatus: &quot; + resourceStatusEntity);</span>
+		
+<span class="fc" id="L116">		ResourceStatusEntity updateResourceStatusEntity = resourceStatusDao.updateStatus(resourceStatusEntity);</span>
+    	
+<span class="fc bfc" id="L118" title="All 2 branches covered.">    	if (!&quot;0&quot;.equals(updateResourceStatusEntity.getResult().getCode())) {</span>
+    		// Erro mapeado durante a execucao da atualizacao do estado do path
+<span class="fc" id="L120">			throw new OSSBusinessException(&quot;Erro ao atualizar o status do path&quot;,</span>
+<span class="fc" id="L121">					updateResourceStatusEntity.getResult().getCode(), updateResourceStatusEntity.getResult().getDescription());  </span>
+    	}
+<span class="fc" id="L123">	}</span>
+	
+	//Validação especifica do metalico
+	private void validateRequest(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L127">		Optional&lt;List&lt;CustomerFacingService&gt;&gt; customerFacing = Optional.ofNullable(entity.getCustomerFacingService());</span>
+		
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">		if(!customerFacing.isPresent())</span>
+<span class="nc" id="L130">			throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), Code.RIGRANITE_001.getValue(), &quot;O valor do campo customerFacingService eh nulo&quot;);		</span>
+<span class="fc" id="L131">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

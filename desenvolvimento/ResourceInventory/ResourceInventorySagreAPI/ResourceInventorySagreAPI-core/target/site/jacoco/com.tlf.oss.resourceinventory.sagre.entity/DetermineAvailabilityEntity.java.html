@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetermineAvailabilityEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.entity</a> &gt; <span class="el_source">DetermineAvailabilityEntity.java</span></div><h1>DetermineAvailabilityEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.entity;
+
+import java.io.Serializable;
+import java.lang.reflect.Field;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+import com.tlf.oss.resourceinventory.sagre.to.ResultTo;
+
+@SuppressWarnings(&quot;serial&quot;)
+@Entity
+@NamedStoredProcedureQuery(name = &quot;determineAvailability&quot;, resultClasses = DetermineAvailabilityEntity.class, procedureName = &quot;SAGREMAN.GVT_SP_SOA_CONS_COB_FIBRA&quot;, parameters = {
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_cnl&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_street_code&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_address_num&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_status&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_fail_diag&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_bloqueio_endereco&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_tecnology&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_estacao_telefonica&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_ident_equip1&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_ident_equip2&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_bloqueio_equipamento&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_razao_bloqueio_eqpto&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_equipment_type&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_qtd_fibras&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_switch&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_compartilhamento&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_armario_optico&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_tipo_cobertura&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_cod&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_msg&quot;, type = String.class) })
+public class DetermineAvailabilityEntity implements Serializable {
+
+	
+	@Basic
+	@Column(name = &quot;p_in_cnl&quot;)
+	private Integer cnl;
+
+	@Basic
+	@Column(name = &quot;p_in_street_code&quot;)
+	private String streetCode;
+
+	@Basic
+	@Column(name = &quot;p_in_address_num&quot;)
+	private String streetNumber;
+
+	@Basic
+	@Column(name = &quot;p_out_status&quot;)
+	private Integer status;
+
+	@Basic
+	@Column(name = &quot;p_out_fail_diag&quot;)
+	private Integer failDiag;
+
+	@Basic
+	@Column(name = &quot;p_out_bloqueio_endereco&quot;)
+	private Integer blockageAddress;
+
+	@Basic
+	@Column(name = &quot;p_out_tecnology&quot;)
+	private Integer technology;
+
+	@Basic
+	@Column(name = &quot;p_out_estacao_telefonica&quot;)
+	private String station;
+
+	@Basic
+	@Column(name = &quot;p_out_ident_equip1&quot;)
+	private String identEquip1;
+
+	@Basic
+	@Column(name = &quot;p_out_ident_equip2&quot;)
+	private String identEquip2;
+
+	@Basic
+	@Column(name = &quot;p_out_bloqueio_equipamento&quot;)
+	private Integer blockageEquipment;
+
+	@Basic
+	@Column(name = &quot;p_out_razao_bloqueio_eqpto&quot;)
+	private String blockageReason;
+
+	@Basic
+	@Column(name = &quot;p_out_equipment_type&quot;)
+	private String equipmentType;
+
+	@Basic
+	@Column(name = &quot;p_out_qtd_fibras&quot;)
+	private Integer quantityPort;
+
+	@Basic
+	@Column(name = &quot;p_out_switch&quot;)
+	private String switchName;
+
+	@Basic
+	@Column(name = &quot;p_out_compartilhamento&quot;)
+	private Integer share;
+
+	@Basic
+	@Column(name = &quot;p_out_armario_optico&quot;)
+	private String cabinetName;
+
+	@Basic
+	@Column(name = &quot;p_out_tipo_cobertura&quot;)
+	private String typeCoverage;
+
+	@Id
+	@Basic
+	@Column(name = &quot;p_out_cod&quot;)
+	private Integer returnCode;
+
+	@Basic
+	@Column(name = &quot;p_out_msg&quot;)
+	private String message;
+
+	@Transient
+	private ResultTo result;
+
+	public DetermineAvailabilityEntity() {
+<span class="fc" id="L128">		super();</span>
+<span class="fc" id="L129">	}</span>
+
+	public DetermineAvailabilityEntity(Integer cnl, String streetCode, String streetNumber, Integer status,
+			Integer failDiag, Integer blockageAddress, Integer technology, String station, String identEquip1,
+			String identEquip2, Integer blockageEquipment, String blockageReason, String equipmentType,
+			Integer quantityPort, String switchName, Integer share, String cabinetName, String typeCoverage,
+			Integer returnCode, String message, ResultTo result) {
+<span class="nc" id="L136">		super();</span>
+<span class="nc" id="L137">		this.cnl = cnl;</span>
+<span class="nc" id="L138">		this.streetCode = streetCode;</span>
+<span class="nc" id="L139">		this.streetNumber = streetNumber;</span>
+<span class="nc" id="L140">		this.status = status;</span>
+<span class="nc" id="L141">		this.failDiag = failDiag;</span>
+<span class="nc" id="L142">		this.blockageAddress = blockageAddress;</span>
+<span class="nc" id="L143">		this.technology = technology;</span>
+<span class="nc" id="L144">		this.station = station;</span>
+<span class="nc" id="L145">		this.identEquip1 = identEquip1;</span>
+<span class="nc" id="L146">		this.identEquip2 = identEquip2;</span>
+<span class="nc" id="L147">		this.blockageEquipment = blockageEquipment;</span>
+<span class="nc" id="L148">		this.blockageReason = blockageReason;</span>
+<span class="nc" id="L149">		this.equipmentType = equipmentType;</span>
+<span class="nc" id="L150">		this.quantityPort = quantityPort;</span>
+<span class="nc" id="L151">		this.switchName = switchName;</span>
+<span class="nc" id="L152">		this.share = share;</span>
+<span class="nc" id="L153">		this.cabinetName = cabinetName;</span>
+<span class="nc" id="L154">		this.typeCoverage = typeCoverage;</span>
+<span class="nc" id="L155">		this.returnCode = returnCode;</span>
+<span class="nc" id="L156">		this.message = message;</span>
+<span class="nc" id="L157">		this.result = result;</span>
+<span class="nc" id="L158">	}</span>
+
+	public Integer getCnl() {
+<span class="nc" id="L161">		return cnl;</span>
+	}
+
+	public void setCnl(Integer cnl) {
+<span class="fc" id="L165">		this.cnl = cnl;</span>
+<span class="fc" id="L166">	}</span>
+
+	public String getStreetCode() {
+<span class="nc" id="L169">		return streetCode;</span>
+	}
+
+	public void setStreetCode(String streetCode) {
+<span class="fc" id="L173">		this.streetCode = streetCode;</span>
+<span class="fc" id="L174">	}</span>
+
+	public String getStreetNumber() {
+<span class="nc" id="L177">		return streetNumber;</span>
+	}
+
+	public void setStreetNumber(String streetNumber) {
+<span class="fc" id="L181">		this.streetNumber = streetNumber;</span>
+<span class="fc" id="L182">	}</span>
+
+	public Integer getStatus() {
+<span class="nc" id="L185">		return status;</span>
+	}
+
+	public void setStatus(Integer status) {
+<span class="nc" id="L189">		this.status = status;</span>
+<span class="nc" id="L190">	}</span>
+
+	public Integer getFailDiag() {
+<span class="nc" id="L193">		return failDiag;</span>
+	}
+
+	public void setFailDiag(Integer failDiag) {
+<span class="nc" id="L197">		this.failDiag = failDiag;</span>
+<span class="nc" id="L198">	}</span>
+
+	public Integer getBlockageAddress() {
+<span class="fc" id="L201">		return blockageAddress;</span>
+	}
+
+	public void setBlockageAddress(Integer blockageAddress) {
+<span class="nc" id="L205">		this.blockageAddress = blockageAddress;</span>
+<span class="nc" id="L206">	}</span>
+
+	public Integer getTechnology() {
+<span class="fc" id="L209">		return technology;</span>
+	}
+
+	public void setTechnology(Integer technology) {
+<span class="fc" id="L213">		this.technology = technology;</span>
+<span class="fc" id="L214">	}</span>
+
+	public String getStation() {
+<span class="nc" id="L217">		return station;</span>
+	}
+
+	public void setStation(String station) {
+<span class="nc" id="L221">		this.station = station;</span>
+<span class="nc" id="L222">	}</span>
+
+	public String getIdentEquip1() {
+<span class="fc" id="L225">		return identEquip1;</span>
+	}
+
+	public void setIdentEquip1(String identEquip1) {
+<span class="fc" id="L229">		this.identEquip1 = identEquip1;</span>
+<span class="fc" id="L230">	}</span>
+
+	public String getIdentEquip2() {
+<span class="fc" id="L233">		return identEquip2;</span>
+	}
+
+	public void setIdentEquip2(String identEquip2) {
+<span class="fc" id="L237">		this.identEquip2 = identEquip2;</span>
+<span class="fc" id="L238">	}</span>
+
+	public Integer getBlockageEquipment() {
+<span class="fc" id="L241">		return blockageEquipment;</span>
+	}
+
+	public void setBlockageEquipment(Integer blockageEquipment) {
+<span class="nc" id="L245">		this.blockageEquipment = blockageEquipment;</span>
+<span class="nc" id="L246">	}</span>
+
+	public String getBlockageReason() {
+<span class="nc" id="L249">		return blockageReason;</span>
+	}
+
+	public void setBlockageReason(String blockageReason) {
+<span class="nc" id="L253">		this.blockageReason = blockageReason;</span>
+<span class="nc" id="L254">	}</span>
+
+	public String getEquipmentType() {
+<span class="fc" id="L257">		return equipmentType;</span>
+	}
+
+	public void setEquipmentType(String equipmentType) {
+<span class="fc" id="L261">		this.equipmentType = equipmentType;</span>
+<span class="fc" id="L262">	}</span>
+
+	public Integer getQuantityPort() {
+<span class="fc" id="L265">		return quantityPort;</span>
+	}
+
+	public void setQuantityPort(Integer quantityPort) {
+<span class="fc" id="L269">		this.quantityPort = quantityPort;</span>
+<span class="fc" id="L270">	}</span>
+
+	public String getSwitchName() {
+<span class="fc" id="L273">		return switchName;</span>
+	}
+
+	public void setSwitchName(String switchName) {
+<span class="fc" id="L277">		this.switchName = switchName;</span>
+<span class="fc" id="L278">	}</span>
+
+	public Integer getShare() {
+<span class="nc" id="L281">		return share;</span>
+	}
+
+	public void setShare(Integer share) {
+<span class="nc" id="L285">		this.share = share;</span>
+<span class="nc" id="L286">	}</span>
+
+	public String getCabinetName() {
+<span class="fc" id="L289">		return cabinetName;</span>
+	}
+
+	public void setCabinetName(String cabinetName) {
+<span class="fc" id="L293">		this.cabinetName = cabinetName;</span>
+<span class="fc" id="L294">	}</span>
+
+	public String getTypeCoverage() {
+<span class="fc" id="L297">		return typeCoverage;</span>
+	}
+
+	public void setTypeCoverage(String typeCoverage) {
+<span class="fc" id="L301">		this.typeCoverage = typeCoverage;</span>
+<span class="fc" id="L302">	}</span>
+
+	public Integer getReturnCode() {
+<span class="fc" id="L305">		return returnCode;</span>
+	}
+
+	public void setReturnCode(Integer returnCode) {
+<span class="fc" id="L309">		this.returnCode = returnCode;</span>
+<span class="fc" id="L310">	}</span>
+
+	public String getMessage() {
+<span class="nc" id="L313">		return message;</span>
+	}
+
+	public void setMessage(String message) {
+<span class="nc" id="L317">		this.message = message;</span>
+<span class="nc" id="L318">	}</span>
+
+	public ResultTo getResult() {
+<span class="fc" id="L321">		return result;</span>
+	}
+
+	public void setResult(ResultTo result) {
+<span class="fc" id="L325">		this.result = result;</span>
+<span class="fc" id="L326">	}</span>
+
+	@Override
+	public String toString() {
+<span class="nc" id="L330">		String retorno = this.getClass().getSimpleName() + &quot;=&quot;;</span>
+<span class="nc" id="L331">		Field[] fields = this.getClass().getDeclaredFields();</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">		for (Field field : fields) {</span>
+			try {
+<span class="nc" id="L334">				String name = field.getName();</span>
+<span class="nc" id="L335">				Object value = field.get(this);</span>
+<span class="nc" id="L336">				retorno += name + &quot;:&quot; + value + &quot;;&quot;;</span>
+				
+<span class="nc" id="L338">				} catch (IllegalArgumentException | IllegalAccessException e) {</span>
+				// TODO Auto-generated catch block
+<span class="nc" id="L340">				e.printStackTrace();</span>
+<span class="nc" id="L341">			}</span>
+		}
+<span class="nc" id="L343">		return retorno;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

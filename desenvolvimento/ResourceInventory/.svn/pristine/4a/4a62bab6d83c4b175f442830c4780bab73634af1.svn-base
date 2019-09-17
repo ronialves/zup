@@ -1,0 +1,66 @@
+package com.tlf.oss.resourceinventory.granite.core.rules;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import org.kie.api.KieServices;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
+import org.kie.internal.command.CommandFactory;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RequestScoped
+@Logged
+public class ExecutionRules {
+
+	@Inject
+	private OSSLogger logger;
+
+	public Rules getRules(ResourceInventoryEntity entity, String ruleName) throws OSSBusinessException {
+
+		// Carregamos nossa plataforma com as regras
+		KieServices ks = KieServices.Factory.get();
+		KieContainer kContainer = ks.getKieClasspathContainer();
+		StatelessKieSession kSession = kContainer.newStatelessKieSession("ExecutionKS");
+
+		List<Command<?>> commands = new ArrayList<>();
+		commands.add(CommandFactory.newInsert(logger));
+		commands.add(CommandFactory.newInsert(entity));
+		// Adicionamos a rules para obtermos posteriormente o resultado
+		Rules rules = new Rules();
+		commands.add(CommandFactory.newInsert(rules));
+		commands.add(CommandFactory.newInsert(ruleName));
+		commands.add(CommandFactory.newFireAllRules());
+		commands.add(CommandFactory.newQuery("getRules", "getRules"));
+
+		ExecutionResults result = kSession.execute(CommandFactory.newBatchExecution(commands));
+		QueryResults queryResult = QueryResults.class.cast(result.getValue("getRules"));
+		for (QueryResultsRow row : queryResult) {
+			rules = (Rules) row.get("rules");
+		}
+
+		if (rules == null || rules.getResult() == null) {
+			throw new OSSBusinessException(Code.RIGRANITE_007.getDescription(), Code.RIGRANITE_007.getValue(),
+		            "Não foi encontrada nenhuma regra.");
+		}
+
+		return rules;
+	}
+
+	public void setLogger(OSSLogger logger) {
+		this.logger = logger;
+	}
+}

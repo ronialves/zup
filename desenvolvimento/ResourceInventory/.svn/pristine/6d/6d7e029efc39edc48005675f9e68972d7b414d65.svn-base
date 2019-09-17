@@ -1,0 +1,46 @@
+package com.tlf.oss.resourceinventory.tbs.api;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.ejb.Stateless;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+
+import com.tlf.oss.resourceinventory.tbs.api.v1_0.AllocateService;
+import com.tlf.oss.resourceinventory.tbs.api.v1_0.DeallocateService;
+import com.tlf.oss.resourceinventory.tbs.api.v1_0.DetermineAvailabilityService;
+import com.tlf.oss.resourceinventory.tbs.api.v1_0.FacilityRetrievalService;
+import com.tlf.oss.resourceinventory.tbs.api.v1_0.InstallService;
+import com.tlf.oss.resourceinventory.tbs.api.v1_0.NetworkInformationRetrievalService;
+import com.tlf.oss.resourceinventory.tbs.api.v1_0.ReserveService;
+import com.tlf.oss.resourceinventory.tbs.api.v1_0.UninstallService;
+import com.tlf.oss.resourceinventory.tbs.api.v2_0.FacilityRetrievalV2Service;
+
+/**
+ * BEATRIXTWO-26 | DEMOSS-2171
+ * 
+ * @project Beatrix Fase 2
+ * @author jannayna.c.araujo
+ * @since 201709
+ */
+@Stateless
+@ApplicationPath("")
+public class RestConfig extends Application{
+	
+	public Set<Class<?>> getClasses() {
+		Set<Class<?>> s = new HashSet<Class<?>>();
+		s.add(AllocateService.class);
+		s.add(NetworkInformationRetrievalService.class);
+		s.add(FacilityRetrievalService.class);
+		s.add(InstallService.class);
+		s.add(DeallocateService.class);
+		s.add(FacilityRetrievalV2Service.class);
+		s.add(UninstallService.class);
+		s.add(ReserveService.class);
+		s.add(DetermineAvailabilityService.class);
+		return s;
+	}
+
+}

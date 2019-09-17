@@ -1,0 +1,3 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ResourceInventoryOrchestration-core,com.tlf.oss.resourceinventory.orchestration.core,OrchestrationController,308,0,30,0,66,0,21,0,6,0
+ResourceInventoryOrchestration-core,com.tlf.oss.resourceinventory.orchestration.core,PathBuilder,2,76,2,2,0,23,2,8,0,8

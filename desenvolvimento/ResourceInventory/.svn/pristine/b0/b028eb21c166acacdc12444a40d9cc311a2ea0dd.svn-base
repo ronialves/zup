@@ -1,0 +1,102 @@
+@import '../../app.component.scss';
+
+.ui-catalog-filters {
+    width: 320px;
+}
+
+.ui-catalog-header {
+    padding: 20px 32px;
+    .ui-form-field {
+        width: 50%;
+    }
+    button {
+        float: right;
+        margin-left: 8px;
+    }
+}
+
+.ui-catalog-container {
+    position: relative;
+    top: 64px;
+}
+
+.ui-grid-container {
+    min-height: 480px;
+    margin: 20px 32px;
+}
+
+.ui-loading-shade {
+    min-height: 480px;
+    margin: 20px 32px;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+  
+.ui-warning {
+    color: #980000;
+}
+
+.ui-icon {
+    float: left;
+    margin-right: 12px;
+    color: #8199a2;
+}
+
+.ui-catalog-grid {
+    background-color: #ffffff;
+    margin-bottom: 12px;
+}
+
+.ui-catalog-grid :hover {
+    background-color: #fafaff;
+}
+
+.ui-catalog-grid-row {
+    padding: 8px 22px;
+    display: flex;
+}
+
+.ui-catalog-grid-row .mat-icon-button {
+    margin: auto -40px;
+    margin-bottom: 0px;
+}
+
+.ui-catalog-grid-row-header-actions {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.ui-catalog-grid-colunm {
+    min-width: 33%;
+    margin: 0 4px;
+}
+
+.ui-catalog-grid-info {
+    display: flex;
+    align-items: center;
+}    
+
+.ui-catalog-grid-info label {
+    font-weight: bold !important;
+    line-height: 20px;
+    margin-right: 8px;
+}
+
+.ui-catalog-grid-info span {
+    line-height: 20px;
+    flex: 1;
+}
+
+.ui-feature-list-item label {
+    font-weight: bold !important;
+    margin-right: 8px;
+}
+
+.ui-feature-list-item {
+    font-size: 12px !important;
+    height: 20px !important;
+}

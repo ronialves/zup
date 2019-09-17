@@ -1,0 +1,82 @@
+@import "../styles.scss";
+
+
+.mat-toolbar {
+    position: fixed;
+    z-index: 1000;
+}
+.mat-toolbar.mat-primary {
+    background: #003245 !important;
+}
+
+.ui-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.ui-sidenav {
+    float: left;
+    height: 100%;
+    background: linear-gradient(#003245, #003245ef);
+    position: fixed;
+    z-index: 3;
+    width: 240px;
+    transition: width 0.3s ease-out;
+}
+.ui-sidenav-retract {    
+    width: 64px;
+    transition: width 0.3s ease-out;
+}
+
+.ui-content {
+    height: 100%;
+    margin-left: 64px;
+    transition: width 0.3s ease-out;
+    transition: margin-left 0.3s ease-out;
+}
+.ui-content-retract {
+    height: 100%;
+    margin-left: 240px;
+    transition: width 0.3s ease-out;
+    transition: margin-left 0.3s ease-out;
+}
+
+.ui-view-name {
+    padding: 1px;
+    color: #f9fcff;
+}
+
+.ui-user-menu {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    font-size: xx-large;
+}
+
+.ui-nav-menu {
+    position: fixed;
+    left: 40px;
+    bottom: 10px;
+    color: $ui-white-color;
+    transition: left 0.3s ease-out;
+}
+.ui-nav-menu-open {
+    position: fixed;
+    left: 220px;
+    bottom: 10px;
+    color: $ui-white-color;
+    transition: left 0.3s ease-out;
+}
+
+/* Estilização de botões para aplicação */
+.ui-removal-btn:hover {
+    background: $ui-red-color !important;
+}
+.ui-addition-btn:hover {
+    background: $ui-green-color !important;
+}

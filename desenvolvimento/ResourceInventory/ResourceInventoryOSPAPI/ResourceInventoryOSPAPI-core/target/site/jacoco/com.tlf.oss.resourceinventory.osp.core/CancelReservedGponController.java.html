@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CancelReservedGponController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">CancelReservedGponController.java</span></div><h1>CancelReservedGponController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import java.math.BigInteger;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageresourceprovisioning.facilities.trackmanageresourceprovisioningtypes.ManageResourceProvisioningActivityRequest;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageresourceprovisioning.facilities.trackmanageresourceprovisioningtypes.ManageResourceProvisioningActivityResponse;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageresourceprovisioning.headercontext.WsContext;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageresourceprovisioning.resourceserviceinfotypes.ResourceService;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageresourceprovisioning.supplementaryinformationmanageprovtypes.SupplementaryInformationIn;
+import com.tlf.oss.resourceinventory.osp.core.enums.OSPWSName;
+import com.tlf.oss.resourceinventory.osp.core.service.CancelReservedService;
+import com.tlf.oss.resourceinventory.osp.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.osp.factory.OssBusinessExceptionFactory;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@Logged
+@RequestScoped
+<span class="fc" id="L24">public class CancelReservedGponController extends ValidatorEntity{</span>
+
+	private static final String CANCELAMENTO = &quot;2&quot;;
+
+	@Inject
+	protected OSSLogger logger;
+
+	@Inject
+	protected CancelReservedService cancelReservedService;
+	
+	public ResourceInventoryEntity cancelReserved(ResourceInventoryEntity entity) throws OSSBusinessException {
+		try {
+
+<span class="fc" id="L37">			WsContext context = new WsContext();</span>
+<span class="fc" id="L38">			context.setRegionCode(entity.getAddress().getCnl());</span>
+<span class="fc" id="L39">			context.setCentralOffice(entity.getAddress().getTelephonicArea());</span>
+
+<span class="fc" id="L41">			ManageResourceProvisioningActivityResponse response = cancelReservedService.manageResourceProvisioningActivity(createRequest(entity), context);</span>
+
+<span class="fc" id="L43">			validateResult(response);</span>
+			
+<span class="fc" id="L45">		} catch (Exception e) {</span>
+<span class="fc" id="L46">			throw OssBusinessExceptionFactory.getOSSBusinessException(e, OSPWSName.TrackManageResourceProvisioning);</span>
+<span class="fc" id="L47">		}</span>
+<span class="fc" id="L48">		return entity;</span>
+	}
+	
+	private ManageResourceProvisioningActivityRequest createRequest(ResourceInventoryEntity entity) throws OSSBusinessException{
+
+<span class="fc" id="L53">		ManageResourceProvisioningActivityRequest mrpar = new ManageResourceProvisioningActivityRequest();</span>
+
+<span class="fc" id="L55">		SupplementaryInformationIn si = new SupplementaryInformationIn();</span>
+<span class="fc" id="L56">		ResourceService rs = new ResourceService();</span>
+
+<span class="fc" id="L58">		rs.setRegionCode(Integer.valueOf(entity.getAddress().getCnl()));</span>
+<span class="fc" id="L59">		rs.setSiteCode(entity.getAddress().getTelephonicArea());</span>
+
+<span class="fc" id="L61">		si.setResourceService(rs);</span>
+<span class="fc" id="L62">		mrpar.setCircuitId(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L63">		mrpar.setSupplementaryInformation(si);</span>
+<span class="fc" id="L64">		mrpar.setOperation(new BigInteger(CANCELAMENTO));</span>
+
+<span class="fc" id="L66">		return mrpar;</span>
+	}
+
+	private void validateResult(ManageResourceProvisioningActivityResponse response) throws OSSBusinessException {
+<span class="pc bpc" id="L70" title="1 of 4 branches missed.">        if (response.getResult() != null &amp;&amp; response.getResult().getCode() != 0) {</span>
+<span class="nc" id="L71">        	throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(String.valueOf(response.getResult().getErrorCode()), response.getResult().getDescription(), OSPWSName.TrackManageResourceProvisioning);</span>
+        }
+<span class="fc" id="L73">    }</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

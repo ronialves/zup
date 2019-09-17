@@ -1,0 +1,135 @@
+package com.tlf.oss.resourceinventory.granite.core.repository;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrievalEquipmentEntity;
+import com.tlf.oss.resourceinventory.granite.core.repository.factory.GenericDao;
+import com.tlf.oss.resourceinventory.granite.core.utils.Constants;
+import com.tlf.oss.resourceinventory.schemas.Equipment;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+/**
+ * Responsável pela comunicação com as Views do GRANITE que retornam as informações dos Equipamentos de Rede.
+ */
+public class EquipmentRetrievalDao extends GenericDao implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
+	private static final String CNL_ACRONYM = "cnlAcronym";
+	private static final String MICROAREA = "microarea";
+	private static final String IN_CNL_ACRONYM = "in_cnl_acronym";
+	private static final String IN_MICROAREA = "in_microarea";
+	
+	@Inject
+	private OSSLogger logger;
+
+	/**
+	 * Fluxo de Consulta dos Equipamentos de uma Localidade.
+	 * @param entity
+	 * @return
+	 * @throws OSSBusinessException 
+	 */
+	public ResourceInventoryEntity getEquipmentByLocation(ResourceInventoryEntity entity) {
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalDao - getEquipmentByLocation - Iniciando chamada a Procedure PRC_RETRIEVE_EQUIP_BY_LOC do GRANITE.");
+		
+		List<RetrievalEquipmentEntity> result = new ArrayList<RetrievalEquipmentEntity>();	
+					
+		TypedQuery<RetrievalEquipmentEntity> query = getEntityManager()
+				.createNamedQuery(RetrievalEquipmentEntity.RETRIEVAL_EQUIPMENT, RetrievalEquipmentEntity.class);
+		
+		String cnlAcronym = getParamValue(entity, Constants.NETWORK_OWNER_VIVO1, CNL_ACRONYM);
+		String microArea = getParamValue(entity, Constants.NETWORK_OWNER_VIVO1, MICROAREA);
+		
+		if(cnlAcronym != null && !cnlAcronym.isEmpty() && microArea != null && !microArea.isEmpty()) {
+			query.setParameter(IN_CNL_ACRONYM, cnlAcronym);
+			query.setParameter(IN_MICROAREA, microArea);
+			
+			result =  query.getResultList();
+						
+			return equipmentMapper(entity, result);
+			
+		} else {
+			return entity;
+		}
+	}
+	
+	/**
+	 * Método responsável pelo mapeamento das informações dos Equipamentos.
+	 * 
+	 * @param entity
+	 * @param resultQuery
+	 * @return
+	 */
+	private ResourceInventoryEntity equipmentMapper(ResourceInventoryEntity entity, List<RetrievalEquipmentEntity> resultQuery) {
+		
+		if(resultQuery != null && !resultQuery.isEmpty()) {
+			
+			List<Equipment> equipments = new ArrayList<Equipment>();
+			
+			for (RetrievalEquipmentEntity resultEquipment : resultQuery) {
+				
+				Equipment equipment = new Equipment();
+									
+				if(resultEquipment.getTypeOfResource() != null)
+					equipment.setTypeOfResource(resultEquipment.getTypeOfResource());
+				
+				if(resultEquipment.getOutHostname() != null)
+					equipment.setName(resultEquipment.getOutHostname().toLowerCase());
+				
+				if(resultEquipment.getOrigem() != null)
+					equipment.setOrigin(resultEquipment.getOrigem());
+								
+				if(resultEquipment.getIdEquip() != null)
+					equipment.setId(resultEquipment.getIdEquip());
+				
+				if(resultEquipment.getVendor() != null)
+					equipment.setVendor(resultEquipment.getVendor());
+				
+				if(resultEquipment.getModel() != null)
+					equipment.setModel(resultEquipment.getModel());
+				
+				if(resultEquipment.getIp() != null)
+					equipment.setIp(resultEquipment.getIp());
+										
+				equipments.add(equipment);
+			}
+			
+			entity.setEquipment(equipments);
+		}
+		
+		return entity;
+	}
+	
+	/**
+	 * Retorna o valor do Parâmetro do ServiceDescribedBy.
+	 * 
+	 * @param entity
+	 * @param networkOwner
+	 * @param paramName
+	 * @return
+	 */
+	private String getParamValue(ResourceInventoryEntity entity, String networkOwner, String paramName) {
+		
+		for (ServiceDescribedBy sdb : entity.getResourceFacingService().getServiceDescribedBy()) {			
+			if (networkOwner.equalsIgnoreCase(sdb.getName())) {				
+				for (ServiceSpecCharDescribes sscd : sdb.getServiceSpecCharDescribes()) {					
+					if (paramName.equalsIgnoreCase(sscd.getValueType())) {
+						logger.log(OSSLogger.INFO, "EquipmentRetrievalDao - getParamValue - " + paramName + " : " + sscd.getValue());
+						return sscd.getValue();
+					}					
+				}
+			}
+		}
+		
+		return null;
+	}		
+}

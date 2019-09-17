@@ -1,0 +1,97 @@
+<mat-sidenav-container class="ui-catalog-container" autosize>
+  <mat-sidenav #sidenav class="ui-catalog-filters" position="end" mode="side">
+    <app-catalog-list-filters [list]="list" (filter)="onFilter($event)" (close)="toggleFilters()">
+    </app-catalog-list-filters>
+  </mat-sidenav>
+  <div class="ui-catalog-header">
+    <mat-form-field class="ui-form-field">
+      <mat-label>Ordenado por</mat-label>
+      <mat-select [formControl]="sortBy">
+        <mat-option *ngFor="let item of sortByOptions" [value]="item.value">
+          {{item.label}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" *ngIf="!filtersOpened" (click)="toggleFilters()">
+      <i class="fas fa-filter"></i> Exibir filtros
+    </button>
+    <button mat-raised-button color="gray" (click)="loadCatalog()">
+      <i class="fas fa-redo-alt"></i> Atualizar
+    </button>
+  </div>
+  <div>
+    <div class="ui-loading-shade" *ngIf="isLoading || isError">
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <div class="ui-equipment-error" *ngIf="isError">
+        <strong>Problemas identificados:</strong>
+        <div class="ui-warning" *ngFor="let erro of errors">{{erro}}</div>
+      </div>
+    </div>
+    <div class="ui-grid-container" *ngIf="!isLoading && !isError">
+      <div class="ui-catalog-grid mat-elevation-z3" *ngFor="let catalogo of listFiltered">
+        <div class="ui-catalog-grid-row" (click)="catalogo.detail = !catalogo.detail">
+          <div class="ui-catalog-grid-colunm">
+            <span class="ui-icon fas fa-hdd fa-3x" *ngIf="catalogo.R_CPE_ACCESS"></span>
+            <span class="ui-icon fas fa-tv fa-3x" *ngIf="catalogo.R_CPE_STB"></span>
+            <span class="ui-icon fas fa-phone-square fa-3x" *ngIf="catalogo.R_CPE_VOIP"></span>
+            <h3>{{catalogo?.modelo}}</h3>
+            <h4>{{catalogo?.descricao}}</h4>
+          </div>
+          <div class="ui-catalog-grid-colunm">
+            <div class="ui-catalog-grid-info">
+              <label>Fabricante:</label>
+              <span>{{catalogo?.fabricante}}</span>
+            </div>
+            <div class="ui-catalog-grid-info">
+              <label>Categoria:</label>
+              <span>{{catalogo?.categoriaDispositivo?.nomeCategoria}}</span>
+            </div>
+          </div>
+          <div class="ui-catalog-grid-colunm">
+            <div class="ui-catalog-grid-info">
+              <label>Tecnologia:</label>
+              <span>{{catalogo?.tecnologia}}</span>
+            </div>
+            <div class="ui-catalog-grid-info">
+              <label>Rede:</label>
+              <span>{{catalogo?.rede}}</span>
+            </div>
+            <div class="ui-catalog-grid-info" *ngIf="catalogo?.sku">
+              <label>SKU:</label>
+              <span>{{catalogo?.sku}}</span>
+            </div>
+          </div>
+          <button mat-icon-button (click)="catalogo.detail = !catalogo.detail; $event.stopPropagation();">
+            <i class="fas fa-ellipsis-h" *ngIf="!catalogo.detail"></i>
+            <i class="fas fa-angle-up" *ngIf="catalogo.detail"></i>
+          </button>
+        </div>
+        <div *ngIf="catalogo.detail">
+          <mat-divider></mat-divider>
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>
+                <i class="ui-icon fas fa-clipboard-list"></i>
+                Características
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-list>
+                <mat-list-item class="ui-feature-list-item" *ngFor="let caracteristica of catalogo?.caracteristicas">
+                  <label>{{caracteristica.nome}}:</label> {{caracteristica.valor}}
+                </mat-list-item>
+              </mat-list>
+            </mat-card-content>
+            <mat-card-actions class="ui-catalog-grid-row-header-actions" *ngIf="!catalogo.hasAssociatedDevices">
+              <button mat-button color="primary" (click)="openDialogEdit(catalogo)">Editar</button>
+              <button mat-button color="warn" (click)="onDelete(catalogo)">Excluir</button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+      <mat-paginator [length]="list.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true" (page)="getPaginatorData($event)">
+      </mat-paginator>
+    </div>
+  </div>
+</mat-sidenav-container>

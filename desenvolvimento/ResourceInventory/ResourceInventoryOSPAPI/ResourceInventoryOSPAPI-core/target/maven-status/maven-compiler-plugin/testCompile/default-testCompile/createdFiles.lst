@@ -1,0 +1,17 @@
+com/tlf/oss/resourceinventory/osp/enums/TerminalBoxTypeStrategyTest.class
+com/tlf/oss/resourceinventory/osp/core/ReservationControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/InstallMetallicControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/InstallControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/InstallGponControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/FacilityResourceControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/CancelReservedControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/UninstallControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/AllocateControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/AllocateGponControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/ReservationGponControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/DeallocateGponControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/DeallocateControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/CancelReservedGponControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/AllocateControllerParentTest.class
+com/tlf/oss/resourceinventory/osp/core/FacilityResourceGponControllerTest.class
+com/tlf/oss/resourceinventory/osp/core/AvailabilityControllerTest.class

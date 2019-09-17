@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InstallController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core</a> &gt; <span class="el_source">InstallController.java</span></div><h1>InstallController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.tbs.core.validation.Install;
+import com.tlf.oss.resourceinventory.tbs.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.InstallEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.tbs.repository.InstallRepository;
+
+/**
+ * BEATRIXTWO-29 | DEMOSS-2218
+ * BEATFAS-102 | DEMOSS-3331
+ * 
+ * @author rodrigo.de.freitas
+ * @author bruna.barbosa
+ * @project Beatrix Fase 2
+ * @since 201710
+ *
+ */
+<span class="fc" id="L28">public class InstallController extends ValidatorEntity implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+	private static final int SUCCESS = 0;
+	
+	@Inject
+	InstallRepository installRepository;
+	
+<span class="fc" id="L36">	OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RITBS_003.getCode(),</span>
+<span class="fc" id="L37">			String.format(ExceptionInfoEnum.RITBS_003.getDescription(), &quot;TLF_SP_INSTALL&quot;),</span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+	/**
+	 * Retorna atraves do InstallEntity (preenchido com ResourceInventoryEntity), o ResourceInventoryEntity enriquecido
+	 * 
+	 * @param entity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getInstall(@Install ResourceInventoryEntity entity) throws OSSBusinessException{
+<span class="fc" id="L48">		InstallEntity install = new InstallEntity();		</span>
+<span class="fc" id="L49">		install.setPurchaseOrderNumber(entity.getCustomerOrder().getPurchaseOrderNumber());</span>
+<span class="fc" id="L50">		install.setDesignadorAcesso(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L51">		install.setMessage(null);</span>
+<span class="fc" id="L52">		install.setReturnCode(null);</span>
+		
+<span class="fc" id="L54">		return getResourceInventoryEntity(installRepository.getInstall(install), entity);</span>
+	}
+	
+	/**
+	 * Enriquece ResourceInventoryEntity atraves da execucao do installDAO.getInstall()
+	 * 
+	 * @param install
+	 * @param entity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getResourceInventoryEntity(InstallEntity install, ResourceInventoryEntity entity)
+			throws OSSBusinessException {			
+		
+<span class="fc" id="L68">		Integer errorCode = install.getReturnCode();</span>
+		
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">		if (SUCCESS != errorCode) {</span>
+<span class="nc" id="L71">		    falloutConfig.setErrorCode(String.valueOf(errorCode));</span>
+<span class="nc" id="L72">		    falloutConfig.setErrorMessage(install.getMessage());</span>
+<span class="nc" id="L73">			falloutConfig.setDetailMessage(errorCode + &quot;; &quot; +  install.getMessage());</span>
+<span class="nc" id="L74">			throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+		}
+
+<span class="fc" id="L77">		return entity;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

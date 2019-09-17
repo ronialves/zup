@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CPEAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.cpe.core</a> &gt; <span class="el_source">UpdateController.java</span></div><h1>UpdateController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.cpe.core;
+
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CatalogoDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoRecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.CpeWsName;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoRecurso;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoServico;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.cpe.enums.RoiAction;
+import com.tlf.oss.resourceinventory.cpe.enums.TipoRfs;
+import com.tlf.oss.resourceinventory.cpe.factory.OssBusinessExceptionFactory;
+import com.tlf.oss.resourceinventory.cpe.helper.UpdateHelper;
+import com.tlf.oss.resourceinventory.cpe.mapping.EntityConverter;
+import com.tlf.oss.resourceinventory.cpe.repository.CategoriaDispositivoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoRecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.rules.ExecutionRules;
+import com.tlf.oss.resourceinventory.cpe.utils.EntityExtractor;
+import com.tlf.oss.resourceinventory.cpe.validation.Update;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L34">public class UpdateController {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	@Inject
+	private EntityConverter entityConverter;
+
+	@Inject
+	private CategoriaDispositivoRepository categoriaDispositivoRepository;
+
+	@Inject
+	private ExecutionRules rules;
+
+	@Inject
+	private UpdateHelper helper;
+	
+	@Inject
+	private RecursoLogicoRepository recursoLogicoRepository; 
+	
+	@Inject
+	private EstadoRecursoLogicoRepository estadoRecursoLogicoRepository;
+
+	@Transactional(rollbackOn = OSSBusinessException.class)
+	public ResourceInventoryEntity update(@Update ResourceInventoryEntity entity) throws OSSBusinessException {
+		try {
+<span class="fc" id="L63">			logger.log(OSSLogger.INFO, &quot;Iniciando o update no CPE...&quot;);</span>
+			
+<span class="fc" id="L65">			String roiAction = EntityExtractor.extractResourceOrderItemAction(entity);</span>
+			
+<span class="fc bfc" id="L67" title="All 2 branches covered.">			if (isProvide(roiAction)) {</span>
+<span class="fc" id="L68">				provideAndAdd(entity);</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">			} else if (isCease(roiAction)) {</span>
+<span class="fc" id="L70">				updateCease(entity);</span>
+			} else {
+<span class="nc" id="L72">				throw new OSSBusinessException(FalloutCode.RICPE_003.getDescription(), FalloutCode.RICPE_003.getValue(),</span>
+				        &quot;Ação inválida no ResourceOrder &quot; + roiAction);
+			}
+			
+			
+<span class="fc" id="L77">		} catch (OSSBusinessException obe) {</span>
+<span class="fc" id="L78">			logger.error(obe.getMessage(), obe);</span>
+<span class="fc" id="L79">			throw obe;</span>
+<span class="fc" id="L80">		} catch (Exception e) {</span>
+<span class="fc" id="L81">			logger.error(e.getMessage(), e);</span>
+
+<span class="fc" id="L83">			throw new OSSBusinessException(FalloutCode.RICPE_999.getDescription(), FalloutCode.RICPE_999.getValue(),</span>
+<span class="fc" id="L84">					e.getMessage());</span>
+<span class="fc" id="L85">		}</span>
+
+<span class="fc" id="L87">		return entity;</span>
+	}
+
+	private void provideAndAdd(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L92">		ServicoAssinante servicoAssinante = entityConverter.toServicoAssinante(entity,</span>
+				EstadoServico.EM_APROVISIONAMENTO);
+<span class="fc" id="L94">		DispositivoFisico dispositivoFisico = dispositivoFisicoRepository</span>
+<span class="fc" id="L95">				.findByServiceId(servicoAssinante.getServiceId());</span>
+
+<span class="fc bfc" id="L97" title="All 2 branches covered.">		if (null != dispositivoFisico) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">			if (isSelfProvisioning(entity)) {</span>
+<span class="fc" id="L99">				String macAddress = EntityExtractor.extractMacAddress(entity).get().getValue();</span>
+<span class="fc" id="L100">				Optional&lt;DispositivoFisico&gt; macAddressResult = dispositivoFisicoRepository</span>
+<span class="fc" id="L101">						.findByMacaddress(macAddress);</span>
+
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">				if (!macAddressResult.isPresent()) {</span>
+<span class="fc" id="L104">					String serialNumber = EntityExtractor.extractSerialNumber(entity).get().getValue();</span>
+<span class="fc" id="L105">					Optional&lt;DispositivoFisico&gt; serialNumberResult = dispositivoFisicoRepository</span>
+<span class="fc" id="L106">							.findBySerialNumber(serialNumber);</span>
+
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">					if (!serialNumberResult.isPresent()) {</span>
+<span class="fc" id="L109">						String defineNomeCategoria = rules.defineNomeCategoria(entity);</span>
+
+<span class="fc" id="L111">						Integer categoriaDispositivoId = categoriaDispositivoRepository</span>
+<span class="fc" id="L112">								.findByNomeCategoria(defineNomeCategoria).getId();</span>
+
+<span class="fc" id="L114">						CatalogoDispositivo equipment = helper.getCatalogoDispositivo(entity);</span>
+
+<span class="fc" id="L116">						dispositivoFisico.setCategoriaDispositivoCorrente(categoriaDispositivoId);</span>
+<span class="fc" id="L117">						dispositivoFisico.setMacAddress(macAddress);</span>
+<span class="fc" id="L118">						dispositivoFisico.setCatalagoDispositivoId(equipment.getId());</span>
+<span class="fc" id="L119">						dispositivoFisico.setNumeroSerial(serialNumber);</span>
+<span class="fc" id="L120">					} else {</span>
+<span class="nc" id="L121">						String errorCode = OssBusinessExceptionFactory.DEFAULT_ERROR_CODE;</span>
+<span class="nc" id="L122">						String errorMessage = &quot;Número serial &quot; + serialNumber + &quot; já utilizado por outro cliente&quot;;</span>
+
+<span class="nc" id="L124">						throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(errorCode, errorMessage,</span>
+								CpeWsName.UPDATE);
+					}
+<span class="fc" id="L127">				} else {</span>
+<span class="nc" id="L128">					String errorCode = OssBusinessExceptionFactory.DEFAULT_ERROR_CODE;</span>
+<span class="nc" id="L129">					String errorMessage = &quot;Macaddress &quot; + macAddress + &quot; já utilizado por outro cliente&quot;;</span>
+
+<span class="nc" id="L131">					throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(errorCode, errorMessage,</span>
+							CpeWsName.UPDATE);
+				}
+<span class="fc" id="L134">			} else {</span>
+<span class="fc" id="L135">				dispositivoFisico</span>
+<span class="fc" id="L136">						.setNumeroSerialGpon(EntityExtractor.extractGponSerialNumber(entity).get().getValue());</span>
+			}
+
+<span class="fc" id="L139">			dispositivoFisicoRepository.update(dispositivoFisico);</span>
+
+<span class="fc" id="L141">			logger.log(OSSLogger.INFO, &quot;Finalizando o update no CPE...&quot;);</span>
+		} else {
+<span class="fc" id="L143">			String errorCode = OssBusinessExceptionFactory.DEFAULT_ERROR_CODE;</span>
+<span class="fc" id="L144">			String errorMessage = &quot;Não foi encontrado um cliente com o Designador de &quot; </span>
+<span class="fc" id="L145">			+ TipoRfs.fromRoiName(servicoAssinante.getTipoRfs()).getType() + &quot; &quot; + servicoAssinante.getServiceId();</span>
+
+<span class="fc" id="L147">			throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(errorCode,</span>
+                                                							 errorMessage,
+                                                							 CpeWsName.UPDATE);
+		}
+		
+<span class="fc" id="L152">	}</span>
+	
+	private void updateCease(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L156">		logger.log(OSSLogger.INFO, &quot;Action CEASE ...&quot;);</span>
+
+<span class="fc" id="L158">		String serviceId = EntityExtractor.extractServiceId(entity);</span>
+
+<span class="fc" id="L160">		Optional&lt;ServiceSpecCharDescribes&gt; serialNumber = EntityExtractor.extractSerialNumber(entity);</span>
+
+<span class="fc" id="L162">		Optional&lt;DispositivoFisico&gt; dispositivoFisicoFound = dispositivoFisicoRepository.findBySerialNumber(serialNumber.get().getValue());</span>
+
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">		if (dispositivoFisicoFound.isPresent()) {</span>
+			
+<span class="fc" id="L166">			Optional&lt;RecursoLogico&gt; recursoLogico = recursoLogicoRepository.listByServiceId(serviceId).stream().findFirst();</span>
+
+<span class="fc bfc" id="L168" title="All 2 branches covered.">			if (recursoLogico.isPresent()) {</span>
+<span class="fc" id="L169">				EstadoRecursoLogico estadoRecursoLogico = estadoRecursoLogicoRepository</span>
+<span class="fc" id="L170">				        .findByEstadoRecurso(EstadoRecurso.DESCONECTADO);</span>
+
+<span class="fc" id="L172">				recursoLogico.get().setEstadoRecursoLogicoId(estadoRecursoLogico.getId());</span>
+
+<span class="fc" id="L174">				recursoLogicoRepository.update(recursoLogico.get());</span>
+<span class="fc" id="L175">			} else {</span>
+<span class="fc" id="L176">				throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(</span>
+						OssBusinessExceptionFactory.DEFAULT_ERROR_CODE, 
+				        &quot;Não foi encontrado um recurso para o Designador de &quot; + 
+<span class="fc" id="L179">				        		TipoRfs.fromRoiName(EntityExtractor.extractResourceOrderItemName(entity)).getType() + &quot; &quot; + </span>
+				        		serviceId +
+				        		&quot; e Número Serial &quot; + 
+<span class="fc" id="L182">				        		serialNumber.get().getValue(), </span>
+				        CpeWsName.ALLOCATE);
+			}
+<span class="fc" id="L185">		} else {</span>
+<span class="nc" id="L186">			throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(</span>
+					OssBusinessExceptionFactory.DEFAULT_ERROR_CODE, 
+			        &quot;Não foi encontrado um dispositivo para o Designador de &quot; + 
+<span class="nc" id="L189">			        		TipoRfs.fromRoiName(EntityExtractor.extractResourceOrderItemName(entity)).getType() + &quot; &quot; +</span>
+			        		serviceId +
+			        		&quot; e Número Serial &quot; + 
+<span class="nc" id="L192">			        		serialNumber.get().getValue(), </span>
+			        CpeWsName.ALLOCATE);
+		}
+<span class="fc" id="L195">	}</span>
+	
+
+	private boolean isSelfProvisioning(ResourceInventoryEntity entity) {
+<span class="fc bfc" id="L199" title="All 2 branches covered.">		return !TipoRfs.ACCESS_PORT.getRoiName().equalsIgnoreCase(EntityExtractor.extractResourceOrderItemName(entity));</span>
+	}
+	
+	private boolean isProvide(String action) {
+<span class="fc bfc" id="L203" title="All 2 branches covered.">		return null == action </span>
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">				|| action.isEmpty() </span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">				|| RoiAction.PROVIDE.getAction().equalsIgnoreCase(action)</span>
+<span class="pc bpc" id="L206" title="1 of 2 branches missed.">				|| RoiAction.ADD.getAction().equalsIgnoreCase(action);</span>
+	}
+	
+	private boolean isCease(String action) {
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">		return null != action </span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">				&amp;&amp; (RoiAction.CEASE.getAction().equalsIgnoreCase(action)</span>
+<span class="pc bnc" id="L212" title="All 2 branches missed.">				|| RoiAction.DELETE.getAction().equalsIgnoreCase(action));</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

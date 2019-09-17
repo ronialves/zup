@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/DedicatedResourceTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="DedicatedResource">
+		<xs:sequence>
+			<!-- Localidade dedicada -->
+			<xs:element minOccurs="0" name="regionCode" type="st:integer9"></xs:element>
+			<!-- Site dedicado -->
+			<xs:element minOccurs="0" name="site" type="st:string40"></xs:element>
+			<!-- Código do logradouro dedicado -->
+			<xs:element minOccurs="0" name="streetCode" type="st:string12"></xs:element>
+			<!-- Tipo do logradouro dedicado -->
+			<xs:element minOccurs="0" name="streetType" type="st:string10"></xs:element>
+			<!-- Título do logradouro dedicado -->
+			<xs:element minOccurs="0" name="streetTitle" type="st:string14"></xs:element>
+			<!-- Nome do logradouro dedicado -->
+			<xs:element minOccurs="0" name="streetName" type="st:string60"></xs:element>
+			<!-- Numeração do lote dedicado -->
+			<xs:element minOccurs="0" name="lotNum" type="st:string35"></xs:element>
+			<!-- Complemento do Endereço do endereço dedicado -->
+			<xs:element minOccurs="0" name="addressCompl" type="st:string45"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

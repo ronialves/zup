@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeallocateStbController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CPEAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.cpe.core</a> &gt; <span class="el_source">DeallocateStbController.java</span></div><h1>DeallocateStbController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.cpe.core;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoRecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoRecurso;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoRecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.utils.EntityExtractor;
+import com.tlf.oss.resourceinventory.cpe.validation.Deallocate;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L25">public class DeallocateStbController {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Inject
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Inject
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	@Inject
+	private EstadoRecursoLogicoRepository estadoRecursoLogicoRepository;
+
+	@Transactional(rollbackOn = OSSBusinessException.class)
+	public ResourceInventoryEntity deallocate(@Deallocate final ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+		try {
+<span class="fc" id="L47">			logger.log(OSSLogger.INFO, &quot;Iniciando o deallocate no R_CPE_STB...&quot;);</span>
+
+<span class="fc" id="L49">			final String serviceId = EntityExtractor.extractServiceId(entity);</span>
+<span class="fc" id="L50">			final ServicoAssinante servicoAssinante = servicoAssinanteRepository.findByServiceId(entity);</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">			if (null != servicoAssinante) {</span>
+
+<span class="fc" id="L54">				final EstadoRecursoLogico estadoRecursoLogico = estadoRecursoLogicoRepository</span>
+<span class="fc" id="L55">						.findByEstadoRecurso(EstadoRecurso.NAO_INSTALADO);</span>
+
+<span class="fc" id="L57">				final List&lt;RecursoLogico&gt; recursosLogicos = recursoLogicoRepository.listByServiceId(serviceId);</span>
+<span class="fc" id="L58">				final Optional&lt;RecursoLogico&gt; recursoLogicoFound = recursosLogicos.stream().filter(</span>
+<span class="fc" id="L59">						recursoLogico -&gt; estadoRecursoLogico.getId().equals(recursoLogico.getEstadoRecursoLogicoId()))</span>
+<span class="fc" id="L60">						.findFirst();</span>
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">				if (recursoLogicoFound.isPresent()) {</span>
+
+<span class="fc" id="L64">					final DispositivoFisico dispositivoFisico = dispositivoFisicoRepository</span>
+<span class="fc" id="L65">							.findById(recursoLogicoFound.get().getDispositivoFisicoId());</span>
+
+<span class="fc" id="L67">					recursoLogicoRepository.delete(recursoLogicoFound.get());</span>
+<span class="fc" id="L68">					dispositivoFisicoRepository.delete(dispositivoFisico);</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">					if (recursosLogicos.size() == 1) {</span>
+<span class="fc" id="L71">						servicoAssinanteRepository.delete(servicoAssinante);</span>
+					}
+				}
+
+<span class="fc" id="L75">				logger.log(OSSLogger.INFO, &quot;Finalizando o deallocate no R_CPE_STB...&quot;);</span>
+
+			}
+
+<span class="fc" id="L79">			return entity;</span>
+<span class="fc" id="L80">		} catch (OSSBusinessException obe) {</span>
+<span class="fc" id="L81">			logger.error(obe.getMessage(), obe);</span>
+<span class="fc" id="L82">			throw obe;</span>
+<span class="fc" id="L83">		} catch (Exception e) {</span>
+<span class="fc" id="L84">			logger.error(e.getMessage(), e);</span>
+<span class="fc" id="L85">			throw new OSSBusinessException(FalloutCode.RICPE_999.getDescription(), FalloutCode.RICPE_999.getValue(),</span>
+<span class="fc" id="L86">					e.getMessage());</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

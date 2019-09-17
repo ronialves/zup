@@ -1,0 +1,24 @@
+<div class="ui-dark-theme">
+  <div [ngClass]="{'ui-system-logo': !retracted, 'ui-system-logo-retracted': retracted}">
+    <img src="assets/images/logo.png">
+  </div>
+  <div class="ui-appname"><span>CPE</span><span [ngClass]="{'ui-appname-retracted': retracted}"> Inventory</span></div>
+  <div class="ui-divisor"></div>
+  <div class="ui-options">
+    <button mat-button *ngFor="let state of states" 
+        (click)="this.router.navigate([state.name])" 
+        [ngClass]="{ 
+          'ui-option': true,
+          'ui-option-active': currentState$.getValue() === state,
+          'ui-option-retracted': retracted
+        }">
+      <span [class]="state.icon + ' ui-option-icon'"></span>
+      <span [ngClass]="{ 
+              'ui-option-name': true,
+              'ui-option-name-retracted': retracted
+            }">
+        {{state.alias}}
+      </span>
+    </button>
+  </div>
+</div>

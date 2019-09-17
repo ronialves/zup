@@ -1,0 +1,13 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core.service,TerusService,97,0,0,0,15,0,3,0,3,0
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core.enums,Message,92,0,0,0,12,0,3,0,3,0
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core.enums,EntityFields,59,0,0,0,9,0,3,0,3,0
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core.enums,Code,48,0,0,0,8,0,3,0,3,0
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core.validator,ReserveValidator,59,0,0,0,12,0,3,0,3,0
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core.validator,ValidatorEntity,288,0,26,0,39,0,17,0,4,0
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core.validator,DeallocateValidator,59,0,0,0,12,0,3,0,3,0
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core.validator,ReleaseValidator,59,0,0,0,12,0,3,0,3,0
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core.util,CalendarUtil,16,18,0,0,3,6,1,1,1,1
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core,DeallocateController,75,140,7,5,6,33,6,9,0,9
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core,ReservationController,36,139,7,5,6,33,6,9,0,9
+ResourceInventoryTERUSAPI-core,com.tlf.oss.resourceinventory.terus.core,CancelReservedController,75,140,7,5,6,33,6,9,0,9

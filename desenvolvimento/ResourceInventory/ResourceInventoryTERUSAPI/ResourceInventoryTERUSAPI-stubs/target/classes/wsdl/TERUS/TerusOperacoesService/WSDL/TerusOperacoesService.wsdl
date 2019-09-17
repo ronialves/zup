@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<WL5G3N0:definitions name="TerusOperacoesService" targetNamespace="http://ejb.terusOperacoes.interfaceWS.gerCentrais.cpqd.com.br/" 
+	xmlns="" xmlns:WL5G3N0="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:WL5G3N1="http://www.cpqd.com.br/TERUS/BloqueioPortaRequest" 
+	xmlns:WL5G3N2="http://www.cpqd.com.br/TERUS/BloqueioPortaResponse" 
+	xmlns:WL5G3N5="http://www.cpqd.com.br/TERUS/DesbloqueioPortaRequest" 
+	xmlns:WL5G3N6="http://www.cpqd.com.br/TERUS/DesbloqueioPortaResponse" 
+	xmlns:WL5G3N3="http://ejb.terusOperacoes.interfaceWS.gerCentrais.cpqd.com.br/"
+	xmlns:WL5G3N4="http://schemas.xmlsoap.org/wsdl/soap/" >
+  <WL5G3N0:types>
+    <xsd:schema 
+	xmlns:WL5G3N15="http://ejb.terusOperacoes.interfaceWS.gerCentrais.cpqd.com.br/"
+	xmlns:p="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://ejb.terusOperacoes.interfaceWS.gerCentrais.cpqd.com.br/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsd1="http://www.cpqd.com.br/TERUS/BloqueioPortaRequest"
+	xmlns:xsd2="http://www.cpqd.com.br/TERUS/BloqueioPortaResponse"
+	xmlns:xsd3="http://www.cpqd.com.br/TERUS/DesbloqueioPortaRequest"
+	xmlns:xsd4="http://www.cpqd.com.br/TERUS/DesbloqueioPortaResponse">
+      <xsd:import namespace="http://www.cpqd.com.br/TERUS/BloqueioPortaRequest" schemaLocation="../XSD/BloqueioPortaRequest.xsd" />
+      <xsd:import namespace="http://www.cpqd.com.br/TERUS/BloqueioPortaResponse" schemaLocation="../XSD/BloqueioPortaResponse.xsd" />
+      <xsd:import namespace="http://www.cpqd.com.br/TERUS/DesbloqueioPortaRequest" schemaLocation="../XSD/DesbloqueioPortaRequest.xsd" />
+      <xsd:import namespace="http://www.cpqd.com.br/TERUS/DesbloqueioPortaResponse" schemaLocation="../XSD/DesbloqueioPortaResponse.xsd" />
+    </xsd:schema>
+    </WL5G3N0:types>
+  <WL5G3N0:message name="BloqueioPortaRequest">
+    <WL5G3N0:part name="BloqueioPortaRequest"
+    	element="WL5G3N1:BloqueioPortaRequest" />
+  </WL5G3N0:message>
+  <WL5G3N0:message name="BloqueioPortaResponse">
+    <WL5G3N0:part element="WL5G3N2:BloqueioPortaResponse"
+    	name="BloqueioPortaResponse" />
+  </WL5G3N0:message>
+  <WL5G3N0:message name="DesbloqueioPortaRequest">
+  	<WL5G3N0:part name="DesbloqueioPortaRequest"
+  		element="WL5G3N5:DesbloqueioPortaRequest">
+  	</WL5G3N0:part>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="DesbloqueioPortaResponse">
+  	<WL5G3N0:part name="DesbloqueioPortaResponse"
+  		element="WL5G3N6:DesbloqueioPortaResponse">
+  	</WL5G3N0:part>
+  </WL5G3N0:message>
+  <WL5G3N0:portType name="TerusOperacoesPortType">
+    <WL5G3N0:operation name="BloqueioPorta">
+      <WL5G3N0:input message="WL5G3N3:BloqueioPortaRequest" name="BloqueioPortaRequest"/>
+      <WL5G3N0:output message="WL5G3N3:BloqueioPortaResponse" name="BloqueioPortaResponse"/>
+    </WL5G3N0:operation>
+    <WL5G3N0:operation name="DesbloqueioPorta">
+    	<WL5G3N0:input message="WL5G3N3:DesbloqueioPortaRequest" name="DesbloqueioPortaRequest"/>
+    	<WL5G3N0:output message="WL5G3N3:DesbloqueioPortaResponse" name="DesbloqueioPortaResponse"/>
+    </WL5G3N0:operation>
+  </WL5G3N0:portType>
+  <WL5G3N0:binding name="TerusOperacoesBinding" type="WL5G3N3:TerusOperacoesPortType">
+    <WL5G3N4:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <WL5G3N0:operation name="BloqueioPorta">
+      <WL5G3N4:operation soapAction="http://ejb.terusOperacoes.interfaceWS.gerCentrais.cpqd.com.br/BloqueioPorta"/>
+      <WL5G3N0:input name="BloqueioPortaRequest">
+        <WL5G3N4:body use="literal"/>
+      </WL5G3N0:input>
+      <WL5G3N0:output name="BloqueioPortaResponse">
+        <WL5G3N4:body use="literal"/>
+      </WL5G3N0:output>
+    </WL5G3N0:operation>
+    <WL5G3N0:operation name="DesbloqueioPorta">
+      <WL5G3N4:operation soapAction="http://ejb.terusOperacoes.interfaceWS.gerCentrais.cpqd.com.br/DesbloqueioPorta"/>
+      <WL5G3N0:input name="DesbloqueioPortaRequest">
+        <WL5G3N4:body use="literal"/>
+      </WL5G3N0:input>
+      <WL5G3N0:output name="DesbloqueioPortaResponse">
+        <WL5G3N4:body use="literal"/>
+      </WL5G3N0:output>
+    </WL5G3N0:operation>
+  </WL5G3N0:binding>
+  <WL5G3N0:service name="TerusOperacoesService">
+    <WL5G3N0:port binding="WL5G3N3:TerusOperacoesBinding" name="TerusOperacoesPort">
+      <WL5G3N4:address location="REPLACE_WITH_ACTUAL_URL"/>
+    </WL5G3N0:port>
+  </WL5G3N0:service>
+</WL5G3N0:definitions>

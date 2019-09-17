@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-api</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.api.v1_0</a> &gt; <span class="el_source">RestConfig.java</span></div><h1>RestConfig.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.api.v1_0;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.ejb.Stateless;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+@Stateless
+@ApplicationPath(&quot;1.0&quot;)
+<span class="nc" id="L12">public class RestConfig extends Application{</span>
+	
+	public Set&lt;Class&lt;?&gt;&gt; getClasses() {
+<span class="nc" id="L15">		Set&lt;Class&lt;?&gt;&gt; s = new HashSet&lt;Class&lt;?&gt;&gt;();</span>
+<span class="nc" id="L16">		s.add(DetermineAvailabilityService.class);</span>
+<span class="nc" id="L17">		s.add(ReserveService.class);</span>
+<span class="nc" id="L18">		s.add(AllocateService.class);</span>
+<span class="nc" id="L19">		s.add(InstallService.class);</span>
+<span class="nc" id="L20">		s.add(FacilityRetrievalService.class);	</span>
+<span class="nc" id="L21">		s.add(DeallocateService.class);</span>
+<span class="nc" id="L22">		s.add(ReleaseService.class);</span>
+<span class="nc" id="L23">		s.add(UninstallService.class);</span>
+<span class="nc" id="L24">		return s;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

@@ -1,0 +1,15 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rt="http://www.cpqd.com.br/etics/CircuitLotTypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/CircuitResourceTypes">
+<xs:import namespace="http://www.cpqd.com.br/etics/CircuitLotTypes" schemaLocation="CircuitLotTypes.xsd"/>
+<xs:complexType name="CircuitResource">
+<xs:sequence>
+<!--  N  circuitos  -->
+<xs:element maxOccurs="unbounded" minOccurs="0" name="circuit" type="rt:Circuit"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="CircuitAllocate">
+<xs:sequence>
+<!--  N  circuitos  -->
+<xs:element maxOccurs="unbounded" minOccurs="0" name="circuit" type="rt:CircuitLotAllocate"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

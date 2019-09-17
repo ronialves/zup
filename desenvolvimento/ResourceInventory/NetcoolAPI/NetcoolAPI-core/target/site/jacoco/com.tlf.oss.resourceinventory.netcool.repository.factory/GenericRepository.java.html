@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GenericRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">NetcoolAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.netcool.repository.factory</a> &gt; <span class="el_source">GenericRepository.java</span></div><h1>GenericRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.netcool.repository.factory;
+
+import java.io.Serializable;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+<span class="nc" id="L9">public class GenericRepository implements Serializable{</span>
+private static final long serialVersionUID = 1L;
+	
+	@PersistenceContext(name=&quot;Netcool&quot;)
+	private EntityManager factory;
+	
+	/**
+	 * Gera log com a entrada da query
+	 * @param result
+	 */
+	protected String getlogIn(String nameQuery, Query query) {
+<span class="nc" id="L20">		StringBuilder logBuilder = new StringBuilder(nameQuery);</span>
+<span class="nc" id="L21">		logBuilder.append(&quot;Param IN :&quot;);</span>
+		
+<span class="nc" id="L23">		query.getParameters().forEach(parameter -&gt; {</span>
+<span class="nc" id="L24">			String parameterName = parameter.getName();</span>
+<span class="nc" id="L25">			Object parameterValue = query.getParameterValue(parameterName);</span>
+			
+<span class="nc" id="L27">			logBuilder.append(parameterName).append(&quot; = &quot;).append(parameterValue);</span>
+<span class="nc" id="L28">		});</span>
+		
+<span class="nc" id="L30">		return logBuilder.toString();</span>
+	}
+	
+	public EntityManager getFactory() {
+<span class="nc" id="L34">		return factory;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

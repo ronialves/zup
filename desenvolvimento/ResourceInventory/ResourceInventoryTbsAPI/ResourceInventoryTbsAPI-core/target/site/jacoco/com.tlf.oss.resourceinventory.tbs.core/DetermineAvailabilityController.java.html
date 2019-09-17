@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetermineAvailabilityController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core</a> &gt; <span class="el_source">DetermineAvailabilityController.java</span></div><h1>DetermineAvailabilityController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.SwitchesAssociated;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.core.validation.DetermineAvailability;
+import com.tlf.oss.resourceinventory.tbs.core.validation.DetermineAvailabilityValidator;
+import com.tlf.oss.resourceinventory.tbs.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.DetermineAvailabilityEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.tbs.repository.DetermineAvailabilityRepository;
+
+<span class="nc" id="L24">public class DetermineAvailabilityController extends ValidatorEntity implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+
+	private static final String MAX_BROADBAND_SPEED_ADSL = &quot;25600&quot;;
+	private static final String MAX_BROADBAND_SPEED_VDSL = &quot;51200&quot;;
+	private static final String ADSL_TECHNOLOGY = &quot;ADSL&quot;;
+	private static final String VDSL_TECHNOLOGY = &quot;VDSL&quot;;
+<span class="nc" id="L32">	private static final Integer SUCCESS = 0;</span>
+	
+	@Inject
+	private DetermineAvailabilityRepository determineAvailabilityRepository;
+<span class="nc" id="L36">	private OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RITBS_003.getCode(),</span>
+<span class="nc" id="L37">			String.format(ExceptionInfoEnum.RITBS_003.getDescription(), &quot;TLF_SP_DETERMINE_AVAILABILITY&quot;),</span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+<span class="nc" id="L40">	List&lt;String&gt; TDMVoiceProcolList = Arrays.asList(&quot;TDM&quot;, &quot;H248&quot;, &quot;TDM/H248&quot;);</span>
+	
+	public ResourceInventoryEntity getDetermine(@DetermineAvailability ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+		
+<span class="nc" id="L45">		DetermineAvailabilityEntity determineAvailabilityEntity = new DetermineAvailabilityEntity();</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		if (!(DetermineAvailabilityValidator.checkCoverageWarn(entity))) {</span>
+<span class="nc" id="L47">			String voiceProtocol = entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol();</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">			voiceProtocol = voiceProtocol != null ? voiceProtocol.toUpperCase() : &quot;&quot;;</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">			if (null != determineAvailabilityEntity) {</span>
+<span class="nc" id="L50">				determineAvailabilityEntity.setCabinet(entity.getCabinet().getName());</span>
+<span class="nc" id="L51">				determineAvailabilityEntity.setPSwitch(entity.getCabinet().getSwitchesAssociated().getName());</span>
+				
+<span class="nc bnc" id="L53" title="All 2 branches missed.">				if (entity.getAddress() != null) {</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">					if (entity.getAddress().getPlacePhysicalResourceAssoc() != null) {</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">						if (entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink() != null) {</span>
+<span class="nc" id="L56">							if (entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink()</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">									.getVoiceProtocol() != null) {</span>
+<span class="nc" id="L58">								determineAvailabilityEntity.setVoiceProtocol(voiceProtocol);</span>
+							}
+						}
+					}
+				}
+			}
+			
+<span class="nc" id="L65">			List&lt;DetermineAvailabilityEntity&gt; resultList = determineAvailabilityRepository</span>
+<span class="nc" id="L66">					.determineAvailability(determineAvailabilityEntity);</span>
+
+<span class="nc bnc" id="L68" title="All 2 branches missed.">			if (&quot;SIP&quot;.equalsIgnoreCase(determineAvailabilityEntity.getVoiceProtocol())</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">					|| TDMVoiceProcolList.contains(determineAvailabilityEntity.getVoiceProtocol())) {</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">				for (DetermineAvailabilityEntity cobertura : resultList) {</span>
+
+<span class="nc" id="L72">					int errorCode = cobertura.getCodeReturn();</span>
+<span class="nc" id="L73">					String errorMessage = cobertura.getMessageReturn();</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">					if (SUCCESS != cobertura.getCodeReturn()) {</span>
+<span class="nc" id="L75">						falloutConfig.setErrorCode(String.valueOf(errorCode));</span>
+<span class="nc" id="L76">						falloutConfig.setErrorMessage(errorMessage);</span>
+<span class="nc" id="L77">						falloutConfig.setDetailMessage(errorCode + &quot;; &quot; + errorMessage);</span>
+<span class="nc" id="L78">						throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+					}
+
+<span class="nc" id="L81">					SwitchesAssociated switchesAssociated = new SwitchesAssociated();</span>
+<span class="nc" id="L82">					switchesAssociated.setName(cobertura.getTlfSwitch());</span>
+
+<span class="nc" id="L84">					Shelf shelf = new Shelf();</span>
+<span class="nc" id="L85">					shelf.getHasCards().add(getCardAdsl(cobertura, voiceProtocol));</span>
+<span class="nc" id="L86">					shelf.getHasCards().add(getCardVdsl(cobertura, voiceProtocol));</span>
+
+<span class="nc" id="L88">					entity.getCabinet().setSwitchesAssociated(switchesAssociated);</span>
+<span class="nc bnc" id="L89" title="All 4 branches missed.">					if (entity.getPhysicalLinks() != null &amp;&amp; !entity.getPhysicalLinks().isEmpty()) {</span>
+<span class="nc" id="L90">						entity.getPhysicalLinks().get(0).setVoiceProtocol(entity.getAddress()</span>
+<span class="nc" id="L91">								.getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+					}
+<span class="nc" id="L93">					entity.getCabinet().getHasShelves().add(shelf);</span>
+
+<span class="nc" id="L95">				}</span>
+			}
+		}
+<span class="nc" id="L98">		removeCoverageWarn(entity);</span>
+<span class="nc" id="L99">		return entity;</span>
+	}
+
+	private PortAdapterCard getCardAdsl(DetermineAvailabilityEntity determineAvailabilityEntity, String voiceProtocol) {
+<span class="nc" id="L103">		int freePorts = 0;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">		if (&quot;SIP&quot;.equalsIgnoreCase(voiceProtocol)) {</span>
+<span class="nc" id="L105">			freePorts = determineAvailabilityEntity.getAvailableCapacityADSLSIP();</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">		} else if (TDMVoiceProcolList.contains(voiceProtocol)) {</span>
+<span class="nc" id="L107">			freePorts = determineAvailabilityEntity.getAvailableCapacityADSL();</span>
+		}
+
+<span class="nc" id="L110">		PortAdapterCard card = new PortAdapterCard();</span>
+<span class="nc" id="L111">		card.setTechnology(ADSL_TECHNOLOGY);</span>
+<span class="nc" id="L112">		card.setFreePorts(String.valueOf(freePorts));</span>
+<span class="nc" id="L113">		card.setMaxBroadbandSpeed(MAX_BROADBAND_SPEED_ADSL);</span>
+
+<span class="nc" id="L115">		return card;</span>
+	}
+
+	private PortAdapterCard getCardVdsl(DetermineAvailabilityEntity determineAvailabilityEntity, String voiceProtocol) {
+<span class="nc" id="L119">		int freePorts = 0;</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">		if (&quot;SIP&quot;.equalsIgnoreCase(voiceProtocol)) {</span>
+<span class="nc" id="L121">			freePorts = determineAvailabilityEntity.getAvailableCapacityVDSLSIP();</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">		} else if (TDMVoiceProcolList.contains(voiceProtocol)) {</span>
+<span class="nc" id="L123">			freePorts = determineAvailabilityEntity.getAvailableCapacityVDSL();</span>
+		}
+
+<span class="nc" id="L126">		PortAdapterCard card = new PortAdapterCard();</span>
+<span class="nc" id="L127">		card.setTechnology(VDSL_TECHNOLOGY);</span>
+<span class="nc" id="L128">		card.setFreePorts(String.valueOf(freePorts));</span>
+<span class="nc" id="L129">		card.setMaxBroadbandSpeed(MAX_BROADBAND_SPEED_VDSL);</span>
+
+<span class="nc" id="L131">		return card;</span>
+	}
+	
+	private ResourceInventoryEntity removeCoverageWarn(ResourceInventoryEntity entity) {
+<span class="nc bnc" id="L135" title="All 2 branches missed.">		if (entity.getResourceInventoryWarn() != null) {</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">			if (&quot;RI-0100&quot;.equals(entity.getResourceInventoryWarn().getCode())) {</span>
+<span class="nc" id="L137">				entity.setResourceInventoryWarn(null);</span>
+			}
+		}
+<span class="nc" id="L140">		return entity;</span>
+	}
+
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

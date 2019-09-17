@@ -1,0 +1,203 @@
+package com.tlf.oss.resourceinventory.core.resourceordermanagement.v1_0.mapping;
+
+import com.tlf.oss.common.schemas.entity.Warn;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.CustomerEntity;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.*;
+
+import javax.xml.ws.Holder;
+
+public class AllocateAndInstallResourceMapping {
+    public static ResourceInventoryEntity toResourceInventoryEntity(DetermineResourceAvailabilityIn in) {
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ri.setAddress(in.getBrazilianUrbanPropertyAddress());
+        ri.setCabinet(in.getCabinet());
+        ri.setResourceFacingService(in.getResourceFacingService());
+        ri.setCustomerFacingService(in.getCustomerFacingServices());
+        ri.setCustomerOrder(in.getCustomerOrder());
+
+        return ri;
+    }
+
+    public static DetermineResourceAvailabilityOut toDetermineResourceAvailabilityOut(ResourceInventoryEntity res, Holder<Warn> holderWarn) {
+        DetermineResourceAvailabilityOut out = new DetermineResourceAvailabilityOut();
+        out.setCabinet(res.getCabinet());
+        out.setSatellite(res.getSatellite());
+        out.setPhysicalLinks(res.getPhysicalLinks());
+        if (null == res.getAddress()) {
+            return out;
+        }
+        if (res.getResourceInventoryWarn() != null) {
+            Warn warn = new Warn();
+            warn.setCode(res.getResourceInventoryWarn().getCode());
+            warn.setMessage(res.getResourceInventoryWarn().getMessage());
+            holderWarn.value = warn;
+        }else {
+            holderWarn.value = null;
+        }
+        out.setNetworkOwner(res.getAddress().getNetworkOwner());
+        return out;
+    }
+
+    public static ResourceInventoryEntity toResourceInventoryEntity(ReleaseResourceIn in) {
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ri.setAddress(in.getBrazilianUrbanPropertyAddress());
+        ri.setResourceFacingService(in.getResourceFacingService());
+        ri.setCustomerOrder(in.getCustomerOrder());
+        ri.setCustomerFacingService(in.getCustomerFacingServices());
+        ri.setResourceOrder(in.getResourceOrder());
+        return ri;
+    }
+    public static ReleaseResourceOut toReleaseResourceOut(ResourceInventoryEntity res) {
+        return new ReleaseResourceOut();
+    }
+
+    public static ResourceInventoryEntity toResourceInventoryEntity(ReserveResourceIn in) {
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ri.setAddress(in.getBrazilianUrbanPropertyAddress());
+        ri.setResourceFacingService(in.getResourceFacingService());
+        ri.setCustomerFacingService(in.getCustomerFacingServices());
+        ri.setCustomerOrder(in.getCustomerOrder());
+        return ri;
+    }
+
+    public static ReserveResourceOut toReserveResourceOut(ResourceInventoryEntity res) {
+        ReserveResourceOut out = new ReserveResourceOut();
+        out.setCabinet(res.getCabinet());
+        out.setPhysicalLinks(res.getPhysicalLinks());
+        return out;
+    }
+
+    public static ResourceInventoryEntity toResourceInventoryEntity(RetrieveResourceInformationIn in) {
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ri.setResourceFacingService(in.getResourceFacingService());
+        ri.setAddress(in.getBrazilianUrbanPropertyAddress());
+        ri.setCustomerOrder(in.getCustomerOrder());
+        ri.setResourceOrder(in.getResourceOrder());
+        return ri;
+    }
+
+    public static RetrieveResourceInformationOut toRetrieveResourceInformationOut(ResourceInventoryEntity res) {
+        RetrieveResourceInformationOut out = new RetrieveResourceInformationOut();
+        out.setCabinet(res.getCabinet());
+        out.setGeneralDistributors(res.getGeneralDistributors());
+        out.setNetworkAggregator(res.getNetworkAggregator());
+        out.setResourceOrder(res.getResourceOrder());
+        out.setResourceFacingService(res.getResourceFacingService());
+        out.setCustomerFacingService(res.getCustomerFacingService());
+
+        if(res.getAddress() != null)
+            out.setAddress(res.getAddress());
+
+        return out;
+    }
+
+    public static RetrieveAccessInformationOut toRetrieveAccessInformationOut(CustomerEntity res) {
+        RetrieveAccessInformationOut out = new RetrieveAccessInformationOut();
+
+        ResourceFacingService resourceFacingService = new ResourceFacingService();
+        resourceFacingService.setServiceId(res.getAccessDesignator());
+        updateResourceFacingService(resourceFacingService, "NetworkOwnerId", res.getAccessId());
+        updateResourceFacingService(resourceFacingService, "NRC", res.getCustomerId());
+        updateResourceFacingService(resourceFacingService, "NetworkOwner", res.getNetworkOwner());
+        out.setResourceFacingService(resourceFacingService);
+        return out;
+    }
+
+
+    private static void updateResourceFacingService(ResourceFacingService resourceFacingService, String name, String value) {
+        ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();
+        serviceSpecCharDescribes.setValue(value);
+
+        ServiceDescribedBy serviceDescribedBy = new ServiceDescribedBy();
+        serviceDescribedBy.setName(name);
+        serviceDescribedBy.getServiceSpecCharDescribes().add(serviceSpecCharDescribes);
+
+        resourceFacingService.getServiceDescribedBy().add(serviceDescribedBy);
+    }
+
+    public static UninstallResourceOut toUninstallResourceOut(ResourceInventoryEntity res) {
+        return new UninstallResourceOut();
+    }
+
+
+    public static AllocateResourceOut toAllocateResourceOut(ResourceInventoryEntity res) {
+        AllocateResourceOut out = new AllocateResourceOut();
+        out.setCabinet(res.getCabinet());
+        out.setPhysicalLinks(res.getPhysicalLinks());
+        out.setResourceOrder(res.getResourceOrder());
+        return out;
+    }
+
+    public static InstallResourceOut toInstallResourceOut(ResourceInventoryEntity res) {
+        return new InstallResourceOut();
+    }
+
+
+    public static DeallocateResourceOut toDeallocateResourceOut(ResourceInventoryEntity res) {
+        return new DeallocateResourceOut();
+    }
+
+    public static UpdateResourceOut toUpdateResourceOut(ResourceInventoryEntity res) {
+        return new UpdateResourceOut();
+    }
+
+    public static ResourceInventoryEntity toResourceInventoryEntity(UninstallResourceIn in) {
+
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ri.setAddress(in.getBrazilianUrbanPropertyAddress());
+        ri.setCustomerFacingService(in.getCustomerFacingServices());
+        ri.setCustomerOrder(in.getCustomerOrder());
+        ri.setResourceFacingService(in.getResourceFacingService());
+        ri.setResourceOrder(in.getResourceOrder());
+        return ri;
+
+    }
+
+
+
+    public static ResourceInventoryEntity toResourceInventoryEntity(AllocateResourceIn in) {
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ri.setResourceFacingService(in.getResourceFacingService());
+        ri.setAddress(in.getBrazilianUrbanPropertyAddress());
+
+        ri.setCustomerOrder(in.getCustomerOrder());
+        ri.setCustomerFacingService(in.getCustomerFacingServices());
+        ri.setResourceOrder(in.getResourceOrder());
+        return ri;
+    }
+
+    public static ResourceInventoryEntity toResourceInventoryEntity(InstallResourceIn in) {
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ri.setResourceFacingService(in.getResourceFacingService());
+        ri.setAddress(in.getBrazilianUrbanPropertyAddress());
+        ri.setCustomerOrder(in.getCustomerOrder());
+        ri.setCustomerFacingService(in.getCustomerFacingService());
+        ri.setResourceOrder(in.getResourceOrder());
+        return ri;
+    }
+
+    public static ResourceInventoryEntity toResourceInventoryEntity(DeallocateResourceIn in) {
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ri.setAddress(in.getBrazilianUrbanPropertyAddress());
+        ri.setCustomerOrder(in.getCustomerOrder());
+        ri.setResourceFacingService(in.getResourceFacingService());
+        ri.setCustomerFacingService(in.getCustomerFacingServices());
+        ri.setResourceOrder(in.getResourceOrder());
+        return ri;
+    }
+
+    public static ResourceInventoryEntity toResourceInventoryEntity(UpdateResourceIn in) {
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ri.setResourceFacingService(in.getResourceFacingService());
+        ri.setAddress(in.getBrazilianUrbanPropertyAddress());
+
+        ri.setCustomerOrder(in.getCustomerOrder());
+        ri.setCustomerFacingService(in.getCustomerFacingServices());
+        ri.setResourceOrder(in.getResourceOrder());
+        return ri;
+    }
+}

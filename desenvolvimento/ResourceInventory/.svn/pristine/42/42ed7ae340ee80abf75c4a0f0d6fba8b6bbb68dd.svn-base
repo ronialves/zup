@@ -1,0 +1,20 @@
+<div class="ui-home-container">
+  <div class="ui-home-items">
+    <div class="ui-home-item ui-item-request-equipament" (click)="this.router.navigate(['/catalogo'])">
+      <div class="ui-item-logo">
+        <span class="fas fa-stream"></span>
+      </div>
+      <div class="ui-item-label">
+        Consultar Equipamentos
+      </div>
+    </div>
+    <div class="ui-home-item"  (click)="this.router.navigate(['/catalogo/novo'])">
+      <div class="ui-item-logo">
+        <span class="fas fa-hdd"></span>
+      </div>
+      <div class="ui-item-label">
+        Inserir Equipamento
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:su="http://www.cpqd.com.br/etics/SubUnitTypes" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:rs="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes" xmlns:ro="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes" xmlns:ce="http://www.cpqd.com.br/etics/customelements" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/SupplementaryInformationManageProvTypes">
+<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes" schemaLocation="ResourceOrderInfoTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes" schemaLocation="ResourceServiceInfoTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/SubUnitTypes" schemaLocation="SubUnitTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/customelements" schemaLocation="CustomElements.xsd"/>
+<xs:complexType name="SupplementaryInformationIn">
+<xs:sequence>
+<!--  Documento  -->
+<xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo"/>
+<!--
+ One Stop Shop, (0 - Processo Convencional, 1 - Processo One Stop Shop) 
+-->
+<xs:element minOccurs="0" name="oneStopShop">
+<xs:simpleType>
+<xs:restriction base="xs:integer">
+<xs:pattern value="0|1"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<!--  Dados do Número de Serviço  -->
+<xs:element minOccurs="0" name="resourceService" type="rs:ResourceService"/>
+<!--  Complemento de Endereço  -->
+<xs:element maxOccurs="unbounded" minOccurs="0" name="complAddressInfo" type="su:SubUnit"/>
+<!--  Lista de campos de tipo chave-valor  -->
+<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="SupplementaryInformationOut">
+<xs:sequence>
+<!--  Ordem de Recursos  -->
+<xs:element minOccurs="0" name="resourceOrder" type="st:string40"/>
+<!--  Documento  -->
+<xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo"/>
+<!--  Número do NRC  -->
+<xs:element minOccurs="0" name="reserveOrder" type="st:string15"/>
+<!--
+ Indicador de OSS (0-Processo Convencional, 1-Processo One Stop Shop) 
+-->
+<xs:element minOccurs="0" name="oneStopShop">
+<xs:simpleType>
+<xs:restriction base="xs:integer">
+<xs:pattern value="0|1"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<!--  Dados do Número de Serviço  -->
+<xs:element minOccurs="0" name="resourceService" type="rs:ResourceService"/>
+<!--  Data e hora do processamento  -->
+<xs:element minOccurs="0" name="timeStamp" type="st:string19"/>
+<!--  Lista de campos de tipo chave-valor  -->
+<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

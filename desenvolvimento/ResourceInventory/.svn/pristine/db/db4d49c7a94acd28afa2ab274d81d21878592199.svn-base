@@ -1,0 +1,105 @@
+<?xml version="1.0" ?>
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://www.cpqd.com.br/etics/facilities/TrackManageResourceProvisioning"
+	xmlns:tmrp="http://www.cpqd.com.br/etics/facilities/TrackManageResourceProvisioningTypes"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:head="http://www.cpqd.com.br/etics/headerContext"
+	xmlns:ex="http://www.cpqd.com.br/etics/commonsexceptiontypes" name="TrackManageResourceProvisioning"
+	targetNamespace="http://www.cpqd.com.br/etics/facilities/TrackManageResourceProvisioning">
+	<wsdl:types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+			xmlns:tns="http://www.cpqd.com.br/etics/facilities/TrackManageResourceProvisioning"
+			xmlns:tmrp="http://www.cpqd.com.br/etics/facilities/TrackManageResourceProvisioningTypes"
+			xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:head="http://www.cpqd.com.br/etics/headerContext"
+			xmlns:ex="http://www.cpqd.com.br/etics/commonsexceptiontypes"
+			targetNamespace="http://www.cpqd.com.br/etics/facilities/TrackManageResourceProvisioning">
+			
+			<xs:import namespace="http://www.cpqd.com.br/etics/facilities/TrackManageResourceProvisioningTypes"
+			   	       schemaLocation="../XSD/TrackManageResourceProvisioningTypes.xsd" />
+			<xs:import namespace="http://www.cpqd.com.br/etics/commonsexceptiontypes"
+				schemaLocation="../XSD/CommonsExceptionTypes.xsd" />
+			<xs:import namespace="http://www.cpqd.com.br/etics/headerContext"
+				schemaLocation="../XSD/HeaderContext.xsd" />
+			<!-- Elemento de requisicao e resposta da operacao "manageResourceProvisioningActivity" -->
+			<xs:element name="mngResProvActRequest"
+				type="tmrp:ManageResourceProvisioningActivityRequest" />
+			<xs:element name="mngResProvActResponse"
+				type="tmrp:ManageResourceProvisioningActivityResponse" />
+			<!-- Elemento de requisicao e resposta da operacao "updateResourceRepository" -->
+			<xs:element name="updtResRepoRequest" type="tmrp:UpdateResourceRepositoryRequest" />
+			<xs:element name="updtResRepoResponse" type="tmrp:UpdateResourceRepositoryResponse" />
+			<!-- Elemento de Erro -->
+			<xs:element name="faultData" type="ex:CommonsExceptionElementType" />
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="updtResRepoResponseMsg">
+		<wsdl:part element="tns:updtResRepoResponse" name="outputData"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="updtResRepoRequestMsg">
+		<wsdl:part element="tns:updtResRepoRequest" name="inputData"></wsdl:part>
+		<wsdl:part element="head:context" name="context"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="mngResProvActResponseMsg">
+		<wsdl:part element="tns:mngResProvActResponse" name="outputData"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="mngResProvActRequestMsg">
+		<wsdl:part element="tns:mngResProvActRequest" name="inputData"></wsdl:part>
+		<wsdl:part element="head:context" name="context"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="facilitiesException">
+		<wsdl:part element="tns:faultData" name="faultData"></wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="TrackManageResourceProvisioning">
+		<wsdl:operation name="manageResourceProvisioningActivity">
+			<wsdl:input message="tns:mngResProvActRequestMsg" name="mngResProvActRequest"></wsdl:input>
+			<wsdl:output message="tns:mngResProvActResponseMsg" name="mngResProvActResponse"></wsdl:output>
+			<wsdl:fault message="tns:facilitiesException" name="facilitiesFault"></wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="updateResourceRepository">
+			<wsdl:input message="tns:updtResRepoRequestMsg" name="updtResRepoRequest"></wsdl:input>
+			<wsdl:output message="tns:updtResRepoResponseMsg" name="updtResRepoResponse"></wsdl:output>
+			<wsdl:fault message="tns:facilitiesException" name="facilitiesFault"></wsdl:fault>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="TrackManageResourceProvisioningSoapBinding"
+		type="tns:TrackManageResourceProvisioning">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="manageResourceProvisioningActivity">
+			<soap:operation soapAction="" />
+			<wsdl:input name="mngResProvActRequest">
+				<soap:header message="tns:mngResProvActRequestMsg" part="context"
+					use="literal"></soap:header>
+				<soap:body parts="inputData" use="literal" />
+			</wsdl:input>
+			<wsdl:output name="mngResProvActResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="facilitiesFault">
+				<soap:fault name="facilitiesFault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="updateResourceRepository">
+			<soap:operation soapAction="" />
+			<wsdl:input name="updtResRepoRequest">
+				<soap:header message="tns:updtResRepoRequestMsg" part="context"
+					use="literal"></soap:header>
+				<soap:body parts="inputData" use="literal" />
+			</wsdl:input>
+			<wsdl:output name="updtResRepoResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="facilitiesFault">
+				<soap:fault name="facilitiesFault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="TrackManageResourceProvisioning">
+		<wsdl:port binding="tns:TrackManageResourceProvisioningSoapBinding"
+			name="TrackManageResourceProvisioningPort">
+			<soap:address
+				location="http://localhost:8180/cpqd/ws/oss/TrackManageResourceProvisioning" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

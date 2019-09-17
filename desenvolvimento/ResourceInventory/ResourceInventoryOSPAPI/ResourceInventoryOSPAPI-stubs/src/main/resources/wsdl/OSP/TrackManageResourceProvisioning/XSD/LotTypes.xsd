@@ -1,0 +1,19 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/LotTypes">
+<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"/>
+<xs:complexType name="Lot">
+<xs:sequence>
+<!--  Classificação do lote  -->
+<xs:element minOccurs="0" name="lotClass" type="st:string040"/>
+<!--
+ Referência para atendimento FTTx. Valores válidos: 1 (CTO) e 2 (TO) 
+-->
+<xs:element minOccurs="0" name="fttxAttendance">
+<xs:simpleType>
+<xs:restriction base="st:string1">
+<xs:pattern value="1|2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

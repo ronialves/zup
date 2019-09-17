@@ -1,0 +1,52 @@
+package com.tlf.oss.resourceinventory.orchestration.execution.resourceordermanagement;
+
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+
+rule "[Reserve] - OFFER EDITION VIVO1" extends "BaseRule"
+    agenda-group "RESERVE"
+    salience 10
+    when
+        $action : Action(name == '1.0_RESERVE_OFFER_EDITION_VIVO1') from $resource.actions
+        ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+        ResourceInventoryEntity( 'Edição de Oferta' == customerOrder!.customerOrderType)
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action); 
+        insert( $action );
+end
+
+rule "[Reserve] - VIVO1" extends "BaseRule"
+	agenda-group "RESERVE"
+	salience 1
+	when
+		$action : Action(name == '1.0_RESERVE_VIVO1') from $resource.actions
+	 	ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+    then
+		log($logger, drools.getRule().getName(), "Acao gerada = " + $action);
+		insert( $action );
+end
+
+rule "[External Reserve] - VIVO2" extends "BaseRule"
+	agenda-group "RESERVE"
+	salience 1
+	when
+		$action : Action(name == '1.0_EXTERNAL_RESERVE_VIVO2') from $resource.actions
+	 	ResourceInventoryEntity(address!.networkOwner == 'VIVO2')
+	 	ResourceInventoryEntity(address!.placePhysicalResourceAssoc!.physicalLink!.accessTechnology == 'GPON')	 
+    then
+		log($logger, drools.getRule().getName(), "Acao gerada = " + $action);
+		insert( $action );
+end
+
+rule "[Internal Reserve] - VIVO2" extends "BaseRule"
+	agenda-group "RESERVE"
+	salience 1
+	when
+		$action : Action(name == '1.0_RESERVE_METALLIC_VIVO2') from $resource.actions
+	 	ResourceInventoryEntity( address!.networkOwner == 'VIVO2')
+	 	ResourceInventoryEntity(address!.placePhysicalResourceAssoc!.physicalLink!.accessTechnology == 'METALICO')
+    then
+		log($logger, drools.getRule().getName(), "Acao gerada = " + $action);
+		insert( $action );
+end

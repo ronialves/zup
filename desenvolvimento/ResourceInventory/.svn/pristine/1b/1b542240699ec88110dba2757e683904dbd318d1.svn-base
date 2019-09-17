@@ -1,0 +1,29 @@
+package com.tfl.oss.resourceinventory.cpe.execution
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.cpe.rules.Categoria;
+
+rule "[VoIP] HGU"
+	agenda-group "VOIP"
+	when
+		$tipoRfs : Categoria()
+
+		ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null )
+		
+		$inventoryEntity : ResourceInventoryEntity( customerFacingService != null, customerFacingService.size() == 1 )
+		
+		$customerFacingServices : CustomerFacingService() from $inventoryEntity.customerFacingService
+		
+		$serviceDescribedBy : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("VOICE_EQUIPMENT_TYPE"))) from $customerFacingServices.serviceDescribedBy
+		
+		$serviceSpecCharDescribes : ServiceSpecCharDescribes(value != null) from $serviceDescribedBy.serviceSpecCharDescribes
+	then
+		$tipoRfs.setResult($serviceSpecCharDescribes.getValue());
+		insert($tipoRfs);
+end

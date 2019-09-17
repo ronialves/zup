@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="ResourceInventoryOSPAPI-ear-0.0.1-SNAPSHOT">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/application" tag="defaultRootSource"/>
+        <dependent-module archiveName="ResourceInventoryOSPAPI-api.war" deploy-path="/" handle="module:/resource/ResourceInventoryOSPAPI-api/ResourceInventoryOSPAPI-api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventoryOSPAPI-core.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventoryOSPAPI-core/ResourceInventoryOSPAPI-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="poi.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/poi/poi/3.10-FINAL/poi-3.10-FINAL.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-codec.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/1.5/commons-codec-1.5.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventoryOSPAPI-stubs.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventoryOSPAPI-stubs/ResourceInventoryOSPAPI-stubs">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jaxws-rt.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/xml/ws/jaxws-rt/2.2.6/jaxws-rt-2.2.6.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jaxb2-basics-runtime.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/jaxb2_commons/jaxb2-basics-runtime/0.6.3/jaxb2-basics-runtime-0.6.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventorySchemas-entities.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventorySchemas-entities/ResourceInventorySchemas-entities">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="OSSCommons-util.jar" deploy-path="/APP-INF/lib" handle="module:/resource/OSSCommons-util/OSSCommons-util">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-core.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/logback/logback-core/1.2.3/logback-core-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-classic.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-api.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/slf4j-api/1.7.25/slf4j-api-1.7.25.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="gson.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/code/gson/gson/2.2.4/gson-2.2.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

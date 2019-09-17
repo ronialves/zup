@@ -1,0 +1,62 @@
+[
+	{
+		"errorCode":   "1",
+		"errorMessage":"Não ha nenhum registro no inventario CPE",
+		"faultCode":   "RICPE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Designador de .* .* já alocado para o Designador de Acesso .*",
+		"faultCode":   "RICPE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Não foi possível definir um catalogo para o dispositivo.",
+		"faultCode":   "RICPE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Não foi encontrado um cliente com o Designador de .* .*",
+		"faultCode":   "RICPE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nenhum recurso encontrado para o Designador de Linha Telefônica .*",
+		"faultCode":   "RICPE-504"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Macaddress .* já utilizado por outro cliente",
+		"faultCode":   "RICPE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Número Serial .* já utilizado por outro cliente",
+		"faultCode":   "RICPE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"O Número de Telefone no inventário não é o mesmo que está sendo enviado para desconexão \\(Inventário: .* \\| Enviado: .*\\)",
+		"faultCode":   "RICPE-506"
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Não é permitido efetuar alocação de Linha Telefônica \\(VOIP\\) sem antes efetuar uma alocação de Banda \\(ACCESS\\).",
+		"faultCode":   "RICPE-506"	
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Não foi encontrado um recurso para o Designador de .* .* e Número Serial .*",
+		"faultCode":   "RICPE-506"	
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Não foi encontrado um dispositivo para o Designador de .* .* e Número Serial .*",
+		"faultCode":   "RICPE-506"	
+	},
+	{
+		"errorCode":   "-1",
+		"errorMessage":"Nenhum recurso lógico encontrado para remoção com o Designador de .* .*",
+		"faultCode":   "RICPE-506"	
+	}
+]

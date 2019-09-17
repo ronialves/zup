@@ -1,0 +1,33 @@
+package com.tlf.oss.resourceinventory.cpe.enums;
+
+public enum TipoRfs {
+	
+	ACCESS_PORT("ACCESS_PORT","R_CPE_ACCESS_PORT"),
+	ACCESS("ACCESS","R_CPE_ACCESS"),
+	VOIP("VOIP","R_CPE_VOIP"),
+	STB("STB","R_CPE_STB");
+	
+	private TipoRfs(String tipoRfs, String roiName){
+		this.tipoRfs = tipoRfs;
+		this.roiName = roiName;
+	}
+	
+	private final String tipoRfs;
+	private final String roiName;
+	
+	public String getTipoRfs() {
+		return tipoRfs;
+	}
+	public String getRoiName() {
+		return roiName;
+	}
+	
+	public static TipoRfs fromRoiName(final String roiName) {
+		for(TipoRfs rfs : TipoRfs.values()) {
+			if(rfs.getRoiName().equalsIgnoreCase(roiName)) {
+				return rfs;
+			}
+		}
+		return null;
+	}
+}

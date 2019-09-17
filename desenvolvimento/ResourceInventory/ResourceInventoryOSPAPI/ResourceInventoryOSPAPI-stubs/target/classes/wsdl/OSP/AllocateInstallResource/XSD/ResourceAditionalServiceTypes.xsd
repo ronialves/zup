@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/ResourceAditionalServiceTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="ResourceAditionalService">
+		<xs:sequence>
+			<!-- Tipo de Serviço Adicional -->
+			<xs:element minOccurs="0" name="type" type="st:string30"></xs:element>
+			<!-- Marcação de Característica ADSL -->
+			<xs:element minOccurs="0" name="wideBandfeature" type="st:string1"></xs:element>
+			<!-- Velocidade do serviço Adicional -->
+			<xs:element minOccurs="0" name="speed" type="st:string3"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

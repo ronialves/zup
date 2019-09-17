@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetermineAvailabilityController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.core</a> &gt; <span class="el_source">DetermineAvailabilityController.java</span></div><h1>DetermineAvailabilityController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.core;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.sagre.core.validation.DetermineAvailability;
+import com.tlf.oss.resourceinventory.sagre.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.DetermineAvailabilityEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.DetermineDistanceEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.DetermineResourceAvailabilityMetallic;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.sagre.enums.WarnEnum;
+import com.tlf.oss.resourceinventory.sagre.repository.DetermineAvailabilityRepository;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.PhysicalLink;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ResourceInventoryWarn;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.SwitchesAssociated;
+import com.tlf.oss.resourceinventory.schemas.TerminalBox;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L31">public class DetermineAvailabilityController extends ValidatorEntity implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	public DetermineAvailabilityRepository determineAvailabilityRepository;
+	
+	@Inject
+	protected OSSLogger logger;
+
+	public static final String GPON = &quot;GPON&quot;;
+	public static final String METALICO = &quot;METALICO&quot;;
+	public static final String SIP = &quot;SIP&quot;;
+	public static final String VELOCIDADE_MAXIMA_GPON = &quot;307200&quot;;
+	public static final String VELOCIDADE_MAXIMA_METALLIC = &quot;51200&quot;;
+	private static final int SUCCESS = 0;
+<span class="fc" id="L47">	private static final Integer IS_BLOCKED = 1;</span>
+<span class="fc" id="L48">	private OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RISAGRE_003.getCode(), &quot;&quot;,</span>
+            Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+
+	public ResourceInventoryEntity getDetermineAvailability(@DetermineAvailability ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+<span class="fc" id="L54">		ResourceInventoryEntity result = new ResourceInventoryEntity();</span>
+<span class="fc" id="L55">		String accessTechnology = entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink()</span>
+<span class="fc" id="L56">				.getAccessTechnology();</span>
+		
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">		if (GPON.equals(accessTechnology)) {</span>
+
+<span class="fc" id="L60">			DetermineAvailabilityEntity determineAvailability = new DetermineAvailabilityEntity();</span>
+
+<span class="fc" id="L62">			determineAvailability.setCnl(Integer.parseInt(entity.getAddress().getCnl()));</span>
+<span class="fc" id="L63">			determineAvailability.setStreetCode(entity.getAddress().getStreetCode());</span>
+<span class="fc" id="L64">			determineAvailability.setStreetNumber(entity.getAddress().getStreetNrFirst());</span>
+
+<span class="fc" id="L66">			logger.log(OSSLogger.INFO, this.getClass().getName() + &quot;Realizando consulta de cobertura - Access technology: &quot; + GPON);</span>
+
+<span class="fc" id="L68">			result = getResourceInventoryEntity(</span>
+<span class="fc" id="L69">					determineAvailabilityRepository.getDetermineAvailability(determineAvailability), entity);</span>
+			
+<span class="fc" id="L71">			logger.log(OSSLogger.INFO, this.getClass().getName() + &quot;Realizada consulta de cobertura - Access technology: &quot; + GPON);</span>
+<span class="pc bnc" id="L72" title="All 2 branches missed.">		} else if (METALICO.equals(accessTechnology)) {</span>
+
+<span class="nc" id="L74">			DetermineResourceAvailabilityMetallic determineAvailabilityMetallic = new DetermineResourceAvailabilityMetallic();</span>
+
+<span class="nc" id="L76">			determineAvailabilityMetallic.setCnl(Integer.parseInt(entity.getAddress().getCnl()));</span>
+<span class="nc" id="L77">			determineAvailabilityMetallic.setStreetCode(entity.getAddress().getStreetCode());</span>
+<span class="nc" id="L78">			determineAvailabilityMetallic.setAddressNum(entity.getAddress().getStreetNrFirst());</span>
+
+<span class="nc" id="L80">			determineAvailabilityMetallic = determineAvailabilityRepository</span>
+<span class="nc" id="L81">					.getDetermineAvailabilityMetallic(determineAvailabilityMetallic);</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">			if (SUCCESS == determineAvailabilityMetallic.getReturnCode()) {</span>
+				 
+<span class="nc" id="L85">                DetermineDistanceEntity determineDistanceEntity = new DetermineDistanceEntity(entity.getAddress());</span>
+ 
+<span class="nc" id="L87">                determineDistanceEntity.setCabinetId(determineAvailabilityMetallic.getIdentEquip1());</span>
+<span class="nc" id="L88">                determineDistanceEntity.setTerminalBoxId(determineAvailabilityMetallic.getIdentEquip2());</span>
+ 
+<span class="nc" id="L90">                determineDistanceEntity = determineAvailabilityRepository.getDistance(determineDistanceEntity);</span>
+ 
+<span class="nc" id="L92">                result = getResourceInventoryMetallic(determineAvailabilityMetallic, determineDistanceEntity, entity);</span>
+ 
+<span class="nc" id="L94">            }else {</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                if (!isCoverageError(determineAvailabilityMetallic.getStatus(), determineAvailabilityMetallic.getFailDiag())) {</span>
+<span class="nc" id="L96">					falloutConfig.setErrorCode(String.valueOf(determineAvailabilityMetallic.getFailDiag() + &quot;&quot; + determineAvailabilityMetallic.getReturnCode()));</span>
+<span class="nc" id="L97">					falloutConfig.setErrorMessage(determineAvailabilityMetallic.getMessage());</span>
+<span class="nc" id="L98">					falloutConfig.setDetailMessage(determineAvailabilityMetallic.getFailDiag() + &quot;; &quot; + determineAvailabilityMetallic.getMessage());</span>
+<span class="nc" id="L99">					falloutConfig.setOriginAPIDescription(String.format(ExceptionInfoEnum.RISAGRE_003.getDescription(), &quot;GVT_SP_SOA_CONSULTA_COBERTURA&quot;));</span>
+
+<span class="nc" id="L101">					throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+                }else {
+<span class="nc" id="L103">                    result = new ResourceInventoryEntity();</span>
+                    
+<span class="nc" id="L105">                    ResourceInventoryWarn warn = new ResourceInventoryWarn();</span>
+<span class="nc" id="L106">                    warn.setCode(WarnEnum.SEM_COBERTURA.getcode());</span>
+<span class="nc" id="L107">                    result.setResourceInventoryWarn(warn);</span>
+                }
+            }
+		}
+
+<span class="fc" id="L112">		return result;</span>
+	}
+
+	public ResourceInventoryEntity getResourceInventoryEntity(DetermineAvailabilityEntity determineAvailability,
+			ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">		if (SUCCESS == determineAvailability.getReturnCode()) {</span>
+
+<span class="fc" id="L120">			String quantityPort = &quot;0&quot;;</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">			if (determineAvailability.getQuantityPort() != null) {</span>
+<span class="fc" id="L122">				quantityPort = determineAvailability.getQuantityPort().toString();</span>
+
+			}
+
+<span class="fc" id="L126">			TerminalBox terminalBox = new TerminalBox();</span>
+<span class="fc" id="L127">			terminalBox.setName(determineAvailability.getIdentEquip2());</span>
+<span class="fc" id="L128">			terminalBox.setType(determineAvailability.getEquipmentType());</span>
+<span class="fc" id="L129">			terminalBox.setPairNumber(quantityPort);</span>
+
+<span class="fc" id="L131">			Cabinet cabinet = new Cabinet();</span>
+<span class="fc" id="L132">			cabinet.setTerminalBox(terminalBox);</span>
+<span class="fc" id="L133">			cabinet.setName(determineAvailability.getCabinetName());</span>
+<span class="fc" id="L134">			cabinet.setTypeOfTopology(determineAvailability.getTypeCoverage());</span>
+<span class="fc" id="L135">			cabinet.setId(determineAvailability.getIdentEquip1());</span>
+
+<span class="fc" id="L137">			SwitchesAssociated switchesAssociated = new SwitchesAssociated();</span>
+<span class="fc" id="L138">			switchesAssociated.setName(determineAvailability.getSwitchName());</span>
+<span class="fc" id="L139">			cabinet.setSwitchesAssociated(switchesAssociated);</span>
+
+<span class="fc" id="L141">			PortAdapterCard portAdapterCard = new PortAdapterCard();</span>
+<span class="fc" id="L142">			portAdapterCard.setTechnology(GPON);</span>
+<span class="fc" id="L143">			portAdapterCard.setFreePorts(quantityPort);</span>
+<span class="fc" id="L144">			portAdapterCard.setMaxBroadbandSpeed(VELOCIDADE_MAXIMA_GPON);</span>
+
+<span class="fc" id="L146">			List&lt;Shelf&gt; shelves = new ArrayList&lt;Shelf&gt;();</span>
+<span class="fc" id="L147">			shelves.add(new Shelf());</span>
+<span class="fc" id="L148">			cabinet.setHasShelves(shelves);</span>
+<span class="fc" id="L149">			cabinet.getHasShelves().get(0).getHasCards().add(portAdapterCard);</span>
+
+<span class="fc" id="L151">			PhysicalLink physicalLink = new PhysicalLink();</span>
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">			if (getVoiceProtocolIsNotNull(entity)) {</span>
+
+<span class="fc" id="L154">				physicalLink.setVoiceProtocol(</span>
+<span class="fc" id="L155">						entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+
+			} else {
+
+<span class="nc" id="L159">				physicalLink.setVoiceProtocol(SIP);</span>
+			}
+
+
+<span class="fc bfc" id="L163" title="All 2 branches covered.">			if (determineAvailability.getTechnology() != null) {</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">                physicalLink.setAccessTechnology(determineAvailability.getTechnology() == 2 ? GPON : METALICO);        </span>
+            }
+			
+<span class="fc" id="L167">			List&lt;PhysicalLink&gt; physicalLinks = new ArrayList&lt;PhysicalLink&gt;();</span>
+<span class="fc" id="L168">			physicalLinks.add(physicalLink);</span>
+
+<span class="fc" id="L170">			entity.setCabinet(cabinet);</span>
+<span class="fc" id="L171">			entity.setPhysicalLinks(physicalLinks);</span>
+			
+<span class="fc" id="L173">		    entity.setResourceInventoryWarn(generateBlockageWarn(determineAvailability.getBlockageAddress(), determineAvailability.getBlockageEquipment()));</span>
+
+<span class="fc" id="L175">		} else {</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">			if (!isCoverageError(determineAvailability.getStatus(), determineAvailability.getFailDiag())) {</span>
+<span class="nc" id="L177">				falloutConfig.setErrorCode(String.valueOf(determineAvailability.getFailDiag() + &quot;&quot; + determineAvailability.getReturnCode()));</span>
+<span class="nc" id="L178">				falloutConfig.setErrorMessage(determineAvailability.getMessage());</span>
+<span class="nc" id="L179">				falloutConfig.setDetailMessage(determineAvailability.getFailDiag() + &quot;; &quot; + determineAvailability.getMessage());</span>
+<span class="nc" id="L180">				falloutConfig.setOriginAPIDescription(String.format(ExceptionInfoEnum.RISAGRE_003.getDescription(), &quot;GVT_SP_SOA_CONS_COB_FIBRA&quot;));</span>
+<span class="nc" id="L181">				throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+			} else {
+<span class="nc" id="L183">				entity = new ResourceInventoryEntity();</span>
+			}
+		}
+
+<span class="fc" id="L187">		return entity;</span>
+	}
+
+	public ResourceInventoryEntity getResourceInventoryMetallic(
+			DetermineResourceAvailabilityMetallic determineAvailabilityMetallic,
+			DetermineDistanceEntity determineDistance, ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="nc" id="L194">		TerminalBox terminalBox = new TerminalBox();</span>
+<span class="nc" id="L195">		terminalBox.setName(determineAvailabilityMetallic.getIdentEquip2());</span>
+<span class="nc" id="L196">		terminalBox.setType(determineAvailabilityMetallic.getEquipmentType());</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">		terminalBox.setPairNumber(determineAvailabilityMetallic.getQtdPares() != null</span>
+<span class="nc" id="L198">				? determineAvailabilityMetallic.getQtdPares().toString()</span>
+				: &quot;0&quot;);
+
+<span class="nc" id="L201">		Cabinet cabinet = new Cabinet();</span>
+<span class="nc" id="L202">		cabinet.setId(determineAvailabilityMetallic.getIdentEquip1());</span>
+<span class="nc" id="L203">		cabinet.setTerminalBox(terminalBox);</span>
+
+<span class="nc bnc" id="L205" title="All 2 branches missed.">		if (determineDistance.getDistance() != null) {</span>
+
+<span class="nc" id="L207">			cabinet.setDistance(determineDistance.getDistance().toString());</span>
+		}
+
+<span class="nc" id="L210">		String cabinetName = determineAvailabilityMetallic.getArmarioOptico();</span>
+
+<span class="nc bnc" id="L212" title="All 4 branches missed.">		if (cabinetName == null || cabinetName.isEmpty()) {</span>
+<span class="nc" id="L213">			cabinetName = determineAvailabilityMetallic.getArmarioMetalico();</span>
+		}
+<span class="nc" id="L215">		cabinet.setName(cabinetName);</span>
+
+<span class="nc" id="L217">		SwitchesAssociated switchesAssociated = new SwitchesAssociated();</span>
+<span class="nc" id="L218">		switchesAssociated.setName(determineAvailabilityMetallic.getSwitchName());</span>
+
+<span class="nc" id="L220">		cabinet.setSwitchesAssociated(switchesAssociated);</span>
+
+<span class="nc" id="L222">		PhysicalLink physicalLink = new PhysicalLink();</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">		if (getVoiceProtocolIsNotNull(entity)) {</span>
+<span class="nc" id="L224">			physicalLink.setVoiceProtocol(</span>
+<span class="nc" id="L225">					entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+
+		} else {
+
+<span class="nc" id="L229">			physicalLink.setVoiceProtocol(SIP);</span>
+		}
+
+<span class="nc bnc" id="L232" title="All 2 branches missed.">		if (determineAvailabilityMetallic.getTechnology() != null) {</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">            physicalLink.setAccessTechnology(determineAvailabilityMetallic.getTechnology() == 2 ? GPON : METALICO);        </span>
+        }
+
+<span class="nc" id="L236">		List&lt;PhysicalLink&gt; physicalLinks = new ArrayList&lt;PhysicalLink&gt;();</span>
+<span class="nc" id="L237">		physicalLinks.add(physicalLink);</span>
+
+<span class="nc" id="L239">		entity.setCabinet(cabinet);</span>
+<span class="nc" id="L240">		entity.setPhysicalLinks(physicalLinks);</span>
+<span class="nc" id="L241">	    entity.setResourceInventoryWarn(generateBlockageWarn(determineAvailabilityMetallic.getBlockageAddress(), determineAvailabilityMetallic.getBlockageEquipment()));</span>
+
+		
+<span class="nc" id="L244">		return entity;</span>
+	}
+
+	private boolean getVoiceProtocolIsNotNull(ResourceInventoryEntity entity) {
+
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">		if (entity.getAddress() != null) {</span>
+<span class="pc bpc" id="L250" title="1 of 2 branches missed.">			if (entity.getAddress().getPlacePhysicalResourceAssoc() != null) {</span>
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">				if (entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink() != null) {</span>
+<span class="fc" id="L252">					if (entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink()</span>
+<span class="pc bpc" id="L253" title="1 of 2 branches missed.">							.getVoiceProtocol() != null) {</span>
+
+<span class="fc" id="L255">						return true;</span>
+					}
+				}
+			}
+		}
+<span class="nc" id="L260">		return false;</span>
+	}
+
+	private boolean isCoverageError(int status, int failDiag) {
+<span class="nc bnc" id="L264" title="All 4 branches missed.">		if (status == 2 &amp;&amp; failDiag == 36) {</span>
+<span class="nc" id="L265">			return true;</span>
+		}
+<span class="nc" id="L267">		return false;</span>
+	}
+	
+	
+	public ResourceInventoryWarn generateBlockageWarn(Integer addressStatus, Integer equipmentStatus) {
+<span class="fc" id="L272">		ResourceInventoryWarn warn = null;</span>
+<span class="pc bpc" id="L273" title="1 of 2 branches missed.">		if (new Integer(IS_BLOCKED).equals(addressStatus)) {</span>
+<span class="nc" id="L274">			warn = new ResourceInventoryWarn();</span>
+<span class="nc" id="L275">			warn.setCode(WarnEnum.ENDERECO_BLOQUEADO.getcode());</span>
+<span class="nc" id="L276">			warn.setMessage(WarnEnum.ENDERECO_BLOQUEADO.getMessage());</span>
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">		} else if (new Integer(IS_BLOCKED).equals(equipmentStatus)) {</span>
+<span class="nc" id="L278">			warn = new ResourceInventoryWarn();</span>
+<span class="nc" id="L279">			warn.setCode(WarnEnum.EQUIPAMENTO_BLOQUEADO.getcode());</span>
+<span class="nc" id="L280">			warn.setMessage(WarnEnum.EQUIPAMENTO_BLOQUEADO.getMessage());</span>
+		}
+<span class="fc" id="L282">		return warn;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

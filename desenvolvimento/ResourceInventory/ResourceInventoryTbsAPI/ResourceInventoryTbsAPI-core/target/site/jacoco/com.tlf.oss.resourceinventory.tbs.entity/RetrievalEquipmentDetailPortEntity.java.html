@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrievalEquipmentDetailPortEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">RetrievalEquipmentDetailPortEntity.java</span></div><h1>RetrievalEquipmentDetailPortEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+
+@Entity
+@NamedStoredProcedureQueries({
+	@NamedStoredProcedureQuery(name = RetrievalEquipmentDetailPortEntity.RETRIEVAL_EQUIPMENT_DETAIL_PORT, 
+			procedureName = &quot;TLF_SP_SIGITM_GET_PORTA&quot;, resultClasses = RetrievalEquipmentDetailPortEntity.class, 
+		parameters = {
+			@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_equipment_id&quot;, type = String.class),
+			@StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, name = &quot;cur1&quot;, type = void.class),
+			@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_cod_retorno&quot;, type = String.class),
+			@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_msg_retorno&quot;, type = String.class)}) })
+<span class="nc" id="L23">public class RetrievalEquipmentDetailPortEntity implements Serializable{</span>
+
+	private static final long serialVersionUID = 1L;
+
+	public static final String RETRIEVAL_EQUIPMENT_DETAIL_PORT = &quot;retrievalEquipmentDetailPort&quot;;
+	
+	@Id
+	@Basic
+	@Column(name=&quot;PORTADDR_SEQ&quot;)
+	private String portAddrSeq;
+	
+	@Basic
+	@Column(name=&quot;NODE_ADDRESS&quot;)
+	private String nodeAddress;
+	
+	@Basic
+	@Column(name=&quot;RATE_CODE&quot;)
+	private String rateCode;
+	
+	@Basic
+	@Column(name=&quot;STATUS_PORTA&quot;)
+	private String portStatus;
+	
+	@Basic
+	@Column(name=&quot;ECCKT&quot;)
+	private String ecckt;
+	
+	@Basic
+	@Column(name=&quot;STATUS_CIRCUITO&quot;)
+	private String circuitStatus;
+	
+	@Basic
+	@Column(name=&quot;PORTADDR_SEQ_2&quot;)
+	private String portAddrSeq2;
+
+	@Basic
+	@Column(name=&quot;NODE_ADDRESS_2&quot;)
+	private String nodeAddress2;
+	
+	@Basic
+	@Column(name=&quot;RATE_CODE_2&quot;)
+	private String rateCode2;
+	
+	@Basic
+	@Column(name=&quot;STATUS_PORTA_2&quot;)
+	private String portStatus2;
+	
+	@Basic
+	@Column(name=&quot;ECCKT_2&quot;)
+	private String ecckt2;
+	
+	@Basic
+	@Column(name=&quot;STATUS_CIRCUITO_2&quot;)
+	private String circuitStatus2;
+	
+	@Basic
+	@Column(name=&quot;EQUIPMENT_ID&quot;)
+	private String equipmentId;
+	
+	@Basic
+	@Column(name=&quot;CIRCUIT_DESIGN_ID&quot;)
+	private String circuitDesignId;
+	
+	@Basic
+	@Column(name=&quot;CIRCUIT_DESIGN_ID_2&quot;)
+	private String circuitDesignId2;
+	
+	@Basic
+	@Column(name=&quot;p_cod_retorno&quot;)
+	private String codRetorno;
+	
+	@Basic
+	@Column(name=&quot;p_msg_retorno&quot;)
+	private String msgRetorno;
+
+	public String getRateCode() {
+<span class="nc" id="L99">		return rateCode;</span>
+	}
+
+	public void setRateCode(String rateCode) {
+<span class="nc" id="L103">		this.rateCode = rateCode;</span>
+<span class="nc" id="L104">	}</span>
+
+	public String getPortStatus() {
+<span class="nc" id="L107">		return portStatus;</span>
+	}
+
+	public void setPortStatus(String portStatus) {
+<span class="nc" id="L111">		this.portStatus = portStatus;</span>
+<span class="nc" id="L112">	}</span>
+
+	public String getEcckt() {
+<span class="nc" id="L115">		return ecckt;</span>
+	}
+
+	public void setEcckt(String ecckt) {
+<span class="nc" id="L119">		this.ecckt = ecckt;</span>
+<span class="nc" id="L120">	}</span>
+
+	public String getCircuitStatus() {
+<span class="nc" id="L123">		return circuitStatus;</span>
+	}
+
+	public void setCircuitStatus(String circuitStatus) {
+<span class="nc" id="L127">		this.circuitStatus = circuitStatus;</span>
+<span class="nc" id="L128">	}</span>
+
+	public String getNodeAddress2() {
+<span class="nc" id="L131">		return nodeAddress2;</span>
+	}
+
+	public void setNodeAddress2(String nodeAddress2) {
+<span class="nc" id="L135">		this.nodeAddress2 = nodeAddress2;</span>
+<span class="nc" id="L136">	}</span>
+
+	public String getRateCode2() {
+<span class="nc" id="L139">		return rateCode2;</span>
+	}
+
+	public void setRateCode2(String rateCode2) {
+<span class="nc" id="L143">		this.rateCode2 = rateCode2;</span>
+<span class="nc" id="L144">	}</span>
+
+	public String getCircuitStatus2() {
+<span class="nc" id="L147">		return circuitStatus2;</span>
+	}
+
+	public void setCircuitStatus2(String circuitStatus2) {
+<span class="nc" id="L151">		this.circuitStatus2 = circuitStatus2;</span>
+<span class="nc" id="L152">	}</span>
+
+	public String getCodRetorno() {
+<span class="nc" id="L155">		return codRetorno;</span>
+	}
+
+	public void setCodRetorno(String codRetorno) {
+<span class="nc" id="L159">		this.codRetorno = codRetorno;</span>
+<span class="nc" id="L160">	}</span>
+
+	public String getMsgRetorno() {
+<span class="nc" id="L163">		return msgRetorno;</span>
+	}
+
+	public void setMsgRetorno(String msgRetorno) {
+<span class="nc" id="L167">		this.msgRetorno = msgRetorno;</span>
+<span class="nc" id="L168">	}</span>
+
+	public String getPortAddrSeq() {
+<span class="nc" id="L171">		return portAddrSeq;</span>
+	}
+
+	public void setPortAddrSeq(String portAddrSeq) {
+<span class="nc" id="L175">		this.portAddrSeq = portAddrSeq;</span>
+<span class="nc" id="L176">	}</span>
+
+	public String getNodeAddress() {
+<span class="nc" id="L179">		return nodeAddress;</span>
+	}
+
+	public void setNodeAddress(String nodeAddress) {
+<span class="nc" id="L183">		this.nodeAddress = nodeAddress;</span>
+<span class="nc" id="L184">	}</span>
+
+	public String getPortAddrSeq2() {
+<span class="nc" id="L187">		return portAddrSeq2;</span>
+	}
+
+	public void setPortAddrSeq2(String portAddrSeq2) {
+<span class="nc" id="L191">		this.portAddrSeq2 = portAddrSeq2;</span>
+<span class="nc" id="L192">	}</span>
+
+	public String getPortStatus2() {
+<span class="nc" id="L195">		return portStatus2;</span>
+	}
+
+	public void setPortStatus2(String portStatus2) {
+<span class="nc" id="L199">		this.portStatus2 = portStatus2;</span>
+<span class="nc" id="L200">	}</span>
+
+	public String getEcckt2() {
+<span class="nc" id="L203">		return ecckt2;</span>
+	}
+
+	public void setEcckt2(String ecckt2) {
+<span class="nc" id="L207">		this.ecckt2 = ecckt2;</span>
+<span class="nc" id="L208">	}</span>
+
+	public String getEquipmentId() {
+<span class="nc" id="L211">		return equipmentId;</span>
+	}
+
+	public void setEquipmentId(String equipmentId) {
+<span class="nc" id="L215">		this.equipmentId = equipmentId;</span>
+<span class="nc" id="L216">	}</span>
+
+	public String getCircuitDesignId() {
+<span class="nc" id="L219">		return circuitDesignId;</span>
+	}
+
+	public void setCircuitDesignId(String circuitDesignId) {
+<span class="nc" id="L223">		this.circuitDesignId = circuitDesignId;</span>
+<span class="nc" id="L224">	}</span>
+
+	public String getCircuitDesignId2() {
+<span class="nc" id="L227">		return circuitDesignId2;</span>
+	}
+
+	public void setCircuitDesignId2(String circuitDesignId2) {
+<span class="nc" id="L231">		this.circuitDesignId2 = circuitDesignId2;</span>
+<span class="nc" id="L232">	}	</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

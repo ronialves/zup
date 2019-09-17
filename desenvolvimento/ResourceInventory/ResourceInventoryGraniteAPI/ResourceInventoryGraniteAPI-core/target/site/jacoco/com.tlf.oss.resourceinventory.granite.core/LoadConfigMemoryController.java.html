@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoadConfigMemoryController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">LoadConfigMemoryController.java</span></div><h1>LoadConfigMemoryController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.DependsOn;
+import javax.ejb.Startup;
+import javax.inject.Inject;
+
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveUdaEntity;
+import com.tlf.oss.resourceinventory.granite.core.repository.RetrieveConfigUDADao;
+@Startup
+@DependsOn(&quot;RetrieveConfigUDADao&quot;)
+<span class="fc" id="L15">public class LoadConfigMemoryController {</span>
+
+	@Inject
+	RetrieveConfigUDADao rdao;
+
+<span class="fc" id="L20">	public List&lt;RetrieveUdaEntity&gt; mapResult = new ArrayList&lt;RetrieveUdaEntity&gt;();</span>
+
+	@PostConstruct
+	public void getRetrieveListUDA() {
+		//Validação para saber se é MSAN
+<span class="fc" id="L25">		mapResult = rdao.getRetrieveUDAConfig();</span>
+
+<span class="fc" id="L27">	}</span>
+
+	public List&lt;RetrieveUdaEntity&gt; getMapResult() {
+<span class="nc" id="L30">		return mapResult;</span>
+	}
+
+	public void setMapResult(List&lt;RetrieveUdaEntity&gt; mapResult) {
+<span class="nc" id="L34">		this.mapResult = mapResult;</span>
+<span class="nc" id="L35">	}</span>
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

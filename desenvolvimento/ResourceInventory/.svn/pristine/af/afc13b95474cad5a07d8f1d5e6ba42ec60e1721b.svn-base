@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/AddressTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="Address">
+		<xs:sequence>
+			<!-- Código do Site -->
+			<xs:element minOccurs="0" name="siteCode" type="st:string40"></xs:element>
+			<!-- Código da Localidade do endereço -->
+			<xs:element minOccurs="0" name="cityCode" type="st:integer9"></xs:element>
+			<!-- Código do Logradouro -->
+			<xs:element minOccurs="0" name="streetCode" type="st:string12"></xs:element>
+			<!-- Tipo do Logradouro -->
+			<xs:element minOccurs="0" name="streetType" type="st:string10"></xs:element>
+			<!-- Titulo do Logradouro -->
+			<xs:element minOccurs="0" name="streetTitle" type="st:string10"></xs:element>
+			<!-- Nome do Logradouro -->
+			<xs:element minOccurs="0" name="streetName" type="st:string60"></xs:element>
+			<!-- Número do Lote -->
+			<xs:element minOccurs="0" name="streetNumber" type="st:string35"></xs:element>
+			<!-- Cruzamento (Incluído na interface mas de uso não definido) -->
+			<xs:element minOccurs="0" name="crossingStreetCode" type="st:string12"></xs:element>
+			<!-- Quadra (Incluído na interface mas de uso não definido) -->
+			<xs:element minOccurs="0" name="block" type="st:string12"></xs:element>
+			<!-- Número na Quadra (Incluído na interface mas de uso não definido) -->
+			<xs:element minOccurs="0" name="blockNumber" type="st:string35"></xs:element>
+			<!-- CEP (Incluído na interface mas de uso limitado) -->
+			<xs:element minOccurs="0" name="zipCode" type="st:string10"></xs:element>
+			<!-- Coordenada X -->
+			<xs:element minOccurs="0" name="coordinateX" type="st:GenericCoordType"></xs:element>
+			<!-- Coordenada Y -->
+			<xs:element minOccurs="0" name="coordinateY" type="st:GenericCoordType"></xs:element>
+			<!-- Complemento de Endereço -->
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="subUnit">
+				<xs:complexType>
+					<xs:sequence>
+						<!-- Característica (1 - Horizontal, 2 - Vertical) -->
+						<xs:element minOccurs="0" name="characterist">
+							<xs:simpleType>
+								<xs:restriction base="xs:integer">
+									<xs:pattern value="1|2"></xs:pattern>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<!-- Tipos de Complemento (preconfigurados) -->
+						<xs:element minOccurs="0" name="type" type="st:string03"></xs:element>
+						<!-- Valor -->
+						<xs:element minOccurs="0" name="Value" type="st:string40"></xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,97 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:rs="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes" xmlns:ro="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes" xmlns:dr="http://www.cpqd.com.br/etics/DedicatedResourceTypes" xmlns:ce="http://www.cpqd.com.br/etics/customelements" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/SupplementaryInformationBDTypes">
+<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes" schemaLocation="ResourceServiceInfoTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes" schemaLocation="ResourceOrderInfoTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/DedicatedResourceTypes" schemaLocation="DedicatedResourceTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/customelements" schemaLocation="CustomElements.xsd"/>
+<xs:complexType name="SupplementaryInformationIn">
+<xs:sequence>
+<xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo"/>
+<xs:element minOccurs="0" name="resourceService" type="rs:ResourceService"/>
+<!--  Lista de campos de tipo chave-valor  -->
+<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="SupplementaryInformationOut">
+<xs:sequence>
+<!--  Documento  -->
+<xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo"/>
+<!--  Dados do Número de Serviço Metálico  -->
+<xs:element minOccurs="0" name="resourceServiceCopper" type="rs:ResourceService"/>
+<!--  Dados do Número de Serviço LP  -->
+<xs:element minOccurs="0" name="resourceServiceLP" type="rs:ResourceService"/>
+<!--  Dados do Número de Serviço FTTx  -->
+<xs:element minOccurs="0" name="resourceServiceFTTx" type="rs:ResourceService"/>
+<!--  Data e hora do processamento  -->
+<xs:element minOccurs="0" name="timeStamp" type="st:string19"/>
+<!--  Cabo de assinante calibre aéreo  -->
+<xs:element minOccurs="0" name="cableSubscriberAirGauge" type="st:string3"/>
+<!--  Cabo de assinante calibre subterrâneo -->
+<xs:element minOccurs="0" name="cableSubscriberUndergroundGauge" type="st:string3"/>
+<!--  Metragem do cabo de assinante aéreo  -->
+<xs:element minOccurs="0" name="metreageAirSubscriberCable" type="st:string5"/>
+<!--  Metragem do cabo de assinante subterrâneo  -->
+<xs:element minOccurs="0" name="metreageUndergroundSubscriberCable" type="st:string5"/>
+<!--  Observação  -->
+<xs:element minOccurs="0" name="observation" type="st:string75"/>
+<!--  Data e hora da execução do serviço  -->
+<xs:element minOccurs="0" name="serviceExecutionTimestamp" type="st:string19"/>
+<!--  Número do par alimentador pupinizado  -->
+<xs:element minOccurs="0" name="pupFeederPairNum" type="st:string4"/>
+<!--  Seção de Serviço  -->
+<xs:element minOccurs="0" name="serviceArea" type="st:string30"/>
+<!--
+ Local de instalação do terminal de fibra óptico (do tipo emenda e com splitter) 
+-->
+<xs:element minOccurs="0" name="tfoInstallPlace" type="st:string10"/>
+<!--
+ Tipo Local do terminal de fibra óptico (do tipo emenda e com splitter) 
+-->
+<xs:element minOccurs="0" name="tfoInstallTypePlace" type="st:string3"/>
+<!--  Atendimento  -->
+<xs:element minOccurs="0" name="tfoAttendance" type="st:string20"/>
+<!--
+ Local da Instalação do Splitter no Site com classificação de tipo "Terminal" ou no Terminal de fibras com função "Acesso" 
+-->
+<xs:element minOccurs="0" name="splitterInstallPlace" type="st:string10"/>
+<!--
+ Tipo Local do Splitter no Site com classificação de tipo "Terminal" ou no Terminal de fibras com função "Acesso" 
+-->
+<xs:element minOccurs="0" name="splitterInstallTypePlace" type="st:string3"/>
+<!--  Atendimento  -->
+<xs:element minOccurs="0" name="splitterAttendance" type="st:string20"/>
+<!--
+ Local da Instalação do Site com classificação de tipo "Terminal" ou no Terminal de fibras com função "Acesso" FTTX 
+-->
+<xs:element minOccurs="0" name="terminalSiteInstallPlace" type="st:string10"/>
+<!--
+ Tipo Local do Site com classificação de tipo "Terminal" ou no Terminal de fibras com função "Acesso" FTTX 
+-->
+<xs:element minOccurs="0" name="terminalSiteInstallTypePlace" type="st:string3"/>
+<!--  Atendimento  -->
+<xs:element minOccurs="0" name="terminalSiteAttendance" type="st:string20"/>
+<!--  Código do Slot Cliente  -->
+<xs:element minOccurs="0" name="slotClientCode" type="st:string50"/>
+<!--  Número da Porta do Slot Cliente  -->
+<xs:element minOccurs="0" name="slotClientPort" type="st:string10"/>
+<!--  Código do Slot Uplink  -->
+<xs:element minOccurs="0" name="slotUplinkCode" type="st:string50"/>
+<!--  Número da Porta do Slot Uplink  -->
+<xs:element minOccurs="0" name="slotUplinkPort" type="st:string10"/>
+<!--  Quantidade de número de serviço  -->
+<xs:element minOccurs="0" name="unitQty" type="st:integer2"/>
+<!--  Número do distribuidor geral  -->
+<xs:element minOccurs="0" name="dGNumber" type="st:string50"/>
+<!--  Número do vertical no distribuidor geral  -->
+<xs:element minOccurs="0" name="dGVerticalNumber" type="st:string50"/>
+<!--  Dedicação  -->
+<xs:element minOccurs="0" name="dedicatedResource" type="dr:DedicatedResource"/>
+<!--  Posição Logica do Cliente  -->
+<xs:element minOccurs="0" name="clientLogicalPosition" type="st:integer4"/>
+<!--  Flag Overlapped Net   -->
+<xs:element minOccurs="0" name="overlappedNetFlag" type="st:string1"/>
+<!--  Lista de campos de tipo chave-valor  -->
+<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

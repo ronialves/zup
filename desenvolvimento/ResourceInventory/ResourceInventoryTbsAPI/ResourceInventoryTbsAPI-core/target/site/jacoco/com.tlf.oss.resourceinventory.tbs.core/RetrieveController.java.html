@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrieveController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core</a> &gt; <span class="el_source">RetrieveController.java</span></div><h1>RetrieveController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.schemas.AtomicNetworkAddress;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.IPAddress;
+import com.tlf.oss.resourceinventory.schemas.LogicalResource;
+import com.tlf.oss.resourceinventory.schemas.LogicalResourceAssociation;
+import com.tlf.oss.resourceinventory.schemas.NetworkAddressAssociation;
+import com.tlf.oss.resourceinventory.schemas.NetworkRoute;
+import com.tlf.oss.resourceinventory.schemas.NetworkRouteAssociation;
+import com.tlf.oss.resourceinventory.schemas.PhysicalPort;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ResourceCharacteristicSpecification;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.SwitchesAssociated;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrieveAssignedTelNumEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrieveEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrieveNetworkLocationEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.RetrieveInfoType;
+import com.tlf.oss.resourceinventory.tbs.repository.RetrieveRepository;
+
+<span class="nc" id="L37">public class RetrieveController extends ValidatorEntity implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	public RetrieveRepository retrieveRepository;
+
+	public ResourceInventoryEntity getRetrieve(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="nc" id="L46">		ResourceInventoryEntity result_CROSS_CONNECTION_INFO = null;</span>
+<span class="nc" id="L47">		ResourceInventoryEntity result_NETWORK_SYNC_INFO = null;</span>
+<span class="nc" id="L48">		ResourceInventoryEntity result_RANGE_CORPORATE = null;</span>
+		
+<span class="nc bnc" id="L50" title="All 4 branches missed.">		if (null != entity.getResourceOrder() &amp;&amp; null != entity.getResourceOrder().getResourceOrderItem().getId() &amp;&amp; </span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">			!&quot;&quot;.equals(entity.getResourceOrder().getResourceOrderItem().getId())) {</span>
+
+<span class="nc" id="L53">			RetrieveEntity retrieveEntityCrossConnection = new RetrieveEntity();</span>
+<span class="nc" id="L54">			retrieveEntityCrossConnection.setDocumentNumber(Integer.valueOf(entity.getResourceOrder().getResourceOrderItem().getId()));</span>
+<span class="nc" id="L55">			retrieveEntityCrossConnection = retrieveRepository.getRetrieveCrossConnectionInfo(retrieveEntityCrossConnection);</span>
+			
+<span class="nc bnc" id="L57" title="All 2 branches missed.">			if (retrieveEntityCrossConnection.getErro() == 0) {				</span>
+<span class="nc" id="L58">				result_CROSS_CONNECTION_INFO = getResourceInventoryEntity(retrieveEntityCrossConnection, RetrieveInfoType.CROSS_CONNECTION_INFO);</span>
+			}
+			
+<span class="nc" id="L61">			RetrieveEntity retrieveEntityNetworkSync = null;</span>
+			
+<span class="nc bnc" id="L63" title="All 2 branches missed.">			if (null != entity.getResourceFacingService()) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">				if ((null != entity.getResourceOrder().getResourceOrderItem().getId()</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">						&amp;&amp; !&quot;&quot;.equals(entity.getResourceOrder().getResourceOrderItem().getId()))</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">						&amp;&amp; (null != entity.getResourceFacingService().getStatus()</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">						&amp;&amp; !&quot;&quot;.equals(entity.getResourceFacingService().getStatus()))) {</span>
+					
+<span class="nc" id="L69">					retrieveEntityNetworkSync = new RetrieveEntity();</span>
+<span class="nc" id="L70">					retrieveEntityNetworkSync.setDocumentNumber(Integer.valueOf(entity.getResourceOrder().getResourceOrderItem().getId()));</span>
+<span class="nc" id="L71">					retrieveEntityNetworkSync.setCircuitActivityInd(entity.getResourceFacingService().getStatus());</span>
+<span class="nc" id="L72">					retrieveEntityNetworkSync = retrieveRepository.getRetrieveNetworkSyncInfo(retrieveEntityNetworkSync);</span>
+					
+<span class="nc bnc" id="L74" title="All 2 branches missed.">					if (retrieveEntityNetworkSync.getErro() == 0) {							</span>
+<span class="nc" id="L75">						result_NETWORK_SYNC_INFO = getResourceInventoryEntity(retrieveEntityNetworkSync, RetrieveInfoType.NETWORK_SYNC_INFO);</span>
+					}
+				}
+			}
+			
+<span class="nc bnc" id="L80" title="All 4 branches missed.">			if (retrieveEntityCrossConnection.getErro() != 0 &amp;&amp; </span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">			   (retrieveEntityNetworkSync == null || retrieveEntityNetworkSync.getErro() != 0)) {</span>
+				
+<span class="nc bnc" id="L83" title="All 2 branches missed.">				String msg =  RetrieveInfoType.CROSS_CONNECTION_INFO.toString() + &quot;: &quot; + retrieveEntityCrossConnection.getMsg() + </span>
+<span class="nc" id="L84">						(retrieveEntityNetworkSync != null ? (&quot;; &quot; + RetrieveInfoType.NETWORK_SYNC_INFO.toString() + &quot;: &quot; + retrieveEntityNetworkSync.getMsg()) : &quot;&quot;);</span>
+				
+<span class="nc" id="L86">				throw new OSSBusinessException(&quot;ERRO: &quot; + retrieveEntityCrossConnection.getErro(), &quot;RITBS-001&quot;, &quot;&quot; + msg);</span>
+				
+			}
+<span class="nc" id="L89">		}else {</span>
+<span class="nc bnc" id="L90" title="All 4 branches missed.">			if (null != entity.getCustomerOrder() &amp;&amp; !&quot;&quot;.equals(entity.getCustomerOrder().getPurchaseOrderNumber())) {</span>
+<span class="nc" id="L91">				String purchaseOrderNumber = entity.getCustomerOrder().getPurchaseOrderNumber();</span>
+				
+<span class="nc" id="L93">				RetrieveAssignedTelNumEntity retrieveAssignedTelNumEntity = new RetrieveAssignedTelNumEntity();</span>
+<span class="nc" id="L94">				retrieveAssignedTelNumEntity = retrieveRepository.getRetrieveAssignedTelNumEntity(purchaseOrderNumber);</span>
+				
+<span class="nc" id="L96">				String documentNumber = retrieveAssignedTelNumEntity.getDocumentNumber();</span>
+				
+<span class="nc" id="L98">				RetrieveNetworkLocationEntity retrieveNetworkLocationEntity = new RetrieveNetworkLocationEntity();</span>
+<span class="nc" id="L99">				retrieveNetworkLocationEntity = retrieveRepository.getNetworkLocationEntity(purchaseOrderNumber, documentNumber);</span>
+				
+<span class="nc" id="L101">				result_RANGE_CORPORATE = getResourceRangeCorporate(retrieveAssignedTelNumEntity, retrieveNetworkLocationEntity);</span>
+			}
+		}
+
+<span class="nc" id="L105">		return enrichResourceInventoryEntity(result_CROSS_CONNECTION_INFO, result_NETWORK_SYNC_INFO, result_RANGE_CORPORATE);</span>
+	}
+
+	/**
+	 * 
+	 * @param retrieveAssignedTelNumEntity
+	 * @param retrieveNetworkLocationEntity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getResourceRangeCorporate(RetrieveAssignedTelNumEntity retrieveAssignedTelNumEntity, 
+								RetrieveNetworkLocationEntity retrieveNetworkLocationEntity)
+			throws OSSBusinessException {
+
+<span class="nc" id="L119">		ResourceInventoryEntity result = createInstance();</span>
+		
+		
+<span class="nc" id="L122">		SwitchesAssociated switchesAssociated = new SwitchesAssociated();</span>
+<span class="nc" id="L123">		switchesAssociated.setName(retrieveNetworkLocationEntity.getCLLICode());</span>
+		
+<span class="nc" id="L125">		result.getCabinet().setSwitchesAssociated(switchesAssociated);</span>
+		
+		
+<span class="nc" id="L128">		ServiceDescribedBy serviceDescribedBy = new ServiceDescribedBy();</span>
+<span class="nc" id="L129">		serviceDescribedBy.setName(&quot;DOCUMENT_NUMBER&quot;);</span>
+<span class="nc" id="L130">		ServiceSpecCharDescribes serviceSpecCharDescribesBy = new ServiceSpecCharDescribes();</span>
+<span class="nc" id="L131">		serviceSpecCharDescribesBy.setValue(retrieveAssignedTelNumEntity.getDocumentNumber());</span>
+<span class="nc" id="L132">		serviceDescribedBy.getServiceSpecCharDescribes().add(serviceSpecCharDescribesBy);</span>
+		
+<span class="nc" id="L134">		result.getCustomerFacingService().get(0).getServiceDescribedBy().add(serviceDescribedBy);</span>
+		
+		
+<span class="nc" id="L137">		serviceDescribedBy = new ServiceDescribedBy();</span>
+<span class="nc" id="L138">		serviceDescribedBy.setName(&quot;INITIAL_RANGE&quot;);</span>
+<span class="nc" id="L139">		serviceSpecCharDescribesBy = new ServiceSpecCharDescribes();</span>
+<span class="nc" id="L140">		serviceSpecCharDescribesBy.setValue(retrieveAssignedTelNumEntity.getRangeInicial());</span>
+<span class="nc" id="L141">		serviceDescribedBy.getServiceSpecCharDescribes().add(serviceSpecCharDescribesBy);</span>
+		
+<span class="nc" id="L143">		result.getCustomerFacingService().get(0).getServiceDescribedBy().add(serviceDescribedBy);</span>
+		
+		
+<span class="nc" id="L146">		serviceDescribedBy = new ServiceDescribedBy();</span>
+<span class="nc" id="L147">		serviceDescribedBy.setName(&quot;FINAL_RANGE&quot;);</span>
+<span class="nc" id="L148">		serviceSpecCharDescribesBy = new ServiceSpecCharDescribes();</span>
+<span class="nc" id="L149">		serviceSpecCharDescribesBy.setValue(retrieveAssignedTelNumEntity.getRangeFinal());</span>
+<span class="nc" id="L150">		serviceDescribedBy.getServiceSpecCharDescribes().add(serviceSpecCharDescribesBy);</span>
+		
+<span class="nc" id="L152">		result.getCustomerFacingService().get(0).getServiceDescribedBy().add(serviceDescribedBy);</span>
+		
+<span class="nc" id="L154">		return result;</span>
+		
+	}
+
+	
+	
+	public ResourceInventoryEntity getResourceInventoryEntity(RetrieveEntity entity, RetrieveInfoType retrieveInfoType)
+			throws OSSBusinessException {
+
+<span class="nc" id="L163">		ResourceInventoryEntity result = createInstance();</span>
+
+<span class="nc bnc" id="L165" title="All 2 branches missed.">		if (retrieveInfoType == RetrieveInfoType.CROSS_CONNECTION_INFO) {</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">			result.getCabinet().getHasShelves().get(0).setSlotId(null != entity.getSlot() ? entity.getSlot() : null);</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">			result.getCabinet().getHasShelves().get(0).getHasCards().get(0).getContainsPorts().get(0).setId(null != entity.getPortaFisica() ? entity.getPortaFisica() : null);</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">			result.getCabinet().getHasShelves().get(0).getHasCards().get(0).getContainsPorts().get(0).getLogicalResourceAssociation().getLogicalResource().get(0).getNetworkRouteAssociation().getNetworkRoute().get(0).setVirtualPort(String.valueOf(null != entity.getPortaLogica() ? entity.getPortaLogica() : null));</span>
+<span class="nc" id="L169">			result.getCabinet().getHasShelves().get(0).getHasCards().get(0).getContainsPorts().get(0).getLogicalResourceAssociation().getLogicalResource().get(0).getNetworkRouteAssociation().getNetworkRoute().get(0).setType(&quot;VOZ&quot;);</span>
+
+<span class="nc bnc" id="L171" title="All 2 branches missed.">			if(entity.getVendorName() != null) {</span>
+				
+<span class="nc" id="L173">				boolean alreadyHasVendor = false;</span>
+				
+<span class="nc bnc" id="L175" title="All 4 branches missed.">				if (result.getCabinet() != null &amp;&amp; result.getCabinet().getHasShelves() != null &amp;&amp; </span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">					result.getCabinet().getHasShelves().size() &gt; 0 &amp;&amp; </span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">					result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications() != null) {</span>
+					
+<span class="nc bnc" id="L179" title="All 2 branches missed.">					for (ResourceCharacteristicSpecification spec : result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications()) {</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">						if (&quot;VENDOR&quot;.equals(spec.getId())) {</span>
+<span class="nc" id="L181">							alreadyHasVendor = true;</span>
+<span class="nc" id="L182">							break;</span>
+						}
+<span class="nc" id="L184">					} </span>
+				}
+<span class="nc bnc" id="L186" title="All 2 branches missed.">				if (!alreadyHasVendor) {					</span>
+<span class="nc" id="L187">					ResourceCharacteristicSpecification rce = new ResourceCharacteristicSpecification();</span>
+<span class="nc" id="L188">					rce.setId(&quot;VENDOR&quot;);</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">					rce.setValue(null != entity.getVendorName() ? entity.getVendorName() : null);</span>
+<span class="nc" id="L190">					result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications().add(rce);</span>
+				}
+			}
+
+<span class="nc bnc" id="L194" title="All 2 branches missed.">			if(null != entity.getV5id()) {</span>
+<span class="nc" id="L195">				ResourceCharacteristicSpecification rce = new ResourceCharacteristicSpecification();</span>
+<span class="nc" id="L196">				rce.setId(&quot;V5ID_VOZ&quot;);</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">				rce.setValue(null != entity.getV5id() ? entity.getV5id() : null);</span>
+<span class="nc" id="L198">				result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications().add(rce);</span>
+			}
+<span class="nc bnc" id="L200" title="All 2 branches missed.">			result.getCabinet().setFeederCable(null != entity.getTributario() ? entity.getTributario() : null);</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">			result.getResourceFacingService().setStatus(null != entity.getCircuitActivityInd() ? entity.getCircuitActivityInd() : null);</span>
+
+<span class="nc bnc" id="L203" title="All 2 branches missed.">		} else if (retrieveInfoType == RetrieveInfoType.NETWORK_SYNC_INFO) {</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">			result.getCabinet().getHasShelves().get(0).setSlotId(null != entity.getSlot() ? entity.getSlot() : null);</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">			result.getCabinet().getHasShelves().get(0).getHasCards().get(0).getContainsPorts().get(0).setId(null != entity.getPortaFisica() ? entity.getPortaFisica() : null);</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">			result.getCabinet().getHasShelves().get(0).getHasCards().get(0).getContainsPorts().get(0).getLogicalResourceAssociation().getLogicalResource().get(0).getNetworkRouteAssociation().getNetworkRoute().get(0).setVirtualPort(String.valueOf(null != entity.getPortaLogica() ? entity.getPortaLogica() : null));</span>
+<span class="nc" id="L207">			result.getCabinet().getHasShelves().get(0).getHasCards().get(0).getContainsPorts().get(0).getLogicalResourceAssociation().getLogicalResource().get(0).getNetworkRouteAssociation().getNetworkRoute().get(0).setType(&quot;INTERNET&quot;);</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">			if(null != entity.getV5id()) {</span>
+<span class="nc" id="L209">				ResourceCharacteristicSpecification rce = new ResourceCharacteristicSpecification();</span>
+<span class="nc" id="L210">				rce.setId(&quot;V5ID_DADOS&quot;);</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">				rce.setValue(null != entity.getV5id() ? entity.getV5id() : null);</span>
+<span class="nc" id="L212">				result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications().add(rce);</span>
+			}
+<span class="nc bnc" id="L214" title="All 2 branches missed.">			result.getCabinet().getHasShelves().get(0).getHasCards().get(0).setModel(null != entity.getModeloPlaca() ? entity.getModeloPlaca() : null);</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">			if(null != entity.getNameDslam()) {</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">				result.getCabinet().getHasShelves().get(0).getNetworkAddressAssociation().getAtomicNetworkAddress().setHostname(null != entity.getNameDslam() ? entity.getNameDslam() : null);</span>
+			}
+<span class="nc bnc" id="L218" title="All 2 branches missed.">			if(null != entity.getRin()) {</span>
+<span class="nc" id="L219">				LogicalResourceAssociation lra = new LogicalResourceAssociation();</span>
+<span class="nc" id="L220">				List&lt;LogicalResource&gt; lrs = new ArrayList&lt;LogicalResource&gt;();</span>
+<span class="nc" id="L221">				LogicalResource lr = new LogicalResource();</span>
+<span class="nc" id="L222">				NetworkRouteAssociation nra = new NetworkRouteAssociation();</span>
+<span class="nc" id="L223">				List&lt;NetworkRoute&gt; nrs = new ArrayList&lt;NetworkRoute&gt;();</span>
+<span class="nc" id="L224">				NetworkRoute nr = new NetworkRoute();</span>
+<span class="nc" id="L225">				nrs.add(nr);</span>
+<span class="nc" id="L226">				nra.getNetworkRoute().addAll(nrs);</span>
+<span class="nc" id="L227">				lr.setNetworkRouteAssociation(nra);</span>
+<span class="nc" id="L228">				lrs.add(lr);</span>
+<span class="nc" id="L229">				lra.getLogicalResource().addAll(lrs);</span>
+<span class="nc" id="L230">				result.getCabinet().getHasShelves().get(0).setLogicalResourceAssociation(lra);</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">				result.getCabinet().getHasShelves().get(0).getLogicalResourceAssociation().getLogicalResource().get(0).getNetworkRouteAssociation().getNetworkRoute().get(0).setVlanId(null != entity.getRin() ? entity.getRin() : null);</span>
+			}
+<span class="nc bnc" id="L233" title="All 2 branches missed.">			if(null != entity.getSvlan()) {</span>
+<span class="nc" id="L234">				ResourceCharacteristicSpecification rce = new ResourceCharacteristicSpecification();</span>
+<span class="nc" id="L235">				rce.setId(&quot;SVLAN&quot;);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">				rce.setValue(null != entity.getSvlan() ? entity.getSvlan() : null);</span>
+<span class="nc" id="L237">				result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications().add(rce);</span>
+			}
+
+<span class="nc bnc" id="L240" title="All 2 branches missed.">			if(null != entity.getSvlan()) {</span>
+<span class="nc" id="L241">				ResourceCharacteristicSpecification rce = new ResourceCharacteristicSpecification();</span>
+<span class="nc" id="L242">				rce.setId(&quot;CVLAN&quot;);</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">				rce.setValue(null != entity.getCvlan() ? entity.getCvlan() : null);</span>
+<span class="nc" id="L244">				result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications().add(rce);</span>
+			}
+
+<span class="nc" id="L247">			ServiceDescribedBy sdb = new ServiceDescribedBy();</span>
+<span class="nc" id="L248">			sdb.setName(&quot;BROADBANDVELOCITY&quot;);</span>
+<span class="nc" id="L249">			result.getResourceFacingService().getServiceDescribedBy().add(sdb);</span>
+
+<span class="nc bnc" id="L251" title="All 2 branches missed.">			if(null != entity.getDownstream()) {</span>
+<span class="nc" id="L252">				ServiceSpecCharDescribes sscd = new ServiceSpecCharDescribes();</span>
+<span class="nc" id="L253">				sscd.setId(&quot;DOWNLOAD&quot;);</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">				sscd.setValue(null != entity.getDownstream() ? entity.getDownstream() :null);</span>
+<span class="nc" id="L255">				result.getResourceFacingService().getServiceDescribedBy().get(0).getServiceSpecCharDescribes().add(sscd);</span>
+			}
+<span class="nc bnc" id="L257" title="All 2 branches missed.">			if(null != entity.getUpstream()) {</span>
+<span class="nc" id="L258">				ServiceSpecCharDescribes sscd = new ServiceSpecCharDescribes();</span>
+<span class="nc" id="L259">				sscd.setId(&quot;UPLOAD&quot;);</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">				sscd.setValue(null != entity.getUpstream() ? entity.getUpstream() :null);</span>
+<span class="nc" id="L261">				result.getResourceFacingService().getServiceDescribedBy().get(0).getServiceSpecCharDescribes().add(sscd);</span>
+			}
+<span class="nc bnc" id="L263" title="All 2 branches missed.">			if(entity.getVendorName() != null) {</span>
+				
+<span class="nc" id="L265">				boolean alreadyHasVendor = false;</span>
+				
+<span class="nc bnc" id="L267" title="All 4 branches missed.">				if (result.getCabinet() != null &amp;&amp; result.getCabinet().getHasShelves() != null &amp;&amp; </span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">					result.getCabinet().getHasShelves().size() &gt; 0 &amp;&amp; </span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">					result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications() != null) {</span>
+					
+<span class="nc bnc" id="L271" title="All 2 branches missed.">					for (ResourceCharacteristicSpecification spec : result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications()) {</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">						if (&quot;VENDOR&quot;.equals(spec.getId())) {</span>
+<span class="nc" id="L273">							alreadyHasVendor = true;</span>
+<span class="nc" id="L274">							break;</span>
+						}
+<span class="nc" id="L276">					} </span>
+				}
+<span class="nc bnc" id="L278" title="All 2 branches missed.">				if (!alreadyHasVendor) {					</span>
+<span class="nc" id="L279">					ResourceCharacteristicSpecification rce = new ResourceCharacteristicSpecification();</span>
+<span class="nc" id="L280">					rce.setId(&quot;VENDOR&quot;);</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">					rce.setValue(null != entity.getVendorName() ? entity.getVendorName() : null);</span>
+<span class="nc" id="L282">					result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications().add(rce);</span>
+				}
+			}
+		}
+
+<span class="nc bnc" id="L287" title="All 2 branches missed.">		result.getResourceOrder().getResourceOrderItem().setId(null != entity.getDocumentNumber() ? String.valueOf(entity.getDocumentNumber()) : null);</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">		result.getCabinet().getHasShelves().get(0).setTypeOfResource(null != entity.getTypeOfResource() ? entity.getTypeOfResource() : null);</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">		result.getResourceOrder().getResourceOrderItem().setId(null != String.valueOf(entity.getDocumentNumber()) ? String.valueOf(entity.getDocumentNumber()) : null);</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">		result.getCabinet().getHasShelves().get(0).getIpController().setNetworkNumber(null != entity.getIpAddress() ? entity.getIpAddress() : null);</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">		result.getResourceFacingService().setServiceId(null != entity.getInstancia() ? entity.getInstancia() : null);</span>
+
+<span class="nc" id="L293">		return result;</span>
+	}
+
+	/**
+	 * Cria uma instancia do ResourceInventoryEntity para retorno
+	 * 
+	 * @return ResourceInventoryEntity
+	 */
+	private ResourceInventoryEntity createInstance() {
+		
+<span class="nc" id="L303">		ResourceInventoryEntity result = new ResourceInventoryEntity();</span>
+
+<span class="nc" id="L305">		ResourceOrder resourceOrder = new ResourceOrder();</span>
+<span class="nc" id="L306">		ResourceOrderItem resourceOrderItem = new ResourceOrderItem();</span>
+<span class="nc" id="L307">		resourceOrder.setResourceOrderItem(resourceOrderItem);</span>
+<span class="nc" id="L308">		result.setResourceOrder(resourceOrder);</span>
+
+<span class="nc" id="L310">		Cabinet cabinet = new Cabinet();</span>
+<span class="nc" id="L311">		List&lt;Shelf&gt; hasShelves = new ArrayList&lt;Shelf&gt;();</span>
+<span class="nc" id="L312">		Shelf shelf = new Shelf();</span>
+<span class="nc" id="L313">		NetworkAddressAssociation networkAddressAssociation = new NetworkAddressAssociation();</span>
+<span class="nc" id="L314">		AtomicNetworkAddress atomicNetworkAddress = new AtomicNetworkAddress();</span>
+<span class="nc" id="L315">		List&lt;ResourceCharacteristicSpecification&gt; resourceCharacteristicSpecifications = new ArrayList&lt;ResourceCharacteristicSpecification&gt;();</span>
+<span class="nc" id="L316">		IPAddress ipController = new IPAddress();</span>
+<span class="nc" id="L317">		List&lt;PortAdapterCard&gt; hasCards = new ArrayList&lt;PortAdapterCard&gt;();</span>
+<span class="nc" id="L318">		PortAdapterCard portAdapterCard = new PortAdapterCard();</span>
+<span class="nc" id="L319">		List&lt;PhysicalPort&gt; containsPorts = new ArrayList&lt;PhysicalPort&gt;();</span>
+<span class="nc" id="L320">		PhysicalPort physicalPort = new PhysicalPort();</span>
+<span class="nc" id="L321">		LogicalResourceAssociation logicalResourceAssociation = new LogicalResourceAssociation();</span>
+<span class="nc" id="L322">		List&lt;LogicalResource&gt; logicalResources = new ArrayList&lt;LogicalResource&gt;();</span>
+<span class="nc" id="L323">		LogicalResource LogicalResource = new LogicalResource();</span>
+<span class="nc" id="L324">		NetworkRouteAssociation networkRouteAssociation = new NetworkRouteAssociation();</span>
+<span class="nc" id="L325">		List&lt;NetworkRoute&gt; networkRoutes = new ArrayList&lt;NetworkRoute&gt;();</span>
+<span class="nc" id="L326">		NetworkRoute networkRoute = new NetworkRoute();</span>
+<span class="nc" id="L327">		networkRoutes.add(networkRoute);</span>
+<span class="nc" id="L328">		networkRouteAssociation.getNetworkRoute().addAll(networkRoutes);</span>
+<span class="nc" id="L329">		LogicalResource.setNetworkRouteAssociation(networkRouteAssociation);</span>
+<span class="nc" id="L330">		logicalResources.add(LogicalResource);</span>
+<span class="nc" id="L331">		logicalResourceAssociation.getLogicalResource().addAll(logicalResources);</span>
+<span class="nc" id="L332">		physicalPort.setLogicalResourceAssociation(logicalResourceAssociation);</span>
+<span class="nc" id="L333">		containsPorts.add(physicalPort);</span>
+<span class="nc" id="L334">		portAdapterCard.setContainsPorts(containsPorts);</span>
+<span class="nc" id="L335">		hasCards.add(portAdapterCard);</span>
+<span class="nc" id="L336">		shelf.setIpController(ipController);</span>
+<span class="nc" id="L337">		shelf.setHasCards(hasCards);</span>
+<span class="nc" id="L338">		shelf.setResourceCharacteristicSpecifications(resourceCharacteristicSpecifications);</span>
+<span class="nc" id="L339">		networkAddressAssociation.setAtomicNetworkAddress(atomicNetworkAddress);</span>
+<span class="nc" id="L340">		shelf.setNetworkAddressAssociation(networkAddressAssociation);</span>
+<span class="nc" id="L341">		shelf.setLogicalResourceAssociation(logicalResourceAssociation);</span>
+<span class="nc" id="L342">		hasShelves.add(shelf);</span>
+<span class="nc" id="L343">		cabinet.setHasShelves(hasShelves);</span>
+<span class="nc" id="L344">		result.setCabinet(cabinet);</span>
+		
+<span class="nc" id="L346">		ResourceFacingService resourceFacingService = new ResourceFacingService();</span>
+<span class="nc" id="L347">		List&lt;ServiceDescribedBy&gt; listServiceDescribedBy = new ArrayList&lt;ServiceDescribedBy&gt;();</span>
+<span class="nc" id="L348">		resourceFacingService.setServiceDescribedBy(listServiceDescribedBy);</span>
+<span class="nc" id="L349">		result.setResourceFacingService(resourceFacingService);</span>
+		
+<span class="nc" id="L351">		CustomerFacingService customerFacingService = new CustomerFacingService();</span>
+<span class="nc" id="L352">		List&lt;CustomerFacingService&gt; listCustomerFacingService = new ArrayList&lt;CustomerFacingService&gt;();</span>
+<span class="nc" id="L353">		listCustomerFacingService.add(customerFacingService);</span>
+		
+<span class="nc" id="L355">		result.setCustomerFacingService(listCustomerFacingService);</span>
+		
+<span class="nc" id="L357">		return result;</span>
+	}
+	
+	
+	
+	private ResourceInventoryEntity enrichResourceInventoryEntity(ResourceInventoryEntity result_CROSS_CONNECTION_INFO, 
+					ResourceInventoryEntity result_NETWORK_SYNC_INFO, ResourceInventoryEntity result_RANGE_CORPORATE) {
+		
+<span class="nc" id="L365">		ResourceInventoryEntity result = null;</span>
+		
+<span class="nc bnc" id="L367" title="All 2 branches missed.">		if (result_CROSS_CONNECTION_INFO != null) {</span>
+<span class="nc" id="L368">			result = result_CROSS_CONNECTION_INFO;</span>
+
+<span class="nc bnc" id="L370" title="All 2 branches missed.">			if (null != result_NETWORK_SYNC_INFO) {</span>
+<span class="nc" id="L371">				result.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications().addAll(result_NETWORK_SYNC_INFO.getCabinet().getHasShelves().get(0).getResourceCharacteristicSpecifications());</span>
+<span class="nc" id="L372">				result.getCabinet().getHasShelves().get(0).getHasCards().add(result_NETWORK_SYNC_INFO.getCabinet().getHasShelves().get(0).getHasCards().get(0));</span>
+<span class="nc" id="L373">				result.getCabinet().getHasShelves().get(0).setLogicalResourceAssociation(result_NETWORK_SYNC_INFO.getCabinet().getHasShelves().get(0).getLogicalResourceAssociation());</span>
+				
+<span class="nc" id="L375">				result.getResourceFacingService().setServiceDescribedBy(result_NETWORK_SYNC_INFO.getResourceFacingService().getServiceDescribedBy());</span>
+			}
+<span class="nc bnc" id="L377" title="All 2 branches missed.">		} else if (result_NETWORK_SYNC_INFO != null){</span>
+<span class="nc" id="L378">			result = result_NETWORK_SYNC_INFO;</span>
+		}else {
+<span class="nc" id="L380">			result = result_RANGE_CORPORATE;</span>
+		}			
+		
+<span class="nc" id="L383">		return result;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

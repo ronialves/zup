@@ -1,0 +1,197 @@
+<?xml version="1.0" ?>
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://www.cpqd.com.br/etics/facilities/AllocateInstallResource"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:head="http://www.cpqd.com.br/etics/headerContext"
+	xmlns:ex="http://www.cpqd.com.br/etics/commonsexceptiontypes"
+	xmlns:airt="http://www.cpqd.com.br/etics/facilities/AllocateInstallResourceTypes"
+	name="AllocateInstallResource" targetNamespace="http://www.cpqd.com.br/etics/facilities/AllocateInstallResource">
+	<wsdl:types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+			xmlns:tns="http://www.cpqd.com.br/etics/facilities/AllocateInstallResource"
+			xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:head="http://www.cpqd.com.br/etics/headerContext"
+			xmlns:ex="http://www.cpqd.com.br/etics/commonsexceptiontypes"
+			xmlns:airt="http://www.cpqd.com.br/etics/facilities/AllocateInstallResourceTypes"
+			targetNamespace="http://www.cpqd.com.br/etics/facilities/AllocateInstallResource">
+			<xs:import
+				namespace="http://www.cpqd.com.br/etics/facilities/AllocateInstallResourceTypes"
+				schemaLocation="../XSD/AllocateInstallResourceTypes.xsd"></xs:import>
+			<xs:import namespace="http://www.cpqd.com.br/etics/commonsexceptiontypes"
+				schemaLocation="../XSD/CommonsExceptionTypes.xsd"></xs:import>
+			<xs:import namespace="http://www.cpqd.com.br/etics/headerContext"
+				schemaLocation="../XSD/HeaderContext.xsd"></xs:import>
+			<xs:element name="allocateResourceRequest" type="airt:AllocateInstallResourceRequest"></xs:element>
+			<xs:element name="reserveResourceRequest" type="airt:ReserveResourceRequest"></xs:element>
+			<xs:element name="releaseResourceRequest" type="airt:ReleaseResourceRequest"></xs:element>
+			<xs:element name="determineResourceAvailabilityRequest"
+				type="airt:DetermineResourceAvailabilityRequest"></xs:element>
+			<!-- Elemento de resposta comum para as operacoes -->
+			<xs:element name="allocateInstallResourceResponse" type="airt:AllocateInstallResourceResponse"></xs:element>
+			<xs:element name="reserveResourceResponse" type="airt:ReserveResourceResponse"></xs:element>
+			<xs:element name="releaseResourceResponse" type="airt:ReleaseResourceResponse"></xs:element>
+			<xs:element name="determineResourceAvailabilityResponse"
+				type="airt:DetermineResourceAvailabilityResponse"></xs:element>
+			<!-- Elemento de Erro -->
+			<xs:element name="faultData" type="ex:CommonsExceptionElementType"></xs:element>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="allocateInstallResourceResponseMsg">
+		<wsdl:part element="tns:allocateInstallResourceResponse"
+			name="outputData">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="determineResourceAvailabilityRequestMsg">
+		<wsdl:part element="tns:determineResourceAvailabilityRequest"
+			name="inputData">
+		</wsdl:part>
+		<wsdl:part element="head:context" name="context">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="releaseResourceRequestMsg">
+		<wsdl:part element="tns:releaseResourceRequest" name="inputData">
+		</wsdl:part>
+		<wsdl:part element="head:context" name="context">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="releaseResourceResponseMsg">
+		<wsdl:part element="tns:releaseResourceResponse" name="outputData">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="determineResourceAvailabilityResponseMsg">
+		<wsdl:part element="tns:determineResourceAvailabilityResponse"
+			name="outputData">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="reserveResourceResponseMsg">
+		<wsdl:part element="tns:reserveResourceResponse" name="outputData">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="facilitiesException">
+		<wsdl:part element="tns:faultData" name="faultData">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="allocateResourceRequestMsg">
+		<wsdl:part element="tns:allocateResourceRequest" name="inputData">
+		</wsdl:part>
+		<wsdl:part element="head:context" name="context">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="reserveResourceRequestMsg">
+		<wsdl:part element="tns:reserveResourceRequest" name="inputData">
+		</wsdl:part>
+		<wsdl:part element="head:context" name="context">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="AllocateInstallResource">
+		<wsdl:operation name="allocateResource">
+			<wsdl:input message="tns:allocateResourceRequestMsg" name="allocateResourceRequest">
+			</wsdl:input>
+			<wsdl:output message="tns:allocateInstallResourceResponseMsg"
+				name="allocateInstallResourceResponse">
+			</wsdl:output>
+			<wsdl:fault message="tns:facilitiesException" name="facilitiesFault">
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="reserveResource">
+			<wsdl:input message="tns:reserveResourceRequestMsg" name="reserveResourceRequest">
+			</wsdl:input>
+			<wsdl:output message="tns:reserveResourceResponseMsg"
+				name="reserveResourceResponse">
+			</wsdl:output>
+			<wsdl:fault message="tns:facilitiesException" name="facilitiesFault">
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="releaseResource">
+			<wsdl:input message="tns:releaseResourceRequestMsg" name="releaseResourceRequest">
+			</wsdl:input>
+			<wsdl:output message="tns:releaseResourceResponseMsg"
+				name="releaseResourceResponse">
+			</wsdl:output>
+			<wsdl:fault message="tns:facilitiesException" name="facilitiesFault">
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="determineResourceAvailability">
+			<wsdl:input message="tns:determineResourceAvailabilityRequestMsg"
+				name="determineResourceAvailabilityRequest">
+			</wsdl:input>
+			<wsdl:output message="tns:determineResourceAvailabilityResponseMsg"
+				name="determineResourceAvailabilityResponse">
+			</wsdl:output>
+			<wsdl:fault message="tns:facilitiesException" name="facilitiesFault">
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="AllocateInstallResourceSoapBinding"
+		type="tns:AllocateInstallResource">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+		<wsdl:operation name="allocateResource">
+			<soap:operation soapAction=""></soap:operation>
+			<wsdl:input name="allocateResourceRequest">
+				<soap:header message="tns:allocateResourceRequestMsg"
+					part="context" use="literal">
+				</soap:header>
+				<soap:body parts="inputData" use="literal"></soap:body>
+			</wsdl:input>
+			<wsdl:output name="allocateInstallResourceResponse">
+				<soap:body use="literal"></soap:body>
+			</wsdl:output>
+			<wsdl:fault name="facilitiesFault">
+				<soap:fault name="facilitiesFault" use="literal"></soap:fault>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="reserveResource">
+			<soap:operation soapAction=""></soap:operation>
+			<wsdl:input name="reserveResourceRequest">
+				<soap:header message="tns:reserveResourceRequestMsg"
+					part="context" use="literal">
+				</soap:header>
+				<soap:body parts="inputData" use="literal"></soap:body>
+			</wsdl:input>
+			<wsdl:output name="reserveResourceResponse">
+				<soap:body use="literal"></soap:body>
+			</wsdl:output>
+			<wsdl:fault name="facilitiesFault">
+				<soap:fault name="facilitiesFault" use="literal"></soap:fault>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="releaseResource">
+			<soap:operation soapAction=""></soap:operation>
+			<wsdl:input name="releaseResourceRequest">
+				<soap:header message="tns:releaseResourceRequestMsg"
+					part="context" use="literal">
+				</soap:header>
+				<soap:body parts="inputData" use="literal"></soap:body>
+			</wsdl:input>
+			<wsdl:output name="releaseResourceResponse">
+				<soap:body use="literal"></soap:body>
+			</wsdl:output>
+			<wsdl:fault name="facilitiesFault">
+				<soap:fault name="facilitiesFault" use="literal"></soap:fault>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="determineResourceAvailability">
+			<soap:operation soapAction=""></soap:operation>
+			<wsdl:input name="determineResourceAvailabilityRequest">
+				<soap:header message="tns:determineResourceAvailabilityRequestMsg"
+					part="context" use="literal">
+				</soap:header>
+				<soap:body parts="inputData" use="literal"></soap:body>
+			</wsdl:input>
+			<wsdl:output name="determineResourceAvailabilityResponse">
+				<soap:body use="literal"></soap:body>
+			</wsdl:output>
+			<wsdl:fault name="facilitiesFault">
+				<soap:fault name="facilitiesFault" use="literal"></soap:fault>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="AllocateInstallResource">
+		<wsdl:port binding="tns:AllocateInstallResourceSoapBinding"
+			name="AllocateInstallResourcePort">
+			<soap:address
+				location="http://localhost:8180/cpqd/ws/oss/AllocateInstallResource"></soap:address>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,267 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoRecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.TipoRfs;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoRecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.utils.CpeConstants;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.PhysicalLink;
+import com.tlf.oss.resourceinventory.schemas.PlacePhysicalResourceAssoc;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class UninstallControllerTest {
+
+	@InjectMocks
+	private UninstallController uninstallController;
+
+	@Mock
+	private OSSLogger logger;
+
+	@Mock
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Mock
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	@Mock
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Mock
+	private EstadoRecursoLogicoRepository estadoRecursoLogicoRepository;
+
+	private ResourceInventoryEntity entity;
+
+	@Before
+	public void before() {
+		entity = new ResourceInventoryEntity();
+
+		PlacePhysicalResourceAssoc placePhysicalResourceAssoc = new PlacePhysicalResourceAssoc();
+		placePhysicalResourceAssoc.setPhysicalLink(new PhysicalLink());
+		placePhysicalResourceAssoc.getPhysicalLink().setAccessTechnology("GPON");
+
+		entity.setAddress(getBrazilianUrbanPropertyAddress());
+
+		entity.getAddress().setPlacePhysicalResourceAssoc(placePhysicalResourceAssoc);
+
+		entity.setCustomerFacingService(getListCustomerFacingService());
+
+		ResourceFacingService resourceFacingService = new ResourceFacingService();
+		resourceFacingService.setServiceId("00000000000004");
+		entity.setResourceFacingService(resourceFacingService);
+
+		ResourceOrder resourceOrder = new ResourceOrder();
+		resourceOrder.setResourceOrderItem(new ResourceOrderItem());
+
+		entity.setResourceOrder(resourceOrder);
+
+		entity.setAddress(getBrazilianUrbanPropertyAddress());
+		entity.setCustomerFacingService(getListCustomerFacingService());
+	}
+
+	@Test
+	public void testUnistallAccessSucess() throws OSSBusinessException {
+
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		RecursoLogico recursoLogico = getRecursoLogico();
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+		recursoLogico.setEstadoRecursoLogicoId(2);
+
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(2);
+
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class)))
+				.thenReturn(servicoAssinante);
+		when(recursoLogicoRepository.findByServicoAssinanteId(anyObject())).thenReturn(recursoLogico);
+		when(dispositivoFisicoRepository.findById(anyObject())).thenReturn(dispositivoFisico);
+
+		uninstallController.uninstall(entity);
+	}
+
+	@Test
+	public void testUnistallSetTopBoxSucess() throws OSSBusinessException {
+
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		RecursoLogico recursoLogico = getRecursoLogico();
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.STB.getRoiName());
+		recursoLogico.setEstadoRecursoLogicoId(2);
+
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(2);
+
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class)))
+				.thenReturn(servicoAssinante);
+		when(recursoLogicoRepository.findByServicoAssinanteId(anyObject())).thenReturn(recursoLogico);
+		when(dispositivoFisicoRepository.findById(anyObject())).thenReturn(dispositivoFisico);
+
+		uninstallController.uninstall(entity);
+	}
+
+	@Test
+	public void testUnistallHasDispositivoFisicoChildrenNotNullSuccess() throws OSSBusinessException {
+
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		RecursoLogico recursoLogico = getRecursoLogico();
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+
+		recursoLogico.setEstadoRecursoLogicoId(2);
+
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(2);
+
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+		when(recursoLogicoRepository.findByDispositivoFisicoId(anyObject())).thenReturn(recursoLogico);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class)))
+				.thenReturn(servicoAssinante);
+		when(recursoLogicoRepository.findByServicoAssinanteId(anyObject())).thenReturn(recursoLogico);
+		when(dispositivoFisicoRepository.findById(anyObject())).thenReturn(dispositivoFisico);
+
+		uninstallController.uninstall(entity);
+	}
+
+	@Test(expected = OSSBusinessException.class)
+	public void testUnistallAccessNotDesconectedException() throws OSSBusinessException {
+
+		ServicoAssinante servicoAssinante = getServicoAssinante();
+		RecursoLogico recursoLogico = getRecursoLogico();
+		DispositivoFisico dispositivoFisico = getDispositivoFisico();
+
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(2);
+
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class)))
+				.thenReturn(servicoAssinante);
+		when(recursoLogicoRepository.findByServicoAssinanteId(anyObject())).thenReturn(recursoLogico);
+		when(dispositivoFisicoRepository.findById(anyObject())).thenReturn(dispositivoFisico);
+
+		uninstallController.uninstall(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = OSSBusinessException.class)
+	public void testUninstallException() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+		when(uninstallController.uninstall(entity)).thenThrow(OSSBusinessException.class);
+
+		uninstallController.uninstall(entity);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected=OSSBusinessException.class)
+	public void testUnistallGenericException() throws OSSBusinessException {
+		
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class))).thenThrow(Exception.class);
+		
+		uninstallController.uninstall(entity);
+	}
+	
+	@Test(expected=OSSBusinessException.class)
+	public void testUnistallCostumerNotFound() throws OSSBusinessException {
+		
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+		entity.getCustomerFacingService().get(0).setServiceId(null);
+
+		when(servicoAssinanteRepository.findByServiceId(Mockito.any(ResourceInventoryEntity.class))).thenReturn(null);
+		
+		uninstallController.uninstall(entity);
+	}
+	
+	private BrazilianUrbanPropertyAddress getBrazilianUrbanPropertyAddress() {
+		BrazilianUrbanPropertyAddress brazilianUrbanPropertyAddress = new BrazilianUrbanPropertyAddress();
+		brazilianUrbanPropertyAddress.setStreetCode("237558");
+		brazilianUrbanPropertyAddress.setStreetNrFirst("154");
+		brazilianUrbanPropertyAddress.setCnl("11000");
+		brazilianUrbanPropertyAddress.setNetworkOwner("VIVO1");
+		brazilianUrbanPropertyAddress.setTelephonicArea("AT");
+
+		return brazilianUrbanPropertyAddress;
+	}
+
+	private List<CustomerFacingService> getListCustomerFacingService() {
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setServiceId("1001");
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(new ServiceDescribedBy());
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().get(0).setName(CpeConstants.EQUIPMENT_TYPE);
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().get(0).getServiceSpecCharDescribes()
+				.add(new ServiceSpecCharDescribes());
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0)
+				.setValue(CpeConstants.HGU);
+
+		return listOfCustomerFacingService;
+	}
+
+	private ServicoAssinante getServicoAssinante() {
+		ServicoAssinante servicoAssinante = new ServicoAssinante();
+		servicoAssinante.setId(1041);
+		servicoAssinante.setTipoRfs(TipoRfs.ACCESS.getRoiName());
+		servicoAssinante.setEstadoServicoAssinanteId(1);
+		servicoAssinante.setServiceId("1001");
+		servicoAssinante.setAccessId("00000000000004");
+		servicoAssinante.setNrc(null);
+		servicoAssinante.setNumeroTelefone(null);
+		
+
+		return servicoAssinante;
+	}
+	
+	private RecursoLogico getRecursoLogico() {
+		RecursoLogico recursoLogico = new RecursoLogico();
+		recursoLogico.setId(881);
+		recursoLogico.setIdFxs(0);
+		recursoLogico.setDispositivoFisicoId(762);
+		recursoLogico.setServicoAssinanteId(1001);
+		recursoLogico.setMainKey(null);
+
+		return recursoLogico;
+	}
+	
+	private DispositivoFisico getDispositivoFisico() {
+		DispositivoFisico dispositivoFisico = new DispositivoFisico();
+		dispositivoFisico.setId(762);
+		dispositivoFisico.setNumeroSerial(null);
+		dispositivoFisico.setMacAddress(null);
+		dispositivoFisico.setCategoriaDispositivoEsperada(11);
+		dispositivoFisico.setCategoriaDispositivoCorrente(null);
+		dispositivoFisico.setCatalagoDispositivoId(null);
+		dispositivoFisico.setNumeroSerialGpon(null);
+
+		return dispositivoFisico;
+	}
+}

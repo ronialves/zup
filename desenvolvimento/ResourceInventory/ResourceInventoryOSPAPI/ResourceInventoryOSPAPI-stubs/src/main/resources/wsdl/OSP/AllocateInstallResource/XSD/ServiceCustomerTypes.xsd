@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:ct="http://www.cpqd.com.br/etics/CustomerTypes"
+	elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/ServiceCustomerTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/CustomerTypes"
+		schemaLocation="CustomerTypes.xsd"></xs:import>
+	<xs:complexType name="ServiceCustomer">
+		<xs:sequence>
+			<!-- Número do Serviço -->
+			<xs:element minOccurs="0" name="identifier" type="st:string60"></xs:element>
+			<!-- Tipo de serviço do Catálogo de Serviços (Classe de Serviço) -->
+			<xs:element minOccurs="0" name="serviceType" type="st:string30"></xs:element>
+			<!-- Velocidade -->
+			<xs:element minOccurs="0" name="speed" type="st:string3"></xs:element>
+			<!-- Cliente -->
+			<xs:element minOccurs="0" name="customer" type="ct:Customer"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,149 @@
+package com.tlf.oss.resourceinventory.cpe.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class ClientInformation implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static final String QUERY_RETRIEVE_CLIENT_INFORMATION = "RetrieveClientInformation";
+
+	@Id
+	@Basic
+	@Column(name = "SERVICE_ID")
+	private String serviceId;
+
+	@Basic
+	@Column(name = "TIPO_RFS")
+	private String tipoRfs;
+
+	@Basic
+	@Column(name = "STATUS")
+	private String status;
+
+	@Basic
+	@Column(name = "TELEPHONE_NUMBER")
+	private String numeroTelefone;
+
+	@Basic
+	@Column(name = "GPON_SERIAL_NUMBER")
+	private String numeroSerialGpon;
+
+	@Basic
+	@Column(name = "SERIAL_NUMBER")
+	private String numeroSerial;
+
+	@Basic
+	@Column(name = "MACADDRESS")
+	private String macAddress;
+
+	@Basic
+	@Column(name = "EQUIPMENT_TYPE")
+	private String type;
+
+	@Basic
+	@Column(name = "EQUIPMENT_MODEL")
+	private String model;
+
+	@Basic
+	@Column(name = "EQUIPMENT_VENDOR")
+	private String vendor;
+
+	public String getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public String getTipoRfs() {
+		return tipoRfs;
+	}
+
+	public void setTipoRfs(String tipoRfs) {
+		this.tipoRfs = tipoRfs;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getNumeroTelefone() {
+		return numeroTelefone;
+	}
+
+	public void setNumeroTelefone(String numeroTelefone) {
+		this.numeroTelefone = numeroTelefone;
+	}
+
+	public String getNumeroSerialGpon() {
+		return numeroSerialGpon;
+	}
+
+	public void setNumeroSerialGpon(String numeroSerialGpon) {
+		this.numeroSerialGpon = numeroSerialGpon;
+	}
+
+	public String getNumeroSerial() {
+		return numeroSerial;
+	}
+
+	public void setNumeroSerial(String numeroSerial) {
+		this.numeroSerial = numeroSerial;
+	}
+
+	public String getMacAddress() {
+		return macAddress;
+	}
+
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
+	}
+
+	@Override
+	public String toString() {
+		return "ClientInformation [serviceId=" + serviceId + ", tipoRfs=" + tipoRfs + ", status=" + status
+				+ ", numeroTelefone=" + numeroTelefone + ", numeroSerialGpon=" + numeroSerialGpon + ", numeroSerial="
+				+ numeroSerial + ", macAddress=" + macAddress + ", type=" + type + ", model=" + model + ", vendor="
+				+ vendor + "]";
+	}
+
+}

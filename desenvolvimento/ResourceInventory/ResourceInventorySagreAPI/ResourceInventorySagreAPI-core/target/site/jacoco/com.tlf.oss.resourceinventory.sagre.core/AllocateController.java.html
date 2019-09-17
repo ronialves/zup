@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AllocateController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.core</a> &gt; <span class="el_source">AllocateController.java</span></div><h1>AllocateController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.sagre.core.validation.Allocate;
+import com.tlf.oss.resourceinventory.sagre.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.AllocateExternalResourceEntity;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.sagre.repository.AllocateRepository;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+/**
+ * BEATRIXTWO-25 | DEMOSS-2164
+ * 
+ * @project Beatrix Fase 2
+ * @author rodrigo.de.freitas
+ * @since 201709
+ */
+<span class="fc" id="L28">public class AllocateController extends ValidatorEntity implements Serializable {</span>
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	AllocateRepository allocateRepository;
+	
+<span class="fc" id="L38">	OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RISAGRE_003.getCode(),</span>
+<span class="fc" id="L39">			String.format(ExceptionInfoEnum.RISAGRE_003.getDescription(), &quot;GVT_SP_SOA_DS_CTRL&quot;),</span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+	private static final int RESULTADO_ESPERADO = 0;
+
+	public static final String RPON = &quot;RPON&quot;;
+	public static final String P_IN_ORIGEM = &quot;RI&quot;;
+	public static final String P_IN_TIPO_DOCUMENTO = &quot;DEFAULT&quot;;
+	public static final String P_IN_CLASSE_SERVICO = &quot;DEFAULT&quot;;
+	public static final String P_IN_TIPO_ORDEM = &quot;DEFAULT&quot;;
+
+	/**
+	 * Retorna atraves do AllocateExternalResourceEntity (preenchido com ResourceInventoryEntity), o ResourceInventoryEntity enriquecido
+	 * 
+	 * @param entity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity allocate(@Allocate ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L59">		AllocateExternalResourceEntity allocateExternal = new AllocateExternalResourceEntity();</span>
+<span class="fc" id="L60">		allocateExternal.setCnl(Integer.valueOf(entity.getAddress().getCnl()));</span>
+<span class="fc" id="L61">		allocateExternal.setTargetAccessTechnology(</span>
+<span class="fc" id="L62">				entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getAccessTechnology());</span>
+<span class="fc" id="L63">		allocateExternal.setTargetVoiceTechnology(</span>
+<span class="fc" id="L64">				entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+<span class="fc" id="L65">		allocateExternal.setTargetAccessId(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L66">		allocateExternal.setIdentEquip1(entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet().getName());</span>
+<span class="fc" id="L67">		allocateExternal.setIdentEquip2(</span>
+<span class="fc" id="L68">				entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet().getTerminalBox().getName());</span>
+<span class="fc" id="L69">		allocateExternal.setStreetCode(entity.getAddress().getStreetCode());</span>
+<span class="fc" id="L70">		allocateExternal.setLote(entity.getAddress().getStreetNrFirst());</span>
+<span class="fc" id="L71">		allocateExternal.setPon(entity.getCustomerOrder().getPurchaseOrderNumber());</span>
+
+<span class="pc bpc" id="L73" title="2 of 4 branches missed.">		if (entity.getCustomerFacingService() != null &amp;&amp; !entity.getCustomerFacingService().isEmpty()) {</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">			for (CustomerFacingService customer : entity.getCustomerFacingService()) {</span>
+<span class="pc bpc" id="L75" title="2 of 4 branches missed.">				if (customer.getServiceDescribedBy() != null &amp;&amp; !customer.getServiceDescribedBy().isEmpty()) {</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">					for (ServiceDescribedBy service : customer.getServiceDescribedBy()) {</span>
+<span class="pc bpc" id="L77" title="2 of 4 branches missed.">						if (RPON.equalsIgnoreCase(service.getName()) &amp;&amp; service.getServiceSpecCharDescribes() != null) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">							for (ServiceSpecCharDescribes serviceSpec : service.getServiceSpecCharDescribes()) {</span>
+<span class="fc" id="L79">								allocateExternal.setRpon(serviceSpec.getValue());</span>
+<span class="fc" id="L80">							}</span>
+						}
+<span class="fc" id="L82">					}</span>
+				}
+<span class="fc" id="L84">			}</span>
+		}
+		
+<span class="fc" id="L87">		allocateExternal.setOriginSystem(P_IN_ORIGEM);</span>
+<span class="fc" id="L88">		allocateExternal.setDocumentType(P_IN_TIPO_DOCUMENTO);</span>
+<span class="fc" id="L89">		allocateExternal.setServiceClass(P_IN_CLASSE_SERVICO);</span>
+<span class="fc" id="L90">		allocateExternal.setOrderType(P_IN_TIPO_ORDEM);</span>
+
+<span class="fc" id="L92">		return getResourceInventoryEntity(allocateRepository.allocate(allocateExternal), entity);</span>
+	}
+	
+	/**
+	 * Enriquece ResourceInventoryEntity atraves da execucao do AllocateDAO.allocate
+	 * 
+	 * @param allocateExternal
+	 * @param entity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getResourceInventoryEntity(AllocateExternalResourceEntity allocateExternal, ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+		
+<span class="fc" id="L106">		entity.setPhysicalResourceSummary(allocateExternal.getNote());</span>
+
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">		if (RESULTADO_ESPERADO != allocateExternal.getResultCode()) {</span>
+<span class="nc" id="L109">		    String errorCode = String.valueOf(allocateExternal.getResultCode());</span>
+<span class="nc" id="L110">		    String errorMessage = allocateExternal.getMessage();</span>
+<span class="nc" id="L111">		    String detailMessage = errorCode + &quot;; &quot; + errorMessage;</span>
+
+<span class="nc" id="L113">		    falloutConfig.setErrorCode(errorCode);</span>
+<span class="nc" id="L114">		    falloutConfig.setErrorMessage(errorMessage);</span>
+<span class="nc" id="L115">			falloutConfig.setDetailMessage(detailMessage);</span>
+<span class="nc" id="L116">		    throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+		}
+
+<span class="fc" id="L119">		return entity;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

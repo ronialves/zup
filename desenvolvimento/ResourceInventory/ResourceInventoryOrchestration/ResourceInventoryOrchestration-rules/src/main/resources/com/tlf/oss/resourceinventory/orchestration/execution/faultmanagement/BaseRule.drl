@@ -1,0 +1,24 @@
+package com.tlf.oss.resourceinventory.orchestration.execution.faultmanagement;
+
+import java.util.List;
+import java.lang.String;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.orchestration.core.entity.*;
+import com.tlf.oss.resourceinventory.schemas.api.*;
+import com.tlf.oss.resourceinventory.schemas.*;
+
+function void log(OSSLogger logger, String ruleName, String message) {
+	logger.log(OSSLogger.DEBUG, "[" + ruleName + "] - " + message);
+}
+
+rule "BaseRule"
+	when
+		not( Action() )
+		$logger 	: OSSLogger()
+
+		$operation	: Operation()
+		$version	: Version()
+
+		$resource	: ResourceJson( name == $operation.value, version == $version.value )
+	then
+end

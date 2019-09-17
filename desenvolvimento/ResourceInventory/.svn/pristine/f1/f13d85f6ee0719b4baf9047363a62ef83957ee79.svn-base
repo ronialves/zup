@@ -1,0 +1,75 @@
+<?xml version="1.0" ?><wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.cpqd.com.br/etics/facilities/TrackManageServiceProvisioning" xmlns:tmsp="http://www.cpqd.com.br/etics/facilities/TrackManageServiceProvisioningTypes" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:head="http://www.cpqd.com.br/etics/headerContext" xmlns:ex="http://www.cpqd.com.br/etics/commonsexceptiontypes" name="TrackManageServiceProvisioning" targetNamespace="http://www.cpqd.com.br/etics/facilities/TrackManageServiceProvisioning">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+		   xmlns:tns="http://www.cpqd.com.br/etics/facilities/TrackManageServiceProvisioning" 
+		   xmlns:tmsp="http://www.cpqd.com.br/etics/facilities/TrackManageServiceProvisioningTypes" 
+		   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+		   xmlns:head="http://www.cpqd.com.br/etics/headerContext" 
+		   xmlns:ex="http://www.cpqd.com.br/etics/commonsexceptiontypes" 
+		   targetNamespace="http://www.cpqd.com.br/etics/facilities/TrackManageServiceProvisioning">
+            
+  <xs:import namespace="http://www.cpqd.com.br/etics/facilities/TrackManageServiceProvisioningTypes" schemaLocation="../XSD/TrackManageServiceProvisioningTypes.xsd"></xs:import>            
+  <xs:import namespace="http://www.cpqd.com.br/etics/commonsexceptiontypes" schemaLocation="../XSD/CommonsExceptionTypes.xsd"></xs:import>			
+  <xs:import namespace="http://www.cpqd.com.br/etics/headerContext" schemaLocation="../XSD/HeaderContext.xsd"></xs:import>
+
+            
+  <xs:element name="mngServProvActRequest" type="tmsp:TrackManageServiceProvisioningRequest"></xs:element>
+
+            <!-- Elemento de resposta comum para as operacoes -->
+            
+  <xs:element name="trkMngServProvResponse" type="tmsp:TrackManageServiceProvisioningResponse"></xs:element>
+
+            <!-- Elemento de Erro -->
+            
+  <xs:element name="faultData" type="ex:CommonsExceptionElementType"></xs:element>
+        
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="tmspRequestMsg">
+    <wsdl:part element="tns:mngServProvActRequest" name="inputData">
+    </wsdl:part>
+    <wsdl:part element="head:context" name="context">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="facilitiesException">
+    <wsdl:part element="tns:faultData" name="faultData">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="tmspResponseMsg">
+    <wsdl:part element="tns:trkMngServProvResponse" name="outputData">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="TrackManageServiceProvisioning">
+    <wsdl:operation name="manageServiceProvisioningActivity">
+      <wsdl:input message="tns:tmspRequestMsg" name="tmspRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:tmspResponseMsg" name="tmspResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:facilitiesException" name="facilitiesFault">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TrackManageServiceProvisioningSoapBinding" type="tns:TrackManageServiceProvisioning">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="manageServiceProvisioningActivity">
+      <soap:operation soapAction=""></soap:operation>
+      <wsdl:input name="tmspRequest">
+        <soap:header message="tns:tmspRequestMsg" part="context" use="literal">
+        </soap:header>
+        <soap:body parts="inputData" use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="tmspResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+      <wsdl:fault name="facilitiesFault">
+        <soap:fault name="facilitiesFault" use="literal"></soap:fault>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TrackManageServiceProvisioning">
+    <wsdl:port binding="tns:TrackManageServiceProvisioningSoapBinding" name="TrackManageServiceProvisioningPort">
+      <soap:address location="http://localhost:8180/cpqd/ws/oss/TrackManageServiceProvisioning"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

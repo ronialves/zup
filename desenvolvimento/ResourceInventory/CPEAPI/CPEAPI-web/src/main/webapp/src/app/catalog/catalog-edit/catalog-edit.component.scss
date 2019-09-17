@@ -1,0 +1,58 @@
+@import '../../app.component.scss';
+
+.ui-equipment {	
+    transition: 0.2s;
+}
+
+.ui-equipment-container {
+	background-color: #fafafa;
+	padding: 20px 20%;
+	position: relative;
+	top: 64px;
+	display: flex;
+	flex-flow: column;
+	font-size: 14px;
+}
+.ui-equipment-container-edit-mode {
+	background-color: #fafafa;
+	padding: 20px 10%;
+	margin: -24px;
+	position: relative;
+	display: flex;
+	flex-flow: column;
+	font-size: 14px;
+}
+
+.ui-equipment-title {
+	color: #6e6e6e;
+	font-size: 14px;
+	margin: 21px 0px 12px;
+	padding: 8px 0px 4px;
+}
+
+.ui-equipment-card {
+	border-radius: 4px;
+	padding: 28px;
+	display: flex;
+	flex-flow: column;
+	background: #ffffff;
+}
+
+.ui-equipment-field .mat-form-field {
+	width: 100%;
+}
+
+.ui-equipment-actions {
+	display: flex;
+	flex-direction: row-reverse;
+	margin-top: 30px;
+}
+
+.ui-equipment-error {
+    padding: 20px 32px;
+    background: rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    color: #980000;
+}

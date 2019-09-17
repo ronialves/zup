@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/ResourceSpecificationTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="ResourceSpecification">
+		<xs:sequence>
+			<!-- Código -->
+			<xs:element minOccurs="0" name="code" type="st:string50"></xs:element>
+			<!-- Modelo -->
+			<xs:element minOccurs="0" name="model" type="st:string050"></xs:element>
+			<!-- Fabricante -->
+			<xs:element minOccurs="0" name="manufacturer" type="st:string050"></xs:element>
+			<!-- Capacidade -->
+			<xs:element minOccurs="0" name="capacity" type="st:integer6"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,142 @@
+package com.tlf.oss.resourceinventory.granite.core.rules;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.granite.core.enums.AgendaGroup;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ExecutionRulesBroadbandVoipServiceTest
+{
+	private ResourceInventoryEntity entity;
+
+	private ExecutionRules executionRules;
+
+	@Before
+	public void before() {
+		entity = new ResourceInventoryEntity();
+		executionRules = new ExecutionRules();
+	}
+
+	@Test
+	public void shouldGetServiceCodeVBLF16() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("16384", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLF16", rules.getResult());
+	}
+
+	@Test
+	public void shouldGetServiceCodeVBLF05() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("25600", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLF05", rules.getResult());
+	}
+
+	@Test
+	public void shouldGetServiceCodeVBLF50() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("51200", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLF50", rules.getResult());
+	}
+
+	@Test
+	public void shouldGetServiceCodeVBLF00() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("102400", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLF00", rules.getResult());
+	}
+
+	@Test
+	public void shouldGetServiceCodeVBLG11() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("204800", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLG11", rules.getResult());
+	}
+
+	@Test
+	public void shouldGetServiceCodeVBLG13() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("307200", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLG13", rules.getResult());
+	}
+
+	@Test
+	public void shouldGetServiceCodeVBLG14() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("307200", "FIXED");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLG14", rules.getResult());
+	}
+
+
+	@Test(expected=OSSBusinessException.class)
+	public void shouldValidateRuleWithoutSucess() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("000000", "TIPO_IP_INEXISTENTE");
+		executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+	}
+
+	@Test(expected=OSSBusinessException.class)
+	public void invalidMultiplesServicesCode() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("2048", "DYNAMIC");
+
+		// Adicionamos mais um servico, isso fara com que haja tres coberturas, sendo
+		// Banda Larga, VoIP e IPTV. Isso nao se trata de uma regra valida para Broadband
+		// mais VoiP. Portanto, uma excecao sera esperada.
+		CustomerFacingService customerFacingService = new CustomerFacingService();
+		customerFacingService.setCategory("IPTV");
+		entity.getCustomerFacingService().add(customerFacingService);
+		executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+	}
+
+	/*
+	 * Cria cenario com Broadband mais VoIP com velocidade e tipo de IP de acordo com os respectivos
+	 * parametros de entrada.
+	 */
+	private void setResourceInventoryWithDownstreamAndIpTypeValue(String downStreamValue, String IPType) {
+
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setCategory("BROADBAND");
+
+		ServiceDescribedBy serviceDescribedByDs = new ServiceDescribedBy();
+		serviceDescribedByDs.setName("DOWNSTREAM");
+		ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribes.setValue(downStreamValue);
+		serviceDescribedByDs.getServiceSpecCharDescribes().add(serviceSpecCharDescribes);
+
+		ServiceDescribedBy serviceDescribedByIP = new ServiceDescribedBy();
+		serviceDescribedByIP.setName("IP");
+		ServiceSpecCharDescribes serviceSpecCharDescribesIp = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribesIp.setValue(IPType);
+		serviceDescribedByIP.getServiceSpecCharDescribes().add(serviceSpecCharDescribesIp);
+
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(serviceDescribedByDs);
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(serviceDescribedByIP);
+
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(1).setCategory("VOIP");
+
+		entity.setCustomerFacingService(listOfCustomerFacingService);
+	}
+}

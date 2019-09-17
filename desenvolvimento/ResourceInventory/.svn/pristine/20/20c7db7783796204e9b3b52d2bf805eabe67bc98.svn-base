@@ -1,0 +1,192 @@
+package com.tlf.oss.resourceinventory.granite.core.rules;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.granite.core.enums.AgendaGroup;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ExecutionRulesBroadbandIptvServiceTest
+{
+	private ResourceInventoryEntity entity;
+
+	private ExecutionRules executionRules;
+
+	@Before
+	public void before() {
+		entity = new ResourceInventoryEntity();
+		executionRules = new ExecutionRules();
+	}
+
+	@Test
+	public void shouldGetServiceCodeIPSF02() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("2048", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("IPSF02", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeIPSF04() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("4096", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("IPSF04", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeIPSF16() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("16384", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("IPSF16", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeIPSF05() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("25600", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("IPSF05", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeIPSF50() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("51200", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("IPSF50", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeIPSF00() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("102400", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("IPSF00", rules.getResult());
+	}
+	
+	@Test
+	public void shouldGetServiceCodeIPSG11() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("204800", "DYNAMIC");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("IPSG11", rules.getResult());
+	}
+
+	@Test
+	public void shouldGetServiceCodeVBLP00() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("102400", "FIXED");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLP00", rules.getResult());
+	}	
+	
+	@Test
+	public void shouldGetServiceCodeVBLP05() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("25600", "FIXED");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLP05", rules.getResult());
+	}	
+	
+	@Test
+	public void shouldGetServiceCodeVBLP11() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("204800", "FIXED");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLP11", rules.getResult());
+	}	
+	
+	@Test
+	public void shouldGetServiceCodeVBLP14() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("307200", "FIXED");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLP14", rules.getResult());
+	}	
+	
+	
+	@Test
+	public void shouldGetServiceCodeVBLP16() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("15360", "FIXED");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLP16", rules.getResult());
+	}	
+	
+	@Test
+	public void shouldGetServiceCodeVBLP50() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("51200", "FIXED");
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VBLP50", rules.getResult());
+	}	
+	
+	@Test(expected=OSSBusinessException.class)
+	public void shouldValidateRuleWithoutSucess() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("000000", "TIPO_IP_INEXISTENTE");
+		executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+	}
+	
+	
+
+	@Test(expected=OSSBusinessException.class)
+	public void invalidMultiplesServicesCode() throws OSSBusinessException {
+
+		setResourceInventoryWithDownstreamAndIpTypeValue("15360", "FIXED");
+
+		// Adicionamos mais um servico, isso fara com que haja tres coberturas, sendo
+		// Banda Larga, DTH e VOIP. Isso nao se trata de uma regra valida para Broadband
+		// mais VoiP. Portanto, uma excecao sera esperada.
+		CustomerFacingService customerFacingService = new CustomerFacingService();
+		customerFacingService.setCategory("VOIP");
+		entity.getCustomerFacingService().add(customerFacingService);
+		executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+	}
+
+	/*
+	 * Cria cenario com Broadband mais DTH com velocidade e tipo de IP de acordo com os respectivos
+	 * parametros de entrada.
+	 */
+	private void setResourceInventoryWithDownstreamAndIpTypeValue(String downStreamValue, String IPType) {
+
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setCategory("BROADBAND");
+
+		ServiceDescribedBy serviceDescribedByDs = new ServiceDescribedBy();
+		serviceDescribedByDs.setName("DOWNSTREAM");
+		ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribes.setValue(downStreamValue);
+		serviceDescribedByDs.getServiceSpecCharDescribes().add(serviceSpecCharDescribes);
+
+		ServiceDescribedBy serviceDescribedByIP = new ServiceDescribedBy();
+		serviceDescribedByIP.setName("IP");
+		ServiceSpecCharDescribes serviceSpecCharDescribesIp = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribesIp.setValue(IPType);
+		serviceDescribedByIP.getServiceSpecCharDescribes().add(serviceSpecCharDescribesIp);
+
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(serviceDescribedByDs);
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(serviceDescribedByIP);
+
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(1).setCategory("IPTV");
+
+		entity.setCustomerFacingService(listOfCustomerFacingService);
+	}
+}

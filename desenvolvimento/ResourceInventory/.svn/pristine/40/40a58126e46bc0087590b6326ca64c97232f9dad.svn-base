@@ -1,0 +1,15 @@
+package com.tfl.oss.resourceinventory.orchestration.execution
+
+rule "[Update] - VIVO1" extends "BaseRule"
+	agenda-group "UPDATE"
+	salience 1
+	when
+		$action : Action(name == '1.0_CPE_UPDATE') from $resource.actions
+		ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name == 'R_CPE_ACCESS' || 
+								resourceOrder!.resourceOrderItem!.name == 'R_CPE_VOIP' || 
+								resourceOrder!.resourceOrderItem!.name == 'R_CPE_STB' || 
+								resourceOrder!.resourceOrderItem!.name == 'R_CPE_ACCESS_PORT')
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);		
+		insert( $action );
+end

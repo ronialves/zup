@@ -1,0 +1,225 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:pt="http://www.cpqd.com.br/etics/provisiongtypes"
+	targetNamespace="http://www.cpqd.com.br/etics/provisiongtypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:simpleType name="PairStatusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="DS"></xs:enumeration>
+			<xs:enumeration value="RS"></xs:enumeration>
+			<xs:enumeration value="OC"></xs:enumeration>
+			<xs:enumeration value="DL"></xs:enumeration>
+			<xs:enumeration value="DF"></xs:enumeration>
+			<xs:enumeration value="RT"></xs:enumeration>
+			<xs:enumeration value="RA"></xs:enumeration>
+			<xs:enumeration value="CR"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RegionCodeType">
+		<xs:restriction base="st:string6"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RegionCodeZeroType">
+		<xs:restriction base="st:string06"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RegionNameType">
+		<xs:restriction base="st:string60"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StreetTypeType">
+		<xs:restriction base="st:string10"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StreetTitleType">
+		<xs:restriction base="st:string14"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StreetCodeType">
+		<xs:restriction base="st:string12"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StreetNameType">
+		<xs:restriction base="st:string60"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DoorNumberType">
+		<xs:restriction base="st:string10"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ComplementType">
+		<xs:restriction base="st:string45"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AddressGPSType">
+		<xs:restriction base="st:string255"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SiteCodeType">
+		<xs:restriction base="st:string40"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ServiceClassCodeType">
+		<xs:restriction base="st:string6"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CommercialNumberType">
+		<xs:restriction base="st:string15"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ServiceTypeType">
+		<xs:restriction base="st:string1"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RemovePhoneExtensionType">
+		<xs:restriction base="st:integer1"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DedicationTypeType">
+		<xs:restriction base="st:integer16"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ServiceNumberType">
+		<xs:restriction base="st:integer15"></xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="decimal-or-empty">
+		<xs:union memberTypes="st:decimalAtenuation st:empty-string"></xs:union>
+	</xs:simpleType>
+	<xs:complexType name="AddressType">
+		<xs:sequence>
+			<!-- (O) C?digo da Localidade A(6) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="RegionCode"
+				type="pt:RegionCodeZeroType"></xs:element>
+			<!-- (O) Nome da Localidade A(60) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="RegionName"
+				type="pt:RegionNameType"></xs:element>
+			<!-- (O) Tipo do Logradouro A(10) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="StreetType"
+				type="pt:StreetTypeType"></xs:element>
+			<!-- (O) T?tulo do Logradouro A(14) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="StreetTitle"
+				type="pt:StreetTitleType"></xs:element>
+			<!-- (O) C?digo do Logradouro A(12) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="StreetCode"
+				type="pt:StreetCodeType"></xs:element>
+			<!-- (O) Nome do Logradouro A(60) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="StreetName"
+				type="pt:StreetNameType"></xs:element>
+			<!-- (O) Numera??o do Endere?o A(10) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="DoorNumber"
+				type="pt:DoorNumberType"></xs:element>
+			<!-- (O) Complemento A(45) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Complement"
+				type="pt:ComplementType"></xs:element>
+			<!-- (O) Endere?o livre A(255) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="AddressGPS"
+				type="pt:AddressGPSType"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SiteType">
+		<xs:sequence>
+			<!-- (O) C?digo do Site A(40) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="SiteCode"
+				type="pt:SiteCodeType"></xs:element>
+			<!-- (O) Address -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Address"
+				type="pt:AddressType"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DocumentType">
+		<xs:sequence>
+			<!-- (O) Tipo do Documento A(4) -->
+			<xs:element default="OS" maxOccurs="1" minOccurs="0" name="Type"
+				type="st:string4"></xs:element>
+			<!-- (M) N?mero do Documento A(40) -->
+			<xs:element maxOccurs="1" minOccurs="1" name="Number"
+				type="st:string40"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ServiceType">
+		<xs:sequence>
+			<!-- (O) Tipo do Servico -->
+			<xs:element default="P" maxOccurs="1" minOccurs="0" name="Type"
+				type="pt:ServiceTypeType"></xs:element>
+			<!-- (M) Numero de Servico -->
+			<xs:element maxOccurs="1" minOccurs="1" name="Number"
+				type="pt:ServiceNumberType"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CableType">
+		<xs:sequence>
+			<!-- (O) Numero do Cabo A(40) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Number"
+				type="st:string40"></xs:element>
+			<!-- (O) N?mero do Par N(4) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Pair" type="st:integer4"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TerminalBoxType">
+		<xs:sequence>
+			<!-- (O) Identifica??o da Caixa Terminal A(40) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Code" type="st:string40"></xs:element>
+			<!-- (O) Indicador de caixa a contruir N(1) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="BuildingFlag"
+				type="st:integer1"></xs:element>
+			<!-- (O) Tipo da Caixa Terminal A(15) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Type" type="st:string15"></xs:element>
+			<!-- (O) Address -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Address"
+				type="pt:AddressType"></xs:element>
+			<!-- (O) Presen?a de Transformador - Caixa Terminal N(1) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="HasTransformer"
+				type="st:integer1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResultType">
+		<xs:sequence>
+			<!-- (M) Estado da Opera??o N(5) -->
+			<xs:element maxOccurs="1" minOccurs="1" name="Code" type="st:integer5"></xs:element>
+			<!-- (O) Diagn?stico de Falha A(255) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Description"
+				type="st:string300"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResultTypeWithErrorCode">
+		<xs:complexContent>
+			<xs:extension base="pt:ResultType">
+				<xs:sequence>
+					<!-- (M) Codigo do Erro N(5) -->
+					<xs:element maxOccurs="1" minOccurs="0" name="ErrorCode"
+						type="st:integer5"></xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="XBoxType">
+		<xs:sequence>
+			<!-- (O) Identifica??o do Arm?rio de Distribui??o A(40) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Code" type="st:string40"></xs:element>
+			<!-- (O) Tipo do Arm?rio de Distribui??o A(10) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Type" type="st:string10"></xs:element>
+			<!-- (O) Address -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Address"
+				type="pt:AddressType"></xs:element>
+			<!-- (O) Presen?a de Transformador - Arm?rio de Distribui??o N(1) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="HasTransformer"
+				type="st:integer1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DistancesType">
+		<xs:sequence>
+			<!-- (O) Dist. Aproximada da Caixa Terminal ao Endere?o Instala??o N(4) -->
+			<xs:element maxOccurs="1" minOccurs="0"
+				name="BetweenTerminalBox_Subscriber" type="st:DefaultDecimalDistanceType"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OutSidePlantType">
+		<xs:sequence>
+			<!-- (O) Site -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Site" type="pt:SiteType"></xs:element>
+			<!-- (O) Armario de Distribuicao -->
+			<xs:element maxOccurs="1" minOccurs="0" name="XBox" type="pt:XBoxType"></xs:element>
+			<!-- (O) Cabo Alimentador -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Feeder"
+				type="pt:CableType"></xs:element>
+			<!-- (O) Caixa Terminal -->
+			<xs:element maxOccurs="1" minOccurs="0" name="TerminalBox"
+				type="pt:TerminalBoxType"></xs:element>
+			<!-- (O) Cabo Distribuidor -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Distribution"
+				type="pt:CableType"></xs:element>
+			<!-- (O) Latitude (endere?o de instala??o) N(10) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Latitude"
+				type="st:CoordinateType"></xs:element>
+			<!-- (O) Longitude (endere?o de instala??o) N(10) -->
+			<xs:element maxOccurs="1" minOccurs="0" name="Longitude"
+				type="st:CoordinateType"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

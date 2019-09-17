@@ -1,0 +1,87 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoRecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.CpeWsName;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoRecurso;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoServico;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.cpe.enums.TipoRfs;
+import com.tlf.oss.resourceinventory.cpe.factory.OssBusinessExceptionFactory;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoRecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.utils.EntityExtractor;
+import com.tlf.oss.resourceinventory.cpe.validation.Install;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class InstallController {
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private EstadoServicoAssinanteRepository estadoServicoAssinanteRepository;
+
+	@Inject
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Inject
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Inject
+	private EstadoRecursoLogicoRepository estadoRecursoLogicoRepository;
+
+	@Transactional(rollbackOn = OSSBusinessException.class)
+	public ResourceInventoryEntity install(@Install ResourceInventoryEntity entity) throws OSSBusinessException {
+		try {
+			logger.log(OSSLogger.INFO, "Iniciando o install no CPE...");
+
+			ServicoAssinante servicoAssinante = servicoAssinanteRepository.findByServiceId(entity);
+
+			if (null != servicoAssinante) {
+				EstadoServicoAssinante estadoServicoAssinante = estadoServicoAssinanteRepository
+				        .findByEstadoServico(EstadoServico.ATIVADO);
+
+				servicoAssinante.setEstadoServicoAssinanteId(estadoServicoAssinante.getId());
+
+				servicoAssinanteRepository.update(servicoAssinante);
+
+				RecursoLogico recursoLogico = recursoLogicoRepository
+				        .findByServicoAssinanteId(servicoAssinante.getId());
+
+				EstadoRecursoLogico estadoRecursoLogico = estadoRecursoLogicoRepository
+				        .findByEstadoRecurso(EstadoRecurso.INSTALADO);
+
+				recursoLogico.setEstadoRecursoLogicoId(estadoRecursoLogico.getId());
+
+				recursoLogicoRepository.update(recursoLogico);
+
+				logger.log(OSSLogger.INFO, "Finalizando o install no CPE...");
+			} else {
+				String type = TipoRfs.fromRoiName(EntityExtractor.extractResourceOrderItemName(entity)).getType();
+				String serviceId = EntityExtractor.extractServiceId(entity);
+				String message = "Não foi encontrado um cliente com o Designador de " + type + " " + serviceId;
+
+				throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(OssBusinessExceptionFactory.DEFAULT_ERROR_CODE, message, CpeWsName.INSTALL);
+			}
+		} catch (OSSBusinessException obe) {
+			throw obe;
+		} catch (Exception e) {
+			logger.log(OSSLogger.ERROR, e.getMessage());
+
+			throw new OSSBusinessException(FalloutCode.RICPE_999.getDescription(), FalloutCode.RICPE_999.getValue(),
+			        e.getMessage());
+		}
+
+		return entity;
+	}
+}

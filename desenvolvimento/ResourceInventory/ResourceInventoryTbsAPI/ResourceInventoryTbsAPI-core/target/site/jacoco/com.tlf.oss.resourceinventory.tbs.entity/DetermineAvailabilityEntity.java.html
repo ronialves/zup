@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetermineAvailabilityEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">DetermineAvailabilityEntity.java</span></div><h1>DetermineAvailabilityEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+public class DetermineAvailabilityEntity {
+
+	private String voiceProtocol;
+	private String pSwitch;
+	private String cabinet;
+	private String telephoneNumber;
+	private int codeReturn;
+	private String messageReturn;
+	private String tlfSwitch;
+	private int availableCapacityADSL;
+	private int totalCapacityADSL;
+	private int availableCapacityVDSL;
+	private int totalCapacityVDSL;
+	private int availableCapacityFTTH;
+	private int totalCapacityFTTH;
+	private int availableCapacityADSLSIP;
+	private int totalCapacityADSLSIP;
+	private int availableCapacityVDSLSIP;
+	private int totalCapacityVDSLSIP;
+	private int availableCapacityADSLAccess;
+	private int totalCapacityADSLAccess;
+	private int availableCapacityVDSLAccess;
+	private int totalCapacityVDSLAccess;
+	private String protocolVoice;
+	private String technologyAdsl;
+	private int code;
+	private String message;
+	
+	public DetermineAvailabilityEntity() {
+<span class="nc" id="L32">		super();</span>
+<span class="nc" id="L33">	}</span>
+
+	public DetermineAvailabilityEntity(String voiceProtocol, String pSwitch, int codeReturn, String messageReturn, String telephoneNumber, String cabinet) {
+<span class="nc" id="L36">		super();</span>
+<span class="nc" id="L37">		this.voiceProtocol = voiceProtocol;</span>
+<span class="nc" id="L38">		this.pSwitch = pSwitch;</span>
+<span class="nc" id="L39">		this.codeReturn = codeReturn;</span>
+<span class="nc" id="L40">		this.messageReturn = messageReturn;</span>
+<span class="nc" id="L41">		this.telephoneNumber = telephoneNumber;</span>
+<span class="nc" id="L42">		this.cabinet = cabinet;</span>
+<span class="nc" id="L43">	}</span>
+
+	public String getVoiceProtocol() {
+<span class="nc" id="L46">		return voiceProtocol;</span>
+	}
+
+	public void setVoiceProtocol(String voiceProtocol) {
+<span class="nc" id="L50">		this.voiceProtocol = voiceProtocol;</span>
+<span class="nc" id="L51">	}</span>
+
+	public String getPSwitch() {
+<span class="nc" id="L54">		return pSwitch;</span>
+	}
+
+	public void setPSwitch(String pSwitch) {
+<span class="nc" id="L58">		this.pSwitch = pSwitch;</span>
+<span class="nc" id="L59">	}</span>
+
+	public int getAvailableCapacityADSL() {
+<span class="nc" id="L62">		return availableCapacityADSL;</span>
+	}
+
+	public void setAvailableCapacityADSL(int availableCapacityADSL) {
+<span class="nc" id="L66">		this.availableCapacityADSL = availableCapacityADSL;</span>
+<span class="nc" id="L67">	}</span>
+
+	public int getTotalCapacityADSL() {
+<span class="nc" id="L70">		return totalCapacityADSL;</span>
+	}
+
+	public void setTotalCapacityADSL(int totalCapacityADSL) {
+<span class="nc" id="L74">		this.totalCapacityADSL = totalCapacityADSL;</span>
+<span class="nc" id="L75">	}</span>
+
+	public int getAvailableCapacityVDSL() {
+<span class="nc" id="L78">		return availableCapacityVDSL;</span>
+	}
+
+	public void setAvailableCapacityVDSL(int availableCapacityVDSL) {
+<span class="nc" id="L82">		this.availableCapacityVDSL = availableCapacityVDSL;</span>
+<span class="nc" id="L83">	}</span>
+
+	public int getTotalCapacityVDSL() {
+<span class="nc" id="L86">		return totalCapacityVDSL;</span>
+	}
+
+	public void setTotalCapacityVDSL(int totalCapacityVDSL) {
+<span class="nc" id="L90">		this.totalCapacityVDSL = totalCapacityVDSL;</span>
+<span class="nc" id="L91">	}</span>
+
+	public int getAvailableCapacityFTTH() {
+<span class="nc" id="L94">		return availableCapacityFTTH;</span>
+	}
+
+	public void setAvailableCapacityFTTH(int availableCapacityFTTH) {
+<span class="nc" id="L98">		this.availableCapacityFTTH = availableCapacityFTTH;</span>
+<span class="nc" id="L99">	}</span>
+
+	public int getTotalCapacityFTTH() {
+<span class="nc" id="L102">		return totalCapacityFTTH;</span>
+	}
+
+	public void setTotalCapacityFTTH(int totalCapacityFTTH) {
+<span class="nc" id="L106">		this.totalCapacityFTTH = totalCapacityFTTH;</span>
+<span class="nc" id="L107">	}</span>
+
+	public int getAvailableCapacityADSLSIP() {
+<span class="nc" id="L110">		return availableCapacityADSLSIP;</span>
+	}
+
+	public void setAvailableCapacityADSLSIP(int availableCapacityADSLSIP) {
+<span class="nc" id="L114">		this.availableCapacityADSLSIP = availableCapacityADSLSIP;</span>
+<span class="nc" id="L115">	}</span>
+
+	public int getTotalCapacityADSLSIP() {
+<span class="nc" id="L118">		return totalCapacityADSLSIP;</span>
+	}
+
+	public void setTotalCapacityADSLSIP(int totalCapacityADSLSIP) {
+<span class="nc" id="L122">		this.totalCapacityADSLSIP = totalCapacityADSLSIP;</span>
+<span class="nc" id="L123">	}</span>
+
+	public int getAvailableCapacityVDSLSIP() {
+<span class="nc" id="L126">		return availableCapacityVDSLSIP;</span>
+	}
+
+	public void setAvailableCapacityVDSLSIP(int availableCapacityVDSLSIP) {
+<span class="nc" id="L130">		this.availableCapacityVDSLSIP = availableCapacityVDSLSIP;</span>
+<span class="nc" id="L131">	}</span>
+
+	public int getTotalCapacityVDSLSIP() {
+<span class="nc" id="L134">		return totalCapacityVDSLSIP;</span>
+	}
+
+	public void setTotalCapacityVDSLSIP(int totalCapacityVDSLSIP) {
+<span class="nc" id="L138">		this.totalCapacityVDSLSIP = totalCapacityVDSLSIP;</span>
+<span class="nc" id="L139">	}</span>
+
+	public int getAvailableCapacityADSLAccess() {
+<span class="nc" id="L142">		return availableCapacityADSLAccess;</span>
+	}
+
+	public void setAvailableCapacityADSLAccess(int availableCapacityADSLAccess) {
+<span class="nc" id="L146">		this.availableCapacityADSLAccess = availableCapacityADSLAccess;</span>
+<span class="nc" id="L147">	}</span>
+
+	public int getTotalCapacityADSLAccess() {
+<span class="nc" id="L150">		return totalCapacityADSLAccess;</span>
+	}
+
+	public void setTotalCapacityADSLAccess(int totalCapacityADSLAccess) {
+<span class="nc" id="L154">		this.totalCapacityADSLAccess = totalCapacityADSLAccess;</span>
+<span class="nc" id="L155">	}</span>
+
+	public int getAvailableCapacityVDSLAccess() {
+<span class="nc" id="L158">		return availableCapacityVDSLAccess;</span>
+	}
+
+	public void setAvailableCapacityVDSLAccess(int availableCapacityVDSLAccess) {
+<span class="nc" id="L162">		this.availableCapacityVDSLAccess = availableCapacityVDSLAccess;</span>
+<span class="nc" id="L163">	}</span>
+
+	public int getTotalCapacityVDSLAccess() {
+<span class="nc" id="L166">		return totalCapacityVDSLAccess;</span>
+	}
+
+	public void setTotalCapacityVDSLAccess(int totalCapacityVDSLAccess) {
+<span class="nc" id="L170">		this.totalCapacityVDSLAccess = totalCapacityVDSLAccess;</span>
+<span class="nc" id="L171">	}</span>
+	
+	public String getTechnologyAdsl() {
+<span class="nc" id="L174">		return technologyAdsl;</span>
+	}
+
+	public void setTechnologyAdsl(String technologyAdsl) {
+<span class="nc" id="L178">		this.technologyAdsl = technologyAdsl;</span>
+<span class="nc" id="L179">	}</span>
+
+	public int getCode() {
+<span class="nc" id="L182">		return code;</span>
+	}
+
+	public void setCode(int code) {
+<span class="nc" id="L186">		this.code = code;</span>
+<span class="nc" id="L187">	}</span>
+
+	public String getMessage() {
+<span class="nc" id="L190">		return message;</span>
+	}
+
+	public void setMessage(String message) {
+<span class="nc" id="L194">		this.message = message;</span>
+<span class="nc" id="L195">	}</span>
+	
+	public String getCabinet() {
+<span class="nc" id="L198">		return cabinet;</span>
+	}
+
+	public void setCabinet(String cabinet) {
+<span class="nc" id="L202">		this.cabinet = cabinet;</span>
+<span class="nc" id="L203">	}</span>
+
+	public String getTelephoneNumber() {
+<span class="nc" id="L206">		return telephoneNumber;</span>
+	}
+
+	public void setTelephoneNumber(String telephoneNumber) {
+<span class="nc" id="L210">		this.telephoneNumber = telephoneNumber;</span>
+<span class="nc" id="L211">	}</span>
+
+	public String getTlfSwitch() {
+<span class="nc" id="L214">		return tlfSwitch;</span>
+	}
+
+	public void setTlfSwitch(String tlfSwitch) {
+<span class="nc" id="L218">		this.tlfSwitch = tlfSwitch;</span>
+<span class="nc" id="L219">	}</span>
+
+	public String getProtocolVoice() {
+<span class="nc" id="L222">		return protocolVoice;</span>
+	}
+
+	public void setProtocolVoice(String protocolVoice) {
+<span class="nc" id="L226">		this.protocolVoice = protocolVoice;</span>
+<span class="nc" id="L227">	}</span>
+
+	public String getpSwitch() {
+<span class="nc" id="L230">		return pSwitch;</span>
+	}
+
+	public void setpSwitch(String pSwitch) {
+<span class="nc" id="L234">		this.pSwitch = pSwitch;</span>
+<span class="nc" id="L235">	}</span>
+
+	public int getCodeReturn() {
+<span class="nc" id="L238">		return codeReturn;</span>
+	}
+
+	public void setCodeReturn(int codeReturn) {
+<span class="nc" id="L242">		this.codeReturn = codeReturn;</span>
+<span class="nc" id="L243">	}</span>
+
+	public String getMessageReturn() {
+<span class="nc" id="L246">		return messageReturn;</span>
+	}
+
+	public void setMessageReturn(String messageReturn) {
+<span class="nc" id="L250">		this.messageReturn = messageReturn;</span>
+<span class="nc" id="L251">	}</span>
+	
+	@Override
+	public String toString() {
+<span class="nc" id="L255">		return &quot;DetermineAvailabilityEntity [voiceProtocol=&quot; + voiceProtocol + &quot;, pSwitch=&quot; + pSwitch + &quot;, cabinet=&quot;</span>
+				+ cabinet + &quot;, telephoneNumber=&quot; + telephoneNumber + &quot;, codeReturn=&quot; + codeReturn + &quot;, messageReturn=&quot;
+				+ messageReturn + &quot;, tlfSwitch=&quot; + tlfSwitch + &quot;, availableCapacityADSL=&quot; + availableCapacityADSL
+				+ &quot;, totalCapacityADSL=&quot; + totalCapacityADSL + &quot;, availableCapacityVDSL=&quot; + availableCapacityVDSL
+				+ &quot;, totalCapacityVDSL=&quot; + totalCapacityVDSL + &quot;, availableCapacityFTTH=&quot; + availableCapacityFTTH
+				+ &quot;, totalCapacityFTTH=&quot; + totalCapacityFTTH + &quot;, availableCapacityADSLSIP=&quot; + availableCapacityADSLSIP
+				+ &quot;, totalCapacityADSLSIP=&quot; + totalCapacityADSLSIP + &quot;, availableCapacityVDSLSIP=&quot;
+				+ availableCapacityVDSLSIP + &quot;, totalCapacityVDSLSIP=&quot; + totalCapacityVDSLSIP
+				+ &quot;, availableCapacityADSLAccess=&quot; + availableCapacityADSLAccess + &quot;, totalCapacityADSLAccess=&quot;
+				+ totalCapacityADSLAccess + &quot;, availableCapacityVDSLAccess=&quot; + availableCapacityVDSLAccess
+				+ &quot;, totalCapacityVDSLAccess=&quot; + totalCapacityVDSLAccess + &quot;, protocolVoice=&quot; + protocolVoice
+				+ &quot;, technologyAdsl=&quot; + technologyAdsl + &quot;, code=&quot; + code + &quot;, message=&quot; + message + &quot;]&quot;;
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

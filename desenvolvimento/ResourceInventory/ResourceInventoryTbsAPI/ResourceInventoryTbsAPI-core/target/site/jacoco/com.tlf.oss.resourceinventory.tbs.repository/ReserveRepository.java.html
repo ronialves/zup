@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReserveRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.repository</a> &gt; <span class="el_source">ReserveRepository.java</span></div><h1>ReserveRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.repository;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.TypedQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.tbs.entity.ReserveEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.tbs.repository.factory.GenericRepository;
+
+
+<span class="nc" id="L20">public class ReserveRepository extends GenericRepository implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	protected OSSLogger logger;
+	private static final String GVT_SP_FTNET_RESERVA_S8 = &quot;ASAP.GVT_SP_FTNET_RESERVA_S8&quot;;
+
+	public ReserveEntity getReserve(ReserveEntity entity)
+			throws OSSBusinessException {
+<span class="nc" id="L30">		ReserveEntity result = new ReserveEntity();</span>
+		
+		try {
+			TypedQuery&lt;ReserveEntity&gt; query;
+<span class="nc" id="L34">			query = getFactory().createNamedQuery(&quot;reserve&quot;, ReserveEntity.class);</span>
+
+<span class="nc" id="L36">			query.setParameter(&quot;p_ard_otico&quot;, entity.getArdOtico());</span>
+<span class="nc" id="L37">			query.setParameter(&quot;p_ard_metalico&quot;, entity.getArdMetalico());</span>
+<span class="nc" id="L38">			query.setParameter(&quot;p_telefone&quot;, entity.getTelephone());</span>
+<span class="nc" id="L39">			query.setParameter(&quot;p_switch&quot;, entity.getSwitchName());</span>
+<span class="nc" id="L40">			query.setParameter(&quot;p_tecnologia_voz&quot;, entity.getTecVoz());</span>
+<span class="nc" id="L41">			query.setParameter(&quot;p_rate_code&quot;, entity.getRateCode());</span>
+<span class="nc" id="L42">			query.setParameter(&quot;p_designador&quot;, entity.getDesignador());</span>
+<span class="nc" id="L43">			query.setParameter(&quot;p_status&quot;, entity.getStatus());</span>
+<span class="nc" id="L44">			query.setParameter(&quot;p_msg&quot;, entity.getMessage());</span>
+<span class="nc" id="L45">			logIn(query);</span>
+
+<span class="nc" id="L47">			result = query.getSingleResult();</span>
+
+<span class="nc" id="L49">			logOut(result);</span>
+			
+<span class="nc" id="L51">		} catch (NonUniqueResultException | QueryTimeoutException | NoResultException e) {</span>
+<span class="nc" id="L52">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L53">					ExceptionInfoEnum.RITBS_002.getCode(),</span>
+<span class="nc" id="L54">					String.format(ExceptionInfoEnum.RITBS_002.getMessage(), GVT_SP_FTNET_RESERVA_S8, e.getMessage()));</span>
+<span class="nc" id="L55">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L56">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L57">					ExceptionInfoEnum.RITBS_002.getCode(),</span>
+<span class="nc" id="L58">					String.format(ExceptionInfoEnum.RITBS_002.getMessage(), GVT_SP_FTNET_RESERVA_S8, e.getMessage()));</span>
+<span class="nc" id="L59">		} catch (Exception e) {</span>
+<span class="nc" id="L60">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_999.getDescription(),</span>
+<span class="nc" id="L61">					ExceptionInfoEnum.RITBS_999.getCode(),</span>
+<span class="nc" id="L62">					String.format(ExceptionInfoEnum.RITBS_999.getMessage(), GVT_SP_FTNET_RESERVA_S8, e.getMessage()));</span>
+<span class="nc" id="L63">		}</span>
+
+<span class="nc" id="L65">		return result;</span>
+	}
+	
+	private void logIn(Query query) {
+<span class="nc" id="L69">		String log = getlogIn(GVT_SP_FTNET_RESERVA_S8, query);</span>
+<span class="nc" id="L70">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L71">	}</span>
+	
+	private void logOut(ReserveEntity result) {
+<span class="nc" id="L74">		String log = new StringBuilder(&quot;Param OUT: &quot;).append(&quot;p_status = &quot;).append(result.getStatus()).append(&quot;p_msg = &quot;)</span>
+<span class="nc" id="L75">				.append(result.getMessage()).toString();</span>
+<span class="nc" id="L76">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L77">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

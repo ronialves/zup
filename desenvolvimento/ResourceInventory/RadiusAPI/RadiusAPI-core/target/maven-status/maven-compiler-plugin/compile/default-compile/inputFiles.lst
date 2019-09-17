@@ -1,0 +1,16 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/core/DeallocateController.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/repository/factory/GenericRepository.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/core/RetrieveController.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/repository/AllocateRepository.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/validation/Deallocate.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/validation/ValidatorEntity.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/validation/RetrieveValidator.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/repository/DeallocateRepository.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/enums/EntityFields.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/validation/Retrieve.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/validation/Allocate.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/enums/ExceptionInfoEnum.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/core/AllocateController.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/validation/AllocateValidator.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/validation/DeallocateValidator.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/RadiusAPI/RadiusAPI-core/src/main/java/com/tlf/oss/resourceinventory/radius/repository/RetrieveRepository.java

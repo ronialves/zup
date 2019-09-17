@@ -1,0 +1,183 @@
+package com.tlf.oss.resourceinventory.granite.core;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveFacilityEntity;
+import com.tlf.oss.resourceinventory.granite.core.mapper.impl.RetrieveResourceMapper;
+import com.tlf.oss.resourceinventory.granite.core.repository.RetrieveFacilityDao;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.Resource;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class FacilityResourceMetallicControllerTest {
+	
+	@Mock
+	private RetrieveResourceMapper mapper;
+	@Mock
+    public RetrieveFacilityDao rdao;
+	 
+	@InjectMocks
+	private FacilityResourceMetallicController facilityMetallicController;
+
+	@Mock
+	private OSSLogger logger;
+	
+	private ResourceInventoryEntity entity;
+
+	@Before
+	public void before() {
+
+	entity = new ResourceInventoryEntity();
+		
+		ResourceFacingService resourceFacingService = new ResourceFacingService();
+		
+		ServiceDescribedBy serviceDescribedBy = new ServiceDescribedBy();
+		serviceDescribedBy.setName("NetworkOwnerId");
+		
+		ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribes.setValue("110002154963870");
+		serviceDescribedBy.getServiceSpecCharDescribes().add(serviceSpecCharDescribes);
+		
+		resourceFacingService.getServiceDescribedBy().add(serviceDescribedBy);
+		
+		CustomerFacingService customerFacingService = new CustomerFacingService();
+		customerFacingService.setCategory("BROADBAND");
+		
+		ServiceSpecCharDescribes customerServiceSpecCharDescribes = new ServiceSpecCharDescribes();
+		customerServiceSpecCharDescribes.setValue("1024");
+
+		List<ServiceSpecCharDescribes> customerServiceSpecCharDescribesList = new ArrayList<>();
+		customerServiceSpecCharDescribesList.add(customerServiceSpecCharDescribes);
+
+		ServiceDescribedBy customerServiceDescribedBy = new ServiceDescribedBy();
+		customerServiceDescribedBy.setName("Downstream");
+		customerServiceDescribedBy.setServiceSpecCharDescribes(customerServiceSpecCharDescribesList);
+
+		List<ServiceDescribedBy> customerServiceDescribedByList = new ArrayList<>();
+		customerServiceDescribedByList.add(customerServiceDescribedBy);
+		
+		customerFacingService.setServiceDescribedBy(customerServiceDescribedByList);
+		
+		entity.setResourceFacingService(resourceFacingService);
+		entity.setCustomerFacingService(new ArrayList<>());
+		entity.getCustomerFacingService().add(customerFacingService);
+	}
+
+	@Test
+	public void facilityResourceMetallicNotCustomerSucessTest() throws OSSBusinessException {
+
+		RetrieveFacilityEntity retrieveFacilityEntity = new RetrieveFacilityEntity();
+		retrieveFacilityEntity.setCirc_path_inst_id(1111L);
+		List<RetrieveFacilityEntity>listfacility = new ArrayList<>();
+		listfacility.add(retrieveFacilityEntity);
+		
+		when(rdao.getfacility(anyObject())).thenReturn(listfacility);
+		when(mapper.parseGetPhysicalResourceFacility(anyObject(),anyObject())).thenReturn(entity);
+
+		facilityMetallicController.resourceFacility(entity);
+
+		assertNull(entity.getResource());
+	}
+
+	@Test
+	public void facilityResourceMetallicActiveSucessTest() throws OSSBusinessException {
+
+		Resource resource = new Resource();
+		resource.setStateOfResource("ACTIVE");
+		entity.setResource(resource);
+		
+		RetrieveFacilityEntity retrieveFacilityEntity = new RetrieveFacilityEntity();
+		retrieveFacilityEntity.setCirc_path_inst_id(1111L);
+		retrieveFacilityEntity.setStatus("ATIVO");
+		List<RetrieveFacilityEntity>listfacility = new ArrayList<>();
+		listfacility.add(retrieveFacilityEntity);
+		
+		when(rdao.getfacility(anyObject())).thenReturn(listfacility);
+		when(mapper.parseGetPhysicalResourceFacility(anyObject(),anyObject())).thenReturn(entity);
+
+		facilityMetallicController.resourceFacility(entity);
+
+		assertEquals(retrieveFacilityEntity.getStatus(),"ATIVO");
+	}
+	
+	@Test
+	public void facilityResourceMetallicNewSucessTest() throws OSSBusinessException {
+
+		Resource resource = new Resource();
+		resource.setStateOfResource("NEW");
+		entity.setResource(resource);
+		
+		RetrieveFacilityEntity retrieveFacilityEntity = new RetrieveFacilityEntity();
+		retrieveFacilityEntity.setCirc_path_inst_id(1111L);
+		retrieveFacilityEntity.setStatus("RESERVADO");
+		List<RetrieveFacilityEntity>listfacility = new ArrayList<>();
+		listfacility.add(retrieveFacilityEntity);
+		
+		when(rdao.getfacility(anyObject())).thenReturn(listfacility);
+		when(mapper.parseGetPhysicalResourceFacility(anyObject(),anyObject())).thenReturn(entity);
+
+		facilityMetallicController.resourceFacility(entity);
+
+		assertEquals(retrieveFacilityEntity.getStatus(),"RESERVADO");
+	}
+	
+	
+	@Test(expected=OSSBusinessException.class)
+	public void facilityResourceMetallicActiveExceptionTest() throws OSSBusinessException {
+
+		Resource resource = new Resource();
+		resource.setStateOfResource("ACTIVE");
+		entity.setResource(resource);
+		
+		RetrieveFacilityEntity retrieveFacilityEntity = new RetrieveFacilityEntity();
+		retrieveFacilityEntity.setCirc_path_inst_id(1111L);
+		retrieveFacilityEntity.setStatus("RESERVADO");
+		List<RetrieveFacilityEntity>listfacility = new ArrayList<>();
+		listfacility.add(retrieveFacilityEntity);
+		
+		when(rdao.getfacility(anyObject())).thenReturn(listfacility);
+		when(mapper.parseGetPhysicalResourceFacility(anyObject(),anyObject())).thenReturn(entity);
+
+		facilityMetallicController.resourceFacility(entity);
+
+	}
+	
+	@Test(expected=OSSBusinessException.class)
+	public void facilityResourceMetallicNewExceptionTest() throws OSSBusinessException {
+
+		Resource resource = new Resource();
+		resource.setStateOfResource("NEW");
+		entity.setResource(resource);
+		
+		RetrieveFacilityEntity retrieveFacilityEntity = new RetrieveFacilityEntity();
+		retrieveFacilityEntity.setCirc_path_inst_id(1111L);
+		retrieveFacilityEntity.setStatus("ATIVO");
+		List<RetrieveFacilityEntity>listfacility = new ArrayList<>();
+		listfacility.add(retrieveFacilityEntity);
+		
+		when(rdao.getfacility(anyObject())).thenReturn(listfacility);
+		when(mapper.parseGetPhysicalResourceFacility(anyObject(),anyObject())).thenReturn(entity);
+
+		facilityMetallicController.resourceFacility(entity);
+
+	}
+}

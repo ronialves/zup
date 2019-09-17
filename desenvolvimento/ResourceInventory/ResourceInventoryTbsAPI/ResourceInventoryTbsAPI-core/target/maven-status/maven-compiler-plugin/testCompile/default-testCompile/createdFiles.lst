@@ -1,0 +1,9 @@
+com/tlf/oss/resourceinventory/tbs/core/FacilityTest.class
+com/tlf/oss/resourceinventory/tbs/core/AllTests.class
+com/tlf/oss/resourceinventory/tbs/core/CabinetRetrievalControllerTest.class
+com/tlf/oss/resourceinventory/tbs/core/GatherResourceInformationControllerTest.class
+com/tlf/oss/resourceinventory/tbs/core/AllocateTest.class
+com/tlf/oss/resourceinventory/tbs/core/DeallocateTest.class
+com/tlf/oss/resourceinventory/tbs/core/FacilityRetrievalTest.class
+com/tlf/oss/resourceinventory/tbs/core/Environment.class
+com/tlf/oss/resourceinventory/tbs/core/InstallTest.class

@@ -1,0 +1,92 @@
+package com.tlf.oss.resourceinventory.orchestration.execution.resourceordermanagement;
+
+rule "[Deallocate] - VIVO1" extends "BaseRule"
+	agenda-group "DEALLOCATE"
+	when
+		$action : Action(name == '1.0_DEALLOCATE_VIVO1') from $resource.actions
+		ResourceInventoryEntity( address!.networkOwner == 'VIVO1')
+		ResourceInventoryEntity( customerOrder == null || customerOrder!.customerOrderType != 'Edição de Oferta' )
+		ResourceInventoryEntity( address!.placePhysicalResourceAssoc!.physicalLink!.accessTechnology == 'METALICO')
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[Internal Deallocate] - VIVO1" extends "BaseRule"
+	agenda-group "DEALLOCATE"
+	when
+		$action : Action(name == '1.0_INTERNAL_DEALLOCATE_VIVO1') from $resource.actions
+		ResourceInventoryEntity(address!.networkOwner == 'VIVO1', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_ACCESS_PORT')
+
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[External Deallocate] - VIVO1" extends "BaseRule"
+	agenda-group "DEALLOCATE"
+	when
+		$action : Action(name == '1.0_EXTERNAL_DEALLOCATE_VIVO1') from $resource.actions
+		ResourceInventoryEntity(address!.networkOwner == 'VIVO1', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_PHYSICAL_ACCESS')
+
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end
+
+rule "[External DEALLOCATE] - VIVO2" extends "BaseRule"
+    agenda-group "DEALLOCATE"
+    when
+        $action : Action(name == '1.0_EXTERNAL_DEALLOCATE_VIVO2') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO2', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_PHYSICAL_ACCESS')
+          
+      then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end
+
+rule "[Internal DEALLOCATE] - VIVO2" extends "BaseRule"
+    agenda-group "DEALLOCATE"
+    when
+        $action : Action(name == '1.0_INTERNAL_DEALLOCATE_VIVO2') from $resource.actions
+        ResourceInventoryEntity(address!.networkOwner == 'VIVO2', resourceOrder!.resourceOrderItem!.name == 'TSS_FIBER_ACCESS_PORT')
+          
+      then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);  
+        insert( $action );
+
+end
+
+rule "[DEALLOCATE] - CPE" extends "BaseRule"
+    agenda-group "DEALLOCATE"
+    when
+        $action : Action(name == '1.0_CPE_DEALLOCATE') from $resource.actions
+        ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null,
+                                resourceOrder!.resourceOrderItem!.name == 'R_CPE_ACCESS' ||
+                                resourceOrder!.resourceOrderItem!.name == 'R_CPE_VOIP')
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);      
+        insert( $action );
+end
+
+rule "[DEALLOCATE STB] - CPE" extends "BaseRule"
+    agenda-group "DEALLOCATE"
+    when
+        $action : Action(name == '1.0_CPE_DEALLOCATE_STB') from $resource.actions
+        ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null,
+                                resourceOrder!.resourceOrderItem!.name == 'R_CPE_STB')
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);      
+        insert( $action );
+end
+
+rule "[DEALLOCATE] - STATIC IP VIVO2" extends "BaseRule"
+     agenda-group "DEALLOCATE"
+     when
+       $action : Action(name ==  '1.0_STATIC_IP_DEALLOCATE_VIVO2') from $resource.actions
+       ResourceInventoryEntity(address!.networkOwner == 'VIVO2',
+            resourceOrder!.resourceOrderItem!.name == "STATIC_IP")
+    then
+        log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+        insert( $action );
+end

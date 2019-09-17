@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CabinetRetrievalRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.repository</a> &gt; <span class="el_source">CabinetRetrievalRepository.java</span></div><h1>CabinetRetrievalRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceException;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.StoredProcedureQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.Equipment;
+import com.tlf.oss.resourceinventory.schemas.PhysicalResource;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.core.utils.Constants;
+import com.tlf.oss.resourceinventory.tbs.entity.CabinetRetrievalEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.tbs.repository.factory.GenericRepository;
+
+/**
+ * REC2164-44-RI | REC3164-223
+ * 
+ * @project IONIX-SIGITM
+ * @author 80629552
+ * @since 20190328
+ */
+<span class="nc" id="L34">public class CabinetRetrievalRepository extends GenericRepository {</span>
+
+	private static final long serialVersionUID = -8033484033628300825L;
+
+	@Inject
+	private OSSLogger logger;
+	
+	private static final String STATE_OR_PROVINCE = &quot;stateOrProvince&quot;;
+    private static final String CNL_ACRONYM = &quot;cnlAcronym&quot;;
+	private static final String MICROAREA = &quot;microarea&quot;; 
+	
+<span class="nc" id="L45">	private final String PROC_GET_ARVORE = &quot;ASAP.TLF_SP_SIGITM_GET_ARVORE&quot;;</span>
+<span class="nc" id="L46">	private final String PROC_GET_LOCALIDADE = &quot;ASAP.TLF_SP_SIGITM_GET_LOCALIDADE&quot;;</span>
+<span class="nc" id="L47">	private final String PROC_GET_TRONCO = &quot;ASAP.TLF_SP_SIGITM_GET_TRONCO&quot;;</span>
+	
+	/**
+	 * Executa Procedure para consultar equipamentos no TBS
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException 
+	 */
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public ResourceInventoryEntity getCabinetByLocation(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="nc" id="L58">		logger.log(OSSLogger.INFO, this.getClass().getName() + &quot; -  executando procedure &quot; + PROC_GET_LOCALIDADE);</span>
+		
+<span class="nc" id="L60">		List&lt;CabinetRetrievalEntity&gt; resultList = null;</span>
+<span class="nc" id="L61">		Integer codRetorno = null;</span>
+<span class="nc" id="L62">		String msgRetorno = &quot;&quot;;</span>
+		
+		try {
+			
+<span class="nc" id="L66">			StoredProcedureQuery procedureQuery = getFactory().createStoredProcedureQuery(PROC_GET_LOCALIDADE);</span>
+			
+<span class="nc" id="L68">			procedureQuery.registerStoredProcedureParameter(&quot;P_STATE_CODE&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L69">			procedureQuery.registerStoredProcedureParameter(&quot;P_CNL&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L70">            procedureQuery.registerStoredProcedureParameter(&quot;P_SITE&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L71">            procedureQuery.registerStoredProcedureParameter(&quot;CUR1&quot;, void.class, ParameterMode.REF_CURSOR);</span>
+<span class="nc" id="L72">            procedureQuery.registerStoredProcedureParameter(&quot;P_COD_RETORNO&quot;, Integer.class, ParameterMode.OUT);</span>
+<span class="nc" id="L73">            procedureQuery.registerStoredProcedureParameter(&quot;P_MSG_RETORNO&quot;, String.class, ParameterMode.OUT);</span>
+            
+<span class="nc" id="L75">            String stateOrProvince = getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, STATE_OR_PROVINCE);</span>
+<span class="nc" id="L76">			String cnl = getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, CNL_ACRONYM);</span>
+<span class="nc" id="L77">			String microArea = getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, MICROAREA);</span>
+            
+<span class="nc" id="L79">			procedureQuery.setParameter(&quot;P_STATE_CODE&quot;, stateOrProvince);</span>
+<span class="nc" id="L80">			procedureQuery.setParameter(&quot;P_CNL&quot;, cnl);</span>
+<span class="nc" id="L81">			procedureQuery.setParameter(&quot;P_SITE&quot;, microArea);</span>
+			
+<span class="nc" id="L83">            procedureQuery.execute();</span>
+            
+<span class="nc" id="L85">            resultList = castToCabinetRetrievalEntity((List&lt;Object[]&gt;) procedureQuery.getOutputParameterValue(&quot;CUR1&quot;));</span>
+<span class="nc" id="L86">			codRetorno = (Integer) procedureQuery.getOutputParameterValue(&quot;P_COD_RETORNO&quot;);</span>
+<span class="nc" id="L87">			msgRetorno = (String) procedureQuery.getOutputParameterValue(&quot;P_MSG_RETORNO&quot;);</span>
+						
+<span class="nc" id="L89">    		logger.log(OSSLogger.INFO, this.getClass().getName() + &quot; -  procedure &quot;+ PROC_GET_LOCALIDADE + &quot; executada com sucesso&quot;);			</span>
+		
+			
+<span class="nc" id="L92">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L93">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L94">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L95">							&quot;Erro ao chamar a procedure TLF_SP_SIGITM_GET_LOCATION no TBS&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L97">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L98">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L99">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L100">							&quot;Erro ao chamar a procedure TLF_SP_SIGITM_GET_LOCATION no TBS&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L102">		} catch (Exception e) {</span>
+<span class="nc" id="L103">			System.out.println(&quot;ERROR: &quot; + e.getMessage());</span>
+<span class="nc" id="L104">			e.printStackTrace();</span>
+<span class="nc" id="L105">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_999.getDescription(),</span>
+<span class="nc" id="L106">					ExceptionInfoEnum.RITBS_999.getCode(), e.getMessage());</span>
+<span class="nc" id="L107">		}</span>
+
+<span class="nc" id="L109">		return equipmentMapper(entity, codRetorno, msgRetorno, resultList);</span>
+	}
+		
+	
+	private List&lt;CabinetRetrievalEntity&gt; castToCabinetRetrievalEntity(List&lt;Object[]&gt; list) {
+<span class="nc" id="L114">		List&lt;CabinetRetrievalEntity&gt; result = new ArrayList&lt;&gt;();</span>
+		
+<span class="nc bnc" id="L116" title="All 2 branches missed.">		for (Object[] procResult : list) {</span>
+<span class="nc" id="L117">			CabinetRetrievalEntity entity = new CabinetRetrievalEntity();		</span>
+<span class="nc" id="L118">			entity.setClliCode(objectToString(procResult[2]));</span>
+<span class="nc" id="L119">			entity.setLocationName(objectToString(procResult[3]));</span>
+<span class="nc" id="L120">			entity.setLocationType(objectToString(procResult[4]));			</span>
+<span class="nc" id="L121">			entity.setLocationId(objectToString(procResult[5]));</span>
+			
+<span class="nc" id="L123">			result.add(entity);</span>
+<span class="nc" id="L124">		}</span>
+		
+<span class="nc" id="L126">		return result;</span>
+	}	
+		
+
+	/**
+	 * Executa Procedure para consultar os ids dos equipamentos
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException 
+	 */
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public ResourceInventoryEntity getEquipmentTrunk(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="nc" id="L139">		logger.log(OSSLogger.INFO, this.getClass().getName() + &quot; -  executando procedure &quot; + PROC_GET_TRONCO);</span>
+		
+<span class="nc" id="L141">		List&lt;CabinetRetrievalEntity&gt; resultList = null;</span>
+<span class="nc" id="L142">		Integer codRetorno = null;</span>
+<span class="nc" id="L143">		String msgRetorno = &quot;&quot;;</span>
+		
+		try {
+			
+<span class="nc" id="L147">			StoredProcedureQuery procedureQuery = getFactory().createStoredProcedureQuery(PROC_GET_TRONCO);</span>
+			
+<span class="nc" id="L149">			procedureQuery.registerStoredProcedureParameter(&quot;P_STATE_CODE&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L150">			procedureQuery.registerStoredProcedureParameter(&quot;P_CNL&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L151">            procedureQuery.registerStoredProcedureParameter(&quot;P_CLLI_CODE&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L152">            procedureQuery.registerStoredProcedureParameter(&quot;CUR1&quot;, void.class, ParameterMode.REF_CURSOR);</span>
+<span class="nc" id="L153">            procedureQuery.registerStoredProcedureParameter(&quot;P_COD_RETORNO&quot;, Integer.class, ParameterMode.OUT);</span>
+<span class="nc" id="L154">            procedureQuery.registerStoredProcedureParameter(&quot;P_MSG_RETORNO&quot;, String.class, ParameterMode.OUT);</span>
+						
+<span class="nc" id="L156">			String stateOrProvince = getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, STATE_OR_PROVINCE);</span>
+<span class="nc" id="L157">			String cnl = getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, CNL_ACRONYM);</span>
+<span class="nc" id="L158">			String name = getParamValue(entity, Constants.EQUIPMENT, Constants.HOSTNAME);</span>
+			
+<span class="nc" id="L160">			procedureQuery.setParameter(&quot;P_STATE_CODE&quot;, stateOrProvince);</span>
+<span class="nc" id="L161">			procedureQuery.setParameter(&quot;P_CNL&quot;, cnl);</span>
+<span class="nc" id="L162">			procedureQuery.setParameter(&quot;P_CLLI_CODE&quot;, name);</span>
+			
+<span class="nc" id="L164">			procedureQuery.execute();</span>
+			
+<span class="nc" id="L166">			resultList = castToCabinetRetrievalEntityTrunk((List&lt;Object[]&gt;) procedureQuery.getOutputParameterValue(&quot;CUR1&quot;));</span>
+<span class="nc" id="L167">			codRetorno = (Integer) procedureQuery.getOutputParameterValue(&quot;P_COD_RETORNO&quot;);</span>
+<span class="nc" id="L168">			msgRetorno = (String) procedureQuery.getOutputParameterValue(&quot;P_MSG_RETORNO&quot;);</span>
+						
+<span class="nc" id="L170">    		logger.log(OSSLogger.INFO, this.getClass().getName() + &quot; -  procedure &quot;+ PROC_GET_TRONCO + &quot; executada com sucesso&quot;);			</span>
+			
+<span class="nc" id="L172">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L173">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L174">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L175">							&quot;Erro ao chamar a procedure TLF_SP_SIGITM_GET_TRONCO no TBS&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L177">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L178">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L179">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L180">							&quot;Erro ao chamar a procedure TLF_SP_SIGITM_GET_TRONCO no TBS&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L182">		} catch (Exception e) {</span>
+<span class="nc" id="L183">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_999.getDescription(),</span>
+<span class="nc" id="L184">					ExceptionInfoEnum.RITBS_999.getCode(), e.getMessage());</span>
+<span class="nc" id="L185">		}</span>
+
+<span class="nc" id="L187">		return equipmentTrunkMapper(entity, codRetorno, msgRetorno, resultList);</span>
+	}
+	
+	private List&lt;CabinetRetrievalEntity&gt; castToCabinetRetrievalEntityTrunk(List&lt;Object[]&gt; list) {
+<span class="nc" id="L191">		List&lt;CabinetRetrievalEntity&gt; result = new ArrayList&lt;&gt;();</span>
+		
+<span class="nc bnc" id="L193" title="All 2 branches missed.">		for (Object[] procResult : list) {</span>
+<span class="nc" id="L194">			CabinetRetrievalEntity entity = new CabinetRetrievalEntity();</span>
+<span class="nc" id="L195">			entity.setEquipmentId(objecToInteger(procResult[6]));</span>
+			
+<span class="nc" id="L197">			result.add(entity);</span>
+<span class="nc" id="L198">		}</span>
+		
+<span class="nc" id="L200">		return result;</span>
+	}	
+	
+	/**
+	 * Executa Procedure para consultar as informacoes dos equipamentos
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException 
+	 */
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public List&lt;PortAdapterCard&gt; getEquipmentTree(Equipment entity) throws OSSBusinessException {
+<span class="nc" id="L212">		logger.log(OSSLogger.INFO, &quot;CabinetRetrievalDao - getEquipmentTree - Iniciando chamada a Procedure do TBS.&quot;);</span>
+		
+<span class="nc" id="L214">		List&lt;CabinetRetrievalEntity&gt; resultList = null;</span>
+<span class="nc" id="L215">		Integer codRetorno = null;</span>
+<span class="nc" id="L216">		String msgRetorno = &quot;&quot;;</span>
+		
+		try {
+			
+<span class="nc" id="L220">			StoredProcedureQuery procedureQuery = getFactory().createStoredProcedureQuery(PROC_GET_ARVORE);</span>
+			
+<span class="nc" id="L222">			procedureQuery.registerStoredProcedureParameter(&quot;P_EQUIPMENT_ID&quot;, Integer.class, ParameterMode.IN);</span>
+<span class="nc" id="L223">			procedureQuery.registerStoredProcedureParameter(&quot;P_FUSION&quot;, String.class, ParameterMode.IN);</span>
+<span class="nc" id="L224">            procedureQuery.registerStoredProcedureParameter(&quot;CUR1&quot;, void.class, ParameterMode.REF_CURSOR);</span>
+<span class="nc" id="L225">            procedureQuery.registerStoredProcedureParameter(&quot;P_COD_RETORNO&quot;, Integer.class, ParameterMode.OUT);</span>
+<span class="nc" id="L226">            procedureQuery.registerStoredProcedureParameter(&quot;P_MSG_RETORNO&quot;, String.class, ParameterMode.OUT);</span>
+									
+<span class="nc" id="L228">			procedureQuery.setParameter(&quot;P_EQUIPMENT_ID&quot;, Integer.valueOf(entity.getId()));</span>
+<span class="nc" id="L229">			procedureQuery.setParameter(&quot;P_FUSION&quot;, null);</span>
+			
+<span class="nc" id="L231">			procedureQuery.execute();</span>
+						
+<span class="nc" id="L233">			resultList = castToCabinetRetrievalEntityTree((List&lt;Object[]&gt;) procedureQuery.getOutputParameterValue(&quot;CUR1&quot;));</span>
+<span class="nc" id="L234">			codRetorno = (Integer) procedureQuery.getOutputParameterValue(&quot;P_COD_RETORNO&quot;);</span>
+<span class="nc" id="L235">			msgRetorno = (String) procedureQuery.getOutputParameterValue(&quot;P_MSG_RETORNO&quot;);</span>
+			
+<span class="nc" id="L237">		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L238">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L239">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L240">							&quot;Erro ao chamar a procedure TLF_SP_SIGITM_GET_ARVORE no TBS&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L242">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L243">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),</span>
+<span class="nc" id="L244">					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),</span>
+<span class="nc" id="L245">							&quot;Erro ao chamar a procedure TLF_SP_SIGITM_GET_ARVORE no TBS&quot;, e.getMessage()));</span>
+
+<span class="nc" id="L247">		} catch (Exception e) {</span>
+<span class="nc" id="L248">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_999.getDescription(),</span>
+<span class="nc" id="L249">					ExceptionInfoEnum.RITBS_999.getCode(), e.getMessage());</span>
+<span class="nc" id="L250">		}</span>
+
+<span class="nc" id="L252">		return equipmentTreeMapper(codRetorno, msgRetorno, resultList);</span>
+	}
+	
+	private List&lt;CabinetRetrievalEntity&gt; castToCabinetRetrievalEntityTree(List&lt;Object[]&gt; list) {
+		
+<span class="nc" id="L257">		List&lt;CabinetRetrievalEntity&gt; result = new ArrayList&lt;&gt;();</span>
+		
+<span class="nc bnc" id="L259" title="All 2 branches missed.">		for (Object[] procResult : list) {</span>
+<span class="nc" id="L260">			CabinetRetrievalEntity cabinetRetrievalEntity = new CabinetRetrievalEntity();</span>
+<span class="nc" id="L261">			cabinetRetrievalEntity.setMountingPositionNumber(objectToString(procResult[2]));</span>
+<span class="nc" id="L262">			cabinetRetrievalEntity.setEquipspecType(objectToString(procResult[3]));</span>
+<span class="nc" id="L263">			cabinetRetrievalEntity.setEquipmentAcronym(objectToString(procResult[4]));</span>
+<span class="nc" id="L264">			cabinetRetrievalEntity.setVendorName(objectToString(procResult[5]));</span>
+<span class="nc" id="L265">			cabinetRetrievalEntity.setEquipmentName(objectToString(procResult[6]));</span>
+<span class="nc" id="L266">			cabinetRetrievalEntity.setNotes(objectToString(procResult[7]));</span>
+<span class="nc" id="L267">			cabinetRetrievalEntity.setEquipmentIdPai(objecToInteger(procResult[9]));</span>
+<span class="nc" id="L268">			cabinetRetrievalEntity.setEquipmentIdFilho(objecToInteger(procResult[10]));</span>
+			
+<span class="nc" id="L270">			result.add(cabinetRetrievalEntity);</span>
+<span class="nc" id="L271">		}	</span>
+		
+<span class="nc" id="L273">		return result;</span>
+	}
+
+	private Integer objecToInteger(Object in) {
+<span class="nc" id="L277">		Integer result = 0;</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">		if (in != null) {</span>
+<span class="nc" id="L279">			result = Integer.parseInt(in.toString());</span>
+		}
+<span class="nc" id="L281">		return result;</span>
+	}
+	
+	private String objectToString(Object in) {
+<span class="nc" id="L285">		String result = &quot;&quot;;</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">		if (in != null ) {</span>
+<span class="nc" id="L287">			result = String.valueOf(in);</span>
+		}
+<span class="nc" id="L289">		return result;</span>
+	}
+	
+	/**
+	 * Método responsável pelo mapeamento das informações do Cabinet.
+	 * 
+	 * @param entity
+	 * @param resultQuery
+	 * @return {@link ResourceInventoryEntity}
+	 */
+	private ResourceInventoryEntity equipmentMapper(ResourceInventoryEntity entity, Integer codRetorno, String msgRetorno, List&lt;CabinetRetrievalEntity&gt; resultQuery) {
+		
+<span class="nc bnc" id="L301" title="All 4 branches missed.">		if(resultQuery != null &amp;&amp; !resultQuery.isEmpty()) {</span>
+			
+<span class="nc" id="L303">			List&lt;Equipment&gt; equipments = new ArrayList&lt;Equipment&gt;();</span>
+			
+<span class="nc bnc" id="L305" title="All 2 branches missed.">			for (CabinetRetrievalEntity resultEquipment : resultQuery) {</span>
+				
+<span class="nc" id="L307">				Equipment equipment = new Equipment();</span>
+				
+<span class="nc bnc" id="L309" title="All 2 branches missed.">				if(resultEquipment.getClliCode() != null) {</span>
+<span class="nc" id="L310">					equipment.setName(resultEquipment.getClliCode());</span>
+				}				
+<span class="nc bnc" id="L312" title="All 2 branches missed.">				if(resultEquipment.getLocationName() != null) {</span>
+<span class="nc" id="L313">					equipment.setLocation(resultEquipment.getLocationName());</span>
+				}
+<span class="nc bnc" id="L315" title="All 2 branches missed.">				if(resultEquipment.getLocationType() != null) {</span>
+<span class="nc" id="L316">					equipment.setTypeOfResource(resultEquipment.getLocationType());</span>
+				}
+<span class="nc bnc" id="L318" title="All 2 branches missed.">				if(resultEquipment.getLocationId() != null) {</span>
+<span class="nc" id="L319">					equipment.setId(resultEquipment.getLocationId());</span>
+				}
+				
+<span class="nc" id="L322">				equipment.setOrigin(Constants.TBS);						</span>
+<span class="nc" id="L323">				equipments.add(equipment);</span>
+<span class="nc" id="L324">			}</span>
+			
+<span class="nc" id="L326">			entity.setEquipment(equipments);</span>
+		} 
+
+<span class="nc" id="L329">		entity.setCodeReturn(codRetorno);</span>
+<span class="nc" id="L330">		entity.setMessageReturn(msgRetorno);</span>
+		
+<span class="nc" id="L332">		return entity;</span>
+	}
+	
+	/**
+	 * Método responsável pelo mapeamento dos Ids dos Equipamentos.
+	 * 
+	 * @param resultQuery
+	 * @return {@link Equipment}
+	 */
+	private ResourceInventoryEntity equipmentTrunkMapper(ResourceInventoryEntity entity, Integer codRetorno, String msgRetorno, List&lt;CabinetRetrievalEntity&gt; resultQuery) {
+		
+<span class="nc bnc" id="L343" title="All 4 branches missed.">		if(resultQuery != null &amp;&amp; !resultQuery.isEmpty()) {</span>
+			
+<span class="nc" id="L345">			List&lt;Equipment&gt; equipments = new ArrayList&lt;Equipment&gt;();</span>
+			
+<span class="nc bnc" id="L347" title="All 2 branches missed.">			for (CabinetRetrievalEntity resultEquipment : resultQuery) {</span>
+				
+<span class="nc" id="L349">				Equipment equipment = new Equipment();</span>
+				
+<span class="nc bnc" id="L351" title="All 2 branches missed.">				if (resultEquipment.getEquipmentId() != null)</span>
+<span class="nc" id="L352">					equipment.setId(resultEquipment.getEquipmentId().toString());</span>
+				
+<span class="nc" id="L354">				equipments.add(equipment);</span>
+<span class="nc" id="L355">			}</span>
+			
+<span class="nc" id="L357">			entity.setEquipment(equipments);</span>
+			
+		}
+		
+<span class="nc" id="L361">		entity.setCodeReturn(codRetorno);</span>
+<span class="nc" id="L362">		entity.setMessageReturn(msgRetorno);</span>
+		
+<span class="nc" id="L364">		return entity;</span>
+	}
+	
+	/**
+	 * Método responsável pelo mapeamento das informações dos Equipamentos.
+	 * @param msgRetorno 
+	 * @param codRetorno 
+	 * 
+	 * @param resultQuery
+	 * @return {@link Equipment}
+	 */
+	private List&lt;PortAdapterCard&gt; equipmentTreeMapper(Integer codRetorno, String msgRetorno, List&lt;CabinetRetrievalEntity&gt; resultQuery) {
+		
+<span class="nc bnc" id="L377" title="All 4 branches missed.">		if(resultQuery != null &amp;&amp; !resultQuery.isEmpty()) {</span>
+				
+<span class="nc" id="L379">			List&lt;PortAdapterCard&gt; adapterCards = new ArrayList&lt;PortAdapterCard&gt;();</span>
+			
+<span class="nc bnc" id="L381" title="All 2 branches missed.">			for (CabinetRetrievalEntity resultEquipment : resultQuery) {</span>
+				
+<span class="nc" id="L383">				PortAdapterCard adapterCard = new PortAdapterCard();</span>
+<span class="nc" id="L384">				PhysicalResource physicalResource = new PhysicalResource();</span>
+				
+<span class="nc bnc" id="L386" title="All 2 branches missed.">				if (resultEquipment.getMountingPositionNumber() != null)</span>
+<span class="nc" id="L387">					adapterCard.setSlot(resultEquipment.getMountingPositionNumber());</span>
+				
+<span class="nc bnc" id="L389" title="All 2 branches missed.">				if (resultEquipment.getEquipspecType() != null) {</span>
+<span class="nc" id="L390">					physicalResource.setTypeOfResource(resultEquipment.getEquipspecType());</span>
+<span class="nc" id="L391">					adapterCard.setPhysicalResource(physicalResource);</span>
+				}
+				
+<span class="nc bnc" id="L394" title="All 2 branches missed.">				if (resultEquipment.getEquipmentAcronym() != null)</span>
+<span class="nc" id="L395">					adapterCard.setModel(resultEquipment.getEquipmentAcronym());</span>
+				
+<span class="nc bnc" id="L397" title="All 2 branches missed.">				if (resultEquipment.getVendorName() != null)</span>
+<span class="nc" id="L398">					adapterCard.setVendor(resultEquipment.getVendorName());</span>
+				
+<span class="nc bnc" id="L400" title="All 2 branches missed.">				if (resultEquipment.getEquipmentName() != null)</span>
+<span class="nc" id="L401">					adapterCard.setName(resultEquipment.getEquipmentName());</span>
+				
+<span class="nc bnc" id="L403" title="All 2 branches missed.">				if (resultEquipment.getNotes() != null)</span>
+<span class="nc" id="L404">					adapterCard.setNotes(resultEquipment.getNotes());</span>
+				
+<span class="nc bnc" id="L406" title="All 2 branches missed.">				if (resultEquipment.getEquipmentIdPai() != null)</span>
+<span class="nc" id="L407">					adapterCard.setSlotId(resultEquipment.getEquipmentIdPai().toString());</span>
+				
+<span class="nc bnc" id="L409" title="All 2 branches missed.">				if (resultEquipment.getEquipmentIdFilho() != null)</span>
+<span class="nc" id="L410">					adapterCard.setSubSlotId(resultEquipment.getEquipmentIdFilho().toString());</span>
+										
+<span class="nc" id="L412">				adapterCards.add(adapterCard);</span>
+<span class="nc" id="L413">			}</span>
+						
+<span class="nc" id="L415">			return adapterCards;</span>
+		}
+		
+<span class="nc" id="L418">		return null;</span>
+	}
+	
+	
+	/**
+	 * Retorna o valor do Parâmetro do ServiceDescribedBy.
+	 * 
+	 * @param entity
+	 * @param networkOwner
+	 * @param paramName
+	 * @return
+	 */
+	private String getParamValue(ResourceInventoryEntity entity, String networkOwner, String paramName) {
+		
+<span class="nc bnc" id="L432" title="All 2 branches missed.">		for (ServiceDescribedBy sdb : entity.getResourceFacingService().getServiceDescribedBy()) {			</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">			if (networkOwner.equalsIgnoreCase(sdb.getName())) {				</span>
+<span class="nc bnc" id="L434" title="All 2 branches missed.">				for (ServiceSpecCharDescribes sscd : sdb.getServiceSpecCharDescribes()) {					</span>
+<span class="nc bnc" id="L435" title="All 2 branches missed.">					if (paramName.equalsIgnoreCase(sscd.getValueType())) {</span>
+<span class="nc" id="L436">						logger.log(OSSLogger.INFO, &quot;CabinetRetrievalRepository - getParamValue - &quot; + paramName + &quot; : &quot; + sscd.getValue());</span>
+<span class="nc" id="L437">						return sscd.getValue();</span>
+					}					
+<span class="nc" id="L439">				}</span>
+			}
+<span class="nc" id="L441">		}</span>
+		
+<span class="nc" id="L443">		return null;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

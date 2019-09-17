@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>CPEAPI</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<groupId>com.tlf.oss</groupId>
+	<name>CPEAPI</name>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>com.tlf.oss</groupId>
+		<artifactId>OSSProjectParent</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.tlf.oss</groupId>
+			<artifactId>OSSCommons-util</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.3</version>
+		</dependency>
+	</dependencies>
+	<modules>
+		<module>CPEAPI-api</module>
+		<module>CPEAPI-web</module>
+		<module>CPEAPI-rules</module>
+		<module>CPEAPI-core</module>
+		<module>CPEAPI-ear</module>
+	</modules>
+</project>

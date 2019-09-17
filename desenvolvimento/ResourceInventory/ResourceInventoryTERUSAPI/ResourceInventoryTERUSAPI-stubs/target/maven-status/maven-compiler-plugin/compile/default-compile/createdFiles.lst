@@ -1,0 +1,15 @@
+com/tlf/oss/resourceinventory/generated/terus/desbloqueioportarequest/ObjectFactory.class
+com/tlf/oss/resourceinventory/generated/terus/desbloqueioportarequest/DesbloqueioPortaRequestType.class
+com/tlf/oss/resourceinventory/generated/terus/bloqueioportaresponse/package-info.class
+com/tlf/oss/resourceinventory/generated/terus/desbloqueioportaresponse/ObjectFactory.class
+com/tlf/oss/resourceinventory/generated/terus/bloqueioportaresponse/BloqueioPortaResponseType.class
+com/tlf/oss/resourceinventory/generated/terus/desbloqueioportaresponse/DesbloqueioPortaResponseType.class
+com/tlf/oss/resourceinventory/generated/terus/bloqueioportarequest/BloqueioPortaRequestType.class
+com/tlf/oss/resourceinventory/generated/terus/desbloqueioportarequest/package-info.class
+br/com/cpqd/gercentrais/interfacews/terusoperacoes/ejb/TerusOperacoesPortType_TerusOperacoesPort_Client.class
+com/tlf/oss/resourceinventory/generated/terus/desbloqueioportaresponse/package-info.class
+com/tlf/oss/resourceinventory/generated/terus/bloqueioportaresponse/ObjectFactory.class
+com/tlf/oss/resourceinventory/generated/terus/bloqueioportarequest/package-info.class
+br/com/cpqd/gercentrais/interfacews/terusoperacoes/ejb/TerusOperacoesPortType.class
+br/com/cpqd/gercentrais/interfacews/terusoperacoes/ejb/TerusOperacoesService.class
+com/tlf/oss/resourceinventory/generated/terus/bloqueioportarequest/ObjectFactory.class

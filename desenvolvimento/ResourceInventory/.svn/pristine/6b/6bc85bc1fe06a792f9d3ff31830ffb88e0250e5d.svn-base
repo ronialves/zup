@@ -1,0 +1,63 @@
+[
+    {
+        "faultCode": "RIGRANITE-501",
+        "faultDescription": "PARAMETRO NAO INFORMADO."
+    },
+    {
+        "faultCode": "RIGRANITE-502",
+        "faultDescription": "ERRO DE CONEXAO."
+    },
+    {
+        "faultCode": "RIGRANITE-503",
+        "faultDescription": "PARAMETRO INVALIDO."
+    },
+    {
+        "faultCode": "RIGRANITE-504",
+        "faultDescription": "ERRO DE CADASTRO (IT)."
+    },
+    {
+        "faultCode": "RIGRANITE-509",
+        "faultDescription": "ERRO DE CADASTRO (ENGENHARIA)."
+    },
+    {
+        "faultCode": "RIGRANITE-505",
+        "faultDescription": "ERRO DE SISTEMA."
+    }, 
+	{
+        "faultCode": "RIGRANITE-506",
+        "faultDescription": "ERRO TRANSACIONAL (IT)."
+    },
+    {
+        "faultCode": "RIGRANITE-507",
+        "faultDescription": "ERRO TRANSACIONAL (ENGENHARIA)."
+    },
+    {
+        "faultCode": "RIGRANITE-508",
+        "faultDescription": "ERRO OPERACIONAL (CAMPO)."
+    },
+    {
+        "faultCode": "RIGRANITE-510",
+        "faultDescription": "ERRO OPERACIONAL (GERENCIA)."
+    },
+    {
+        "faultCode": "RIGRANITE-512",
+        "faultDescription": "ERRO OPERACIONAL (ENGENHARIA)."
+    },
+    {
+        "faultCode": "RIGRANITE-511",
+        "faultDescription": "ERRO DE AMBIENTE."
+    },
+    {
+        "faultCode": "RIGRANITE-666",
+        "faultDescription": "ERRO INTERNO NAO MAPEADO."
+    },
+    {
+        "faultCode": "RIGRANITE-777",
+        "faultDescription": "ACAO NAO DEFINIDA."
+    }
+    ,
+    {
+        "faultCode": "RIGRANITE-999",
+        "faultDescription": "ERRO NAO MAPEADO."
+    }
+]

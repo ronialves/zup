@@ -1,0 +1,9 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NWIAPI/NWIAPI-core/src/main/java/com/tlf/oss/resourceinventory/nwi/core/utils/Constants.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NWIAPI/NWIAPI-core/src/main/java/com/tlf/oss/resourceinventory/nwi/enums/ExceptionInfoEnum.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NWIAPI/NWIAPI-core/src/main/java/com/tlf/oss/resourceinventory/nwi/enums/EntityFields.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NWIAPI/NWIAPI-core/src/main/java/com/tlf/oss/resourceinventory/nwi/core/EquipmentRetrievalController.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NWIAPI/NWIAPI-core/src/main/java/com/tlf/oss/resourceinventory/nwi/repository/EquipmentRetrievalRepository.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NWIAPI/NWIAPI-core/src/main/java/com/tlf/oss/resourceinventory/nwi/core/validation/ValidatorEntity.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NWIAPI/NWIAPI-core/src/main/java/com/tlf/oss/resourceinventory/nwi/core/validation/EquipmentRetrieval.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NWIAPI/NWIAPI-core/src/main/java/com/tlf/oss/resourceinventory/nwi/core/validation/EquipmentRetrievalValidator.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NWIAPI/NWIAPI-core/src/main/java/com/tlf/oss/resourceinventory/nwi/entity/EquipmentRetrievalEntity.java

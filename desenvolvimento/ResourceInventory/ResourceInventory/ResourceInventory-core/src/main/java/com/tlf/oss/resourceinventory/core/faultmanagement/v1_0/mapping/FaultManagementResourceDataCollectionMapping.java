@@ -1,0 +1,148 @@
+package com.tlf.oss.resourceinventory.core.faultmanagement.v1_0.mapping;
+
+import com.tlf.oss.resourceinventory.schemas.*;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class FaultManagementResourceDataCollectionMapping {
+
+    private static final String STATE_OR_PROVINCE = "stateOrProvince";
+    private static final String CNL_ACRONYM = "cnlAcronym";
+    private static final String MICRO_AREA = "microarea";
+    private static final String EQUIPMENT = "Equipment";
+    private static final String HOSTNAME = "Hostname";
+    private static final String ORIGIN = "origin";
+    private static final String CITY = "city";
+    private static final String NETWORK_OWNER_VIVO1 = "VIVO1";
+    private static final String NETWORK_OWNER_VIVO2 = "VIVO2";
+
+    public static ResourceInventoryEntity toResourceInventoryEntityFM(com.tlf.oss.resourceinventory.schemas.api.faultmanagement.RetrieveResourceInformationIn in) {
+
+        ResourceInventoryEntity ri = new ResourceInventoryEntity();
+        ResourceFacingService rfs = new ResourceFacingService();
+        List<ServiceDescribedBy> serviceDescribedByList = new ArrayList<ServiceDescribedBy>();
+
+        ServiceDescribedBy sigitimAddressGranite = getSigitimAddress(in.getAddress(), NETWORK_OWNER_VIVO1);
+        if(sigitimAddressGranite != null)
+            serviceDescribedByList.add(sigitimAddressGranite);
+
+        ServiceDescribedBy sigitimAddressTbs = getSigitimAddress(in.getAddress(), NETWORK_OWNER_VIVO2);
+        if(sigitimAddressTbs != null)
+            serviceDescribedByList.add(sigitimAddressTbs);
+
+        ServiceDescribedBy sigitimEquipment = getSigitimEquipment(in.getEquipment());
+        if(sigitimEquipment != null)
+            serviceDescribedByList.add(sigitimEquipment);
+
+        rfs.setServiceDescribedBy(serviceDescribedByList);
+        ri.setResourceFacingService(rfs);
+
+        if (in.getResourceOrder() != null) {
+            ri.setResourceOrder(in.getResourceOrder());
+        }
+      
+        return ri;
+    }
+
+
+    public static com.tlf.oss.resourceinventory.schemas.api.faultmanagement.RetrieveResourceInformationOut toRetrieveResourceInformationOutFM(
+            ResourceInventoryEntity res) {
+
+        if(res != null) {
+
+            com.tlf.oss.resourceinventory.schemas.api.faultmanagement.RetrieveResourceInformationOut out =
+                    new com.tlf.oss.resourceinventory.schemas.api.faultmanagement.RetrieveResourceInformationOut();
+
+            out.setEquipment(res.getEquipment());
+            out.setCodeReturn(res.getCodeReturn());
+            out.setMessageReturn(res.getMessageReturn());
+
+            return out;
+        }
+
+        return null;
+
+    }
+
+    private static ServiceDescribedBy getSigitimAddress (List<BrazilianUrbanPropertyAddress> in, String networkOwner) {
+
+        if(in != null && !in.isEmpty()) {
+            ServiceDescribedBy out = null;
+
+            for(BrazilianUrbanPropertyAddress address : in) {
+
+                if(networkOwner.equalsIgnoreCase(address.getNetworkOwner())) {
+                    out = new ServiceDescribedBy();
+                    out.setName(address.getNetworkOwner());
+
+                    List<ServiceSpecCharDescribes> serviceSpecCharDescribes = new ArrayList<ServiceSpecCharDescribes>();
+
+                    ServiceSpecCharDescribes stateOrProvince = new ServiceSpecCharDescribes();
+
+                    if(address.getStateOrProvince() != null) {
+                        stateOrProvince.setValueType(STATE_OR_PROVINCE);
+                        stateOrProvince.setValue(address.getStateOrProvince());
+                        serviceSpecCharDescribes.add(stateOrProvince);
+                    }
+
+                    ServiceSpecCharDescribes cnlAcronym = new ServiceSpecCharDescribes();
+
+                    if(address.getCnlAcronym() != null) {
+                        cnlAcronym.setValueType(CNL_ACRONYM);
+                        cnlAcronym.setValue(address.getCnlAcronym());
+                        serviceSpecCharDescribes.add(cnlAcronym);
+                    }
+
+                    ServiceSpecCharDescribes microarea = new ServiceSpecCharDescribes();
+
+                    if(address.getMicroarea() != null) {
+                        microarea.setValueType(MICRO_AREA);
+                        microarea.setValue(address.getMicroarea());
+                        serviceSpecCharDescribes.add(microarea);
+                    }
+
+                    ServiceSpecCharDescribes city = new ServiceSpecCharDescribes();
+
+                    if(address.getCity() != null) {
+                        city.setValueType(CITY);
+                        city.setValue(address.getCity());
+                        serviceSpecCharDescribes.add(city);
+                    }
+
+                    out.setServiceSpecCharDescribes(serviceSpecCharDescribes);
+                }
+            }
+
+            return out;
+        } else {
+            return null;
+        }
+    }
+
+    private static ServiceDescribedBy getSigitimEquipment (Equipment in) {
+        if(in != null && in.getName() != null) {
+            ServiceDescribedBy out = new ServiceDescribedBy();
+            out.setName(EQUIPMENT);
+
+            List<ServiceSpecCharDescribes> serviceSpecCharDescribes = new ArrayList<ServiceSpecCharDescribes>();          
+            serviceSpecCharDescribes.add(getEquipmentDetail(HOSTNAME, in.getName()));    
+            serviceSpecCharDescribes.add(getEquipmentDetail(ORIGIN, in.getOrigin()));  
+            out.setServiceSpecCharDescribes(serviceSpecCharDescribes);
+
+            return out;
+        } else {
+            return null;
+        }
+    }
+
+
+	private static ServiceSpecCharDescribes getEquipmentDetail(String type, String value) {
+		ServiceSpecCharDescribes equipmentDetail = new ServiceSpecCharDescribes();
+		equipmentDetail.setValueType(type);
+		equipmentDetail.setValue(value);
+		return equipmentDetail;
+	}
+
+}

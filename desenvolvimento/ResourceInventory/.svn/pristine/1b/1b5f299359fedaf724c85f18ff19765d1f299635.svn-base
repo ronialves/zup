@@ -1,0 +1,37 @@
+package com.tfl.oss.resourceinventory.orchestration.execution
+
+import java.util.List;
+import java.lang.String;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.orchestration.core.entity.*;
+import com.tlf.oss.resourceinventory.schemas.api.*;
+import com.tlf.oss.resourceinventory.schemas.*;
+	
+query "getAction"
+	action : Action()
+end
+
+rule "Main"
+	when
+		$logger 	: OSSLogger()
+		$operation	: Operation()
+	then
+		log($logger, drools.getRule().getName(), "Definindo o focus de execu\u00E7\u00E3o = " + $operation.getValue());	
+		drools.getWorkingMemory().setFocus($operation.getValue());
+end
+
+rule "BaseRule"
+	when
+		not( Action() )
+		$logger 	: OSSLogger()
+		
+		$operation	: Operation()
+		$version	: Version()
+	
+		$resource	: ResourceJson( name == $operation.value, version == $version.value )
+	then
+end
+
+function void log(OSSLogger logger, String ruleName, String message) {
+	logger.log(OSSLogger.DEBUG, "[" + ruleName + "] - " + message);
+}

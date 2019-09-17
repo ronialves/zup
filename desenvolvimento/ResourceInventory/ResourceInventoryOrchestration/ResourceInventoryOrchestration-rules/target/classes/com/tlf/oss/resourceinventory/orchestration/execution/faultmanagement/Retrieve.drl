@@ -1,0 +1,22 @@
+package com.tlf.oss.resourceinventory.orchestration.execution.faultmanagement;
+
+rule "[Retrieve] - EQUIPMENT" extends "BaseRule"
+	agenda-group "FAULTMANAGEMENT"
+	when
+		$action : Action(name == '1.0_RETRIEVE_EQUIPMENT') from $resource.actions
+		ResourceInventoryEntity( resourceOrder == null )
+ then
+  		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+  		insert( $action );
+end
+
+rule "[Retrieve] - CABINET" extends "BaseRule"
+	agenda-group "FAULTMANAGEMENT"
+	when
+		$action : Action(name == '1.0_RETRIEVE_CABINET') from $resource.actions
+		ResourceInventoryEntity( resourceOrder!.resourceOrderItem!.name != null,
+								 resourceOrder!.resourceOrderItem!.name == 'CABINET' )
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " +$action);
+		insert( $action );
+end

@@ -1,0 +1,75 @@
+package com.tlf.oss.resourceinventory.granite.core.rules;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.granite.core.enums.AgendaGroup;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ExecutionRulesTest
+{
+	private ResourceInventoryEntity entity;
+
+	private ExecutionRules executionRules;
+
+	@Before
+	public void before() {
+		entity = new ResourceInventoryEntity();
+		executionRules = new ExecutionRules();
+	}
+
+	@Test
+	public void shouldValidateRuleWithSucess() throws OSSBusinessException {
+		entity = createValidRule();
+		Rules rules = executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+		assertEquals("VOPSOL", rules.getResult());
+	}
+
+	@Test(expected=OSSBusinessException.class)
+	public void shouldValidateRuleWithoutSucess() throws OSSBusinessException {
+		entity = createInvalidRule();
+		executionRules.getRules(entity, AgendaGroup.SERVICE.getValue());
+	}
+
+	/*
+	 * Uma regra qualquer que seja valida.
+	 */
+	private ResourceInventoryEntity createValidRule() {
+
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setCategory("VOIP");
+		entity.setCustomerFacingService(listOfCustomerFacingService);
+
+		return entity;
+	}
+
+	/*
+	 * Uma regra qualquer que seja invalida.
+	 */
+	private ResourceInventoryEntity createInvalidRule() {
+
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setCategory("VOIP");
+		listOfCustomerFacingService.get(1).setCategory("BROADBAND");
+		listOfCustomerFacingService.get(1).setCategory("TV");
+		
+		entity.setCustomerFacingService(listOfCustomerFacingService);
+
+		return entity;
+	}
+}

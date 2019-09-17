@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AllocateRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.repository</a> &gt; <span class="el_source">AllocateRepository.java</span></div><h1>AllocateRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.repository;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.TypedQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.sagre.entity.AllocateExternalResourceEntity;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.sagre.repository.factory.GenericRepository;
+
+/**
+ * BEATRIXTWO-25 | DEMOSS-2164
+ * 
+ * @project Beatrix Fase 2
+ * @author rodrigo.de.freitas
+ * @since 201709
+ *
+ */
+<span class="nc" id="L27">public class AllocateRepository extends GenericRepository implements Serializable {</span>
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	OSSLogger logger;
+	
+	private static final String GVT_SP_SOA_DS_CTRL = &quot;SAGREMAN.GVT_SP_SOA_DS_CTRL&quot;;
+
+	/**
+	 * Realiza chamada da procedure
+	 * 
+	 * @param entity
+	 * @return AllocateExternalResourceEntity
+	 * @throws OSSBusinessException
+	 */
+	public AllocateExternalResourceEntity allocate(AllocateExternalResourceEntity entity) throws OSSBusinessException {
+<span class="nc" id="L47">		AllocateExternalResourceEntity result = new AllocateExternalResourceEntity();</span>
+		try {
+			TypedQuery&lt;AllocateExternalResourceEntity&gt; query;
+
+<span class="nc" id="L51">			query = getFactory().createNamedQuery(&quot;allocateExternalResource&quot;, AllocateExternalResourceEntity.class);</span>
+
+<span class="nc" id="L53">			query.setParameter(&quot;p_in_cnl&quot;, entity.getCnl());</span>
+<span class="nc" id="L54">			query.setParameter(&quot;p_in_tec_acesso_origem&quot;, entity.getAccessTechnology());</span>
+<span class="nc" id="L55">			query.setParameter(&quot;p_in_tec_voz_origem&quot;, entity.getVoiceTechnology());</span>
+<span class="nc" id="L56">			query.setParameter(&quot;p_in_id_acesso_origem&quot;, entity.getAccessId());</span>
+<span class="nc" id="L57">			query.setParameter(&quot;p_in_tec_acesso_destino&quot;, entity.getTargetAccessTechnology());</span>
+<span class="nc" id="L58">			query.setParameter(&quot;p_in_tec_voz_destino&quot;, entity.getTargetVoiceTechnology());</span>
+<span class="nc" id="L59">			query.setParameter(&quot;p_in_id_acesso_destino&quot;, entity.getTargetAccessId());</span>
+<span class="nc" id="L60">			query.setParameter(&quot;p_in_sos&quot;, entity.getSos());</span>
+<span class="nc" id="L61">			query.setParameter(&quot;p_in_ident_equip1&quot;, entity.getIdentEquip1());</span>
+<span class="nc" id="L62">			query.setParameter(&quot;p_in_ident_equip2&quot;, entity.getIdentEquip2());</span>
+<span class="nc" id="L63">			query.setParameter(&quot;p_in_ident_equip3&quot;, entity.getIdentEquip3());</span>
+<span class="nc" id="L64">			query.setParameter(&quot;p_in_street_code&quot;, entity.getStreetCode());</span>
+<span class="nc" id="L65">			query.setParameter(&quot;p_in_lote&quot;, entity.getLote());</span>
+<span class="nc" id="L66">			query.setParameter(&quot;p_in_pon&quot;, entity.getPon());</span>
+<span class="nc" id="L67">			query.setParameter(&quot;p_in_rpon&quot;, entity.getRpon());</span>
+<span class="nc" id="L68">			query.setParameter(&quot;p_in_origem&quot;, entity.getOriginSystem());</span>
+<span class="nc" id="L69">			query.setParameter(&quot;p_out_nota&quot;, entity.getNote());</span>
+<span class="nc" id="L70">			query.setParameter(&quot;p_out_cod&quot;, entity.getResultCode());</span>
+<span class="nc" id="L71">			query.setParameter(&quot;p_out_msg&quot;, entity.getMessage());</span>
+<span class="nc" id="L72">			query.setParameter(&quot;p_in_tipo_documento&quot;, entity.getDocumentType());</span>
+<span class="nc" id="L73">			query.setParameter(&quot;p_in_classe_servico&quot;, entity.getServiceClass());</span>
+<span class="nc" id="L74">			query.setParameter(&quot;p_in_tipo_ordem&quot;, entity.getOrderType());</span>
+
+<span class="nc" id="L76">			logIn(query);</span>
+			
+<span class="nc" id="L78">			result = query.getSingleResult();</span>
+
+<span class="nc" id="L80">			logOut(result);</span>
+
+<span class="nc" id="L82">		} catch (NonUniqueResultException | QueryTimeoutException | NoResultException e) {</span>
+<span class="nc" id="L83">		    throw new OSSBusinessException(ExceptionInfoEnum.RISAGRE_002.getDescription(),</span>
+<span class="nc" id="L84">		            ExceptionInfoEnum.RISAGRE_002.getCode(), String.format(ExceptionInfoEnum.RISAGRE_002.getMessage(),</span>
+<span class="nc" id="L85">		                    GVT_SP_SOA_DS_CTRL, e.getMessage()));</span>
+<span class="nc" id="L86">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L87">		    throw new OSSBusinessException(ExceptionInfoEnum.RISAGRE_002.getDescription(),</span>
+<span class="nc" id="L88">		            ExceptionInfoEnum.RISAGRE_002.getCode(), String.format(ExceptionInfoEnum.RISAGRE_002.getMessage(),</span>
+<span class="nc" id="L89">		                    GVT_SP_SOA_DS_CTRL, e.getMessage()));</span>
+<span class="nc" id="L90">		} catch (Exception e) {</span>
+<span class="nc" id="L91">		    throw new OSSBusinessException(ExceptionInfoEnum.RISAGRE_999.getDescription(),</span>
+<span class="nc" id="L92">		            ExceptionInfoEnum.RISAGRE_999.getCode(), String.format(ExceptionInfoEnum.RISAGRE_999.getMessage(),</span>
+<span class="nc" id="L93">		                    GVT_SP_SOA_DS_CTRL, e.getMessage()));</span>
+<span class="nc" id="L94">		}</span>
+
+<span class="nc" id="L96">		return result;</span>
+	}
+	
+	/**
+	 * Gera log com o conteudo da query a ser executada
+	 * @param query
+	 */
+	private void logIn(Query query) {
+<span class="nc" id="L104">		String log = getlogIn(GVT_SP_SOA_DS_CTRL, query);</span>
+<span class="nc" id="L105">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L106">	}</span>
+
+	/**
+	 * Gera log com o resultado da query executada
+	 * @param result
+	 */
+	private void logOut(AllocateExternalResourceEntity result) {
+<span class="nc" id="L113">		String log = new StringBuilder(&quot;Param OUT: &quot;).append(&quot;p_out_nota = &quot;).append(result.getNote()).append(&quot;p_out_cod = &quot;)</span>
+<span class="nc" id="L114">				.append(result.getResultCode()).append(&quot;p_out_msg = &quot;).append(result.getMessage()).toString();</span>
+<span class="nc" id="L115">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L116">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

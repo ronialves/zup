@@ -1,0 +1,108 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoRecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.CpeWsName;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoRecurso;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.cpe.factory.OssBusinessExceptionFactory;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoRecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.utils.EntityExtractor;
+import com.tlf.oss.resourceinventory.cpe.validation.Uninstall;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class UninstallStbController {
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Inject
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Inject
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	@Inject
+	private EstadoRecursoLogicoRepository estadoRecursoLogicoRepository;
+
+	@Transactional(rollbackOn = OSSBusinessException.class)
+	public ResourceInventoryEntity uninstall(@Uninstall final ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+		try {
+
+			logger.log(OSSLogger.INFO, "Iniciando o Uninstall no R_CPE_STB ...");
+
+			String serviceId = EntityExtractor.extractServiceId(entity);
+
+			Optional<RecursoLogico> recursoLogicoFound = findRecursoLogico(entity);
+
+			if (recursoLogicoFound.isPresent()) {
+
+				ServicoAssinante servicoAssinante = servicoAssinanteRepository.findByServiceId(serviceId);
+				DispositivoFisico dispositivoFisico = dispositivoFisicoRepository
+						.findById(recursoLogicoFound.get().getDispositivoFisicoId());
+
+				recursoLogicoRepository.delete(recursoLogicoFound.get());
+				dispositivoFisicoRepository.delete(dispositivoFisico);
+				if (!hasServicoAssinanteChildren(servicoAssinante)) {
+					servicoAssinanteRepository.delete(servicoAssinante);
+				}
+
+			} else {
+				String errorCode = OssBusinessExceptionFactory.DEFAULT_ERROR_CODE;
+				String errorMessage = "Não foi encontrado um cliente com o Designador de TV " + serviceId;
+
+				throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(errorCode, errorMessage, CpeWsName.UNINSTALL);
+			}
+
+			logger.log(OSSLogger.INFO, "Finalizando o Uninstall no R_CPE_STB ...");
+
+		} catch (OSSBusinessException obe) {
+			logger.error(obe.getMessage(), obe);
+			throw obe;
+		}
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new OSSBusinessException(FalloutCode.RICPE_999.getDescription(), FalloutCode.RICPE_999.getValue(),
+					e.getMessage());
+		}
+
+		return entity;
+	}
+
+	private boolean hasServicoAssinanteChildren(final ServicoAssinante servicoAssinante) throws OSSBusinessException {
+
+		return recursoLogicoRepository.findByServicoAssinanteId(servicoAssinante.getId()) != null;
+	}
+
+	private Optional<RecursoLogico> findRecursoLogico(final ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+		String serviceId = EntityExtractor.extractServiceId(entity);
+
+		List<RecursoLogico> recursosLogicos = recursoLogicoRepository.listByServiceId(serviceId);
+		EstadoRecursoLogico estadoRecursoLogico = estadoRecursoLogicoRepository
+				.findByEstadoRecurso(EstadoRecurso.DESCONECTADO);
+
+		return recursosLogicos.stream()
+				.filter(recursoLogico -> estadoRecursoLogico.getId().equals(recursoLogico.getEstadoRecursoLogicoId()))
+				.findFirst();
+	}
+}

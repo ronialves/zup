@@ -1,0 +1,18 @@
+<resourceInventoryEntity>
+    <resourceFacingService>
+        <serviceId>SPO-81GSLF2XB-013</serviceId>
+        <status>N</status>
+    </resourceFacingService>
+    <address>
+        <cnl>11000</cnl>
+        <networkOwner>VIVO2</networkOwner>
+        <placePhysicalResourceAssoc>
+            <physicalLink>
+                <accessTechnology>METALICO</accessTechnology>
+            </physicalLink>
+        </placePhysicalResourceAssoc>
+    </address>
+    <customerOrder>
+        <purchaseOrderNumber>8-A882FFE6E4-1</purchaseOrderNumber>
+    </customerOrder>
+</resourceInventoryEntity>

@@ -1,0 +1,7 @@
+export class CategoriaDispositivo {
+    constructor(
+        public id: number,
+        public tipoRsf: string,
+        public nomeCategoria: string
+    ) { }
+}

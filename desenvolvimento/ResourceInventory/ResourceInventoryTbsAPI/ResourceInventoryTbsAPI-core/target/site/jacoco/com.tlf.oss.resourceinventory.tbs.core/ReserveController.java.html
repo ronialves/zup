@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReserveController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core</a> &gt; <span class="el_source">ReserveController.java</span></div><h1>ReserveController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.core.validation.Reserve;
+import com.tlf.oss.resourceinventory.tbs.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.ReserveEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.tbs.repository.ReserveRepository;
+
+<span class="nc" id="L22">public class ReserveController extends ValidatorEntity implements Serializable{</span>
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	public ReserveRepository reserveRepository;
+	
+<span class="nc" id="L29">	List&lt;String&gt; TDMVoiceProcolList = Arrays.asList(&quot;TDM&quot;, &quot;H248&quot;, &quot;TDM/H248&quot;);</span>
+	
+<span class="nc" id="L31">	OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RITBS_003.getCode(),</span>
+<span class="nc" id="L32">			String.format(ExceptionInfoEnum.RITBS_003.getDescription(), &quot;GVT_SP_FTNET_RESERVA_S8&quot;),</span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+	private static final int RESULTADO_ESPERADO = 0;
+
+	public ResourceInventoryEntity getReserve(@Reserve ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+		
+<span class="nc" id="L40">		ReserveEntity reserve = new ReserveEntity();</span>
+		
+<span class="nc" id="L42">		reserve.setArdOtico(entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet().getName());</span>
+<span class="nc" id="L43">		reserve.setSwitchName(entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet().getSwitchesAssociated().getName());</span>
+		
+<span class="nc" id="L45">		String voiceProtocol = entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol();</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		if(TDMVoiceProcolList.contains(voiceProtocol)) {</span>
+<span class="nc" id="L47">			voiceProtocol = &quot;TDM/H248&quot;;</span>
+		}
+		
+<span class="nc" id="L50">		reserve.setTecVoz(voiceProtocol);</span>
+		
+<span class="nc bnc" id="L52" title="All 2 branches missed.">		for (CustomerFacingService cfs : entity.getCustomerFacingService()) {</span>
+
+<span class="nc bnc" id="L54" title="All 2 branches missed.">			if (&quot;BROADBAND&quot;.equalsIgnoreCase(cfs.getCategory())) {</span>
+
+<span class="nc" id="L56">				reserve.setDesignador(cfs.getServiceId());</span>
+
+<span class="nc bnc" id="L58" title="All 2 branches missed.">				if(cfs.getServiceDescribedBy() != null){</span>
+					
+<span class="nc bnc" id="L60" title="All 2 branches missed.">					for (ServiceDescribedBy serviceDescribedBy : cfs.getServiceDescribedBy()) {</span>
+						
+<span class="nc bnc" id="L62" title="All 2 branches missed.">						if (&quot;TECHNOLOGY&quot;.equalsIgnoreCase(serviceDescribedBy.getName())) {</span>
+							
+<span class="nc bnc" id="L64" title="All 2 branches missed.">							if (serviceDescribedBy.getServiceSpecCharDescribes() != null</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">									&amp;&amp; !serviceDescribedBy.getServiceSpecCharDescribes().isEmpty()) {</span>
+								
+<span class="nc" id="L67">								reserve.setRateCode(serviceDescribedBy.getServiceSpecCharDescribes().get(0).getValue());</span>
+							}
+						}
+<span class="nc" id="L70">					}</span>
+				}
+			}
+<span class="nc" id="L73">		}</span>
+		
+		
+		
+<span class="nc" id="L77">		return getResourceInventoryEntity(reserveRepository.getReserve(reserve), entity);</span>
+	}
+	
+	public ResourceInventoryEntity getResourceInventoryEntity(ReserveEntity reserve, ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">		if (RESULTADO_ESPERADO != reserve.getStatus()) {</span>
+<span class="nc" id="L84">			String errorCode = String.valueOf(reserve.getStatus());</span>
+<span class="nc" id="L85">			String errorMessage = reserve.getMessage();</span>
+<span class="nc" id="L86">			String detailMessage = errorCode + &quot;; &quot; + errorMessage;</span>
+
+<span class="nc" id="L88">		    falloutConfig.setErrorCode(errorCode);</span>
+<span class="nc" id="L89">		    falloutConfig.setErrorMessage(errorMessage);</span>
+<span class="nc" id="L90">			falloutConfig.setDetailMessage(detailMessage);</span>
+<span class="nc" id="L91">			throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+		}
+
+<span class="nc" id="L94">		return entity;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

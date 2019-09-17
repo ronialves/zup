@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InstallMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">InstallMetallicController.java</span></div><h1>InstallMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import java.math.BigInteger;
+import java.util.concurrent.TimeoutException;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageserviceprovisioning.headercontext.WsContext;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageserviceprovisioning.servicetypes.ServiceServiceType;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageserviceprovisioning.trackmanageserviceprovisioningtypes.TrackManageServiceProvisioningRequest;
+import com.tlf.oss.resourceinventory.generated.osp.trackmanageserviceprovisioning.trackmanageserviceprovisioningtypes.TrackManageServiceProvisioningResponse;
+import com.tlf.oss.resourceinventory.osp.core.enums.Code;
+import com.tlf.oss.resourceinventory.osp.core.enums.Message;
+import com.tlf.oss.resourceinventory.osp.core.enums.Operation;
+import com.tlf.oss.resourceinventory.osp.core.enums.TypeProductVoice;
+import com.tlf.oss.resourceinventory.osp.core.service.InstallService;
+import com.tlf.oss.resourceinventory.osp.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@Logged
+@RequestScoped
+<span class="fc" id="L26">public class InstallMetallicController extends ValidatorEntity {</span>
+
+	@Inject
+	protected OSSLogger logger;
+
+	@Inject
+	private InstallService installService;
+
+	private TrackManageServiceProvisioningRequest createRequest(ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+<span class="fc" id="L37">		TrackManageServiceProvisioningRequest manageServiceProvisioningRequest = new TrackManageServiceProvisioningRequest();</span>
+
+<span class="fc" id="L39">		manageServiceProvisioningRequest.setResourceOrder(entity.getCustomerOrder().getPurchaseOrderNumber());</span>
+
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">		if (entity.getResourceFacingService() != null) {</span>
+
+<span class="fc" id="L43">			ServiceServiceType service = new ServiceServiceType();</span>
+<span class="fc" id="L44">			service.setIdentifier(getNetworkOwnerID(entity));</span>
+<span class="fc" id="L45">			service.setServiceType(TypeProductVoice.LIRA.getTypes());</span>
+
+<span class="fc" id="L47">			manageServiceProvisioningRequest.setService(service);</span>
+
+		}
+
+<span class="fc" id="L51">		manageServiceProvisioningRequest.setOperation(new BigInteger(Operation.INSTALL.getValue()));</span>
+<span class="fc" id="L52">		return manageServiceProvisioningRequest;</span>
+	}
+
+	private void validateResult(TrackManageServiceProvisioningResponse response) throws OSSBusinessException {
+
+<span class="pc bpc" id="L57" title="1 of 4 branches missed.">		if (response.getResult() != null &amp;&amp; response.getResult().getCode() != 0) {</span>
+<span class="fc" id="L58">			throw new OSSBusinessException(response.getResult().getDescription(),</span>
+<span class="fc" id="L59">					String.valueOf(response.getResult().getCode()),</span>
+<span class="fc" id="L60">					String.valueOf(response.getResult().getErrorCode()));</span>
+		}
+<span class="fc" id="L62">	}</span>
+
+	public ResourceInventoryEntity resourceInstall(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L65">		logger.log(OSSLogger.INFO, &quot;InstallController.resourceInstall - Start&quot;);</span>
+
+<span class="fc" id="L67">		WsContext headerContext = new WsContext();</span>
+
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">		headerContext.setRegionCode(entity.getAddress().getCnl() != null ? entity.getAddress().getCnl() : null);</span>
+<span class="fc" id="L70">		headerContext.setCentralOffice(</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">				entity.getAddress().getTelephonicArea() != null ? entity.getAddress().getTelephonicArea() : null);</span>
+
+		try {
+
+<span class="fc" id="L75">			TrackManageServiceProvisioningRequest request = createRequest(entity);</span>
+<span class="fc" id="L76">			TrackManageServiceProvisioningResponse response = installService.manageServiceProvisioningActivity(request,</span>
+					headerContext);
+<span class="fc" id="L78">			validateResult(response);</span>
+
+<span class="fc" id="L80">		} catch (OSSBusinessException e) {</span>
+<span class="fc" id="L81">			throw new OSSBusinessException(e.getDescription(), e.getStatusCode(), e.getDetail());</span>
+<span class="fc" id="L82">		} catch (Exception e) {</span>
+<span class="fc" id="L83">			logger.log(OSSLogger.ERROR, Message.ERRO_RESOURCE_INSTALL.getValue() + &quot; =[&quot; + e.getMessage() + &quot;]&quot;);</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">			if (e instanceof TimeoutException) {</span>
+<span class="fc" id="L85">				throw new OSSBusinessException(Message.ERRO_RESOURCE_INSTALL.getValue(), Code.RIOSP_002.getValue(),</span>
+<span class="fc" id="L86">						Message.BUSINESS_ERROR_TIMEOUT_MSG.getValue());</span>
+			}
+<span class="nc" id="L88">			throw new OSSBusinessException(Message.ERRO_RESOURCE_INSTALL.getValue(), Code.RIOSP_002.getValue(),</span>
+<span class="nc" id="L89">					e.getMessage());</span>
+<span class="fc" id="L90">		}</span>
+<span class="fc" id="L91">		logger.log(OSSLogger.INFO, &quot;InstallController.resourceInstall - End&quot;);</span>
+<span class="fc" id="L92">		return entity;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

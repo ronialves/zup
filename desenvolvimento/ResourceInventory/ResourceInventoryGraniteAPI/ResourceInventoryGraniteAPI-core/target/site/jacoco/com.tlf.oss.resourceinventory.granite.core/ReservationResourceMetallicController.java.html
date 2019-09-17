@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationResourceMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">ReservationResourceMetallicController.java</span></div><h1>ReservationResourceMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import java.io.Serializable;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.ChangeSpeedEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ReserveResourceEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ResourceStatusEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveMaxSpeedResourceEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveMsanPotsEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrievePathEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.Message;
+import com.tlf.oss.resourceinventory.granite.core.enums.Operation;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.enums.TypeAvailability;
+import com.tlf.oss.resourceinventory.granite.core.repository.ChangeSpeedDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ReserveResourceDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ResourceStatusDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.RetrieveMsanPotsDao;
+import com.tlf.oss.resourceinventory.granite.core.service.PathService;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.PhysicalLink;
+import com.tlf.oss.resourceinventory.schemas.PlacePhysicalResourceAssoc;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L35">public class ReservationResourceMetallicController extends ValidatorEntity implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	public ReserveResourceDao rdao;
+
+	@Inject
+	private RetrieveMsanPotsDao retrieveMsanPotsDao;
+	
+	@Inject
+	private PathService pathService;
+
+	@Inject
+	private ResourceStatusDao resourceStatusDao;
+	
+	@Inject
+	public ChangeSpeedDao changeSpeedDao;
+
+
+	/**
+	 * Chama proc que realiza a reserva
+	 */
+	public ReserveResourceEntity reserveResource(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L62">		return rdao.reserveResource(getReserveResourceEntity(entity));</span>
+	}
+
+	private void updatePotsMsan(final ResourceInventoryEntity entity, final ReserveResourceEntity reserveResource,
+			RetrieveMsanPotsEntity retrieveMsanPotsFreeEntity) throws OSSBusinessException {
+
+<span class="fc" id="L68">		logger.log(OSSLogger.INFO, &quot;Iniciando o processo de busca e atualização na tabela conexoes_pots_msan&quot;);</span>
+
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">		final Cabinet cabinet = entity.getCabinet() != null ? entity.getCabinet() : new Cabinet();</span>
+<span class="fc" id="L71">		cabinet.setLic(retrieveMsanPotsFreeEntity.getLic());</span>
+<span class="fc" id="L72">		cabinet.setIdMsan(retrieveMsanPotsFreeEntity.getIdMsan());</span>
+
+<span class="fc" id="L74">		reserveResource.setCabinet(cabinet);</span>
+<span class="fc" id="L75">		reserveResource.setOperationService(getOperationService(retrieveMsanPotsFreeEntity));</span>
+<span class="fc" id="L76">	}</span>
+
+	@Transactional(rollbackOn=Exception.class)
+	public ReserveResourceEntity validateReserve(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L81">		validateRequest(entity);</span>
+		
+		// Faz a reserva
+<span class="fc" id="L84">		ReserveResourceEntity reserveResourceEntity = reserveResource(entity);</span>
+
+		// Busca recurso do MSAN para enviar ao terus
+<span class="fc" id="L87">		RetrieveMsanPotsEntity retrieveMsanPotsEntity = getResourceMsan(entity);</span>
+
+		// atualiza os valores da entidade unica necessarios para o bloqueio no terus		
+<span class="fc" id="L90">		updatePotsMsan(entity, reserveResourceEntity, retrieveMsanPotsEntity);</span>
+
+<span class="fc" id="L92">		return reserveResourceEntity;</span>
+	}
+	
+	public ReserveResourceEntity reserveOfferEdition(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L97">		ReserveResourceEntity reserveResourceEntity = null;</span>
+
+<span class="fc" id="L99">		String newSpeed = getDownloadSpeed(entity);</span>
+
+<span class="fc" id="L101">		RetrievePathEntity path = pathService.getPath(entity, StatusPathType.ACTIVE);</span>
+<span class="fc" id="L102">		logger.log(OSSLogger.INFO, &quot;Path retrieved: &quot; + path);</span>
+
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">		if (null == path) {</span>
+<span class="nc" id="L105">			return validateReserve(entity);</span>
+		}
+
+<span class="fc" id="L108">		RetrievePathEntity equipamentType = checkEquipment(entity);</span>
+
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		if (TypeAvailability.MSAN.getTypes().equalsIgnoreCase(equipamentType.getType())) {</span>
+			// Edição de reserva
+<span class="fc" id="L112">			reserveResourceEntity = UpdateOfferEdition(path, newSpeed);</span>
+
+		} 
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">		else if (TypeAvailability.DSLAM.getTypes().equalsIgnoreCase(equipamentType.getType())) {</span>
+
+<span class="fc bfc" id="L117" title="All 2 branches covered.">			if (Operation.OFFER_EDITION.equals(checkSpeed(entity, newSpeed))) {</span>
+				// Edição de reserva
+<span class="fc" id="L119">				reserveResourceEntity = UpdateOfferEdition(path, newSpeed);</span>
+			} else {
+				// faz uma nova reserva DSLAM
+<span class="fc" id="L122">				reserveResourceEntity = reserveResource(entity);</span>
+			}
+		}
+<span class="fc" id="L125">		return reserveResourceEntity;</span>
+	}
+	
+	/**
+	 * Metodo responsavel por retornar a velocidade maxima que o path suporta
+	 * @param entity
+	 * @param newSpeed
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	private Operation checkSpeed(ResourceInventoryEntity entity, String newSpeed) throws OSSBusinessException {
+<span class="fc" id="L136">		String terminal = getNetworkOwnerID(entity);</span>
+		// Retrieve responsavel por retornar a velocidade maxima que o path suporta
+<span class="fc" id="L138">		RetrieveMaxSpeedResourceEntity recoverSpeedMax = rdao.speedMax(terminal);</span>
+
+<span class="pc bpc" id="L140" title="2 of 4 branches missed.">		long speedMax = (recoverSpeedMax != null &amp;&amp; recoverSpeedMax.getSpeed() != null</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">				&amp;&amp; !&quot;&quot;.equals(recoverSpeedMax.getSpeed()) ? Long.parseLong(recoverSpeedMax.getSpeed()) : 0);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">		if (speedMax &lt;= 0) {</span>
+<span class="fc" id="L143">			throw new OSSBusinessException(Message.ERRO_RESOURCE_MAXSPEEDRESOURCEENTITY.getValue(),</span>
+<span class="fc" id="L144">					Code.RIGRANITE_001.getValue(), Message.ERRO_RESOURCE_NOT_MAXSPEED.getValue());</span>
+		}
+<span class="pc bpc" id="L146" title="2 of 6 branches missed.">		if (speedMax &gt;= (newSpeed == null || &quot;&quot;.equals(newSpeed)? 0 : Long.parseLong(newSpeed)) ) {</span>
+<span class="fc" id="L147">			return Operation.OFFER_EDITION;</span>
+		}
+<span class="fc" id="L149">		return Operation.SALE_OFFER;</span>
+	}
+
+	
+	private void updateStatusOf(RetrievePathEntity path, StatusPathType statusPathType) throws OSSBusinessException {
+<span class="fc" id="L154">		ResourceStatusEntity resourceStatusEntity = new ResourceStatusEntity(path.getCircPathInstId(),</span>
+<span class="fc" id="L155">				statusPathType.getValue());</span>
+<span class="fc" id="L156">		logger.log(OSSLogger.INFO, &quot;executing updateStatus: &quot; + resourceStatusEntity);</span>
+
+<span class="fc" id="L158">		resourceStatusDao.updateStatus(resourceStatusEntity);</span>
+
+<span class="fc" id="L160">	}</span>
+
+	private ReserveResourceEntity UpdateOfferEdition(RetrievePathEntity path, String newSpeed) throws OSSBusinessException{
+<span class="fc" id="L163">		ReserveResourceEntity reserveResourceEntity = new ReserveResourceEntity();</span>
+
+		// atualiza a velocidade para a velocidade nova
+<span class="fc" id="L166">		ChangeSpeedEntity changeSpeedEntity = changeSpeedOf(path, newSpeed);</span>
+
+		// altera o status de ATIVO para EM CONFIGURAÇÃO
+<span class="fc" id="L169">		updateStatusOf(path, StatusPathType.IN_CONFIGURATION);</span>
+
+<span class="fc" id="L171">		reserveResourceEntity.setCode(changeSpeedEntity.getCode());</span>
+<span class="fc" id="L172">		reserveResourceEntity.setDescription(changeSpeedEntity.getDescription());</span>
+
+<span class="fc" id="L174">		return reserveResourceEntity;</span>
+	}
+
+	private ChangeSpeedEntity changeSpeedOf(RetrievePathEntity path, String newSpeed) throws OSSBusinessException {
+<span class="fc" id="L178">		ChangeSpeedEntity changeSpeedEntity = changeSpeedDao.changeSpeed(path.getCircPathInstId(), newSpeed, &quot;KB&quot;);</span>
+<span class="fc" id="L179">		logger.log(OSSLogger.INFO, &quot;Path speed changed: &quot; + path.getCircPathInstId());</span>
+
+<span class="fc" id="L181">		return changeSpeedEntity;</span>
+	}
+
+	// Verifica equipamento (Msan/Dslam) ativos
+	protected RetrievePathEntity checkEquipment(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L186">		RetrievePathEntity equipamentType = pathService.getEquipTypeActive(entity);</span>
+<span class="fc" id="L187">		return equipamentType;</span>
+	}
+
+
+	private ReserveResourceEntity getReserveResourceEntity(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L192">		ReserveResourceEntity reserveEntity = new ReserveResourceEntity();</span>
+<span class="fc" id="L193">		reserveEntity.setCnl(entity.getAddress().getCnl());</span>
+<span class="fc" id="L194">		reserveEntity.setTelephonicArea(entity.getAddress().getTelephonicArea());</span>
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">		reserveEntity.setLocker(entity.getCabinet() != null ? entity.getCabinet().getName() : &quot;&quot;);</span>
+<span class="fc" id="L196">		reserveEntity.setTerminal(getNetworkOwnerID(entity));</span>
+<span class="fc" id="L197">		reserveEntity.setSpeed(getDownloadSpeed(entity));</span>
+<span class="fc" id="L198">		reserveEntity.setUnit(&quot;&quot;);</span>
+<span class="fc" id="L199">		reserveEntity</span>
+<span class="fc" id="L200">		.setProtocol(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+<span class="fc" id="L201">		return reserveEntity;</span>
+	}
+
+	private String getDownloadSpeed(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L205">		CustomerFacingService customerFacingService = getCustomerFacingService(entity, &quot;BROADBAND&quot;, &quot;Downstream&quot;);</span>
+<span class="fc" id="L206">		return customerFacingService.getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0).getValue();</span>
+	}
+
+	private RetrieveMsanPotsEntity getResourceMsan(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L210">		final RetrieveMsanPotsEntity retrieveMsanPotsEntity = retrieveMsanPotsDao.getMsanPots(getNetworkOwnerID(entity));</span>
+<span class="fc" id="L211">		return retrieveMsanPotsEntity;</span>
+	}
+
+	private void validateRequest(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L215">		Optional&lt;BrazilianUrbanPropertyAddress&gt; address = Optional.ofNullable(entity.getAddress());</span>
+
+<span class="fc" id="L217">		if (!address.map(BrazilianUrbanPropertyAddress::getPlacePhysicalResourceAssoc)</span>
+<span class="fc" id="L218">				.map(PlacePhysicalResourceAssoc::getPhysicalLink).map(PhysicalLink::getVoiceProtocol)</span>
+<span class="pc bpc" id="L219" title="2 of 4 branches missed.">				.filter(d -&gt; !d.isEmpty()).isPresent())</span>
+<span class="nc" id="L220">			throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), Code.RIGRANITE_001.getValue(),</span>
+					&quot;O valor do campo address.placePhysical.physicalLink.voiceProtocol eh nulo&quot;);
+
+<span class="fc" id="L223">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

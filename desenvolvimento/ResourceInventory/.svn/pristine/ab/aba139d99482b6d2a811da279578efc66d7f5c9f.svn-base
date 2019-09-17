@@ -1,0 +1,30 @@
+package com.tfl.oss.resourceinventory.granite.execution
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+
+rule "Regra VOIPTV - IPTV com VoIP"
+	agenda-group "SERVICECODE"
+	when
+		$rules : Rules()
+		$ruleName : String()
+
+		// Verificamos se cliente nao tem mais que duas coberturas(Banda Larga e VoIP)
+		$inventoryEntity : ResourceInventoryEntity(customerFacingService.size() <= 2)
+
+		// Se de fato ha cobertura para servico VOIP
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("VOIP"))) from $inventoryEntity.customerFacingService	
+
+		// Se de fato ha cobertura para servico TV
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("IPTV"))) from $inventoryEntity.customerFacingService
+
+	then
+		$rules.setResult("VOIPTV");
+		insert($rules);
+end

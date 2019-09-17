@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CancelReservedGponController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">CancelReservedGponController.java</span></div><h1>CancelReservedGponController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.granite.core.entity.CancelChangeSpeedGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.CancelResourceGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrievePathEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ServiceCodeEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.repository.CancelChangeSpeedGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.CancelResourceGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.RetrieveServiceCodeDao;
+import com.tlf.oss.resourceinventory.granite.core.service.PathService;
+import com.tlf.oss.resourceinventory.granite.core.utils.Constants;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L25">public class CancelReservedGponController extends ValidatorEntity implements Serializable{</span>
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	CancelResourceGponDao cancelResourceGponDao;
+	
+	@Inject
+	CancelChangeSpeedGponDao cancelChangeSpeedGponDao;
+	
+	@Inject
+	private RetrieveServiceCodeDao retrieveServiceCodeDao;
+	
+	private OSSFalloutConfiguration falloutConfig;
+	
+	@Inject
+	private PathService pathService;
+
+	public ResourceInventoryEntity doExecution(final ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L44">		final RetrievePathEntity path = pathService.getPath(entity);</span>
+		final String code;
+		final String description;
+		
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">		if(path != null) {</span>
+<span class="pc bpc" id="L49" title="1 of 4 branches missed.">			if(StatusPathType.RESERVED.equals(path.getResourceStatus()) &amp;&amp; StatusPathType.RESERVED.equals(path.getResourceStatus())) {</span>
+<span class="fc" id="L50">    			CancelChangeSpeedGponEntity cancelResourceGponEntity = getCancelChangeSpeedGponEntity(entity);</span>
+<span class="fc" id="L51">    			code = cancelResourceGponEntity.getCode();</span>
+<span class="fc" id="L52">    			description = cancelResourceGponEntity.getDescription();</span>
+<span class="fc" id="L53">    			this.falloutConfig = new OSSFalloutConfiguration(Code.RIGRANITE_003.getValue(), String.format(Code.RIGRANITE_003.getDescription(), CancelChangeSpeedGponEntity.NAMED_PROC_QUERY), Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);</span>
+<span class="fc" id="L54">    		} else {</span>
+<span class="fc" id="L55">    			CancelResourceGponEntity cancelResourceGponEntity = cancelResource(entity);</span>
+<span class="fc" id="L56">				code = cancelResourceGponEntity.getCode();</span>
+<span class="fc" id="L57">				description = cancelResourceGponEntity.getDescription();</span>
+<span class="fc" id="L58">				this.falloutConfig = new OSSFalloutConfiguration(Code.RIGRANITE_003.getValue(), String.format(Code.RIGRANITE_003.getDescription(), CancelResourceGponEntity.PKG_RESERVE_PRC_CANCEL_RESERVE_GPON), Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);</span>
+    		}
+			
+<span class="fc bfc" id="L61" title="All 2 branches covered.">			if (!Code.SUCCESS.getValue().equals(code)) {</span>
+<span class="fc" id="L62">				this.falloutConfig.setErrorCode(code);</span>
+<span class="fc" id="L63">				this.falloutConfig.setErrorMessage(description);</span>
+<span class="fc" id="L64">				this.falloutConfig.setDetailMessage(code.concat(&quot;;&quot;).concat(description));</span>
+<span class="fc" id="L65">				throw OSSExceptionFactory.getOSSBusinessException(this.falloutConfig);</span>
+			}
+		}
+
+<span class="fc" id="L69">		return entity;</span>
+	}
+
+	@Transactional(rollbackOn=Exception.class)
+	public CancelResourceGponEntity cancelResource(final ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L75">		final CancelResourceGponEntity cancelResourceGponEntity = new CancelResourceGponEntity();</span>
+<span class="fc" id="L76">		cancelResourceGponEntity.setTerminal(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L77">		return cancelResourceGponDao.cancelResource(cancelResourceGponEntity);</span>
+	}
+	
+	@Transactional(rollbackOn=Exception.class)
+	public CancelChangeSpeedGponEntity getCancelChangeSpeedGponEntity(final ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L83">		final CancelChangeSpeedGponEntity cancelResourceGponEntity = new CancelChangeSpeedGponEntity();</span>
+<span class="fc" id="L84">		final ServiceCodeEntity serviceCodeEntity = retrieveServiceCodeDao.retrieveServiceCode(entity);</span>
+<span class="fc" id="L85">		cancelResourceGponEntity.setServiceCode(serviceCodeEntity.getServiceCode());</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">		cancelResourceGponEntity.setServiceId( entity.getResourceFacingService() != null ? entity.getResourceFacingService().getServiceId() : null );</span>
+<span class="fc" id="L87">		return cancelChangeSpeedGponDao.cancelResource(cancelResourceGponEntity);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

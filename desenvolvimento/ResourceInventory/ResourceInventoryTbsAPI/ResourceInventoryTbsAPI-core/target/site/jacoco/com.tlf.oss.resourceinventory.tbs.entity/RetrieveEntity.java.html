@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrieveEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">RetrieveEntity.java</span></div><h1>RetrieveEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+@Entity
+@NamedStoredProcedureQueries({
+		@NamedStoredProcedureQuery(name = &quot;retrieveNetworkSyncInfo&quot;, resultClasses = RetrieveEntity.class, procedureName = &quot;ASAP.GVT_SP_GET_INFO_CFGSIN&quot;, parameters = {
+				@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_DOCUMENT_NUMBER&quot;, type = Integer.class),
+				@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_CIRCUIT_ACTIVITY_IND&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_IP_ADDRESS&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_INSTANCIA&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SLOT&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_PORTA_FISICA&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_V5ID&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_RIN&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_NAME_DSLAM&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_VENDOR_NAME&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_PORTA_LOGICA&quot;, type = Integer.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SVLAN&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_CVLAN&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_DOWNSTREAM&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_UPSTREAM&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_MODELO_PLACA&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_ERRO&quot;, type = Integer.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_MSG&quot;, type = String.class) }),
+		@NamedStoredProcedureQuery(name = &quot;retrieveCrossConnectionInfo&quot;, resultClasses = RetrieveEntity.class, procedureName = &quot;ASAP.GVT_SP_GET_INFO_CROSS_PARAMS&quot;, parameters = {
+				@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_DOCUMENT_NUMBER&quot;, type = Integer.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_IP_ADDRESS&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_INSTANCIA&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_SLOT&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_PORTA_FISICA&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_V5ID&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_TRIBUTARIO&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_VENDOR_NAME&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_PORTA_LOGICA&quot;, type = Integer.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_CIRCUIT_ACTIVITY_IND&quot;, type = String.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_ERRO&quot;, type = Integer.class),
+				@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_MSG&quot;, type = String.class) }) })
+public class RetrieveEntity implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Basic
+	@Column(name = &quot;P_DOCUMENT_NUMBER&quot;)
+	private Integer documentNumber;
+
+	@Basic
+	@Column(name = &quot;P_IP_ADDRESS&quot;)
+	private String ipAddress;
+
+	@Basic
+	@Column(name = &quot;P_INSTANCIA&quot;)
+	private String instancia;
+
+	@Basic
+	@Column(name = &quot;P_SLOT&quot;)
+	private String slot;
+
+	@Basic
+	@Column(name = &quot;P_PORTA_FISICA&quot;)
+	private String portaFisica;
+
+	@Basic
+	@Column(name = &quot;P_V5ID&quot;)
+	private String v5id;
+
+	@Basic
+	@Column(name = &quot;P_RIN&quot;)
+	private String rin;
+
+	@Basic
+	@Column(name = &quot;P_NAME_DSLAM&quot;)
+	private String nameDslam;
+
+	@Basic
+	@Column(name = &quot;P_TRIBUTARIO&quot;)
+	private String tributario;
+
+	@Basic
+	@Column(name = &quot;P_VENDOR_NAME&quot;)
+	private String vendorName;
+
+	@Basic
+	@Column(name = &quot;P_PORTA_LOGICA&quot;)
+	private Integer portaLogica;
+
+	@Basic
+	@Column(name = &quot;P_SVLAN&quot;)
+	private String svlan;
+
+	@Basic
+	@Column(name = &quot;P_CVLAN&quot;)
+	private String cvlan;
+
+	@Basic
+	@Column(name = &quot;P_DOWNSTREAM&quot;)
+	private String downstream;
+
+	@Basic
+	@Column(name = &quot;P_UPSTREAM&quot;)
+	private String upstream;
+
+	@Basic
+	@Column(name = &quot;P_MODELO_PLACA&quot;)
+	private String modeloPlaca;
+
+	@Basic
+	@Column(name = &quot;P_CIRCUIT_ACTIVITY_IND&quot;)
+	private String circuitActivityInd;
+
+	@Id
+	@Basic
+	@Column(name = &quot;P_ERRO&quot;)
+	private Integer erro;
+
+	@Basic
+	@Column(name = &quot;P_MSG&quot;)
+	private String msg;
+
+	@Transient
+	private String typeOfResource;
+
+<span class="nc" id="L136">	public RetrieveEntity() {</span>
+<span class="nc" id="L137">	}</span>
+
+	/**
+	 * @param documentNumber
+	 * @param ipAddress
+	 * @param instancia
+	 * @param slot
+	 * @param portaFisica
+	 * @param v5id
+	 * @param rin
+	 * @param nameDslam
+	 * @param tributario
+	 * @param vendorName
+	 * @param portaLogica
+	 * @param svlan
+	 * @param cvlan
+	 * @param downstream
+	 * @param upstream
+	 * @param modeloPlaca
+	 * @param circuitActivityInd
+	 * @param erro
+	 * @param msg
+	 * @param typeOfResource
+	 */
+	public RetrieveEntity(Integer documentNumber, String ipAddress, String instancia, String slot, String portaFisica,
+			String v5id, String rin, String nameDslam, String tributario, String vendorName, Integer portaLogica,
+			String svlan, String cvlan, String downstream, String upstream, String modeloPlaca,
+			String circuitActivityInd, Integer erro, String msg, String typeOfResource) {
+<span class="nc" id="L165">		super();</span>
+<span class="nc" id="L166">		this.documentNumber = documentNumber;</span>
+<span class="nc" id="L167">		this.ipAddress = ipAddress;</span>
+<span class="nc" id="L168">		this.instancia = instancia;</span>
+<span class="nc" id="L169">		this.slot = slot;</span>
+<span class="nc" id="L170">		this.portaFisica = portaFisica;</span>
+<span class="nc" id="L171">		this.v5id = v5id;</span>
+<span class="nc" id="L172">		this.rin = rin;</span>
+<span class="nc" id="L173">		this.nameDslam = nameDslam;</span>
+<span class="nc" id="L174">		this.tributario = tributario;</span>
+<span class="nc" id="L175">		this.vendorName = vendorName;</span>
+<span class="nc" id="L176">		this.portaLogica = portaLogica;</span>
+<span class="nc" id="L177">		this.svlan = svlan;</span>
+<span class="nc" id="L178">		this.cvlan = cvlan;</span>
+<span class="nc" id="L179">		this.downstream = downstream;</span>
+<span class="nc" id="L180">		this.upstream = upstream;</span>
+<span class="nc" id="L181">		this.modeloPlaca = modeloPlaca;</span>
+<span class="nc" id="L182">		this.circuitActivityInd = circuitActivityInd;</span>
+<span class="nc" id="L183">		this.erro = erro;</span>
+<span class="nc" id="L184">		this.msg = msg;</span>
+<span class="nc" id="L185">		this.typeOfResource = typeOfResource;</span>
+<span class="nc" id="L186">	}</span>
+
+	/**
+	 * @return the documentNumber
+	 */
+	public Integer getDocumentNumber() {
+<span class="nc" id="L192">		return documentNumber;</span>
+	}
+
+	/**
+	 * @param documentNumber
+	 *            the documentNumber to set
+	 */
+	public void setDocumentNumber(Integer documentNumber) {
+<span class="nc" id="L200">		this.documentNumber = documentNumber;</span>
+<span class="nc" id="L201">	}</span>
+
+	/**
+	 * @return the ipAddress
+	 */
+	public String getIpAddress() {
+<span class="nc" id="L207">		return ipAddress;</span>
+	}
+
+	/**
+	 * @param ipAddress
+	 *            the ipAddress to set
+	 */
+	public void setIpAddress(String ipAddress) {
+<span class="nc" id="L215">		this.ipAddress = ipAddress;</span>
+<span class="nc" id="L216">	}</span>
+
+	/**
+	 * @return the instancia
+	 */
+	public String getInstancia() {
+<span class="nc" id="L222">		return instancia;</span>
+	}
+
+	/**
+	 * @param instancia
+	 *            the instancia to set
+	 */
+	public void setInstancia(String instancia) {
+<span class="nc" id="L230">		this.instancia = instancia;</span>
+<span class="nc" id="L231">	}</span>
+
+	/**
+	 * @return the slot
+	 */
+	public String getSlot() {
+<span class="nc" id="L237">		return slot;</span>
+	}
+
+	/**
+	 * @param slot
+	 *            the slot to set
+	 */
+	public void setSlot(String slot) {
+<span class="nc" id="L245">		this.slot = slot;</span>
+<span class="nc" id="L246">	}</span>
+
+	/**
+	 * @return the portaFisica
+	 */
+	public String getPortaFisica() {
+<span class="nc" id="L252">		return portaFisica;</span>
+	}
+
+	/**
+	 * @param portaFisica
+	 *            the portaFisica to set
+	 */
+	public void setPortaFisica(String portaFisica) {
+<span class="nc" id="L260">		this.portaFisica = portaFisica;</span>
+<span class="nc" id="L261">	}</span>
+
+	/**
+	 * @return the v5id
+	 */
+	public String getV5id() {
+<span class="nc" id="L267">		return v5id;</span>
+	}
+
+	/**
+	 * @param v5id
+	 *            the v5id to set
+	 */
+	public void setV5id(String v5id) {
+<span class="nc" id="L275">		this.v5id = v5id;</span>
+<span class="nc" id="L276">	}</span>
+
+	/**
+	 * @return the tributario
+	 */
+	public String getTributario() {
+<span class="nc" id="L282">		return tributario;</span>
+	}
+
+	/**
+	 * @param tributario
+	 *            the tributario to set
+	 */
+	public void setTributario(String tributario) {
+<span class="nc" id="L290">		this.tributario = tributario;</span>
+<span class="nc" id="L291">	}</span>
+
+	/**
+	 * @return the vendorName
+	 */
+	public String getVendorName() {
+<span class="nc" id="L297">		return vendorName;</span>
+	}
+
+	/**
+	 * @param vendorName
+	 *            the vendorName to set
+	 */
+	public void setVendorName(String vendorName) {
+<span class="nc" id="L305">		this.vendorName = vendorName;</span>
+<span class="nc" id="L306">	}</span>
+
+	/**
+	 * @return the portaLogica
+	 */
+	public Integer getPortaLogica() {
+<span class="nc" id="L312">		return portaLogica;</span>
+	}
+
+	/**
+	 * @param portaLogica
+	 *            the portaLogica to set
+	 */
+	public void setPortaLogica(Integer portaLogica) {
+<span class="nc" id="L320">		this.portaLogica = portaLogica;</span>
+<span class="nc" id="L321">	}</span>
+
+	/**
+	 * @return the circuitActivityInd
+	 */
+	public String getCircuitActivityInd() {
+<span class="nc" id="L327">		return circuitActivityInd;</span>
+	}
+
+	/**
+	 * @param circuitActivityInd
+	 *            the circuitActivityInd to set
+	 */
+	public void setCircuitActivityInd(String circuitActivityInd) {
+<span class="nc" id="L335">		this.circuitActivityInd = circuitActivityInd;</span>
+<span class="nc" id="L336">	}</span>
+
+	/**
+	 * @return the erro
+	 */
+	public Integer getErro() {
+<span class="nc" id="L342">		return erro;</span>
+	}
+
+	/**
+	 * @param erro
+	 *            the erro to set
+	 */
+	public void setErro(Integer erro) {
+<span class="nc" id="L350">		this.erro = erro;</span>
+<span class="nc" id="L351">	}</span>
+
+	/**
+	 * @return the msg
+	 */
+	public String getMsg() {
+<span class="nc" id="L357">		return msg;</span>
+	}
+
+	/**
+	 * @param msg
+	 *            the msg to set
+	 */
+	public void setMsg(String msg) {
+<span class="nc" id="L365">		this.msg = msg;</span>
+<span class="nc" id="L366">	}</span>
+
+	/**
+	 * @return the typeOfResource
+	 */
+	public String getTypeOfResource() {
+<span class="nc" id="L372">		return typeOfResource;</span>
+	}
+
+	/**
+	 * @param typeOfResource
+	 *            the typeOfResource to set
+	 */
+	public void setTypeOfResource(String typeOfResource) {
+<span class="nc" id="L380">		this.typeOfResource = typeOfResource;</span>
+<span class="nc" id="L381">	}</span>
+
+	/**
+	 * @return the rin
+	 */
+	public String getRin() {
+<span class="nc" id="L387">		return rin;</span>
+	}
+
+	/**
+	 * @param rin
+	 *            the rin to set
+	 */
+	public void setRin(String rin) {
+<span class="nc" id="L395">		this.rin = rin;</span>
+<span class="nc" id="L396">	}</span>
+
+	/**
+	 * @return the nameDslam
+	 */
+	public String getNameDslam() {
+<span class="nc" id="L402">		return nameDslam;</span>
+	}
+
+	/**
+	 * @param nameDslam
+	 *            the nameDslam to set
+	 */
+	public void setNameDslam(String nameDslam) {
+<span class="nc" id="L410">		this.nameDslam = nameDslam;</span>
+<span class="nc" id="L411">	}</span>
+
+	/**
+	 * @return the svlan
+	 */
+	public String getSvlan() {
+<span class="nc" id="L417">		return svlan;</span>
+	}
+
+	/**
+	 * @param svlan
+	 *            the svlan to set
+	 */
+	public void setSvlan(String svlan) {
+<span class="nc" id="L425">		this.svlan = svlan;</span>
+<span class="nc" id="L426">	}</span>
+
+	/**
+	 * @return the cvlan
+	 */
+	public String getCvlan() {
+<span class="nc" id="L432">		return cvlan;</span>
+	}
+
+	/**
+	 * @param cvlan
+	 *            the cvlan to set
+	 */
+	public void setCvlan(String cvlan) {
+<span class="nc" id="L440">		this.cvlan = cvlan;</span>
+<span class="nc" id="L441">	}</span>
+
+	/**
+	 * @return the downstream
+	 */
+	public String getDownstream() {
+<span class="nc" id="L447">		return downstream;</span>
+	}
+
+	/**
+	 * @param downstream
+	 *            the downstream to set
+	 */
+	public void setDownstream(String downstream) {
+<span class="nc" id="L455">		this.downstream = downstream;</span>
+<span class="nc" id="L456">	}</span>
+
+	/**
+	 * @return the upstream
+	 */
+	public String getUpstream() {
+<span class="nc" id="L462">		return upstream;</span>
+	}
+
+	/**
+	 * @param upstream
+	 *            the upstream to set
+	 */
+	public void setUpstream(String upstream) {
+<span class="nc" id="L470">		this.upstream = upstream;</span>
+<span class="nc" id="L471">	}</span>
+
+	/**
+	 * @return the modeloPlaca
+	 */
+	public String getModeloPlaca() {
+<span class="nc" id="L477">		return modeloPlaca;</span>
+	}
+
+	/**
+	 * @param modeloPlaca
+	 *            the modeloPlaca to set
+	 */
+	public void setModeloPlaca(String modeloPlaca) {
+<span class="nc" id="L485">		this.modeloPlaca = modeloPlaca;</span>
+<span class="nc" id="L486">	}</span>
+
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+<span class="nc" id="L492">		return serialVersionUID;</span>
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+<span class="nc" id="L502">		StringBuilder builder = new StringBuilder();</span>
+<span class="nc" id="L503">		builder.append(&quot;RetrieveEntity [&quot;);</span>
+<span class="nc bnc" id="L504" title="All 2 branches missed.">		if (documentNumber != null) {</span>
+<span class="nc" id="L505">			builder.append(&quot;documentNumber=&quot;);</span>
+<span class="nc" id="L506">			builder.append(documentNumber);</span>
+<span class="nc" id="L507">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L509" title="All 2 branches missed.">		if (ipAddress != null) {</span>
+<span class="nc" id="L510">			builder.append(&quot;ipAddress=&quot;);</span>
+<span class="nc" id="L511">			builder.append(ipAddress);</span>
+<span class="nc" id="L512">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L514" title="All 2 branches missed.">		if (instancia != null) {</span>
+<span class="nc" id="L515">			builder.append(&quot;instancia=&quot;);</span>
+<span class="nc" id="L516">			builder.append(instancia);</span>
+<span class="nc" id="L517">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L519" title="All 2 branches missed.">		if (slot != null) {</span>
+<span class="nc" id="L520">			builder.append(&quot;slot=&quot;);</span>
+<span class="nc" id="L521">			builder.append(slot);</span>
+<span class="nc" id="L522">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L524" title="All 2 branches missed.">		if (portaFisica != null) {</span>
+<span class="nc" id="L525">			builder.append(&quot;portaFisica=&quot;);</span>
+<span class="nc" id="L526">			builder.append(portaFisica);</span>
+<span class="nc" id="L527">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L529" title="All 2 branches missed.">		if (v5id != null) {</span>
+<span class="nc" id="L530">			builder.append(&quot;v5id=&quot;);</span>
+<span class="nc" id="L531">			builder.append(v5id);</span>
+<span class="nc" id="L532">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L534" title="All 2 branches missed.">		if (rin != null) {</span>
+<span class="nc" id="L535">			builder.append(&quot;rin=&quot;);</span>
+<span class="nc" id="L536">			builder.append(rin);</span>
+<span class="nc" id="L537">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L539" title="All 2 branches missed.">		if (nameDslam != null) {</span>
+<span class="nc" id="L540">			builder.append(&quot;nameDslam=&quot;);</span>
+<span class="nc" id="L541">			builder.append(nameDslam);</span>
+<span class="nc" id="L542">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L544" title="All 2 branches missed.">		if (tributario != null) {</span>
+<span class="nc" id="L545">			builder.append(&quot;tributario=&quot;);</span>
+<span class="nc" id="L546">			builder.append(tributario);</span>
+<span class="nc" id="L547">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L549" title="All 2 branches missed.">		if (vendorName != null) {</span>
+<span class="nc" id="L550">			builder.append(&quot;vendorName=&quot;);</span>
+<span class="nc" id="L551">			builder.append(vendorName);</span>
+<span class="nc" id="L552">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L554" title="All 2 branches missed.">		if (portaLogica != null) {</span>
+<span class="nc" id="L555">			builder.append(&quot;portaLogica=&quot;);</span>
+<span class="nc" id="L556">			builder.append(portaLogica);</span>
+<span class="nc" id="L557">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L559" title="All 2 branches missed.">		if (svlan != null) {</span>
+<span class="nc" id="L560">			builder.append(&quot;svlan=&quot;);</span>
+<span class="nc" id="L561">			builder.append(svlan);</span>
+<span class="nc" id="L562">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L564" title="All 2 branches missed.">		if (cvlan != null) {</span>
+<span class="nc" id="L565">			builder.append(&quot;cvlan=&quot;);</span>
+<span class="nc" id="L566">			builder.append(cvlan);</span>
+<span class="nc" id="L567">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L569" title="All 2 branches missed.">		if (downstream != null) {</span>
+<span class="nc" id="L570">			builder.append(&quot;downstream=&quot;);</span>
+<span class="nc" id="L571">			builder.append(downstream);</span>
+<span class="nc" id="L572">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L574" title="All 2 branches missed.">		if (upstream != null) {</span>
+<span class="nc" id="L575">			builder.append(&quot;upstream=&quot;);</span>
+<span class="nc" id="L576">			builder.append(upstream);</span>
+<span class="nc" id="L577">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L579" title="All 2 branches missed.">		if (modeloPlaca != null) {</span>
+<span class="nc" id="L580">			builder.append(&quot;modeloPlaca=&quot;);</span>
+<span class="nc" id="L581">			builder.append(modeloPlaca);</span>
+<span class="nc" id="L582">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L584" title="All 2 branches missed.">		if (circuitActivityInd != null) {</span>
+<span class="nc" id="L585">			builder.append(&quot;circuitActivityInd=&quot;);</span>
+<span class="nc" id="L586">			builder.append(circuitActivityInd);</span>
+<span class="nc" id="L587">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L589" title="All 2 branches missed.">		if (erro != null) {</span>
+<span class="nc" id="L590">			builder.append(&quot;erro=&quot;);</span>
+<span class="nc" id="L591">			builder.append(erro);</span>
+<span class="nc" id="L592">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L594" title="All 2 branches missed.">		if (msg != null) {</span>
+<span class="nc" id="L595">			builder.append(&quot;msg=&quot;);</span>
+<span class="nc" id="L596">			builder.append(msg);</span>
+<span class="nc" id="L597">			builder.append(&quot;, &quot;);</span>
+		}
+<span class="nc bnc" id="L599" title="All 2 branches missed.">		if (typeOfResource != null) {</span>
+<span class="nc" id="L600">			builder.append(&quot;typeOfResource=&quot;);</span>
+<span class="nc" id="L601">			builder.append(typeOfResource);</span>
+		}
+<span class="nc" id="L603">		builder.append(&quot;]&quot;);</span>
+<span class="nc" id="L604">		return builder.toString();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

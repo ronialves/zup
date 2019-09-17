@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeallocateRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.repository</a> &gt; <span class="el_source">DeallocateRepository.java</span></div><h1>DeallocateRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.repository;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.TypedQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.tbs.entity.DeallocateEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.tbs.repository.factory.GenericRepository;
+
+/**
+ * BEATRIXTWO-934 | DEMOSS-2998
+ * 
+ * @project Beatrix Fase 2
+ * @author jose.fabio.d.souza
+ * @since 201803
+ */
+
+<span class="nc" id="L27">public class DeallocateRepository extends GenericRepository implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+	
+	@Inject
+	private OSSLogger logger;
+	
+	/**
+	 * Realiza chamada da procedure
+	 * 
+	 * @param entity
+	 * @return DeallocateEntity
+	 * @throws OSSBusinessException
+	 */
+	public DeallocateEntity deallocate(DeallocateEntity entity) throws OSSBusinessException {
+<span class="nc" id="L42">		DeallocateEntity result = new DeallocateEntity();</span>
+
+		try {
+			TypedQuery&lt;DeallocateEntity&gt; query;
+<span class="nc" id="L46">			query = getFactory().createNamedQuery(&quot;deallocate&quot;, DeallocateEntity.class);</span>
+
+<span class="nc" id="L48">			query.setParameter(&quot;P_PON&quot;, entity.getPurchaseOrderNumber());</span>
+<span class="nc" id="L49">			query.setParameter(&quot;P_DESIGNADOR_ACESSO&quot;, entity.getDesignadorAcesso());</span>
+<span class="nc" id="L50">			query.setParameter(&quot;P_COD_RETORNO&quot;, entity.getReturnCode());</span>
+<span class="nc" id="L51">			query.setParameter(&quot;P_MSG_RETORNO&quot;, entity.getReturnMsg());</span>
+
+<span class="nc" id="L53">			logIn(query);</span>
+
+<span class="nc" id="L55">			result = query.getSingleResult();</span>
+
+<span class="nc" id="L57">			logOut(result);</span>
+<span class="nc" id="L58">		} catch(QueryTimeoutException | NoResultException | NonUniqueResultException e) {</span>
+<span class="nc" id="L59">		    throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(), ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(), &quot;Erro ao chamar a procedure TLF_SP_DEALLOCATE no TBS&quot;, e.getMessage()));</span>
+	         
+<span class="nc" id="L61">		} catch(PersistenceException e) {</span>
+<span class="nc" id="L62">		    throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(), ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(), &quot;Erro ao chamar a procedure TLF_SP_DEALLOCATE no TBS&quot;, e.getMessage()));</span>
+		 
+<span class="nc" id="L64">		} catch(Exception e){       </span>
+<span class="nc" id="L65">		    throw new OSSBusinessException(ExceptionInfoEnum.RITBS_999.getDescription(), ExceptionInfoEnum.RITBS_999.getCode(), e.getMessage());</span>
+		 
+<span class="nc" id="L67">		}</span>
+
+<span class="nc" id="L69">		return result;</span>
+	}
+	
+	/**
+	 * Gera log com a entrada da query
+	 * @param result
+	 */
+	private void logIn(Query query) {
+<span class="nc" id="L77">		String log = getlogIn(&quot;ASAP.TLF_SP_DEALLOCATE&quot;, query);</span>
+<span class="nc" id="L78">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L79">	}</span>
+
+	/**
+	 * Gera log com o resultado da query executada
+	 * @param result
+	 */
+	private void logOut(DeallocateEntity result) {
+<span class="nc" id="L86">		String log = new StringBuilder(&quot;Param OUT: &quot;).append(&quot;P_PON = &quot;).append(result.getPurchaseOrderNumber()).append(&quot;P_DESIGNADOR_ACESSO = &quot;)</span>
+<span class="nc" id="L87">				.append(result.getDesignadorAcesso()).append(&quot;P_COD_RETORNO = &quot;).append(result.getReturnCode()).append(&quot;P_MSG_RETORNO = &quot;)</span>
+<span class="nc" id="L88">				.append(result.getReturnMsg()).toString();</span>
+<span class="nc" id="L89">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L90">	}	</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

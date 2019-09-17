@@ -1,0 +1,104 @@
+package com.tlf.oss.resourceinventory.cpe.validation;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class ValidatorEntity {
+
+	public void validateServiceSpecCharDescribes(ServiceDescribedBy serviceDescribedBy) throws OSSBusinessException {
+		Optional<List<ServiceSpecCharDescribes>> serviceSpecCharDescribesList = Optional
+				.ofNullable(serviceDescribedBy.getServiceSpecCharDescribes());
+		if (!serviceSpecCharDescribesList.isPresent()) {
+			throw new OSSBusinessException(FalloutCode.RICPE_001.getDescription(), FalloutCode.RICPE_001.getValue(),
+					String.format(FalloutCode.RICPE_001.getMessage(), "SERVICE_SPEC_CHAR_DESCRIBES"));
+		}
+
+		for (ServiceSpecCharDescribes scd : serviceDescribedBy.getServiceSpecCharDescribes()) {
+			Optional<ServiceSpecCharDescribes> serviceSpecCharDescribes = Optional.ofNullable(scd);
+			if (!serviceSpecCharDescribes.map(ServiceSpecCharDescribes::getValue).filter(d -> !d.isEmpty()).isPresent())
+				throw new OSSBusinessException(FalloutCode.RICPE_001.getDescription(), FalloutCode.RICPE_001.getValue(),
+						String.format(FalloutCode.RICPE_001.getMessage(), "VALUE"));
+		}
+	}
+
+	public void validateServiceDescribedBy(CustomerFacingService customerFacingServices) throws OSSBusinessException {
+		Optional<List<ServiceDescribedBy>> serviceDescribedByList = Optional
+				.ofNullable(customerFacingServices.getServiceDescribedBy());
+		if (!serviceDescribedByList.isPresent())
+			throw new OSSBusinessException(FalloutCode.RICPE_001.getDescription(), FalloutCode.RICPE_001.getValue(),
+					String.format(FalloutCode.RICPE_001.getMessage(), "SERVICE_DESCRIBED_BY"));
+
+		for (ServiceDescribedBy sdb : customerFacingServices.getServiceDescribedBy()) {
+			Optional<ServiceDescribedBy> serviceDescribedBy = Optional.ofNullable(sdb);
+			if (!serviceDescribedBy.map(ServiceDescribedBy::getName).filter(d -> !d.isEmpty()).isPresent())
+				throw new OSSBusinessException(FalloutCode.RICPE_001.getDescription(), FalloutCode.RICPE_001.getValue(),
+						String.format(FalloutCode.RICPE_001.getMessage(), "NAME"));
+			validateServiceSpecCharDescribes(sdb);
+		}
+
+	}
+
+	public void validateCustomerFacingServices(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+		Optional<List<CustomerFacingService>> customerFacingServicesList = Optional
+				.ofNullable(entity.getCustomerFacingService());
+		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+		Set<ConstraintViolation<CustomerFacingService>> constraintViolations = null;
+		if (!customerFacingServicesList.isPresent()) {
+			throw new OSSBusinessException(FalloutCode.RICPE_001.getDescription(), FalloutCode.RICPE_001.getValue(),
+					String.format(FalloutCode.RICPE_001.getMessage(), "CUSTOMER_FACING_SERVICE"));
+		}
+		for (CustomerFacingService customerFacingServices : entity.getCustomerFacingService()) {
+			if (customerFacingServices.getServiceDescribedBy() != null
+					&& !customerFacingServices.getServiceDescribedBy().isEmpty()) {
+				validateServiceDescribedBy(customerFacingServices);
+
+				for (String param : params) {
+
+					constraintViolations = validator.validateProperty(customerFacingServices, param);
+
+					if (constraintViolations.size() > 0)
+						throw new OSSBusinessException(FalloutCode.RICPE_001.getDescription(),
+								FalloutCode.RICPE_001.getValue(),
+								String.format(FalloutCode.RICPE_001.getMessage(), param));
+				}
+
+			}
+		}
+
+	}
+
+	public void validateResourceFacingService(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+
+		Optional<ResourceFacingService> resourceFacingService = Optional.ofNullable(entity.getResourceFacingService());
+		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+		Set<ConstraintViolation<ResourceFacingService>> constraintViolations = null;
+
+		if (!resourceFacingService.isPresent())
+			throw new OSSBusinessException(FalloutCode.RICPE_001.getDescription(), FalloutCode.RICPE_001.getValue(),
+					String.format(FalloutCode.RICPE_001.getMessage(), "RESOURCE_FACING_SERVICE"));
+
+		for (String param : params) {
+
+			constraintViolations = validator.validateProperty(resourceFacingService.get(), param);
+
+			if (constraintViolations.size() > 0)
+				throw new OSSBusinessException(FalloutCode.RICPE_001.getDescription(), FalloutCode.RICPE_001.getValue(),
+						String.format(FalloutCode.RICPE_001.getMessage(), param));
+		}
+	}
+}

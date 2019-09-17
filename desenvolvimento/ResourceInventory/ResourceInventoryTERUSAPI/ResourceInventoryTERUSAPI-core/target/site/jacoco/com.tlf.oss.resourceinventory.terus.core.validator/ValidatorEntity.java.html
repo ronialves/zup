@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidatorEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTERUSAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.terus.core.validator</a> &gt; <span class="el_source">ValidatorEntity.java</span></div><h1>ValidatorEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.terus.core.validator;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.terus.core.enums.Code;
+import com.tlf.oss.resourceinventory.terus.core.enums.Message;
+
+<span class="nc" id="L19">public abstract class ValidatorEntity {</span>
+
+	/**
+	 * Metodo reponsavel por validar as informaçoes de cabinet do payload de entrada
+	 * @param entity
+	 * @return OSSBusinessException
+	 * @throws OSSBusinessException 
+	 */
+	protected void validatorCabinet(ResourceInventoryEntity entity, String... valueList) throws OSSBusinessException {
+
+<span class="nc" id="L29">		Optional&lt;Cabinet&gt; cabinet = Optional.ofNullable(entity.getCabinet());</span>
+<span class="nc" id="L30">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L31">		Set&lt;ConstraintViolation&lt;Cabinet&gt;&gt; constraintViolations = null;</span>
+
+<span class="nc bnc" id="L33" title="All 2 branches missed.">		if (!cabinet.isPresent())</span>
+<span class="nc" id="L34">			throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), Code.RITERUS_001.getValue(),</span>
+					&quot;O valor do campo cabinet eh nulo&quot;);
+
+<span class="nc bnc" id="L37" title="All 2 branches missed.">		for (String param : valueList) {</span>
+
+<span class="nc" id="L39">			constraintViolations = validator.validateProperty(cabinet.get(),param);</span>
+
+<span class="nc bnc" id="L41" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L42">				throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), Code.RITERUS_001.getValue(),</span>
+						&quot;O valor do campo {&quot;+param+&quot;} eh nulo&quot;);
+		}
+
+<span class="nc" id="L46">	}</span>
+
+
+	/**
+	 * Metodo reponsavel por validar as informaçoes do ServiceDescriBy do payload de entrada
+	 * @param entity
+	 * @return OSSBusinessException
+	 * @throws OSSBusinessException 
+	 */
+	protected void validatorServiceDescribedBy(List&lt;ServiceDescribedBy&gt; entity, String... valueList) throws OSSBusinessException {
+<span class="nc" id="L56">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L57">		Set&lt;ConstraintViolation&lt;ServiceDescribedBy&gt;&gt; constraintViolations = null;</span>
+
+<span class="nc" id="L59">		Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribe = Optional.ofNullable(entity);</span>
+
+<span class="nc bnc" id="L61" title="All 2 branches missed.">		if(Optional.ofNullable(serviceDescribe.get()).map(List::size).orElse(0) == 0)</span>
+<span class="nc" id="L62">			throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), Code.RITERUS_001.getValue(), Message.ERRO_RESOURCE_NOT_SERVICEDESCRIBEDBY.getValue());</span>
+
+<span class="nc bnc" id="L64" title="All 2 branches missed.">		for (String param : valueList) {</span>
+
+<span class="nc bnc" id="L66" title="All 2 branches missed.">			for (ServiceDescribedBy valueServiceDescribe : serviceDescribe.get()) {</span>
+
+<span class="nc" id="L68">				constraintViolations = validator.validateProperty(valueServiceDescribe,param);</span>
+
+<span class="nc bnc" id="L70" title="All 2 branches missed.">				if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L71">					throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), Code.RITERUS_001.getValue(),</span>
+							&quot;O valor do campo {&quot;+param+&quot;} eh nulo&quot;);
+<span class="nc" id="L73">			}</span>
+		}
+<span class="nc" id="L75">	}</span>
+
+	/**
+	 * Metodo reponsavel por validar as informaçoes do ServiceSpecCharDescribes do payload de entrada
+	 * @param entity
+	 * @return OSSBusinessException
+	 * @throws OSSBusinessException 
+	 */
+	protected void validatorServiceSpecCharDescribes(List&lt;ServiceDescribedBy&gt; entity, String... valueList) throws OSSBusinessException {
+<span class="nc" id="L84">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L85">		Set&lt;ConstraintViolation&lt;ServiceSpecCharDescribes&gt;&gt; constraintViolations = null;</span>
+
+<span class="nc" id="L87">		Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribe = Optional.ofNullable(entity);</span>
+
+<span class="nc bnc" id="L89" title="All 2 branches missed.">		if(Optional.ofNullable(serviceDescribe.get()).map(List::size).orElse(0) == 0)</span>
+<span class="nc" id="L90">			throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), Code.RITERUS_001.getValue(), Message.ERRO_RESOURCE_NOT_SERVICEDESCRIBEDBY.getValue());</span>
+
+<span class="nc bnc" id="L92" title="All 2 branches missed.">		for (String param : valueList) {</span>
+
+<span class="nc bnc" id="L94" title="All 2 branches missed.">			for (ServiceDescribedBy valueServiceDescribe : serviceDescribe.get()) {</span>
+
+<span class="nc bnc" id="L96" title="All 2 branches missed.">				if(Optional.ofNullable(valueServiceDescribe.getServiceSpecCharDescribes()).map(List::size).orElse(0) == 0)</span>
+<span class="nc" id="L97">					throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), Code.RITERUS_001.getValue(), Message.ERRO_RESOURCE_NOT_SERVICESPECCHARDESCRIBES.getValue() +&quot; para o name {&quot;+param+&quot;}&quot;);</span>
+
+<span class="nc bnc" id="L99" title="All 2 branches missed.">				for (ServiceSpecCharDescribes valueServiceDescribeChar : valueServiceDescribe.getServiceSpecCharDescribes()) {</span>
+
+<span class="nc" id="L101">					constraintViolations = validator.validateProperty(valueServiceDescribeChar,param);</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">					if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L104">						throw new OSSBusinessException(Message.ERRO_RESOURCE_ENTITY.getValue(), Code.RITERUS_001.getValue(),</span>
+								&quot;O valor do campo {&quot;+param+&quot;} eh nulo&quot;);
+<span class="nc" id="L106">				}</span>
+
+<span class="nc" id="L108">			}</span>
+		}
+<span class="nc" id="L110">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

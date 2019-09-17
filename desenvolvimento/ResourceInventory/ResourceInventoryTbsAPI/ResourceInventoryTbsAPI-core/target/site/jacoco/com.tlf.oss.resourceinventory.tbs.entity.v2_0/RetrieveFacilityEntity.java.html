@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrieveFacilityEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity.v2_0</a> &gt; <span class="el_source">RetrieveFacilityEntity.java</span></div><h1>RetrieveFacilityEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity.v2_0;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+import com.tlf.oss.resourceinventory.tbs.to.ResultTo;
+
+/**
+ * BEATRIXTWO-70 | DEMOSS-2285
+ *
+ * @project Beatrix Fase 2
+ * @author rodrigo.de.freitas
+ * @since 201710
+ */
+@SuppressWarnings(&quot;serial&quot;)
+@Entity
+@NamedStoredProcedureQuery(name = &quot;retrieveFacilityResource&quot;, resultClasses = RetrieveFacilityEntity.class, procedureName = &quot;ASAP.GVT_SP_GET_INFO_FACILIT_GPON&quot;, parameters = {
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_DESIGNADOR&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_ACTIVITY_IND&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, name = &quot;CUR1&quot;, type = void.class) })
+public class RetrieveFacilityEntity implements Serializable {
+
+	@Basic
+	@Column(name = &quot;P_DESIGNADOR&quot;)
+	private String designator;
+
+	@Basic
+	@Column(name = &quot;CIRCUIT_ACTIVITY_IND&quot;)
+	private String activity;
+
+	@Basic
+	@Column(name = &quot;IP_ADDRESS&quot;)
+	private String ipAddress;
+
+	@Basic
+	@Column(name = &quot;DESIGNADOR_ACESSO&quot;)
+	private String designadorAcesso;
+
+	@Basic
+	@Column(name = &quot;SLOT&quot;)
+	private String slot;
+
+	@Basic
+	@Column(name = &quot;PORTA_FISICA&quot;)
+	private String port;
+
+	@Basic
+	@Column(name = &quot;NAME_DSLAM&quot;)
+	private String dslamName;
+
+	@Basic
+	@Column(name = &quot;VENDOR_NAME&quot;)
+	private String vendorName;
+
+	@Basic
+	@Column(name = &quot;MODELO_PLACA&quot;)
+	private String boardModel;
+
+	@Basic
+	@Column(name = &quot;PORTA_LOGICA&quot;)
+	private String portLogic;
+
+	@Basic
+	@Column(name = &quot;SVLAN&quot;)
+	private String svlan;
+
+	@Basic
+	@Column(name = &quot;CVLAN&quot;)
+	private String cvlan;
+
+	@Basic
+	@Column(name = &quot;DOWNSTREAM&quot;)
+	private String downstream;
+
+	@Basic
+	@Column(name = &quot;UPSTREAM&quot;)
+	private String upstream;
+
+	@Basic
+	@Column(name = &quot;TECNOLOGIA&quot;)
+	private String accessTechnology;
+
+	@Basic
+	@Column(name = &quot;SWITCH_ATENDIMENTO&quot;)
+	private String switchAtendimento;
+
+	@Basic
+	@Column(name = &quot;ARMARIO&quot;)
+	private String cabinet;
+	
+	@Basic
+	@Column(name = &quot;RIN_VLAN&quot;)
+	private String rinVlan;
+	
+	@Basic
+	@Column(name = &quot;VLAN_MCAST&quot;)
+	private Integer vlanMulticast;
+	
+	@Basic
+	@Column(name = &quot;VLAN_VOD&quot;)
+	private Integer vlanVod;
+	
+	@Basic
+	@Column(name = &quot;VLAN_VOIP&quot;)
+	private Integer vlanVoip;
+	
+	@Basic
+	@Column(name = &quot;SHASTA&quot;)
+	private String shasta;
+	
+	@Basic
+	@Column(name = &quot;MODELO_SHELF&quot;)
+	private String shelfModel;
+
+	@Id
+	@Basic
+	@Column(name = &quot;COD_RETORNO&quot;)
+	private Integer resultCode;
+
+	@Column(name = &quot;MSG_RETORNO&quot;)
+	private String message;
+	
+	@Column(name = &quot;IP_ADDRESS_C1&quot;)
+	private String ipAddressc1;
+	
+	@Column(name = &quot;INSTANCIA_C1&quot;)
+	private String instanciac1;
+	
+	@Column(name = &quot;SLOT_C1&quot;)
+	private String slotc1;
+	
+	@Column(name = &quot;PORTA_FISICA_C1&quot;)
+	private String portaFisicac1;
+	
+	@Column(name = &quot;V5ID_C1&quot;)
+	private String v5idc1;
+	
+	@Column(name = &quot;TRIBUTARIO_C1&quot;)
+	private String tributarioc1;
+	
+	@Column(name = &quot;VENDOR_NAME_C1&quot;)
+	private String vendorNamec1;
+	
+	@Column(name = &quot;PORTA_LOGICA_C1&quot;)
+	private String portaLogicac1;
+    
+	@Column(name = &quot;CIRCUIT_ACTIVITY_IND_C1&quot;)
+	private String circuitActivityIndc1;
+    
+	@Transient
+	private ResultTo result;
+
+	public RetrieveFacilityEntity() {
+<span class="fc" id="L162">		super();</span>
+<span class="fc" id="L163">	}</span>
+
+	public RetrieveFacilityEntity(String designator, String activity){
+<span class="nc" id="L166">		super();</span>
+<span class="nc" id="L167">		this.designator = designator;</span>
+<span class="nc" id="L168">		this.activity = activity;</span>
+<span class="nc" id="L169">	}</span>
+
+	public String getDesignator() {
+<span class="nc" id="L172">		return designator;</span>
+	}
+
+	public void setDesignator(String designator) {
+<span class="fc" id="L176">		this.designator = designator;</span>
+<span class="fc" id="L177">	}</span>
+
+	public String getActivity() {
+<span class="nc" id="L180">		return activity;</span>
+	}
+
+	public void setActivity(String activity) {
+<span class="fc" id="L184">		this.activity = activity;</span>
+<span class="fc" id="L185">	}</span>
+
+	public String getIpAddress() {
+<span class="fc" id="L188">		return ipAddress;</span>
+	}
+
+	public void setIpAddress(String ipAddress) {
+<span class="fc" id="L192">		this.ipAddress = ipAddress;</span>
+<span class="fc" id="L193">	}</span>
+
+	public String getDesignadorAcesso() {
+<span class="fc" id="L196">		return designadorAcesso;</span>
+	}
+
+	public void setDesignadorAcesso(String designadorAcesso) {
+<span class="nc" id="L200">		this.designadorAcesso = designadorAcesso;</span>
+<span class="nc" id="L201">	}</span>
+
+	public String getSlot() {
+<span class="fc" id="L204">		return slot;</span>
+	}
+
+	public void setSlot(String slot) {
+<span class="nc" id="L208">		this.slot = slot;</span>
+<span class="nc" id="L209">	}</span>
+
+	public String getPort() {
+<span class="fc" id="L212">		return port;</span>
+	}
+
+	public void setPort(String port) {
+<span class="nc" id="L216">		this.port = port;</span>
+<span class="nc" id="L217">	}</span>
+
+	public String getDslamName() {
+<span class="fc" id="L220">		return dslamName;</span>
+	}
+
+	public void setDslamName(String dslamName) {
+<span class="nc" id="L224">		this.dslamName = dslamName;</span>
+<span class="nc" id="L225">	}</span>
+
+	public String getVendorName() {
+<span class="fc" id="L228">		return vendorName;</span>
+	}
+
+	public void setVendorName(String vendorName) {
+<span class="nc" id="L232">		this.vendorName = vendorName;</span>
+<span class="nc" id="L233">	}</span>
+
+	public String getBoardModel() {
+<span class="fc" id="L236">		return boardModel;</span>
+	}
+
+	public void setBoardModel(String boardModel) {
+<span class="nc" id="L240">		this.boardModel = boardModel;</span>
+<span class="nc" id="L241">	}</span>
+
+	public String getPortLogic() {
+<span class="fc" id="L244">		return portLogic;</span>
+	}
+
+	public void setPortLogic(String portLogic) {
+<span class="nc" id="L248">		this.portLogic = portLogic;</span>
+<span class="nc" id="L249">	}</span>
+
+	public String getSvlan() {
+<span class="fc" id="L252">		return svlan;</span>
+	}
+
+	public void setSvlan(String svlan) {
+<span class="nc" id="L256">		this.svlan = svlan;</span>
+<span class="nc" id="L257">	}</span>
+
+	public String getCvlan() {
+<span class="fc" id="L260">		return cvlan;</span>
+	}
+
+	public void setCvlan(String cvlan) {
+<span class="nc" id="L264">		this.cvlan = cvlan;</span>
+<span class="nc" id="L265">	}</span>
+
+	public String getDownstream() {
+<span class="fc" id="L268">		return downstream;</span>
+	}
+
+	public void setDownstream(String downstream) {
+<span class="nc" id="L272">		this.downstream = downstream;</span>
+<span class="nc" id="L273">	}</span>
+
+	public String getUpstream() {
+<span class="fc" id="L276">		return upstream;</span>
+	}
+
+	public void setUpstream(String upstream) {
+<span class="nc" id="L280">		this.upstream = upstream;</span>
+<span class="nc" id="L281">	}</span>
+
+	public String getAccessTechnology() {
+<span class="fc" id="L284">		return accessTechnology;</span>
+	}
+
+	public void setAccessTechnology(String accessTechnology) {
+<span class="nc" id="L288">		this.accessTechnology = accessTechnology;</span>
+<span class="nc" id="L289">	}</span>
+
+	public String getSwitchAtendimento() {
+<span class="fc" id="L292">		return switchAtendimento;</span>
+	}
+
+	public void setSwitchAtendimento(String switchAtendimento) {
+<span class="nc" id="L296">		this.switchAtendimento = switchAtendimento;</span>
+<span class="nc" id="L297">	}</span>
+
+	public String getCabinet() {
+<span class="fc" id="L300">		return cabinet;</span>
+	}
+
+	public void setCabinet(String cabinet) {
+<span class="nc" id="L304">		this.cabinet = cabinet;</span>
+<span class="nc" id="L305">	}</span>
+
+	public Integer getResultCode() {
+<span class="fc" id="L308">		return resultCode;</span>
+	}
+
+	public void setResultCode(Integer resultCode) {
+<span class="fc" id="L312">		this.resultCode = resultCode;</span>
+<span class="fc" id="L313">	}</span>
+
+	public String getMessage() {
+<span class="nc" id="L316">		return message;</span>
+	}
+
+	public void setMessage(String message) {
+<span class="fc" id="L320">		this.message = message;</span>
+<span class="fc" id="L321">	}</span>
+
+	public ResultTo getResult() {
+<span class="nc" id="L324">		return result;</span>
+	}
+
+	public void setResult(ResultTo result) {
+<span class="nc" id="L328">		this.result = result;</span>
+<span class="nc" id="L329">	}</span>
+
+	public String getIpAddressc1() {
+<span class="nc" id="L332">		return ipAddressc1;</span>
+	}
+
+	public void setIpAddressc1(String ipAddressc1) {
+<span class="nc" id="L336">		this.ipAddressc1 = ipAddressc1;</span>
+<span class="nc" id="L337">	}</span>
+
+	public String getInstanciac1() {
+<span class="nc" id="L340">		return instanciac1;</span>
+	}
+
+	public void setInstanciac1(String instanciac1) {
+<span class="nc" id="L344">		this.instanciac1 = instanciac1;</span>
+<span class="nc" id="L345">	}</span>
+
+	public String getSlotc1() {
+<span class="nc" id="L348">		return slotc1;</span>
+	}
+
+	public void setSlotc1(String slotc1) {
+<span class="nc" id="L352">		this.slotc1 = slotc1;</span>
+<span class="nc" id="L353">	}</span>
+
+	public String getPortaFisicac1() {
+<span class="nc" id="L356">		return portaFisicac1;</span>
+	}
+
+	public void setPortaFisicac1(String portaFisicac1) {
+<span class="nc" id="L360">		this.portaFisicac1 = portaFisicac1;</span>
+<span class="nc" id="L361">	}</span>
+
+	public String getV5idc1() {
+<span class="nc" id="L364">		return v5idc1;</span>
+	}
+
+	public void setV5idc1(String v5idc1) {
+<span class="nc" id="L368">		this.v5idc1 = v5idc1;</span>
+<span class="nc" id="L369">	}</span>
+
+	public String getTributarioc1() {
+<span class="nc" id="L372">		return tributarioc1;</span>
+	}
+
+	public void setTributarioc1(String tributarioc1) {
+<span class="nc" id="L376">		this.tributarioc1 = tributarioc1;</span>
+<span class="nc" id="L377">	}</span>
+
+	public String getVendorNamec1() {
+<span class="nc" id="L380">		return vendorNamec1;</span>
+	}
+
+	public void setVendorNamec1(String vendorNamec1) {
+<span class="nc" id="L384">		this.vendorNamec1 = vendorNamec1;</span>
+<span class="nc" id="L385">	}</span>
+
+	public String getPortaLogicac1() {
+<span class="nc" id="L388">		return portaLogicac1;</span>
+	}
+
+	public void setPortaLogicac1(String portaLogicac1) {
+<span class="nc" id="L392">		this.portaLogicac1 = portaLogicac1;</span>
+<span class="nc" id="L393">	}</span>
+
+	public String getCircuitActivityIndc1() {
+<span class="nc" id="L396">		return circuitActivityIndc1;</span>
+	}
+
+	public void setCircuitActivityIndc1(String circuitActivityIndc1) {
+<span class="nc" id="L400">		this.circuitActivityIndc1 = circuitActivityIndc1;</span>
+<span class="nc" id="L401">	}</span>
+	
+	public String getRinVlan() {
+<span class="nc" id="L404">		return rinVlan;</span>
+	}
+
+	public void setRinVlan(String rinVlan) {
+<span class="nc" id="L408">		this.rinVlan = rinVlan;</span>
+<span class="nc" id="L409">	}</span>
+
+	public Integer getVlanMulticast() {
+<span class="fc" id="L412">		return vlanMulticast;</span>
+	}
+
+	public void setVlanMulticast(Integer vlanMulticast) {
+<span class="nc" id="L416">		this.vlanMulticast = vlanMulticast;</span>
+<span class="nc" id="L417">	}</span>
+
+	public Integer getVlanVod() {
+<span class="fc" id="L420">		return vlanVod;</span>
+	}
+
+	public void setVlanVod(Integer vlanVod) {
+<span class="nc" id="L424">		this.vlanVod = vlanVod;</span>
+<span class="nc" id="L425">	}</span>
+
+	public Integer getVlanVoip() {
+<span class="fc" id="L428">		return vlanVoip;</span>
+	}
+
+	public void setVlanVoip(Integer vlanVoip) {
+<span class="nc" id="L432">		this.vlanVoip = vlanVoip;</span>
+<span class="nc" id="L433">	}</span>
+
+	public String getShasta() {
+<span class="fc" id="L436">		return shasta;</span>
+	}
+
+	public void setShasta(String shasta) {
+<span class="nc" id="L440">		this.shasta = shasta;</span>
+<span class="nc" id="L441">	}</span>
+
+	public String getShelfModel() {
+<span class="fc" id="L444">		return shelfModel;</span>
+	}
+
+	public void setShelfModel(String shelfModel) {
+<span class="nc" id="L448">		this.shelfModel = shelfModel;</span>
+<span class="nc" id="L449">	}</span>
+
+	@Override
+	public String toString() {
+<span class="fc" id="L453">		return &quot;RetrieveFacilityEntity [designator=&quot; + designator + &quot;, activity=&quot;</span>
+				+ activity + &quot;, ipAddress=&quot; + ipAddress + &quot;, designadorAcesso=&quot; + designadorAcesso + &quot;, slot=&quot; + slot
+				+ &quot;, port=&quot; + port + &quot;, dslamName=&quot; + dslamName + &quot;, vendorName=&quot; + vendorName + &quot;, boardModel=&quot;
+				+ boardModel + &quot;, portLogic=&quot; + portLogic + &quot;, svlan=&quot; + svlan + &quot;, cvlan=&quot; + cvlan + &quot;, downstream=&quot;
+				+ downstream + &quot;, upstream=&quot; + upstream + &quot;, accessTechnology=&quot; + accessTechnology + &quot;, switchAtendimento=&quot;
+				+ switchAtendimento + &quot;, cabinet=&quot; + cabinet + &quot;, rinVlan=&quot; + rinVlan + &quot;, vlanMulticast=&quot; + vlanMulticast
+				+ &quot;, vlanVod=&quot; + vlanVod + &quot;, vlanVoip=&quot; + vlanVoip + &quot;, shasta=&quot; + shasta + &quot;, shelfModel=&quot; + shelfModel + &quot;, resultCode=&quot;
+				+ resultCode + &quot;, message=&quot; + message + &quot;, ipAddressc1=&quot; + ipAddressc1 + &quot;, instanciac1=&quot; + instanciac1
+				+ &quot;, slotc1=&quot; + slotc1 + &quot;, portaFisicac1=&quot; + portaFisicac1 + &quot;, v5idc1=&quot; + v5idc1 + &quot;, tributarioc1=&quot;
+				+ tributarioc1 + &quot;, vendorNamec1=&quot; + vendorNamec1 + &quot;, portaLogicac1=&quot; + portaLogicac1
+				+ &quot;, circuitActivityIndc1=&quot; + circuitActivityIndc1 + &quot;, result=&quot; + result + &quot;]&quot;;
+	}	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

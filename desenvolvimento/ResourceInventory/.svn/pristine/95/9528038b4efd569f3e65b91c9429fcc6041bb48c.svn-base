@@ -1,0 +1,181 @@
+package com.tlf.oss.resourceinventory.nwi.repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.StoredProcedureQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.nwi.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.nwi.core.utils.Constants;
+import com.tlf.oss.resourceinventory.nwi.entity.EquipmentRetrievalEntity;
+import com.tlf.oss.resourceinventory.schemas.Equipment;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class EquipmentRetrievalRepository {
+
+	@Inject
+	private OSSLogger logger;
+
+	private final String PROC_GET_ELEMENTS_NWI = "EOSR_NWI_OWNER.SP_GET_ELEMENTS_NWI";
+	
+	@PersistenceContext(name="nwiDS")
+	private EntityManager factory;
+
+	@SuppressWarnings("unchecked")
+	public ResourceInventoryEntity getEquipment(ResourceInventoryEntity entity) throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, this.getClass().getName() + " -  executando procedure " + PROC_GET_ELEMENTS_NWI);
+
+		List<EquipmentRetrievalEntity> resultList = null;
+		Integer codRetorno = null;
+		String msgRetorno = "";
+		
+		try {
+
+			StoredProcedureQuery procedureQuery = factory.createStoredProcedureQuery(PROC_GET_ELEMENTS_NWI);
+
+			procedureQuery.registerStoredProcedureParameter(Constants.P_CITY_NAME, String.class, ParameterMode.IN);
+			procedureQuery.registerStoredProcedureParameter(Constants.P_EQUIPMENT, String.class, ParameterMode.IN);
+			procedureQuery.registerStoredProcedureParameter(Constants.CURSOR, void.class, ParameterMode.REF_CURSOR);
+			procedureQuery.registerStoredProcedureParameter(Constants.P_COD_RETORNO, Integer.class, ParameterMode.OUT);
+			procedureQuery.registerStoredProcedureParameter(Constants.P_MSG_RETORNO, String.class, ParameterMode.OUT);
+
+			procedureQuery.setParameter(Constants.P_CITY_NAME,
+					getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, Constants.CNL_ACRONYM));
+			procedureQuery.setParameter(Constants.P_EQUIPMENT,
+					getParamValue(entity, Constants.EQUIPMENT, Constants.HOSTNAME));
+
+			procedureQuery.execute();
+
+			resultList = castToEquipmentRetrievalEntity(
+					(List<Object[]>) procedureQuery.getOutputParameterValue(Constants.CURSOR));
+			codRetorno = (Integer) procedureQuery.getOutputParameterValue(Constants.P_COD_RETORNO);
+			msgRetorno = (String) procedureQuery.getOutputParameterValue(Constants.P_MSG_RETORNO);
+			logger.log(OSSLogger.INFO, "getEquipment codRetorno: " + codRetorno);
+			logger.log(OSSLogger.INFO, "getEquipment msgRetorno: " + msgRetorno);
+		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {
+			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),
+					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),
+							"Erro ao chamar a procedure SP_GET_ELEMENTS_NWI no NWI", e.getMessage()));
+
+		} catch (PersistenceException e) {
+			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),
+					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),
+							"Erro ao chamar a procedure SP_GET_ELEMENTS_NWI no NWI", e.getMessage()));
+
+		} catch (Exception e) {
+			System.out.println("ERROR: " + e.getMessage());
+			e.printStackTrace();
+			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_999.getDescription(),
+					ExceptionInfoEnum.RITBS_999.getCode(), e.getMessage());
+		}
+
+		return equipmentMapper(entity, codRetorno, msgRetorno, resultList);
+	}
+	
+	private ResourceInventoryEntity equipmentMapper(ResourceInventoryEntity entity, Integer codRetorno, 
+			String msgRetorno, List<EquipmentRetrievalEntity> resultQuery) {
+		
+		if(resultQuery != null && !resultQuery.isEmpty()) {
+			
+			List<Equipment> equipments = new ArrayList<Equipment>();
+			
+			for (EquipmentRetrievalEntity resultEquipment : resultQuery) {
+				
+				Equipment equipment = new Equipment();	
+				equipment.setIp(resultEquipment.getIp());
+				equipment.setModel(resultEquipment.getModel());
+				
+				equipments.add(equipment);
+			}
+			
+			if(entity.getEquipment() != null) {
+				entity.getEquipment().addAll(equipments);
+			} else {
+				entity.setEquipment(equipments);
+			}
+			
+		} 
+
+		entity.setCodeReturn(codRetorno);
+		entity.setMessageReturn(msgRetorno);
+		
+		return entity;
+	}
+
+	private List<EquipmentRetrievalEntity> castToEquipmentRetrievalEntity(List<Object[]> outputParameterValue) {
+		
+		List<EquipmentRetrievalEntity> result = new ArrayList<>();
+		
+		for (Object[] objects : outputParameterValue) {
+			logger.log(OSSLogger.INFO, "Retorno " + Constants.CURSOR + ": " + objects.toString());
+			EquipmentRetrievalEntity entity = new EquipmentRetrievalEntity();
+			entity.setEquipmentId(objecToInteger(objects[0]));
+			entity.setName(objectToString(objects[1]));
+			entity.setHost(objectToString(objects[2]));
+			entity.setEquipmentType(objectToString(objects[3]));
+			entity.setIp(objectToString(objects[4]));
+			entity.setSupplier(objectToString(objects[5]));
+			entity.setModel(objectToString(objects[6]));
+			entity.setAcronymCity(objectToString(objects[7]));
+			entity.setDescription(objectToString(objects[8]));
+			logger.log(OSSLogger.INFO, "castToEquipmentRetrievalEntity - entity: " + entity);
+
+			result.add(entity);
+		}
+		
+		return result;
+	}
+	
+	private Integer objecToInteger(Object in) {
+		Integer result = 0;
+		if (in != null) {
+			result = Integer.parseInt(in.toString());
+		}
+		return result;
+	}
+	
+	private String objectToString(Object in) {
+		String result = "";
+		if (in != null ) {
+			result = String.valueOf(in);
+		}
+		return result;
+	}
+
+	/**
+	 * Retorna o valor do Parâmetro do ServiceDescribedBy.
+	 * 
+	 * @param entity
+	 * @param networkOwner
+	 * @param paramName
+	 * @return
+	 */
+	private String getParamValue(ResourceInventoryEntity entity, String networkOwner, String paramName) {
+		
+		for (ServiceDescribedBy sdb : entity.getResourceFacingService().getServiceDescribedBy()) {			
+			if (networkOwner.equalsIgnoreCase(sdb.getName())) {				
+				for (ServiceSpecCharDescribes sscd : sdb.getServiceSpecCharDescribes()) {					
+					if (paramName.equalsIgnoreCase(sscd.getValueType())) {
+						logger.log(OSSLogger.INFO, "EquipmentRetrievalRepository - getParamValue - " + paramName + " : " + sscd.getValue());
+						return sscd.getValue();
+					}					
+				}
+			}
+		}
+		
+		return null;
+	}
+
+}

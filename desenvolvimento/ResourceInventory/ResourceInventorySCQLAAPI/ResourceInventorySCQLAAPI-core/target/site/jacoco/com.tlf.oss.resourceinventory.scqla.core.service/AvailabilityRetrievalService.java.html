@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AvailabilityRetrievalService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySCQLAAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.scqla.core.service</a> &gt; <span class="el_source">AvailabilityRetrievalService.java</span></div><h1>AvailabilityRetrievalService.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.scqla.core.service;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.common.xml.XMLUtil;
+import com.tlf.oss.resourceinventory.generated.scqla.ConsultarFacilidade.ScqlaRequest;
+import com.tlf.oss.resourceinventory.generated.scqla.ConsultarFacilidadeResponse.ConsultaFacilidadeResponse;
+import com.tlf.oss.resourceinventory.generated.scqla.PreQualificacaoService;
+
+@Logged
+@Stateless
+<span class="nc" id="L15">public class AvailabilityRetrievalService {</span>
+
+	@Inject
+	private OSSLogger logger;
+	
+	public ConsultaFacilidadeResponse consultarFacilidade(ScqlaRequest request) {
+		
+<span class="nc" id="L22">		logger.log(OSSLogger.INFO, &quot;Started call web service SCQLA (consultarFacilidade)&quot;);</span>
+		
+<span class="nc" id="L24">		logger.log(OSSLogger.INFO,</span>
+<span class="nc" id="L25">				&quot;Called web service SCQLA (consultarFacilidade) - request \n&quot; + XMLUtil.getXMLValue(request));</span>
+		
+<span class="nc" id="L27">		PreQualificacaoService pqs = new PreQualificacaoService();</span>
+<span class="nc" id="L28">		ConsultaFacilidadeResponse response = pqs.getPreQualificacaoPort().consultarFacilidade(request);</span>
+		
+<span class="nc" id="L30">		logger.log(OSSLogger.INFO,</span>
+<span class="nc" id="L31">				&quot;Called web service SCQLA (consultarFacilidade) - response \n&quot; + XMLUtil.getXMLValue(response));</span>
+		
+<span class="nc" id="L33">		logger.log(OSSLogger.INFO, &quot;Finished call web service SCQLA (consultarFacilidade)&quot;);</span>
+		
+<span class="nc" id="L35">		return response;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

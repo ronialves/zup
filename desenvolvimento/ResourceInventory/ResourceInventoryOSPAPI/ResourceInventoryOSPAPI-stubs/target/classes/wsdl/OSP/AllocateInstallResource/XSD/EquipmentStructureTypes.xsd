@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/EquipmentStructureTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="EquipmentStructure">
+		<xs:sequence>
+			<!-- Rack -->
+			<xs:element minOccurs="0" name="rack" type="st:string50"></xs:element>
+			<!-- Sub-Rack -->
+			<xs:element minOccurs="0" name="subRack" type="st:string50"></xs:element>
+			<!-- Placa -->
+			<xs:element minOccurs="0" name="board" type="st:string50"></xs:element>
+			<!-- Slot -->
+			<xs:element minOccurs="0" name="slot" type="st:string50"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

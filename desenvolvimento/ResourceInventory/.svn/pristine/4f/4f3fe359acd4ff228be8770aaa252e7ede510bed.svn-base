@@ -1,0 +1,71 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.ServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.validation.Deallocate;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class DeallocateController {
+
+	@Inject
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Inject
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	@Inject
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Inject
+	private OSSLogger logger;
+	
+	@Transactional(rollbackOn=OSSBusinessException.class)
+	public ResourceInventoryEntity deallocate(@Deallocate final ResourceInventoryEntity entity) throws OSSBusinessException {
+
+		try {
+			
+			logger.log(OSSLogger.INFO, "Iniciando o deallocate no CPE...");
+			
+			final ServicoAssinante servicoAssinante = servicoAssinanteRepository.findByServiceId(entity);
+
+			final RecursoLogico recursoLogico = recursoLogicoRepository.findByServicoAssinanteId(servicoAssinante.getId());
+
+			final DispositivoFisico dispositivoFisico = dispositivoFisicoRepository
+					.findById(recursoLogico.getDispositivoFisicoId());
+			
+			recursoLogicoRepository.delete(recursoLogico);
+			
+			servicoAssinanteRepository.delete(servicoAssinante);
+			
+			if(!hasDispositivoFisicoChildren(dispositivoFisico)) {
+				dispositivoFisicoRepository.delete(dispositivoFisico);
+			}
+			
+			logger.log(OSSLogger.INFO, "Finalizando o deallocate no CPE...");
+			
+			return entity;
+
+		} catch (Exception e) {
+
+			logger.log(OSSLogger.ERROR, e.getMessage());
+			throw new OSSBusinessException(FalloutCode.RICPE_999.getDescription(), FalloutCode.RICPE_999.getValue(),
+					e.getMessage());
+		}
+
+	}
+	
+	private boolean hasDispositivoFisicoChildren(final DispositivoFisico df) throws OSSBusinessException {
+		return recursoLogicoRepository.findByDispositivoFisicoId(df.getId()) != null;
+	}
+
+}

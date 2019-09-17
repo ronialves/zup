@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+	xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm
+        http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+	version="2.0">
+	<named-native-query name="QueryRetrieveCatalog"
+		result-class="com.tlf.oss.resourceinventory.cpe.entity.CatalogoInfo">
+		<query>
+			SELECT 
+			   CATA.ID,
+			   CATA.MODELO,
+			   CATA.FABRICANTE,
+			   CATA.REDE,
+			   CATA.DESCRICAO,
+			   CARA.NOME NOME_CARACTERISTICA,
+			   CARA.VALOR,
+			   CATE.TIPO_RFS,
+			   CATE.NOME_CATEGORIA
+			FROM
+			   CPE_OWNER.CATEGORIA_DISPOSITIVO CATE
+			   JOIN
+			      CPE_OWNER.CATALOGO_DISPOSITIVO CATA
+			      ON (CATA.CATEGORIA_DISPOSITIVO_ID = CATE.ID)
+			   JOIN
+			      CPE_OWNER.CARACTERISTICA_DISPOSITIVO CARA
+			      ON (CARA.CATALOGO_DISPOSITIVO_ID = CATA.ID)
+		</query>
+	</named-native-query>
+	<named-native-query name="RetrieveClientInformation"
+		result-class="com.tlf.oss.resourceinventory.cpe.entity.ClientInformation">
+		<query>
+			SELECT DISTINCT
+			   (rl.id || sa.service_id) id,
+			   sa.service_id,
+			   sa.tipo_rfs,
+			   esa.estado_servico status,
+			   sa.numero_telefone telephone_number,
+			   rl.id_fxs,
+			   df.numero_serial_gpon gpon_serial_number,
+			   df.numero_serial serial_number,
+			   df.macaddress,
+			   cate_esperada.nome_categoria categoria_esperada,
+			   cate_corrente.nome_categoria categoria_corrente,
+			   cata.modelo equipment_model,
+			   cata.fabricante equipment_vendor,
+			   cata.id catalogo_dispositivo_id
+			FROM
+			   servico_assinante sa
+			   INNER JOIN
+			      estado_servico_assinante esa
+			      ON esa.id = sa.estado_servico_assinante_id
+			   INNER JOIN
+			      recurso_logico rl
+			      ON rl.servico_assinante_id = sa.id
+			   INNER JOIN
+			      dispositivo_fisico df
+			      ON df.id = rl.dispositivo_fisico_id
+			   LEFT JOIN
+			      categoria_dispositivo cate_esperada
+			      ON cate_esperada.id = df.categoria_dispositivo_esperada
+			   LEFT JOIN
+			      categoria_dispositivo cate_corrente
+			      ON cate_corrente.id = df.categoria_dispositivo_corrente
+			   LEFT JOIN
+			      catalogo_dispositivo cata
+			      ON cata.id = df.catalogo_dispositivo_id
+			WHERE sa.access_id = ?1
+			AND UPPER(esa.estado_servico) = UPPER(?2)
+		</query>
+	</named-native-query>
+</entity-mappings>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CatalogController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CPEAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.cpe.core</a> &gt; <span class="el_source">CatalogController.java</span></div><h1>CatalogController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.cpe.core;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CatalogoDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.CategoriaDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.enums.FalloutCode;
+import com.tlf.oss.resourceinventory.cpe.repository.CatalogoDispositivoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.CategoriaDispositivoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+
+<span class="fc" id="L18">public class CatalogController {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private CatalogoDispositivoRepository catalogoDispositivoRepository;
+
+	@Inject
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	@Inject
+	private CategoriaDispositivoRepository categoriaDispositivoRepository;
+
+	public List&lt;CatalogoDispositivo&gt; listAll() {
+<span class="fc" id="L33">		logger.log(OSSLogger.INFO, &quot;Iniciando o CatalogController no CPE...&quot;);</span>
+
+<span class="fc" id="L35">		return catalogoDispositivoRepository.listAll();</span>
+	}
+
+	public void delete(Integer catalogoId) throws OSSBusinessException {
+<span class="fc" id="L39">		logger.log(OSSLogger.INFO, &quot;Iniciando o delete CatalogController no CPE...&quot;);</span>
+
+		try {
+<span class="fc" id="L42">			CatalogoDispositivo catalogoDispositivo = catalogoDispositivoRepository.findById(catalogoId);</span>
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">			if (null != catalogoDispositivo) {</span>
+<span class="fc" id="L45">				catalogoDispositivoRepository.delete(catalogoDispositivo);</span>
+			} else {
+<span class="fc" id="L47">				throw new OSSBusinessException(FalloutCode.RICPE_003.getDescription(), FalloutCode.RICPE_003.getValue(),</span>
+						&quot;Nenhum resgistro encontrado &quot;);
+			}
+
+<span class="fc" id="L51">		} catch (Exception e) {</span>
+<span class="fc" id="L52">			logger.log(OSSLogger.ERROR, e.getMessage());</span>
+<span class="fc" id="L53">			throw new OSSBusinessException(FalloutCode.RICPE_003.getDescription(), FalloutCode.RICPE_003.getValue(),</span>
+					&quot;O equipamento não pode ser excluído pois possui um dispositivo vinculado a ele &quot;);
+<span class="fc" id="L55">		}</span>
+
+<span class="fc" id="L57">	}</span>
+
+	public void merge(CatalogoDispositivo catalogo) throws OSSBusinessException {
+<span class="fc" id="L60">		logger.log(OSSLogger.INFO, &quot;Iniciando o merge CatalogController no CPE...&quot;);</span>
+
+<span class="fc" id="L62">		Optional&lt;CatalogoDispositivo&gt; modelo = catalogoDispositivoRepository.findByModel(catalogo.getModelo());</span>
+<span class="pc bpc" id="L63" title="1 of 4 branches missed.">		if (!modelo.isPresent() || modelo.get().getId().equals(catalogo.getId())) {</span>
+<span class="fc" id="L64">			Optional&lt;CatalogoDispositivo&gt; sku = catalogoDispositivoRepository.findBySku(catalogo.getSku());</span>
+<span class="pc bpc" id="L65" title="1 of 4 branches missed.">			if (!sku.isPresent() || sku.get().getId().equals(catalogo.getId())) {</span>
+<span class="fc" id="L66">				catalogoDispositivoRepository.merge(catalogo);</span>
+			} else {
+<span class="fc" id="L68">				throw new OSSBusinessException(FalloutCode.RICPE_003.getDescription(), FalloutCode.RICPE_003.getValue(),</span>
+						&quot;SKU já existente na base do Inventário de Equipamentos&quot;);
+			}
+<span class="fc" id="L71">		} else {</span>
+<span class="fc" id="L72">			throw new OSSBusinessException(FalloutCode.RICPE_003.getDescription(), FalloutCode.RICPE_003.getValue(),</span>
+					&quot;Modelo já existente na base do Inventário de Equipamentos&quot;);
+		}
+<span class="fc" id="L75">	}</span>
+
+	public CatalogoDispositivo getById(Integer catalogoId) throws OSSBusinessException {
+<span class="fc" id="L78">		logger.log(OSSLogger.INFO, &quot;CatalogController CPE Buscando Catalogo por id...&quot;);</span>
+
+		try {
+
+<span class="fc" id="L82">			return catalogoDispositivoRepository.findById(catalogoId);</span>
+
+<span class="fc" id="L84">		} catch (Exception e) {</span>
+
+<span class="fc" id="L86">			throw new OSSBusinessException(FalloutCode.RICPE_003.getDescription(), FalloutCode.RICPE_003.getValue(),</span>
+					&quot;Nenhum resgistro encontrado &quot;);
+		}
+
+	}
+
+	public boolean hasAssociatedDevices(CatalogoDispositivo catalogo) throws OSSBusinessException {
+<span class="fc" id="L93">		Optional&lt;DispositivoFisico&gt; dispositivoFisico = dispositivoFisicoRepository.findByCatalogo(catalogo);</span>
+<span class="fc" id="L94">		return dispositivoFisico.isPresent();</span>
+	}
+
+	public List&lt;String&gt; listAllVendors() {
+<span class="fc" id="L98">		return catalogoDispositivoRepository.listAllVendors();</span>
+	}
+
+	public List&lt;CategoriaDispositivo&gt; listAllCategories() {
+<span class="fc" id="L102">		return categoriaDispositivoRepository.listAll();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://br.com.vivo.indra.scqla.ws/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://br.com.vivo.indra.scqla.ws/"
+	name="PreQualificacaoService">
+	<types>
+		<xsd:schema>
+			<xsd:import namespace="http://br.com.vivo.indra.scqla.ws/"
+				schemaLocation="SCQLA.xsd" />
+		</xsd:schema>
+	</types>
+	<message name="qualificar">
+		<part name="parameters" element="tns:qualificar" />
+	</message>
+	<message name="qualificarResponse">
+		<part name="parameters" element="tns:qualificarResponse" />
+	</message>
+	<message name="consultarFacilidade">
+		<part name="parameters" element="tns:consultarFacilidade" />
+	</message>
+	<message name="consultarFacilidadeResponse">
+		<part name="parameters" element="tns:consultarFacilidadeResponse" />
+	</message>
+	<message name="qualificarTVA">
+		<part name="parameters" element="tns:qualificarTVA" />
+	</message>
+	<message name="qualificarTVAResponse">
+		<part name="parameters" element="tns:qualificarTVAResponse" />
+	</message>
+	<portType name="PreQualificacao">
+		<operation name="qualificar">
+			<input message="tns:qualificar" />
+			<output message="tns:qualificarResponse" />
+		</operation>
+		<operation name="consultarFacilidade">
+			<input message="tns:consultarFacilidade" />
+			<output message="tns:consultarFacilidadeResponse" />
+		</operation>
+		<operation name="qualificarTVA">
+			<input message="tns:qualificarTVA" />
+			<output message="tns:qualificarTVAResponse" />
+		</operation>
+	</portType>
+	<binding name="PreQualificacaoPortBinding" type="tns:PreQualificacao">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+			style="document" />
+		<operation name="qualificar">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="consultarFacilidade">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="qualificarTVA">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="PreQualificacaoService">
+		<port name="PreQualificacaoPort" binding="tns:PreQualificacaoPortBinding">
+			<soap:address
+				location="http://10.27.80.11:7010/PreQualificacaoWs/PreQualificacaoService" />
+		</port>
+	</service>
+</definitions>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="ResourceInventory-ear-0.0.1-SNAPSHOT">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/application" tag="defaultRootSource"/>
+        <dependent-module archiveName="ResourceInventory-core-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventory-core/ResourceInventory-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventorySchemas-entities-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventorySchemas-entities/ResourceInventorySchemas-entities">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventorySchemas-customer-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventorySchemas-customer/ResourceInventorySchemas-customer">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventorySchemas-audit-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventorySchemas-audit/ResourceInventorySchemas-audit">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventory-api-0.0.1-SNAPSHOT.jar" deploy-path="/" handle="module:/resource/ResourceInventory-api/ResourceInventory-api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="OSSCommons-util-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/OSSCommons-util/OSSCommons-util">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-core-1.2.3.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-classic-1.2.3.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-api-1.7.25.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="gson-2.3.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/com/google/code/gson/gson/2.3/gson-2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="OSSCommons-schemas-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/OSSCommons-schemas/OSSCommons-schemas">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

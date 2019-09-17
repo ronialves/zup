@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AvailabilityMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">AvailabilityMetallicController.java</span></div><h1>AvailabilityMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresource.FacilitiesException;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.DetermineResourceAvailabilityRequest;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.DetermineResourceAvailabilityResponse;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.DetermineResourceAvailabilityResponse.QualifiedResources.Resource;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.DetermineResourceAvailabilityResponse.QualifiedResources.Resource.Attributes.Tag;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.headercontext.WsContext;
+import com.tlf.oss.resourceinventory.osp.core.enums.CircuitTypeEnum;
+import com.tlf.oss.resourceinventory.osp.core.mapper.OspRequestMapper;
+import com.tlf.oss.resourceinventory.osp.core.service.AvailabilityService;
+import com.tlf.oss.resourceinventory.osp.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@Logged
+@RequestScoped
+<span class="nc" id="L24">public class AvailabilityMetallicController extends ValidatorEntity {</span>
+
+	@Inject
+	protected OSSLogger logger;
+
+	@Inject
+	protected AvailabilityService availabilityService;
+
+<span class="nc" id="L32">	private WsContext wsContext = new WsContext();</span>
+	public ResourceInventoryEntity availability(ResourceInventoryEntity entity) throws OSSBusinessException, FacilitiesException {
+		
+<span class="nc" id="L35">		DetermineResourceAvailabilityRequest request = createAvailabilityRequest(entity);</span>
+
+<span class="nc" id="L37">		DetermineResourceAvailabilityResponse response = availabilityService.determineResourceAvailability(request, wsContext);</span>
+
+<span class="nc" id="L39">		validateResult(response);</span>
+
+<span class="nc" id="L41">		return createResponse(response, entity);</span>
+
+	}
+
+	private DetermineResourceAvailabilityRequest createAvailabilityRequest(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="nc" id="L47">		DetermineResourceAvailabilityRequest determineResourceAvailability = new DetermineResourceAvailabilityRequest();</span>
+
+<span class="nc" id="L49">		determineResourceAvailability.setAddress(OspRequestMapper.parseAddress(entity.getAddress()));</span>
+
+<span class="nc" id="L51">		wsContext.setRegionCode(entity.getAddress().getCnl()); </span>
+<span class="nc" id="L52">		wsContext.setCentralOffice(entity.getAddress().getTelephonicArea());</span>
+
+<span class="nc" id="L54">		return determineResourceAvailability;</span>
+	}
+
+	private void validateResult(DetermineResourceAvailabilityResponse response) throws OSSBusinessException{
+<span class="nc bnc" id="L58" title="All 4 branches missed.">		if( response.getResult() != null &amp;&amp; response.getResult().getCode() != 0){ </span>
+<span class="nc" id="L59">			throw new OSSBusinessException(response.getResult().getDescription(),</span>
+<span class="nc" id="L60">					String.valueOf(response.getResult().getCode()),</span>
+<span class="nc" id="L61">					String.valueOf(response.getResult().getErrorCode()));	</span>
+
+		}
+<span class="nc" id="L64">	}</span>
+
+	private ResourceInventoryEntity createResponse(DetermineResourceAvailabilityResponse response, ResourceInventoryEntity entity) throws OSSBusinessException{	
+<span class="nc bnc" id="L67" title="All 2 branches missed.">		if(null !=  entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink()</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">				&amp;&amp; CircuitTypeEnum.GPON.getValue().equalsIgnoreCase(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getAccessTechnology()) ){						</span>
+			//valida NetType e popula cabo e fibra
+<span class="nc" id="L70">			validateNetType(response, entity);</span>
+
+		}
+<span class="nc" id="L73">		return entity;</span>
+	}
+	
+	private void updateEntity(Resource resource, ResourceInventoryEntity entity){
+<span class="nc bnc" id="L77" title="All 2 branches missed.">		if(null == entity.getCabinet()){</span>
+<span class="nc" id="L78">			entity.setCabinet(new Cabinet());</span>
+<span class="nc" id="L79">			entity.getCabinet().setPrimaryCable(getValueTag(resource, &quot;ALIM_CABLE_NUM&quot;));</span>
+<span class="nc" id="L80">			entity.getCabinet().setPrimaryFiber(getValueTag(resource, &quot;ALIM_FIBER_NUM&quot;));</span>
+		}
+<span class="nc" id="L82">	}</span>
+
+	private void validateNetType(DetermineResourceAvailabilityResponse response,ResourceInventoryEntity entity){
+<span class="nc bnc" id="L85" title="All 2 branches missed.">		for (Resource resource : response.getQualifiedResources().getResource()) {</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">			if(resource.getNetType() != null ){</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">				if(resource.getNetType().intValue() == 2){</span>
+<span class="nc" id="L88">					updateEntity(resource, entity);</span>
+				}
+			}			
+<span class="nc" id="L91">		}</span>
+<span class="nc" id="L92">	}</span>
+
+	private String getValueTag(Resource resource,String label){
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		for (Tag tag : resource.getAttributes().getTag()) {</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">			if(label.equalsIgnoreCase(tag.getLabel())){</span>
+<span class="nc" id="L97">				return tag.getValue();</span>
+			}
+<span class="nc" id="L99">		}</span>
+<span class="nc" id="L100">		return null;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

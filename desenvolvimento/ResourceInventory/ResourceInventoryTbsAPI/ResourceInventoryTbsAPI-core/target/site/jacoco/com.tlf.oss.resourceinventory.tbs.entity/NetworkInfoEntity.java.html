@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NetworkInfoEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">NetworkInfoEntity.java</span></div><h1>NetworkInfoEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+
+@Entity
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(name = &quot;retrieveNetworkInfo&quot;, resultClasses = NetworkInfoEntity.class, procedureName = &quot;ASAP.TLF_SP_RETRIEVE_FACILITY&quot;, parameters = {
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_DESIGNATOR&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_CIRCUIT_ACTIVITY_IND&quot;, type = String.class),
+                @StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, name = &quot;CUR1&quot;, type = void.class)
+        }) })
+public class NetworkInfoEntity implements Serializable {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Basic
+    @Column(name = &quot;P_DESIGNATOR&quot;)
+    private String designator;
+    
+    @Basic
+    @Column(name = &quot;P_CIRCUIT_ACTIVITY_IND&quot;)
+    private String circuitActivityInd;
+
+    @Basic
+    @Column(name = &quot;V_INSTANCIA&quot;)
+    private String instancia;
+    
+    @Basic
+    @Column(name = &quot;V_V5ID&quot;)
+    private String v5id;
+
+    @Basic
+    @Column(name = &quot;V_IP_ADDRESS&quot;)
+    private String ipAddress;
+    
+    @Basic
+    @Column(name = &quot;V_SLOT&quot;)
+    private String slot;
+    
+    @Basic
+    @Column(name = &quot;V_PORTA_FISICA&quot;)
+    private String portaFisica;
+    
+    @Basic
+    @Column(name = &quot;V_PORTA_LOGICA&quot;)
+    private String portaLogica;
+
+    @Basic
+    @Column(name = &quot;V_NAME_DSLAM&quot;)
+    private String nameDslam;
+    
+    @Basic
+    @Column(name = &quot;V_MODEL_DSLAM&quot;)
+    private String modelDslam;
+
+    @Basic
+    @Column(name = &quot;V_VENDOR_NAME&quot;)
+    private String vendorName;
+   
+    @Basic
+    @Column(name = &quot;V_SVLAN&quot;)
+    private String svlan;
+
+    @Basic
+    @Column(name = &quot;V_CVLAN&quot;)
+    private String cvlan;
+
+	@Basic
+	@Column(name = &quot;V_CVLAN_CALCULADO&quot;)
+	private String cvlanCalculado;
+
+    @Basic
+    @Column(name = &quot;V_DOWNSTREAM&quot;)
+    private String downstream;
+
+    @Basic
+    @Column(name = &quot;V_UPSTREAM&quot;)
+    private String upstream;
+
+    @Basic
+    @Column(name = &quot;V_MODELO_PLACA&quot;)
+    private String modeloPlaca;
+   
+    @Basic
+    @Column(name = &quot;V_EXTERNAL_NETWORK_OWNER&quot;)
+    private String externalNetworkOwner;
+
+    @Basic
+    @Column(name = &quot;V_NAME_BRAS&quot;)
+    private String nameBRAS;
+
+    @Basic
+    @Column(name = &quot;V_VENDOR_BRAS&quot;)
+    private String vendorBRAS;
+
+    @Basic
+    @Column(name = &quot;V_HOSTNAME_BRAS&quot;)
+    private String hostNameBRAS;
+
+    @Basic
+    @Column(name = &quot;V_SITE_BRAS&quot;)
+    private String siteBRAS;
+    
+    @Basic
+    @Column(name = &quot;V_SHASTA&quot;)
+    private String shasta;
+    
+    @Basic
+    @Column(name = &quot;V_NASIP&quot;)
+    private String nasIp;
+    
+    @Basic
+    @Column(name = &quot;V_ARMARIO&quot;)
+    private String cabinet;
+    
+    @Basic
+    @Column(name = &quot;V_NUMERO_BRAS&quot;)
+    private String numeroBRAS;
+
+    @Basic
+    @Column(name = &quot;V_SLOT_BRAS&quot;)
+    private String slotBRAS;
+    
+    @Basic
+    @Column(name = &quot;V_SUB_SLOT_BRAS&quot;)
+    private String subSlotBRAS;
+    
+    @Basic
+    @Column(name = &quot;V_PORTA_BRAS&quot;)
+    private String portaBRAS;
+    
+    @Basic
+    @Column(name = &quot;V_VLAN_VOD&quot;)
+    private String vlanVOD;
+    
+    @Basic
+    @Column(name = &quot;V_VLAN_VOIP&quot;)
+    private String vlanVOIP;
+    
+    @Basic
+    @Column(name = &quot;V_VLAN_MCAST&quot;)
+    private String vlanMCAST;
+    
+    @Basic
+    @Column(name = &quot;V_VLAN_IPTV&quot;)
+    private String vlanIPTV;
+    
+    @Basic
+    @Column(name = &quot;V_TECNOLOGIA&quot;)
+    private String technology;
+
+    @Id
+    @Basic
+    @Column(name = &quot;V_COD_ERRO&quot;)
+    private Integer codErro;
+
+    @Basic
+    @Column(name = &quot;V_MSG_ERRO&quot;)
+    private String msgErro;
+
+    @Transient
+    private String typeOfResource;
+
+	public NetworkInfoEntity() {
+<span class="fc" id="L178">		super();</span>
+<span class="fc" id="L179">	}</span>
+
+	public String getDesignator() {
+<span class="nc" id="L182">		return designator;</span>
+	}
+
+	public void setDesignator(String designator) {
+<span class="fc" id="L186">		this.designator = designator;</span>
+<span class="fc" id="L187">	}</span>
+
+	public String getCircuitActivityInd() {
+<span class="fc" id="L190">		return circuitActivityInd;</span>
+	}
+
+	public void setCircuitActivityInd(String circuitActivityInd) {
+<span class="fc" id="L194">		this.circuitActivityInd = circuitActivityInd;</span>
+<span class="fc" id="L195">	}</span>
+
+	public String getInstancia() {
+<span class="fc" id="L198">		return instancia;</span>
+	}
+
+	public void setInstancia(String instancia) {
+<span class="fc" id="L202">		this.instancia = instancia;</span>
+<span class="fc" id="L203">	}</span>
+
+	public String getV5id() {
+<span class="fc" id="L206">		return v5id;</span>
+	}
+
+	public void setV5id(String v5id) {
+<span class="fc" id="L210">		this.v5id = v5id;</span>
+<span class="fc" id="L211">	}</span>
+
+	public String getIpAddress() {
+<span class="fc" id="L214">		return ipAddress;</span>
+	}
+
+	public void setIpAddress(String ipAddress) {
+<span class="fc" id="L218">		this.ipAddress = ipAddress;</span>
+<span class="fc" id="L219">	}</span>
+
+	public String getSlot() {
+<span class="fc" id="L222">		return slot;</span>
+	}
+
+	public void setSlot(String slot) {
+<span class="fc" id="L226">		this.slot = slot;</span>
+<span class="fc" id="L227">	}</span>
+
+	public String getPortaFisica() {
+<span class="fc" id="L230">		return portaFisica;</span>
+	}
+
+	public void setPortaFisica(String portaFisica) {
+<span class="fc" id="L234">		this.portaFisica = portaFisica;</span>
+<span class="fc" id="L235">	}</span>
+
+	public String getPortaLogica() {
+<span class="fc" id="L238">		return portaLogica;</span>
+	}
+
+	public void setPortaLogica(String portaLogica) {
+<span class="fc" id="L242">		this.portaLogica = portaLogica;</span>
+<span class="fc" id="L243">	}</span>
+
+	public String getNameDslam() {
+<span class="fc" id="L246">		return nameDslam;</span>
+	}
+
+	public void setNameDslam(String nameDslam) {
+<span class="fc" id="L250">		this.nameDslam = nameDslam;</span>
+<span class="fc" id="L251">	}</span>
+
+	public String getModelDslam() {
+<span class="fc" id="L254">		return modelDslam;</span>
+	}
+
+	public void setModelDslam(String modelDslam) {
+<span class="nc" id="L258">		this.modelDslam = modelDslam;</span>
+<span class="nc" id="L259">	}</span>
+
+	public String getVendorName() {
+<span class="fc" id="L262">		return vendorName;</span>
+	}
+
+	public void setVendorName(String vendorName) {
+<span class="fc" id="L266">		this.vendorName = vendorName;</span>
+<span class="fc" id="L267">	}</span>
+
+	public String getSvlan() {
+<span class="fc" id="L270">		return svlan;</span>
+	}
+
+	public void setSvlan(String svlan) {
+<span class="nc" id="L274">		this.svlan = svlan;</span>
+<span class="nc" id="L275">	}</span>
+
+	public String getCvlanCalculado() {
+<span class="fc" id="L278">	    return this.cvlanCalculado;</span>
+    }
+
+    public void setCvlanCalculado(String cvlanCalculado) {
+<span class="nc" id="L282">	    this.cvlanCalculado = cvlanCalculado;</span>
+<span class="nc" id="L283">    }</span>
+
+	public String getCvlan() {
+<span class="fc" id="L286">		return cvlan;</span>
+	}
+
+	public void setCvlan(String cvlan) {
+<span class="nc" id="L290">		this.cvlan = cvlan;</span>
+<span class="nc" id="L291">	}</span>
+
+	public String getDownstream() {
+<span class="fc" id="L294">		return downstream;</span>
+	}
+
+	public void setDownstream(String downstream) {
+<span class="fc" id="L298">		this.downstream = downstream;</span>
+<span class="fc" id="L299">	}</span>
+
+	public String getUpstream() {
+<span class="fc" id="L302">		return upstream;</span>
+	}
+
+	public void setUpstream(String upstream) {
+<span class="fc" id="L306">		this.upstream = upstream;</span>
+<span class="fc" id="L307">	}</span>
+
+	public String getModeloPlaca() {
+<span class="fc" id="L310">		return modeloPlaca;</span>
+	}
+
+	public void setModeloPlaca(String modeloPlaca) {
+<span class="nc" id="L314">		this.modeloPlaca = modeloPlaca;</span>
+<span class="nc" id="L315">	}</span>
+
+	public String getExternalNetworkOwner() {
+<span class="fc" id="L318">		return externalNetworkOwner;</span>
+	}
+
+	public void setExternalNetworkOwner(String externalNetworkOwner) {
+<span class="fc" id="L322">		this.externalNetworkOwner = externalNetworkOwner;</span>
+<span class="fc" id="L323">	}</span>
+
+	public String getNameBRAS() {
+<span class="fc" id="L326">		return nameBRAS;</span>
+	}
+
+	public void setNameBRAS(String nameBRAS) {
+<span class="fc" id="L330">		this.nameBRAS = nameBRAS;</span>
+<span class="fc" id="L331">	}</span>
+
+	public String getVendorBRAS() {
+<span class="fc" id="L334">		return vendorBRAS;</span>
+	}
+
+	public void setVendorBRAS(String vendorBRAS) {
+<span class="fc" id="L338">		this.vendorBRAS = vendorBRAS;</span>
+<span class="fc" id="L339">	}</span>
+
+	public String getHostNameBRAS() {
+<span class="fc" id="L342">		return hostNameBRAS;</span>
+	}
+
+	public void setHostNameBRAS(String hostNameBRAS) {
+<span class="fc" id="L346">		this.hostNameBRAS = hostNameBRAS;</span>
+<span class="fc" id="L347">	}</span>
+
+	public String getSiteBRAS() {
+<span class="fc" id="L350">		return siteBRAS;</span>
+	}
+
+	public void setSiteBRAS(String siteBRAS) {
+<span class="fc" id="L354">		this.siteBRAS = siteBRAS;</span>
+<span class="fc" id="L355">	}</span>
+
+	public String getShasta() {
+<span class="fc" id="L358">		return shasta;</span>
+	}
+
+	public void setShasta(String shasta) {
+<span class="nc" id="L362">		this.shasta = shasta;</span>
+<span class="nc" id="L363">	}</span>
+
+	public String getNasIp() {
+<span class="fc" id="L366">		return nasIp;</span>
+	}
+
+	public void setNasIp(String nasIp) {
+<span class="fc" id="L370">		this.nasIp = nasIp;</span>
+<span class="fc" id="L371">	}</span>
+
+	public String getCabinet() {
+<span class="fc" id="L374">		return cabinet;</span>
+	}
+
+	public void setCabinet(String cabinet) {
+<span class="nc" id="L378">		this.cabinet = cabinet;</span>
+<span class="nc" id="L379">	}</span>
+
+	public String getNumeroBRAS() {
+<span class="fc" id="L382">		return numeroBRAS;</span>
+	}
+
+	public void setNumeroBRAS(String numeroBRAS) {
+<span class="nc" id="L386">		this.numeroBRAS = numeroBRAS;</span>
+<span class="nc" id="L387">	}</span>
+
+	public String getSlotBRAS() {
+<span class="fc" id="L390">		return slotBRAS;</span>
+	}
+
+	public void setSlotBRAS(String slotBRAS) {
+<span class="nc" id="L394">		this.slotBRAS = slotBRAS;</span>
+<span class="nc" id="L395">	}</span>
+
+	public String getSubSlotBRAS() {
+<span class="fc" id="L398">		return subSlotBRAS;</span>
+	}
+
+	public void setSubSlotBRAS(String subSlotBRAS) {
+<span class="nc" id="L402">		this.subSlotBRAS = subSlotBRAS;</span>
+<span class="nc" id="L403">	}</span>
+
+	public String getPortaBRAS() {
+<span class="fc" id="L406">		return portaBRAS;</span>
+	}
+
+	public void setPortaBRAS(String portaBRAS) {
+<span class="nc" id="L410">		this.portaBRAS = portaBRAS;</span>
+<span class="nc" id="L411">	}</span>
+
+	public String getVlanVOD() {
+<span class="fc" id="L414">		return vlanVOD;</span>
+	}
+
+	public void setVlanVOD(String vlanVOD) {
+<span class="nc" id="L418">		this.vlanVOD = vlanVOD;</span>
+<span class="nc" id="L419">	}</span>
+
+	public String getVlanVOIP() {
+<span class="fc" id="L422">		return vlanVOIP;</span>
+	}
+
+	public void setVlanVOIP(String vlanVOIP) {
+<span class="nc" id="L426">		this.vlanVOIP = vlanVOIP;</span>
+<span class="nc" id="L427">	}</span>
+
+	public String getVlanMCAST() {
+<span class="fc" id="L430">		return vlanMCAST;</span>
+	}
+
+	public void setVlanMCAST(String vlanMCAST) {
+<span class="nc" id="L434">		this.vlanMCAST = vlanMCAST;</span>
+<span class="nc" id="L435">	}</span>
+
+	public String getVlanIPTV() {
+<span class="fc" id="L438">		return vlanIPTV;</span>
+	}
+
+	public void setVlanIPTV(String vlanIPTV) {
+<span class="nc" id="L442">		this.vlanIPTV = vlanIPTV;</span>
+<span class="nc" id="L443">	}</span>
+
+	public String getTechnology() {
+<span class="fc" id="L446">		return technology;</span>
+	}
+
+	public void setTechnology(String technology) {
+<span class="nc" id="L450">		this.technology = technology;</span>
+<span class="nc" id="L451">	}</span>
+
+	public Integer getCodErro() {
+<span class="fc" id="L454">		return codErro;</span>
+	}
+
+	public void setCodErro(Integer codErro) {
+<span class="fc" id="L458">		this.codErro = codErro;</span>
+<span class="fc" id="L459">	}</span>
+
+	public String getMsgErro() {
+<span class="fc" id="L462">		return msgErro;</span>
+	}
+
+	public void setMsgErro(String msgErro) {
+<span class="fc" id="L466">		this.msgErro = msgErro;</span>
+<span class="fc" id="L467">	}</span>
+
+	public String getTypeOfResource() {
+<span class="fc" id="L470">		return typeOfResource;</span>
+	}
+
+	public void setTypeOfResource(String typeOfResource) {
+<span class="fc" id="L474">		this.typeOfResource = typeOfResource;</span>
+<span class="fc" id="L475">	}	</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

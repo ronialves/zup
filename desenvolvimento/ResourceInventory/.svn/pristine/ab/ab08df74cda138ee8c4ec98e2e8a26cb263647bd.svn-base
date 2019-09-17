@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>CPEAPI-core</artifactId>
+  <name>CPEAPI-core</name>
+  <packaging>jar</packaging>
+  
+  <parent>
+    <groupId>com.tlf.oss</groupId>
+    <artifactId>CPEAPI</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  
+  <dependencies>
+  	<dependency>
+		<groupId>com.tlf.oss.resourceinventory</groupId>
+		<artifactId>ResourceInventorySchemas-entities</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.tlf.oss</groupId>
+		<artifactId>CPEAPI-rules</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<!-- <scope>provided</scope>  -->
+	</dependency>
+  </dependencies>
+  
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.9</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+						<exclude>%regex[com/tlf/oss/resourceinventory/cpe/core/[^/]*[/].*]</exclude>
+					</excludes>
+					<includes>
+						<include>com/tlf/oss/resourceinventory/cpe/core/**</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+  
+</project>

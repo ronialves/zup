@@ -1,0 +1,19 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/SubUnitTypes">
+<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"/>
+<xs:complexType name="SubUnit">
+<xs:sequence>
+<!--  Característica (1 - Horizontal, 2 - Vertical)  -->
+<xs:element minOccurs="0" name="characterist">
+<xs:simpleType>
+<xs:restriction base="xs:integer">
+<xs:pattern value="1|2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<!--  Tipos de Complemento (preconfigurados)  -->
+<xs:element minOccurs="0" name="type" type="st:string03"/>
+<!--  Valor  -->
+<xs:element minOccurs="0" name="value" type="st:string40"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

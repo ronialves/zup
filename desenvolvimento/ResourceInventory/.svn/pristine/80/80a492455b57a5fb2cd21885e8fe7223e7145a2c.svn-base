@@ -1,0 +1,202 @@
+import { CaracteristicaDispositivo } from './../caracteristica-dispositivo.model';
+import { CatalogService } from './../catalog-list.service';
+import { Component, OnInit } from '@angular/core';
+import { CategoriaDispositivo } from '../categoria-dispositivo.model';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CatalogoDispositivo } from '../catalogo-dispositivo.model';
+import { interval } from 'rxjs';
+import { AppHeaderView } from 'src/app/toolbar/app-header-view.model';
+import { MatSnackBar } from '@angular/material';
+import { ToolbarService } from 'src/app/toolbar/toolbar.service';
+
+export interface Rede {
+  value: string;
+  viewValue: string;
+}
+
+@Component({
+  selector: 'app-catalog-edit',
+  templateUrl: './catalog-edit.component.html',
+  styleUrls: ['./catalog-edit.component.scss']
+})
+export class CatalogEditComponent implements OnInit {
+
+  redes: Rede[] = [
+    { value: 'VIVO1', viewValue: 'Vivo 1' },
+    { value: 'VIVO2', viewValue: 'Vivo 2' },
+    { value: 'AMBOS', viewValue: 'Ambos' }
+  ];
+  technologies: string[] = [
+    'ADSL',
+    'Fibra',
+    'Router Fibra',
+    'TV',
+    'VDSL',
+    'VoIP'
+  ];
+  sips: string[] = [
+    'Não suporta',
+    '1 FXS',
+    '2 FXS',
+    '4 FXS',
+    '8 FXS',
+    '16 FXS',
+    '24 FXS'
+  ];
+  hpnas: string[] = ['Não suporta', 'Suporta', '1 HPNA'];
+  tvTechnologies: string[] = [
+    'Não suporta',
+    'DTH Vivo 1',
+    'DTH Vivo 2',
+    'Hibrido',
+    'Open',
+    'Mediaroom',
+    'Mediaroom/Open'
+  ];
+  dvrs: string[] = ['Não suporta', 'Suporta'];
+  ssls: string[] = ['Não suporta', 'Suporta'];
+  wifis: string[] = ['Não suporta', 'Suporta', '2.4GHz', '5GHz'];
+  capacities: string[] = ['Não suporta', 'SD', 'SD/HD', 'SD/HD/UHD'];
+
+  categories: Array<CategoriaDispositivo> = [];
+  vendors: Array<string> = [];
+  allForm: FormGroup;
+  errors: string[];
+  isError: boolean;
+  isSucess: boolean;
+  msgSucess: string;
+
+  constructor(
+    private catalogService: CatalogService,
+    private toolbarService: ToolbarService,
+    private snackBar: MatSnackBar) { }
+
+  ngOnInit() {
+    let headerView = new AppHeaderView();
+    headerView.title = "Inserir Equipamento";
+    headerView.icon = "fas fa-hdd";
+    this.toolbarService.changeViewName(headerView);
+
+    this.listCategories();
+    this.listVendors();
+
+    this.allForm = new FormGroup({
+      ctrlModel: new FormControl(null, Validators.required),
+      ctrlVendor: new FormControl(null, Validators.required),
+      ctrlRede: new FormControl(null, Validators.required),
+      ctrlCategory: new FormControl(null, Validators.required),
+      ctrlSku: new FormControl(null, Validators.required),
+      ctrlDescription: new FormControl(null, Validators.required),
+      ctrlTechnology: new FormControl(null, Validators.required),
+      ctrlSip: new FormControl(null, Validators.required),
+      ctrlHpna: new FormControl(null, Validators.required),
+      ctrlTvTechnology: new FormControl(null, Validators.required),
+      ctrlDvr: new FormControl(null, Validators.required),
+      ctrlSsl: new FormControl(null, Validators.required),
+      ctrlWifi: new FormControl(null, Validators.required),
+      ctrlCapacity: new FormControl(null, Validators.required)
+    });
+  }
+
+  private listCategories() {
+    this.catalogService.listCategories().subscribe(list => {
+      this.isError = false;
+      this.categories = Array.from(list.map(e => { return e; }));
+      this.categories = this.categories.sort((a, b) => {
+        if (a.nomeCategoria < b.nomeCategoria) return -1;
+        if (a.nomeCategoria > b.nomeCategoria) return 1;
+        return 0;
+      });
+    }, err => {
+      this.errors = [`Status: ${err.status}', '${err.statusText}`];
+      this.isError = true;
+    });
+  }
+
+  private listVendors() {
+    this.catalogService.listVendors().subscribe(list => {
+      this.isError = false;
+      this.vendors = Array.from(list.map(e => { return e; }));
+      this.vendors = this.vendors.sort();
+    }, err => {
+      this.errors = [`Status: ${err.status}', '${err.statusText}`];
+      this.isError = true;
+    });
+  }
+
+  private getCatalogoDispositivo() {
+    const caracteristicas = this.setCaracteristicaDispositivos();
+    const entity = new CatalogoDispositivo(
+      null,
+      this.allForm.controls['ctrlModel'].value,
+      this.allForm.controls['ctrlVendor'].value,
+      this.allForm.controls['ctrlRede'].value,
+      this.allForm.controls['ctrlDescription'].value,
+      this.allForm.controls['ctrlSku'].value,
+      this.allForm.controls['ctrlCategory'].value,
+      caracteristicas
+    );
+    return entity;
+  }
+
+  private setCaracteristicaDispositivos() {
+    const caracteristicas: Array<CaracteristicaDispositivo> = [];
+
+    for (let i = 0; i < 8; i++) {
+      caracteristicas[i] = new CaracteristicaDispositivo(null, null, null, null);
+    }
+
+    caracteristicas[0].nome = 'Tecnologia';
+    caracteristicas[1].nome = 'SIP';
+    caracteristicas[2].nome = 'HPNA';
+    caracteristicas[3].nome = 'Tecnologia de TV';
+    caracteristicas[4].nome = 'DVR';
+    caracteristicas[5].nome = 'SSL';
+    caracteristicas[6].nome = 'WiFi';
+    caracteristicas[7].nome = 'Capacidade de Vídeo';
+
+    caracteristicas[0].valor = this.allForm.controls['ctrlTechnology'].value;
+    caracteristicas[1].valor = this.allForm.controls['ctrlSip'].value;
+    caracteristicas[2].valor = this.allForm.controls['ctrlHpna'].value;
+    caracteristicas[3].valor = this.allForm.controls['ctrlTvTechnology'].value;
+    caracteristicas[4].valor = this.allForm.controls['ctrlDvr'].value;
+    caracteristicas[5].valor = this.allForm.controls['ctrlSsl'].value;
+    caracteristicas[6].valor = this.allForm.controls['ctrlWifi'].value;
+    caracteristicas[7].valor = this.allForm.controls['ctrlCapacity'].value;
+
+    return caracteristicas;
+  }
+
+  doPost() {
+    this.isSucess = false;
+    const entity = this.getCatalogoDispositivo();
+    this.catalogService.put(entity).subscribe(
+      sucess => {
+        this.isError = false;
+        this.isSucess = true;
+        this.snackBar.open('Equipamento salvo com sucesso', null, {
+          duration: 3000,
+        });
+        this.allForm.reset();
+        interval(3000).subscribe(() => {
+          this.isSucess = false;
+          window.scroll(0,0);
+        });
+      },
+      errors => {
+        if (errors.error.detail) {
+          this.errors = [errors.error.detail];
+        } else {
+          this.errors = [`Status: ${errors.status}', '${errors.statusText}`];
+        }
+        this.isError = true;
+        this.isSucess = false;
+        window.scroll(0,0);
+      }
+    );
+  }
+
+  doClear() {
+    this.allForm.reset();
+  }
+}

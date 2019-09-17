@@ -1,0 +1,30 @@
+[
+    {
+        "faultCode": "RITBS-501",
+        "faultDescription": "PARAMETRO NAO INFORMADO"
+    },
+    {
+        "faultCode": "RITBS-502",
+        "faultDescription": "ERRO DE CONEXAO"
+    },
+    {
+        "faultCode": "RITBS-503",
+        "faultDescription": "PARAMETRO INVALIDO"
+    },
+    {
+        "faultCode": "RITBS-504",
+        "faultDescription": "ERRO DE CADASTRO"
+    },
+    {
+        "faultCode": "RITBS-505",
+        "faultDescription": "ERRO DE SISTEMA"
+    },
+    {
+        "faultCode": "RITBS-506",
+        "faultDescription": "ERRO TRANSACIONAL"
+    },
+    {
+        "faultCode": "RITBS-999",
+        "faultDescription": "ERRO NAO MAPEADO"
+    }
+]

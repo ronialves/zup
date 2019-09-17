@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:si="http://www.cpqd.com.br/etics/SlotInfoTypes"
+	xmlns:ro="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes"
+	xmlns:ce="http://www.cpqd.com.br/etics/customelements"
+	elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/SupplementaryInformationReportTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes"
+		schemaLocation="ResourceOrderInfoTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/customelements"
+		schemaLocation="CustomElements.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/SlotInfoTypes"
+		schemaLocation="SlotInfoTypes.xsd" />
+	<xs:complexType name="SupplementaryInformationIn">
+		<xs:sequence>
+			<!-- Documento -->
+			<xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo" />
+			<!-- Número da operação -->
+			<xs:element minOccurs="0" name="commandType" type="st:string4" />
+			<!-- DDD -->
+			<xs:element minOccurs="0" name="areaCode" type="st:integer2" />
+			<!-- Identificação do programa chamador -->
+			<xs:element minOccurs="0" name="callerProgram" type="st:string8" />
+			<!-- Identificação de dedicação -->
+			<xs:element minOccurs="0" name="dedicatedFlag" type="st:string1" />
+			<!-- Natureza da OS -->
+			<xs:element minOccurs="0" name="osNature" type="st:integer3" />
+			<!-- Estado da Ordem de Serviço -->
+			<xs:element minOccurs="0" name="osStatus" type="st:integer2" />
+			<!-- Lista de campos de tipo chave-valor -->
+			<xs:element minOccurs="0" name="customElements" type="ce:CustomElements" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SupplementaryInformationOut">
+		<xs:sequence>
+			<!-- Documento -->
+			<xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo" />
+			<!-- Local da Instalação do Splitter de Segundo Nível -->
+			<xs:element minOccurs="0" name="splitterInstallPlace"
+				type="st:string15" />
+			<!-- Local da Instalação do Equipamento Terminal FTTX -->
+			<xs:element minOccurs="0" name="terminalEquipInstallPlace"
+				type="st:string10" />
+			<!-- Tipo Local do Equipamento Terminal FTTX -->
+			<xs:element minOccurs="0" name="terminalEquipInstallTypePlace"
+				type="st:string3" />
+			<!-- Atendimento -->
+			<xs:element minOccurs="0" name="attendance" type="st:string20" />
+			<!-- Cabo de assinante calibre aéreo -->
+			<xs:element minOccurs="0" name="cableSubscriberAirGauge"
+				type="st:string3" />
+			<!-- Cabo de assinante calibre subterrâneo -->
+			<xs:element minOccurs="0" name="cableSubscriberUndergroundGauge"
+				type="st:string3" />
+			<!-- Metragem do cabo de assinante aéreo -->
+			<xs:element minOccurs="0" name="metreageAirSubscriberCable"
+				type="st:string5" />
+			<!-- Metragem do cabo de assinante subterraneo -->
+			<xs:element minOccurs="0" name="metreageUndergroundSubscriberCable"
+				type="st:string5" />
+			<!-- Observação -->
+			<xs:element minOccurs="0" name="observation" type="st:string75" />
+			<!-- Data e hora da execução do serviço -->
+			<xs:element minOccurs="0" name="serviceExecutionTimestamp"
+				type="st:string19" />
+			<!-- Número da Operação -->
+			<xs:element minOccurs="0" name="commandType" type="st:string4" />
+			<!-- Identificação do programa chamador -->
+			<xs:element minOccurs="0" name="callerProgram" type="st:string8" />
+			<!-- Natureza da OS -->
+			<xs:element minOccurs="0" name="osNature" type="st:integer3" />
+			<!-- Estado da Ordem de Serviço -->
+			<xs:element minOccurs="0" name="osStatus" type="st:integer2" />
+			<!-- Quantidade de Número de Serviço -->
+			<xs:element minOccurs="0" name="unitQty" type="st:integer2" />
+			<!-- Seção de Serviço -->
+			<xs:element minOccurs="0" name="serviceArea" type="st:string40" />
+			<!-- Área Dedicada -->
+			<xs:element minOccurs="0" name="dedicatedArea" type="st:string1" />
+			<!-- Tipo de atendimento FTT (FTTA, FTTB, FTTH) -->
+			<xs:element minOccurs="0" name="ftthTechType">
+				<xs:simpleType>
+					<xs:restriction base="st:string4">
+						<xs:pattern value="FTTA|FTTB|FTTH" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Flag Overlapped Net -->
+			<xs:element minOccurs="0" name="overlappedNetFlag" type="st:string1" />
+			<!-- Banda Larga -->
+			<xs:element minOccurs="0" name="wideBandFlag" type="st:string1" />
+			<!-- Manobra para Banda Larga -->
+			<xs:element minOccurs="0" name="wideBandManeuverFlag"
+				type="st:string14" />
+			<!-- DDD -->
+			<xs:element minOccurs="0" name="areaCode" type="st:integer2" />
+			<!-- Área de Serviço -->
+			<xs:element minOccurs="0" name="mfServiceArea" type="st:string40" />
+			<!-- Posição Logica do Cliente -->
+			<xs:element minOccurs="0" name="clientLogicalPosition"
+				type="st:integer4" />
+			<!-- Site Fibrado (0 - NÃ£o fibrado, 1 - Fibrado) -->
+			<xs:element minOccurs="0" name="fiberSite">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:pattern value="0|1" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Dados do Slot -->
+			<xs:element minOccurs="0" name="slotInfo" type="si:SlotInfo" />
+			<!-- Lista de campos de tipo chave-valor -->
+			<xs:element minOccurs="0" name="customElements" type="ce:CustomElements" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

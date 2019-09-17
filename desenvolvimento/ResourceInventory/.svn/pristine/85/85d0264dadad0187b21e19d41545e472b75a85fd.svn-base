@@ -1,0 +1,23 @@
+@import '../../app.component.scss';
+
+.ui-catalog-filters {
+    margin-bottom: 20px;
+    padding: 12px;
+    font-size: 14px;
+}
+
+.ui-close-botton {
+    float: right;
+}
+
+.mat-grid-list {
+    margin-top: 12px;
+}
+
+.ui-form-field {
+    width: 100%;
+}
+
+button {
+    margin: auto 6px;
+}

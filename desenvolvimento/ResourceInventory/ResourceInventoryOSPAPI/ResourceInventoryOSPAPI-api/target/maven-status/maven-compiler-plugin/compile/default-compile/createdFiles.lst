@@ -1,0 +1,9 @@
+com/tlf/oss/resourceinventory/osp/api/v1_0/Uninstall.class
+com/tlf/oss/resourceinventory/osp/api/v1_0/Allocate.class
+com/tlf/oss/resourceinventory/osp/api/v1_0/Deallocate.class
+com/tlf/oss/resourceinventory/osp/api/v1_0/Reserve.class
+com/tlf/oss/resourceinventory/osp/api/v1_0/AvailabilityRetrieval.class
+com/tlf/oss/resourceinventory/osp/api/v1_0/Install.class
+com/tlf/oss/resourceinventory/osp/config/RESTConfig.class
+com/tlf/oss/resourceinventory/osp/api/v1_0/CancelReserved.class
+com/tlf/oss/resourceinventory/osp/api/v1_0/FacilityRetrieval.class

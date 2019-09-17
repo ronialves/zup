@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrievalEquipmentDetailTreeEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">RetrievalEquipmentDetailTreeEntity.java</span></div><h1>RetrievalEquipmentDetailTreeEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+
+@Entity
+@NamedStoredProcedureQueries({
+	@NamedStoredProcedureQuery(name = RetrievalEquipmentDetailTreeEntity.RETRIEVAL_EQUIPMENT_DETAIL_TREE, 
+			procedureName = &quot;TLF_SP_SIGITM_GET_FILHO&quot;, resultClasses = RetrievalEquipmentDetailTreeEntity.class, 
+		parameters = {
+			@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_hostname&quot;, type = String.class),
+			@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_fusion&quot;, type = String.class),
+			@StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, name = &quot;cur1&quot;, type = void.class),
+			@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_cod_retorno&quot;, type = String.class),
+			@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_msg_retorno&quot;, type = String.class)}) })
+<span class="nc" id="L24">public class RetrievalEquipmentDetailTreeEntity implements Serializable{</span>
+
+	private static final long serialVersionUID = 1L;
+
+	public static final String RETRIEVAL_EQUIPMENT_DETAIL_TREE = &quot;retrievalEquipmentDetailTree&quot;;
+	
+	@Basic
+	@Column(name=&quot;ARVORE&quot;)
+	private String tree;
+	
+	@Basic
+	@Column(name=&quot;NIVEL&quot;)
+	private String level;
+	
+	@Basic
+	@Column(name=&quot;MOUNTING_POSITION_NUMBER&quot;)
+	private String mountPosNumber;
+	
+	@Basic
+	@Column(name=&quot;EQUIPSPEC_TYPE&quot;)
+	private String equipSpecType;
+	
+	@Basic
+	@Column(name=&quot;EQUIPMENT_ACRONYM&quot;)
+	private String equipAcronym;
+	
+	@Basic
+	@Column(name=&quot;VENDOR_NAME&quot;)
+	private String vendorName;
+	
+	@Basic
+	@Column(name=&quot;EQUIPMENT_NAME&quot;)
+	private String equipName;
+
+	@Basic
+	@Column(name=&quot;NOTES&quot;)
+	private String notes;
+	
+	@Basic
+	@Column(name=&quot;FUSION&quot;)
+	private String fusion;
+		
+	@Id
+	@Basic
+	@Column(name=&quot;EQUIPMENT_ID_PAI&quot;)
+	private String equipParentId;
+	
+	@Basic
+	@Column(name=&quot;EQUIPMENT_ID_FILHO&quot;)
+	private String equipChildId;
+	
+	@Basic
+	@Column(name=&quot;HAS_PORTA&quot;)
+	private String hasPort;
+	
+	@Basic
+	@Column(name=&quot;p_cod_retorno&quot;)
+	private String codRetorno;
+	
+	@Basic
+	@Column(name=&quot;p_msg_retorno&quot;)
+	private String msgRetorno;
+
+	public String getVendorName() {
+<span class="nc" id="L88">		return vendorName;</span>
+	}
+
+	public void setVendorName(String vendorName) {
+<span class="nc" id="L92">		this.vendorName = vendorName;</span>
+<span class="nc" id="L93">	}</span>
+
+	public String getNotes() {
+<span class="nc" id="L96">		return notes;</span>
+	}
+
+	public void setNotes(String notes) {
+<span class="nc" id="L100">		this.notes = notes;</span>
+<span class="nc" id="L101">	}</span>
+
+	public String getTree() {
+<span class="nc" id="L104">		return tree;</span>
+	}
+
+	public void setTree(String tree) {
+<span class="nc" id="L108">		this.tree = tree;</span>
+<span class="nc" id="L109">	}</span>
+
+	public String getLevel() {
+<span class="nc" id="L112">		return level;</span>
+	}
+
+	public void setLevel(String level) {
+<span class="nc" id="L116">		this.level = level;</span>
+<span class="nc" id="L117">	}</span>
+
+	public String getMountPosNumber() {
+<span class="nc" id="L120">		return mountPosNumber;</span>
+	}
+
+	public void setMountPosNumber(String mountPosNumber) {
+<span class="nc" id="L124">		this.mountPosNumber = mountPosNumber;</span>
+<span class="nc" id="L125">	}</span>
+
+	public String getEquipSpecType() {
+<span class="nc" id="L128">		return equipSpecType;</span>
+	}
+
+	public void setEquipSpecType(String equipSpecType) {
+<span class="nc" id="L132">		this.equipSpecType = equipSpecType;</span>
+<span class="nc" id="L133">	}</span>
+
+	public String getEquipAcronym() {
+<span class="nc" id="L136">		return equipAcronym;</span>
+	}
+
+	public void setEquipAcronym(String equipAcronym) {
+<span class="nc" id="L140">		this.equipAcronym = equipAcronym;</span>
+<span class="nc" id="L141">	}</span>
+
+	public String getEquipName() {
+<span class="nc" id="L144">		return equipName;</span>
+	}
+
+	public void setEquipName(String equipName) {
+<span class="nc" id="L148">		this.equipName = equipName;</span>
+<span class="nc" id="L149">	}</span>
+
+	public String getFusion() {
+<span class="nc" id="L152">		return fusion;</span>
+	}
+
+	public void setFusion(String fusion) {
+<span class="nc" id="L156">		this.fusion = fusion;</span>
+<span class="nc" id="L157">	}</span>
+
+	public String getEquipIdParent() {
+<span class="nc" id="L160">		return equipParentId;</span>
+	}
+
+	public void setEquipIdParent(String equipIdParent) {
+<span class="nc" id="L164">		this.equipParentId = equipIdParent;</span>
+<span class="nc" id="L165">	}</span>
+
+	public String getEquipIdChild() {
+<span class="nc" id="L168">		return equipChildId;</span>
+	}
+
+	public void setEquipIdChild(String equipIdChild) {
+<span class="nc" id="L172">		this.equipChildId = equipIdChild;</span>
+<span class="nc" id="L173">	}</span>
+
+	public String getHasPort() {
+<span class="nc" id="L176">		return hasPort;</span>
+	}
+
+	public void setHasPort(String hasPort) {
+<span class="nc" id="L180">		this.hasPort = hasPort;</span>
+<span class="nc" id="L181">	}</span>
+
+	public String getCodRetorno() {
+<span class="nc" id="L184">		return codRetorno;</span>
+	}
+
+	public void setCodRetorno(String codRetorno) {
+<span class="nc" id="L188">		this.codRetorno = codRetorno;</span>
+<span class="nc" id="L189">	}</span>
+
+	public String getMsgRetorno() {
+<span class="nc" id="L192">		return msgRetorno;</span>
+	}
+
+	public void setMsgRetorno(String msgRetorno) {
+<span class="nc" id="L196">		this.msgRetorno = msgRetorno;</span>
+<span class="nc" id="L197">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

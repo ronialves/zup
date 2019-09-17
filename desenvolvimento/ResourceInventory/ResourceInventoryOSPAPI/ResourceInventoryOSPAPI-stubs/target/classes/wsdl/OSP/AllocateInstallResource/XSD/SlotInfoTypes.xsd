@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/SlotInfoTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="SlotInfo">
+		<xs:sequence>
+			<!-- Código do Slot Cliente -->
+			<xs:element minOccurs="0" name="slotClientCode" type="st:string2"></xs:element>
+			<!-- Porta do Slot Cliente -->
+			<xs:element minOccurs="0" name="slotClientPort" type="st:integer4"></xs:element>
+			<!-- Código do Slot Uplink -->
+			<xs:element minOccurs="0" name="slotUplinkCode" type="st:string2"></xs:element>
+			<!-- Porta do Slot Uplink -->
+			<xs:element minOccurs="0" name="slotUplinkPort" type="st:integer4"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

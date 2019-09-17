@@ -1,0 +1,18 @@
+package com.tfl.oss.resourceinventory.orchestration.execution
+
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+
+rule "[Equipment Service] - RETRIEVE CPE EQUIPMENT" extends "BaseRule"
+    agenda-group "EQUIPMENT"
+    when
+		$action : Action(name == '1.0_RETRIEVE_CPE') from $resource.actions
+		$inventoryEntity : ResourceInventoryEntity( resourceFacingService != null )
+		ResourceInventoryEntity( networkAggregator!.typeOfResource == 'CPE')
+		$serviceDescribedBy : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("OPERATION"))) from $inventoryEntity.resourceFacingService.serviceDescribedBy
+		$serviceSpecCharDescribes : ServiceSpecCharDescribes(value != null, eval(value.equalsIgnoreCase("RETRIEVE"))) from $serviceDescribedBy.serviceSpecCharDescribes
+    then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);
+		insert( $action );
+end

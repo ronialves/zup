@@ -1,0 +1,84 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {MatPaginator, MatTableDataSource} from '@angular/material';
+import { CatalogoDispositivo } from '../catalogo-dispositivo.model';
+import { CatalogService } from '../catalog-list.service';
+import { element } from '@angular/core/src/render3';
+
+@Component({
+  selector: 'app-catalog-list',
+  templateUrl: './catalog-list.component.html',
+  styleUrls: ['./catalog-list.component.scss']
+})
+export class CatalogListComponent implements OnInit {
+  tiles: Array<any> = [{title: 'Fabricante: ', cols: 3, rows: 1, text: '', campo:'fabricante'},
+                       {title: 'Modelo: ', cols: 3, rows: 1, text: '', campo:'modelo'},
+                       {title: 'Rede: ', cols: 3, rows: 1, text: '', campo:'rede'},
+                       {title: 'Tecnologia: ', cols: 3, rows: 1, text: '', campo:'tecnologia'},
+                       {title: 'Categoria: ', cols: 3, rows: 1, text: '', campo:'categoriaDispositivo.nomeCategoria'},
+                       {title: 'Tipo Categoria: ', cols: 3, rows: 1, text: '', campo:'categoriaDispositivo.tipoRsf'},
+                      ];
+  caracteristicas: Array<any> = [];
+  grid: Array<any> = [];
+  displayedColumns: string[] = ['fabricante', 'modelo', 'rede', 'tecnologia', 'categoria', 'acao'];
+  list : Array<CatalogoDispositivo> = null;
+  dataSource;
+  invinsible = 0;
+
+  constructor(private catalogService:CatalogService) { }
+
+  
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  ngOnInit() {
+    this.onStartInit();
+  }
+
+  onStartInit(){
+    this.catalogService.list().subscribe((list) => {
+      this.list = list.map( element => {
+        if(element.caracteristicas.find(this.caracteristicaFind)){
+          element['tecnologia'] = element.caracteristicas.find(this.caracteristicaFind).valor
+        }
+        return element
+      });
+
+      this.dataSource = new MatTableDataSource<CatalogoDispositivo>(this.list);
+      this.dataSource.paginator = this.paginator;
+    });
+  }
+
+  onClickShowGrid(element:CatalogoDispositivo) {
+    this.invinsible = this.invinsible == element.id ? 0 : element.id
+    if(this.invinsible != 0){
+      this.caracteristicas = []
+      
+      element.caracteristicas.forEach(element => {
+        this.caracteristicas.push({title: "Nome: ", cols: 3, rows: 1, text: element.nome, campo:'nome'})
+        this.caracteristicas.push({title: "Valor: ", cols: 3, rows: 1, text: element.valor, campo:'valor'})
+      });
+
+      this.tiles.forEach(title => {
+        if(title.campo.includes('.')){
+          const campo = title.campo.split('.')
+          title.text = element[campo[0]][campo[1]]
+        } else {
+          title.text = element[title.campo]
+        }
+      });
+      this.grid = this.tiles.concat(this.caracteristicas)
+    }
+  }
+
+  onClickDelete(element:CatalogoDispositivo){
+    this.catalogService.delete(element.id).subscribe(() =>{
+      this.onStartInit();
+    }, (e) =>{
+      alert("[RICPE] - Erro ao chamar a consulta => O equipamento no pode ser excludo pois possui um dispositivo vinculado a ele");
+    })
+    
+  }
+
+  caracteristicaFind(element){
+    return (element.nome === "Tecnologia")
+  }
+}

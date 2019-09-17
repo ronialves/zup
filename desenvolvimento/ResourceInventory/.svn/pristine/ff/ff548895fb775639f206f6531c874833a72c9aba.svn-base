@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+	<persistence-unit name="GraniteServicePU" transaction-type="JTA">
+	
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>		
+		<jta-data-source>jdbc/GraniteDS</jta-data-source>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.RetrieveUdaEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.RetrieveAvailabilityMsanEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.RetrieveAvailabilityDslamEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.ReserveResourceEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.ReserveResourceGponEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.RetrieveAccessResourceInformationMsanEntity</class>		
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.RetrieveAccessResourceInformationDslamEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.CancelResourceEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.RetrieveFacilityEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.AvailabilityRetrieveActiveMsanDslamEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.DeallocateInternalResourceEntity</class>	
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.RetrieveFacilityGponEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.RetrieveExpiredResourcesEntity</class>
+		<class>com.tlf.oss.resourceinventory.granite.core.entity.ServiceCodeEntity</class>
+		<class>com.tlf.oss.resourceinventory.sophia.core.entity.RetrieveFacilityResourceGponEntity</class>
+		<shared-cache-mode>NONE</shared-cache-mode>	
+		<mapping-file>queries.xml</mapping-file>
+		<properties>
+         	<property name="eclipselink.query-results-cache" value="false"/>
+      	</properties>
+    </persistence-unit> 
+	
+</persistence>

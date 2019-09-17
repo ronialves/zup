@@ -1,0 +1,23 @@
+<?xml version="1.0" ?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" targetNamespace="http://www.cpqd.com.br/etics/commonsexceptiontypes">
+
+    <xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"></xs:import>
+
+    <xs:complexType name="CommonsExceptionElementType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="code">
+                <xs:simpleType>
+                    <xs:restriction base="st:non-empty-string">
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="ErrorCode" type="st:integer5"></xs:element>
+            <xs:element minOccurs="0" name="message">
+                <xs:simpleType>
+                    <xs:restriction base="st:non-empty-string">
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

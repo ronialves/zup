@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FacilityResourceMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">FacilityResourceMetallicController.java</span></div><h1>FacilityResourceMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveFacilityEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.EntityFields;
+import com.tlf.oss.resourceinventory.granite.core.enums.Message;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusFacilityType;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.mapper.impl.RetrieveResourceMapper;
+import com.tlf.oss.resourceinventory.granite.core.repository.RetrieveFacilityDao;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.Resource;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L23">public class FacilityResourceMetallicController extends ValidatorEntity implements Serializable {</span>
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	public RetrieveFacilityDao rdao;
+
+	@Inject
+	private RetrieveResourceMapper mapper;
+
+	@Inject
+	private IdentifyNetworkController identifyNetworkController;
+	
+	public ResourceInventoryEntity resourceFacility(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L37">		entity = identifyNetwork(entity);</span>
+		
+<span class="fc" id="L39">		RetrieveFacilityEntity retrieveFacilityEntity = getFacility(entity);</span>
+<span class="fc" id="L40">			entity = mapper.parseGetPhysicalResourceFacility(retrieveFacilityEntity, entity);</span>
+<span class="fc" id="L41">		return entity;</span>
+	}
+
+	private RetrieveFacilityEntity getRetrieveFacilityResourceEntity(ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+		
+<span class="fc" id="L47">		RetrieveFacilityEntity retrieveFacilityEntity = new RetrieveFacilityEntity();</span>
+<span class="fc" id="L48">			retrieveFacilityEntity.setTerminal(getNetworkOwnerID(entity));</span>
+<span class="fc" id="L49">		return retrieveFacilityEntity;</span>
+	}
+
+	protected String getNetworkOwnerID(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L53">		ResourceFacingService rfsTerminal = getResourceFacingService(entity, EntityFields.NETWORK_OWNER_ID.getValue());</span>
+<span class="fc" id="L54">		return rfsTerminal.getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0).getValue();</span>
+	}
+
+	public RetrieveFacilityEntity getFacility(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L58">		RetrieveFacilityEntity retrieveFacilityEntity = getRetrieveFacilityResourceEntity(entity);</span>
+
+<span class="fc" id="L60">		return getStateFacility(entity, retrieveFacilityEntity);</span>
+	}
+
+	/**
+	 * Metodo responsavel em valdiar as regras de negocio da consulta facilidade
+	 * Caso busque por ACTIVE e nao encontre as facilidade do cliente ATIVO retorna erro
+	 * Caso busque por NEW e nao encontre as facilidade do cliente RESERVADO e EM CONFIGURACAO retorna erro
+	 * Caso Contrario não seja informado o tipo do path, retorna o que encontrar, caso nao encontre, retorna erro
+	 * @param entity
+	 * @param retrieveFacilityEntity
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	private RetrieveFacilityEntity getStateFacility(ResourceInventoryEntity entity,RetrieveFacilityEntity retrieveFacilityEntity) throws OSSBusinessException{
+<span class="fc" id="L74">		RetrieveFacilityEntity retrieveFacility = null;</span>
+<span class="fc" id="L75">		List&lt;RetrieveFacilityEntity&gt; retrieveFacilityList = rdao.getfacility(retrieveFacilityEntity);</span>
+
+		//Sempre recupera as facilidades,
+		//na versão 1 do retrieve não existe a TAG resource, portanto deve-se buscar o primeiro path encontrado.
+		//a versão 1 atende apenas os cenários de venda - onde existe apenas 1 path no granite.
+		
+<span class="fc" id="L81">		Optional&lt;Resource&gt; resource = Optional.ofNullable(entity.getResource());</span>
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">		if (!resource.isPresent()) {</span>
+			
+<span class="fc" id="L85">			retrieveFacility = retrieveFacilityList.stream().findFirst().get();</span>
+			
+		}else{
+			
+<span class="fc bfc" id="L89" title="All 2 branches covered.">			if (StatusFacilityType.ACTIVE.getValue().equalsIgnoreCase(entity.getResource().getStateOfResource())) {</span>
+
+<span class="fc" id="L91">				retrieveFacility = retrieveFacilityList.stream().filter(p -&gt; p.getStatus().equalsIgnoreCase(StatusPathType.ACTIVE.getValue()))</span>
+<span class="fc" id="L92">						.findFirst()</span>
+<span class="fc" id="L93">						.orElseThrow(() -&gt; new OSSBusinessException(</span>
+<span class="fc" id="L94">								Message.ERRO_RESOURCE_RETRIEVE_PATH_BY_TERMINAL.getValue(), Code.RIGRANITE_003.getValue(),</span>
+<span class="fc" id="L95">								Message.ERRO_RESOURCE_RETRIEVE_PATH.getValue() +&quot; active: &quot; + StatusPathType.ACTIVE.getValue()+&quot; não encontrado&quot;));</span>
+
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">			} else if (StatusFacilityType.NEW.getValue().equalsIgnoreCase(entity.getResource().getStateOfResource())) {</span>
+
+<span class="fc" id="L99">				retrieveFacility = retrieveFacilityList.stream().filter((p) -&gt; </span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">				p.getStatus().equalsIgnoreCase(StatusPathType.RESERVED.getValue())||</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">				p.getStatus().equalsIgnoreCase(StatusPathType.IN_CONFIGURATION.getValue()))</span>
+<span class="fc" id="L102">						.findFirst()</span>
+<span class="fc" id="L103">						.orElseThrow(() -&gt; new OSSBusinessException(</span>
+<span class="fc" id="L104">								Message.ERRO_RESOURCE_RETRIEVE_PATH_BY_TERMINAL.getValue(), Code.RIGRANITE_003.getValue(),</span>
+<span class="fc" id="L105">								Message.ERRO_RESOURCE_RETRIEVE_PATH.getValue()+&quot; new: &quot; + StatusPathType.RESERVED.getValue()+&quot; e &quot;+StatusPathType.IN_CONFIGURATION.getValue()+&quot; não encontrado&quot;));</span>
+
+			}
+		}
+
+<span class="fc" id="L110">		return retrieveFacility;</span>
+	}
+	
+	public ResourceInventoryEntity identifyNetwork(ResourceInventoryEntity entity) {
+<span class="fc" id="L114">		return identifyNetworkController.identifyNetwork(entity); </span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

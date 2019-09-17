@@ -1,0 +1,327 @@
+[
+	{
+		"errorCode": "1",
+		"errorMessage": "TECNOLOGIA DE ACESSO",
+		"faultCode": "RISAGRE-501"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "PARAMETRO .* INVALIDO",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "TECNOLOGIA DE VOZ .* INVALIDA",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "TECNOLOGIA DE ACESSO .* NAO CONTEMPLADA",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "PARAMETROS DE ENTRADA INCONSISTENTES.",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "ID DE ACESSO INCONSISTENTE",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "NAO FOI POSSIVEL OBTER DADOS DA CAIXA",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "11",
+		"errorMessage": "FALTA DE FACILIDADES(.*).",
+		"faultCode": "RISAGRE-513"
+	},
+	{
+		"errorCode": "661",
+		"errorMessage": "FALTA DE FACILIDADES(.*).",
+		"faultCode": "RISAGRE-513"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "PRE-RESERVA NAO ENCONTRADA.",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "ERRO AO BUSCAR ENDERECO PARA RESERVA",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "ERRO AO INSERIR PARTICIPATION.",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "ERRO AO INSERIR DOCUMENTO",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "RESERVA JA EXISTE.",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "IDENTIFICADOR DE ACESSO JA EXISTE",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "DOCUMENTO JA EXISTE",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "CAIXA BLOQUEADA",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "99",
+		"errorMessage": "OUTROS ERROS",
+		"faultCode": "RISAGRE-666"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "ERRO GERAL: ",
+		"faultCode": "RISAGRE-666"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "TIPO FORNECIDO .* INVALIDO",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "TECNOLOGIA DE ACESSO .* INVALIDA",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "COMBINACAO .* NAO CONTEMPLADA PELA CONTROLADORA",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "TIPO FORNECIDO .* E INVALIDO",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "ID ACESSO NAO ENCONTRADO",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "SAGRE EM MIGRACAO'",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "SAGRE EM MIGRACAO",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "NUMERO DE SERVICO COM STATUS INVALIDO.",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "NUMERO DE SERVICO NAO DESIGNADO.",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "NAO ENCONTRADO JUMPER ENTRE SPLITTERS DE 1o. E 2o. NIVEL",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "15",
+		"errorMessage": "NUMERO DE SERVICO NAO DESIGNADO.",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "31",
+		"errorMessage": "FALTA DE FACILIDADES.",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "64",
+		"errorMessage": "NAO FOI POSSIVEL RECUPERAR AS FACILIDADES.",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "75",
+		"errorMessage": "NAO FOI POSSIVEL OBTER DADOS DA CAIXA.",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "61",
+		"errorMessage": "FALTA DE FACILIDADES.",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "74",
+		"errorMessage": "ID DE ACESSO DESTINO INCONSISTENTE.",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "74",
+		"errorMessage": "ID DE ACESSO ORIGEM INCONSISTENTE.",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "SAGRE EM MIGRACAO.",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "98",
+		"errorMessage": "SAGRE EM MIGRACAO.",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "16",
+		"errorMessage": "ERRO AO BUSCAR ENDERECO PARA DESIGNACAO",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "65",
+		"errorMessage": "ERRO AO CRIAR RESERVA: ",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "68",
+		"errorMessage": "ERRO AO INSERIR PARTICIPATION",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "66",
+		"errorMessage": "ERRO AO OCUPAR DESIGNACAO JA EXISTENTE",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "69",
+		"errorMessage": "ERRO AO INSERIR DOCUMENTO",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "62",
+		"errorMessage": "NAO ENCONTROU PAI OTICO / METALICO",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "63",
+		"errorMessage": "CAIXA ESTA EM PROCESSO DE FOLHA DE CORTE",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "64",
+		"errorMessage": "ERRO AO LIBERAR OCUPACAO JA EXISTENTE.",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "65",
+		"errorMessage": "ERRO AO CANCELAR DESIGNACAO JA EXISTENTE",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "66",
+		"errorMessage": "ERRO AO VALIDAR DESIGNACAO/OCUPACAO.",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "67",
+		"errorMessage": "ERRO AO EFETUAR DESIGNACAO",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "71",
+		"errorMessage": "ERRO AO INSERIR PAR",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "72",
+		"errorMessage": "ERRO AO INSERIR DEDICACAO",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "73",
+		"errorMessage": "NAO ENCONTROU SITE/SETOR",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "1",
+		"errorMessage": "ME ENTRE TECNOLOGIAS DE ACESSO DIFERENTES NAO CONTEMPLADA ",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "70",
+		"errorMessage": "DOCUMENTO JA EXISTE.",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "72",
+		"errorMessage": "IDENTIFICADOR DE ACESSO JA EXISTE.",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "73",
+		"errorMessage": "OCUPACAO NAO ENCONTRADA",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "63",
+		"errorMessage": "IDENTIFICADOR DE ACESSO .* AINDA COM STATUS RESERVADO",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "78",
+		"errorMessage": "BLOQUEADO ME",
+		"faultCode": "RISAGRE-506"
+	},
+	{
+		"errorCode": "981",
+		"errorMessage": "SCHEMA EM MIGRACAO",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "981",
+		"errorMessage": "ERRO RECUPERANDO SCHEMA (REGION_SAGRE)",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "161",
+		"errorMessage": "STREET_CODE NAO EXISTE",
+		"faultCode": "RISAGRE-504"
+	},
+	{
+		"errorCode": "161",
+		"errorMessage": "ERRO BUSCANDO STREET_CODE",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "991",
+		"errorMessage": "OUTROS ERROS",
+		"faultCode": "RISAGRE-505"
+	},
+	{
+		"errorCode": "991",
+		"errorMessage": "PARAMETRO .* INVALIDO",
+		"faultCode": "RISAGRE-503"
+	},
+	{
+		"errorCode": "991",
+		"errorMessage": "ERRO (.*): .*",
+		"faultCode": "RISAGRE-505"
+	}
+]

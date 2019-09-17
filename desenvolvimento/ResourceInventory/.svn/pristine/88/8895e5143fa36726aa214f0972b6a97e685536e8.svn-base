@@ -1,0 +1,18 @@
+package com.tlf.oss.resourceinventory.granite.core.enums;
+
+public enum AgendaGroup {
+
+	SERVICE("SERVICECODE");
+	
+	private final String value;
+
+	private AgendaGroup(String value) {
+		this.value = value;
+	}
+
+	public String getValue() {
+		return value;
+	}
+	
+	
+}

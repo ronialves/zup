@@ -1,0 +1,189 @@
+package com.tlf.oss.resourceinventory.netcool.repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceException;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.StoredProcedureQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.Equipment;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.netcool.entity.EquipmentRetrievalEntity;
+import com.tlf.oss.resourceinventory.netcool.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.netcool.repository.factory.GenericRepository;
+import com.tlf.oss.resourceinventory.netcool.core.utils.Constants;
+
+public class EquipmentRetrievalRepository extends GenericRepository{
+	
+	/**
+	 * Executa Procedure para consultar os ids dos equipamentos
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException 
+	 */
+	
+	private static final long serialVersionUID = -8033484033628300825L;
+	
+	@Inject
+	private OSSLogger logger;
+	
+	private final String PROC_GET_ELEMENTS = "NETCOOL.SP_GET_ELEMENTS_NETCOOL";
+	
+	
+	/**
+	 * Executa Procedure para consultar equipamentos no Netcool
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException 
+	 */
+	@SuppressWarnings("unchecked")
+	public ResourceInventoryEntity getEquipment(ResourceInventoryEntity entity) throws OSSBusinessException{
+		logger.log(OSSLogger.INFO, this.getClass().getName() + " -  executando procedure " + PROC_GET_ELEMENTS);
+		
+		List<EquipmentRetrievalEntity> resultList = null;
+		Integer codRetorno = null;
+		String msgRetorno = "";
+		
+		try {
+			
+			StoredProcedureQuery procedureQuery = getFactory().createStoredProcedureQuery(PROC_GET_ELEMENTS);
+			
+			procedureQuery.registerStoredProcedureParameter("P_CITY_NAME", String.class, ParameterMode.IN);
+			procedureQuery.registerStoredProcedureParameter("P_EQUIPMENT", String.class, ParameterMode.IN);
+            procedureQuery.registerStoredProcedureParameter("CURSOR_RETURN", void.class, ParameterMode.REF_CURSOR);
+            procedureQuery.registerStoredProcedureParameter("P_COD_RETORN", Integer.class, ParameterMode.OUT);
+            procedureQuery.registerStoredProcedureParameter("P_MSG_RETORNO", String.class, ParameterMode.OUT);
+            
+			procedureQuery.setParameter("P_CITY_NAME", getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, Constants.CNL_ACRONYM));
+			procedureQuery.setParameter("P_EQUIPMENT", getParamValue(entity, Constants.EQUIPMENT, Constants.HOSTNAME));
+            
+            procedureQuery.execute();
+            
+            resultList = castToEquipmentRetrievalEntity((List<Object[]>) procedureQuery.getOutputParameterValue("CUR1"));
+			codRetorno = (Integer) procedureQuery.getOutputParameterValue("P_COD_RETORNO");
+			msgRetorno = (String) procedureQuery.getOutputParameterValue("P_MSG_RETORNO");
+			logger.log(OSSLogger.INFO, "getEquipment codRetorno: " + codRetorno);
+			logger.log(OSSLogger.INFO, "getEquipment msgRetorno: " + msgRetorno);
+            
+            logger.log(OSSLogger.INFO, this.getClass().getName() + " -  procedure "+ PROC_GET_ELEMENTS + " executada com sucesso");
+			
+		} catch (QueryTimeoutException | NoResultException | NonUniqueResultException e) {
+			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),
+					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),
+							"Erro ao chamar a procedure SP_GET_ELEMENTS_NETCOOL no Netcool", e.getMessage()));
+
+		} catch (PersistenceException e) {
+			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_002.getDescription(),
+					ExceptionInfoEnum.RITBS_002.getCode(), String.format(ExceptionInfoEnum.RITBS_002.getMessage(),
+							"Erro ao chamar a procedure SP_GET_ELEMENTS_NETCOOL no Netcool", e.getMessage()));
+
+		} catch (Exception e) {
+			System.out.println("ERROR: " + e.getMessage());
+			e.printStackTrace();
+			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_999.getDescription(),
+					ExceptionInfoEnum.RITBS_999.getCode(), e.getMessage());
+		}
+		
+		
+		return equipmentMapper(entity, codRetorno, msgRetorno, resultList);
+		
+	}
+	
+	private ResourceInventoryEntity equipmentMapper(ResourceInventoryEntity entity, Integer codRetorno, 
+			String msgRetorno, List<EquipmentRetrievalEntity> resultQuery) {
+		
+		if(resultQuery != null && !resultQuery.isEmpty()) {
+			
+			List<Equipment> equipments = new ArrayList<Equipment>();
+			
+			for (EquipmentRetrievalEntity resultEquipment : resultQuery) {
+				
+				Equipment equipment = new Equipment();	
+				equipment.setIp(resultEquipment.getIp());
+				equipment.setModel(resultEquipment.getModel());
+				
+				equipments.add(equipment);
+			}
+			
+			entity.setEquipment(equipments);
+		} 
+
+		entity.setCodeReturn(codRetorno);
+		entity.setMessageReturn(msgRetorno);
+		
+		return entity;
+	}
+	
+	private List<EquipmentRetrievalEntity> castToEquipmentRetrievalEntity(List<Object[]> outputParameterValue) {
+		
+		List<EquipmentRetrievalEntity> result = new ArrayList<>();
+		
+		for (Object[] objects : outputParameterValue) {
+			logger.log(OSSLogger.INFO, "Retorno " + Constants.CURSOR + ": " + objects.toString());
+			EquipmentRetrievalEntity entity = new EquipmentRetrievalEntity();
+			entity.setName(objectToString(objects[0]));
+			entity.setHost(objectToString(objects[1]));
+			entity.setEquipmentType(objectToString(objects[2]));
+			entity.setIp(objectToString(objects[3]));
+			entity.setSupplier(objectToString(objects[4]));
+			entity.setAcronymCity(objectToString(objects[5]));
+			entity.setDescription(objectToString(objects[6]));
+
+			result.add(entity);
+		}
+		
+		return result;
+	}
+	
+	private Integer objecToInteger(Object in) {
+		Integer result = 0;
+		if (in != null) {
+			result = Integer.parseInt(in.toString());
+		}
+		return result;
+	}
+	
+	private String objectToString(Object in) {
+		String result = "";
+		if (in != null ) {
+			result = String.valueOf(in);
+		}
+		return result;
+	}
+	
+	/**
+	 * Retorna o valor do Parâmetro do ServiceDescribedBy.
+	 * 
+	 * @param entity
+	 * @param networkOwner
+	 * @param paramName
+	 * @return
+	 */
+	private String getParamValue(ResourceInventoryEntity entity, String networkOwner, String paramName) {
+		
+		for (ServiceDescribedBy sdb : entity.getResourceFacingService().getServiceDescribedBy()) {			
+			if (networkOwner.equalsIgnoreCase(sdb.getName())) {				
+				for (ServiceSpecCharDescribes sscd : sdb.getServiceSpecCharDescribes()) {					
+					if (paramName.equalsIgnoreCase(sscd.getValueType())) {
+						logger.log(OSSLogger.INFO, "EquipmentRetrievalRepository - getParamValue - " + paramName + " : " + sscd.getValue());
+						return sscd.getValue();
+					}					
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+}

@@ -1,0 +1,10 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/core/validation/ValidatorEntity.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/core/validation/EquipmentRetrievalValidator.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/entity/EquipmentRetrievalEntity.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/repository/factory/GenericRepository.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/core/utils/Constants.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/core/EquipmentRetrievalController.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/repository/EquipmentRetrievalRepository.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/core/validation/EquipmentRetrieval.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/enums/ExceptionInfoEnum.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/NetcoolAPI/NetcoolAPI-core/src/main/java/com/tlf/oss/resourceinventory/netcool/enums/EntityFields.java

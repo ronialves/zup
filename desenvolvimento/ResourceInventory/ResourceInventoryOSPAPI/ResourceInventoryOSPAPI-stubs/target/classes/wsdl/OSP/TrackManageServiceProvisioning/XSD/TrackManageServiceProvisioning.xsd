@@ -1,0 +1,81 @@
+<?xml version="1.0" ?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:sr="http://www.cpqd.com.br/etics/ServiceTypes" xmlns:si="http://www.cpqd.com.br/etics/SupplementaryInformationManageServTypes" xmlns:rst="http://www.cpqd.com.br/etics/ResourceServiceTypes" xmlns:roi="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes" xmlns:re="http://www.cpqd.com.br/etics/provisiongtypes" xmlns:ct="http://www.cpqd.com.br/etics/CustomerTypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/facilities/TrackManageServiceProvisioningTypes">
+
+    <xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"></xs:import>
+    <xs:import namespace="http://www.cpqd.com.br/etics/ServiceTypes" schemaLocation="ServiceTypes.xsd"></xs:import>
+    <xs:import namespace="http://www.cpqd.com.br/etics/ResourceServiceTypes" schemaLocation="ResourceServiceTypes.xsd"></xs:import>
+    <xs:import namespace="http://www.cpqd.com.br/etics/provisiongtypes" schemaLocation="ProvisioningTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/CustomerTypes" schemaLocation="CustomerTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/SupplementaryInformationManageServTypes" schemaLocation="SupplementaryInformationManageServTypes.xsd"></xs:import>	
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes" schemaLocation="ResourceOrderInfoTypes.xsd"></xs:import>		
+
+    <!-- Elemento de entrada de dados -->
+    <xs:complexType name="TrackManageServiceProvisioningRequest">
+        <xs:sequence>
+
+            <!-- Ordem de Recursos (Número do Documento) -->
+            <xs:element minOccurs="0" name="resourceOrder" type="st:string40"></xs:element>
+
+            <!-- Identificador do Circuito -->
+            <xs:element minOccurs="0" name="circuitId" type="st:string50"></xs:element>
+
+            <!-- Operação (1-Associar, 2-Desassociar) -->
+            <xs:element default="1" minOccurs="0" name="operation">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:pattern value="1|2"></xs:pattern>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+
+			<!-- Tipo de dedicação (0-Não dedicados, 1-Dedicados) -->
+            <xs:element default="1" minOccurs="0" name="dedication">
+				<xs:simpleType>
+                    <xs:restriction base="xs:integer">
+						<xs:pattern value="0|1"></xs:pattern>
+					</xs:restriction>
+                </xs:simpleType>	
+			</xs:element>	
+
+            <!-- Servico -->
+            <xs:element name="service" type="sr:ServiceServiceType"></xs:element>
+            
+            <!-- Cliente -->
+            <xs:element minOccurs="0" name="customer" type="ct:Customer"></xs:element>
+			
+            <!-- Equipamento -->
+            <xs:element minOccurs="0" name="resourceService" type="rst:ResourceService"></xs:element>
+			
+			<!-- Dados Complementares -->
+			<xs:element minOccurs="0" name="supplementaryInformation" type="si:SupplementaryInformationIn"></xs:element>				
+
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Elemento de saida de dados -->
+    <xs:complexType name="TrackManageServiceProvisioningResponse">
+        <xs:sequence>
+ 		
+            <!-- Resultado da operação -->
+            <xs:element name="result" type="re:ResultTypeWithErrorCode"></xs:element>
+
+            <!-- Dados retornados ao sistema externo -->
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="informations">
+                <xs:complexType>
+                    <xs:sequence>
+
+						<!-- Número do Serviço (Serviço  da alocação ou ocupação) -->
+						<xs:element minOccurs="0" name="identifier" type="st:string60"></xs:element>
+						
+						<!-- Bilhete de Defeito Finalizado-->
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="resourceOrderInfoBD" type="roi:ResourceOrderInfoFull"></xs:element>
+								
+						<!-- Dados Complementares -->
+						<xs:element minOccurs="0" name="supplementaryInformation" type="si:SupplementaryInformationOut"></xs:element>
+
+                      </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+			
+        </xs:sequence>
+    </xs:complexType>  
+</xs:schema>

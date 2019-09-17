@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InstallMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">InstallMetallicController.java</span></div><h1>InstallMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.DeallocateInternalResourceEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ResourceStatusEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrievePathEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.Message;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.repository.DeallocateInternalResourceDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ResourceStatusDao;
+import com.tlf.oss.resourceinventory.granite.core.service.PathService;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L20">public class InstallMetallicController extends ValidatorEntity {</span>
+	
+	@Inject
+	private OSSLogger logger;
+	
+	@Inject
+	private ResourceStatusDao resourceStatusDao;
+	
+	@Inject
+	public DeallocateInternalResourceDao cdao;
+	
+	@Inject
+	private PathService pathService;
+	
+	public ResourceInventoryEntity doExecution(ResourceInventoryEntity entity) throws OSSBusinessException{
+		
+<span class="fc" id="L36">		ResourceStatusEntity statusEntity = updateStatus(entity);</span>
+		
+<span class="fc" id="L38">		return getResourceInventoryEntity(statusEntity, entity);</span>
+	}
+	
+	
+	@Transactional(rollbackOn=Exception.class)
+	public ResourceStatusEntity updateStatus(ResourceInventoryEntity entity) throws OSSBusinessException {		
+		
+		//busca por um path Ativo.
+<span class="fc" id="L46">		RetrievePathEntity path = this.chooseScenarioAndRetrievePath(entity, StatusPathType.ACTIVE);</span>
+		
+		//valida se o cenário do inventário é de path único com status ativo e retorna ok.
+<span class="pc bpc" id="L49" title="1 of 6 branches missed.">		if (path != null &amp;&amp; !path.isChangePort() &amp;&amp;  StatusPathType.ACTIVE.equals(path.getStatus())) {</span>
+		
+<span class="nc" id="L51">			return  getResourceStatusEntity(path, StatusPathType.ACTIVE.getValue());</span>
+		}
+		
+		//valida se o path ativo foi encontrado no cenário de troca de porta.
+<span class="fc bfc" id="L55" title="All 4 branches covered.">		if (path != null &amp;&amp; path.isChangePort()) {</span>
+			//deleta o path ativo.
+<span class="fc" id="L57">			deallocatePathActive(path);		</span>
+			//recupera o path em configuração.
+<span class="fc" id="L59">			path = this.chooseScenarioAndRetrievePath(entity, StatusPathType.IN_CONFIGURATION);</span>
+		}
+		
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">		if ( path != null) {</span>
+			// ativa um path &quot;EM CONFIGURACAO&quot; - cenário de Venda e Edição de Oferta
+<span class="fc" id="L64">			return resourceStatusDao.updateStatus(getResourceStatusEntity(path, StatusPathType.ACTIVE.getValue()));</span>
+		}else {
+			// se não encontrar nenhum path ativo ou em configuração para o terminal
+<span class="nc" id="L67">			throw new OSSBusinessException(&quot;Path não encontrado para o terminal &quot;+getNetworkOwnerID(entity), Code.RIGRANITE_001.getValue(),&quot;Nenhum Path Encontrado no status 'ATIVO' ou 'EM CONFIGURACAO&quot;);</span>
+			
+		}				
+	}
+	
+	private ResourceStatusEntity getResourceStatusEntity(RetrievePathEntity path, String statusPathType) {
+<span class="fc" id="L73">		ResourceStatusEntity updateEntity = new ResourceStatusEntity();</span>
+<span class="fc" id="L74">		updateEntity.setStatus(statusPathType);</span>
+<span class="fc" id="L75">		updateEntity.setCircPathInstId(path.getCircPathInstId());</span>
+<span class="fc" id="L76">		return updateEntity;</span>
+	}
+	
+	/**
+	 * Metodo responsavel por fazer a busca dos paths e identificar o cenario
+	 * @param entity
+	 * @return RetrievePathEntity
+	 * @throws OSSBusinessException
+	 */
+	private RetrievePathEntity chooseScenarioAndRetrievePath(ResourceInventoryEntity entity, StatusPathType statusPathType ) throws OSSBusinessException {
+<span class="fc" id="L86">    	logger.log(OSSLogger.INFO, &quot;initialized method chooseScenarioAndRetrievePath&quot;);</span>
+    	
+<span class="fc" id="L88">    	RetrievePathEntity path = pathService.getPath(entity, statusPathType);</span>
+<span class="fc" id="L89">    	logger.log(OSSLogger.INFO, &quot;Path retrieved: &quot; + path);</span>
+    	
+<span class="fc" id="L91">    	return path;</span>
+    }
+	
+	public void deallocatePathActive(RetrievePathEntity pathActive) throws OSSBusinessException {
+		
+<span class="fc" id="L96">		DeallocateInternalResourceEntity deallocateEntity = new DeallocateInternalResourceEntity();</span>
+<span class="fc" id="L97">		deallocateEntity.setStatus(pathActive.getStatus().toString());</span>
+<span class="fc" id="L98">		deallocateEntity.setCircPathInstId(pathActive.getCircPathInstId());</span>
+		
+<span class="fc" id="L100">		DeallocateInternalResourceEntity deallocate = cdao.getDeallocateInternalResource(deallocateEntity);</span>
+
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">		if (!&quot;0&quot;.equals(deallocate.getCode())) {</span>
+			// gerar exceção em caso de erro ao excluir PATH ativo para cenário
+			// de MV com Troca de Porta
+<span class="nc" id="L105">			throw new OSSBusinessException(&quot;Erro excluir PATH ativo para cenário de MV com Troca de Porta&quot;,</span>
+<span class="nc" id="L106">					Code.RIGRANITE_001.getValue(), deallocate.getResult().getCode().toString()</span>
+<span class="nc" id="L107">							+ &quot; - &quot; + deallocate.getResult().getDescription());</span>
+		}
+
+<span class="fc" id="L110">	}</span>
+	
+	private ResourceInventoryEntity getResourceInventoryEntity(ResourceStatusEntity entityStatus, ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">		if (Message.SUCCESS.getValue().equalsIgnoreCase(entityStatus.getResult().getCode()))</span>
+<span class="fc" id="L114">			return entity;</span>
+		else{
+<span class="nc" id="L116">			throw new OSSBusinessException(&quot;Erro ao modificar Status da Instalacao para: ATIVO&quot;, Code.RIGRANITE_001.getValue(), entityStatus.getResult().getCode().toString() + &quot; - &quot;</span>
+<span class="nc" id="L117">					+ entityStatus.getResult().getDescription());</span>
+		}
+	}	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

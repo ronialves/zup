@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- ASAP.TLF_SP_ALLOCATE -->
+	<entry key="P_PON">8-FDA8989987-1</entry>
+	<entry key="P_RPON">C98908098</entry>
+	<entry key="P_ACCOUNT_NBR">8-000001</entry>
+	<entry key="P_CUSTOMER_LOCATION">123</entry>
+	<entry key="P_REQUEST_TYPE">X</entry>
+	<entry key="P_ACTIVITY_IND">N</entry>
+	<entry key="P_NOTE_TEXT">Armario: PRCTA_G1D23 Splitter_1n: D23SP16 Fibra_1n: 4 Conexao_1n2n: EXISTENTE Splitter_2n: D23SP16SS4 Fibra_2n: 1 Caixa: D23G0064 Cabo: D23 Status: RS</entry>
+	<entry key="P_DESIGNADOR_ACESSO">CTA-00018818-000</entry>
+	<entry key="P_SWITCH">PRCTA_VMS02</entry>
+	<entry key="P_BIT_RATE_QUANTITY_U">4096</entry>
+	<entry key="P_BIT_RATE_QUANTITY_D">4096</entry>
+	<entry key="P_ACTIVITY_IND_ACESSO">N</entry>
+	<entry key="P_DOCUMENT_NUMBER"/>
+	<entry key="P_MSG_RETORNO"/>
+	<entry key="P_COD_RETORNO"/>
+</properties>

@@ -1,0 +1,12 @@
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+
+query "getRules"
+        rules : Rules()
+end
+
+rule "Main"
+	when
+		$ruleName : String()
+	then
+		drools.getWorkingMemory().setFocus($ruleName);
+end

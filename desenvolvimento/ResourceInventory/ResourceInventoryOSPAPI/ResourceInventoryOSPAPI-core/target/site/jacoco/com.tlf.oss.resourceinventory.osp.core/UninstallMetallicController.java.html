@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UninstallMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">UninstallMetallicController.java</span></div><h1>UninstallMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import java.util.concurrent.TimeoutException;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.ReleaseResourceRequest;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.ReleaseResourceResponse;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.headercontext.WsContext;
+import com.tlf.oss.resourceinventory.osp.core.enums.Code;
+import com.tlf.oss.resourceinventory.osp.core.enums.Message;
+import com.tlf.oss.resourceinventory.osp.core.enums.OSPCode;
+import com.tlf.oss.resourceinventory.osp.core.service.UninstallService;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@Logged
+@RequestScoped
+<span class="fc" id="L22">public class UninstallMetallicController {</span>
+
+	@Inject
+	protected OSSLogger logger;
+
+	@Inject
+	private UninstallService uninstallService;
+
+	public ResourceInventoryEntity Uninstall(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L31">		logger.log(OSSLogger.INFO, &quot;UninstallController.resourceUninstall - Start&quot;);</span>
+<span class="fc" id="L32">		WsContext headerContext = new WsContext();</span>
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">		headerContext.setRegionCode(entity.getAddress().getCnl() != null ? entity.getAddress().getCnl() : null);</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">		headerContext.setCentralOffice(entity.getAddress().getTelephonicArea() != null ? entity.getAddress().getTelephonicArea() : null);</span>
+
+		try {
+<span class="fc" id="L37">			ReleaseResourceRequest request = createRequest(entity);</span>
+<span class="fc" id="L38">			logger.log(OSSLogger.INFO, &quot;Calling service releaseResource&quot;);</span>
+<span class="fc" id="L39">			ReleaseResourceResponse response = uninstallService.releaseResource(request, headerContext);</span>
+<span class="fc" id="L40">			validateResult(response);</span>
+<span class="fc" id="L41">			logger.log(OSSLogger.INFO, &quot;Called service releaseResource&quot;);</span>
+
+<span class="fc" id="L43">		} catch (OSSBusinessException e) {</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">			if (OSPCode.RESOURCE_UNINSTALL.getValue().equals(e.getDetail())) {</span>
+<span class="nc" id="L45">				entity.getCustomerOrder().setPurchaseOrderNumber(entity.getCustomerOrder().getPurchaseOrderNumber() + &quot;D&quot;);</span>
+<span class="nc" id="L46">				Uninstall(entity);</span>
+			} else {
+<span class="fc" id="L48">				throw new OSSBusinessException(e.getDescription(), e.getStatusCode(), e.getDetail());</span>
+			}
+<span class="nc" id="L50">		} catch (Exception e) {</span>
+<span class="nc" id="L51">			logger.log(OSSLogger.ERROR, Message.ERRO_RESOURCE_UNINSTALL.getValue() + &quot; =[&quot; + e.getMessage() + &quot;]&quot;);</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">			if (e instanceof TimeoutException) {</span>
+<span class="nc" id="L53">				throw new OSSBusinessException(Message.ERRO_RESOURCE_UNINSTALL.getValue(), Code.RIOSP_002.getValue(),</span>
+<span class="nc" id="L54">						Message.BUSINESS_ERROR_TIMEOUT_MSG.getValue());</span>
+			}
+<span class="nc" id="L56">			throw new OSSBusinessException(Message.ERRO_RESOURCE_UNINSTALL.getValue(), Code.RIOSP_002.getValue(),</span>
+<span class="nc" id="L57">					e.getMessage());</span>
+<span class="pc" id="L58">		}</span>
+<span class="fc" id="L59">		logger.log(OSSLogger.INFO, &quot;UninstallController.resourceUninstall - End&quot;);</span>
+<span class="fc" id="L60">		return entity;</span>
+	}
+
+	private ReleaseResourceRequest createRequest(ResourceInventoryEntity entity) {
+<span class="fc" id="L64">		ReleaseResourceRequest request = new ReleaseResourceRequest();</span>
+<span class="fc" id="L65">		request.setResourceOrder(entity.getCustomerOrder().getPurchaseOrderNumber());</span>
+<span class="fc" id="L66">		request.setCircuitId(entity.getCircuit().getId());</span>
+<span class="fc" id="L67">		return request;</span>
+	}
+
+	private void validateResult(ReleaseResourceResponse response) throws OSSBusinessException {
+<span class="pc bpc" id="L71" title="1 of 4 branches missed.">		if (response.getResult() != null &amp;&amp; response.getResult().getCode() != 0) {</span>
+<span class="fc" id="L72">			throw new OSSBusinessException(response.getResult().getDescription(),</span>
+<span class="fc" id="L73">					String.valueOf(response.getResult().getCode()),</span>
+<span class="fc" id="L74">					String.valueOf(response.getResult().getErrorCode()));</span>
+		}
+<span class="fc" id="L76">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

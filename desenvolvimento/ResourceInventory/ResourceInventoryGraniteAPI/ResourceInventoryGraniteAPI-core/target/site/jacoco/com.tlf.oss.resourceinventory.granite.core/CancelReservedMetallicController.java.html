@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CancelReservedMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">CancelReservedMetallicController.java</span></div><h1>CancelReservedMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.CancelResourceEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ChangeSpeedEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ResourceStatusEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveMsanPotsEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrievePathEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.mapper.impl.CancelReserveResourceMapper;
+import com.tlf.oss.resourceinventory.granite.core.repository.CancelResourceDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ChangeSpeedDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ResourceStatusDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.RetrieveMsanPotsDao;
+import com.tlf.oss.resourceinventory.granite.core.service.PathService;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+@Logged
+<span class="fc" id="L29">public class CancelReservedMetallicController extends ValidatorEntity implements Serializable{</span>
+
+	private static final long serialVersionUID = 1L;
+	
+	@Inject
+	private CancelResourceDao crdao;
+	
+	@Inject
+	private OSSLogger logger;
+	
+	@Inject
+	private ResourceStatusDao resourceStatusDao;
+	
+	@Inject
+	private ChangeSpeedDao changeSpeedDao;
+	
+	@Inject
+	private RetrieveMsanPotsDao retrieveMsanPotsDao;
+	
+	@Inject
+	private PathService pathService;
+	
+	@Inject
+	private CancelReserveResourceMapper mapper;
+	
+	public ResourceInventoryEntity doExecution (ResourceInventoryEntity entity) throws OSSBusinessException{
+
+<span class="nc" id="L56">		CancelResourceEntity cancelEntity = cancelResource(entity);	</span>
+
+<span class="nc" id="L58">		entity = mapper.parseGetPhysicalCancelReserveResource(cancelEntity, entity);</span>
+
+<span class="nc" id="L60">		return entity;</span>
+	}
+
+	/**
+	 * Metodo responsavel por fazer a busca dos paths, identificar o cenario e cancelar o estado do path
+	 * @param entity
+	 * @return ResourceStatusEntity
+	 * @throws OSSBusinessException
+	 */
+	@Transactional(rollbackOn=Exception.class)
+	public CancelResourceEntity cancelResource(ResourceInventoryEntity entity) throws OSSBusinessException{
+<span class="fc" id="L71">		logger.log(OSSLogger.INFO, &quot;initialized method cancelResource&quot;);</span>
+
+<span class="fc" id="L73">		RetrieveMsanPotsEntity retrieveMsanPotsEntity = new RetrieveMsanPotsEntity();</span>
+
+		//Recupera recurso MSAN da pots para enviar ao terus
+<span class="fc" id="L76">		retrieveMsanPotsEntity =  retrieveMsanPotsDao.getMsanPots(pathService.getNetworkOwnerID(entity));</span>
+
+<span class="fc" id="L78">		RetrievePathEntity path = pathService.getPath(entity, StatusPathType.RESERVED);</span>
+<span class="fc" id="L79">		logger.log(OSSLogger.INFO, &quot;Path retrieved: &quot; + path);</span>
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">		if (path.getStatus().equals(StatusPathType.RESERVED)) {</span>
+
+			// Cancela a reserva
+<span class="fc" id="L84">			CancelResourceEntity cancelResourceEntity = crdao.cancelResource(getCancelInternalResourceEntity(path, retrieveMsanPotsEntity));</span>
+
+			// Atualiza os valores da entidade unica necessarios para o bloqueio no terus		
+<span class="fc" id="L87">			updatePotsMsan(entity, cancelResourceEntity, retrieveMsanPotsEntity);</span>
+
+<span class="fc" id="L89">			return cancelResourceEntity;</span>
+		}
+<span class="fc" id="L91">		return changeSpeedAndUpdateStatus(entity, path, retrieveMsanPotsEntity);</span>
+	}
+
+	private CancelResourceEntity changeSpeedAndUpdateStatus(ResourceInventoryEntity entity, RetrievePathEntity path, RetrieveMsanPotsEntity retrieveMsanPotsEntity) throws OSSBusinessException {
+
+<span class="fc" id="L96">		CancelResourceEntity cancelResourceEntity = new CancelResourceEntity();</span>
+
+<span class="fc" id="L98">		ChangeSpeedEntity changeSpeedEntity = changeSpeedDao.changeSpeed(path.getCircPathInstId(), getDownloadSpeed(entity), &quot;KB&quot;);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">		if (!&quot;0&quot;.equals(changeSpeedEntity.getCode())) {</span>
+<span class="fc" id="L100">			throw new OSSBusinessException(changeSpeedEntity.getDescription(), Code.RIGRANITE_001.getValue(), </span>
+<span class="fc" id="L101">					changeSpeedEntity.getCode());</span>
+		}
+
+<span class="fc" id="L104">		entity.getResourceFacingService().setStatus(StatusPathType.ACTIVE.getValue());</span>
+<span class="fc" id="L105">		ResourceStatusEntity resourceStatusEntity = resourceStatusDao.updateStatus(getResourceStatusEntity(entity, path));</span>
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">		if (!&quot;0&quot;.equals(resourceStatusEntity.getResult().getCode())) {</span>
+<span class="fc" id="L108">			throw new OSSBusinessException(resourceStatusEntity.getResult().getCode() , Code.RIGRANITE_001.getValue(), </span>
+<span class="fc" id="L109">					resourceStatusEntity.getResult().getDescription());</span>
+		}
+
+<span class="fc" id="L112">		cancelResourceEntity.setCode(resourceStatusEntity.getReturnCode());</span>
+<span class="fc" id="L113">		cancelResourceEntity.setDescription(resourceStatusEntity.getReturnMessage());</span>
+<span class="fc" id="L114">		cancelResourceEntity.setResult(resourceStatusEntity.getResult());</span>
+
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">		if (retrieveMsanPotsEntity.getId() != null){</span>
+<span class="fc" id="L117">			cancelResourceEntity.setIdConexoesPotsMsan(retrieveMsanPotsEntity.getId().toString());</span>
+		}else{
+<span class="nc" id="L119">			cancelResourceEntity.setIdConexoesPotsMsan(&quot;&quot;);</span>
+		}
+
+<span class="fc" id="L122">		cancelResourceEntity.setCabinet(new Cabinet());</span>
+<span class="fc" id="L123">		cancelResourceEntity.setOperationService(getOperationService(retrieveMsanPotsEntity));</span>
+<span class="fc" id="L124">		return cancelResourceEntity;</span>
+	}
+
+	/**
+	 * Metodo responsavel por construir o objeto {@link ResourceStatusEntity} com o ID da porta para atualizacao
+	 * @param entity
+	 * @param path
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	private ResourceStatusEntity getResourceStatusEntity(ResourceInventoryEntity entity, RetrievePathEntity path) throws OSSBusinessException {
+<span class="fc" id="L135">		ResourceStatusEntity updateEntity = new ResourceStatusEntity();</span>
+<span class="fc" id="L136">		updateEntity.setStatus(entity.getResourceFacingService().getStatus());</span>
+<span class="fc" id="L137">		updateEntity.setCircPathInstId(path.getCircPathInstId());</span>
+<span class="fc" id="L138">		return updateEntity;</span>
+	}
+
+	private void updatePotsMsan(final ResourceInventoryEntity entity, final CancelResourceEntity cancelResourceEntity,
+			RetrieveMsanPotsEntity retrieveMsanPotsFreeEntity) throws OSSBusinessException {
+
+<span class="fc" id="L144">		logger.log(OSSLogger.INFO, &quot;Iniciando o processo de busca e atualização na tabela conexoes_pots_msan&quot;);</span>
+
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">			final Cabinet cabinet = entity.getCabinet() != null ? entity.getCabinet() : new Cabinet();</span>
+<span class="fc" id="L147">			cabinet.setLic(retrieveMsanPotsFreeEntity.getLic());</span>
+<span class="fc" id="L148">			cabinet.setIdMsan(retrieveMsanPotsFreeEntity.getIdMsan());</span>
+
+<span class="fc" id="L150">			cancelResourceEntity.setCabinet(cabinet);</span>
+<span class="fc" id="L151">			cancelResourceEntity.setOperationService(getOperationService(retrieveMsanPotsFreeEntity));</span>
+<span class="fc" id="L152">	}</span>
+	
+
+	/**
+	 * Metodo responsavel por obter a velocidade informada no request
+	 * @param entity
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	private String getDownloadSpeed(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc" id="L162">		CustomerFacingService customerFacingService = getCustomerFacingService(entity, &quot;BROADBAND&quot;, &quot;Downstream&quot;);</span>
+<span class="fc" id="L163">		return customerFacingService.getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0).getValue();</span>
+	}
+
+	private CancelResourceEntity getCancelInternalResourceEntity(RetrievePathEntity path, RetrieveMsanPotsEntity retrieveMsanPotsEntity) throws OSSBusinessException {
+<span class="fc" id="L167">		CancelResourceEntity cancelEntity = new CancelResourceEntity();</span>
+<span class="fc" id="L168">		cancelEntity.setCircPathInstId(String.valueOf(path.getCircPathInstId()));</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">		if(null != retrieveMsanPotsEntity.getId()){</span>
+<span class="fc" id="L170">			cancelEntity.setIdConexoesPotsMsan(retrieveMsanPotsEntity.getId().toString());</span>
+		}
+<span class="fc" id="L172">		return cancelEntity;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationResourceController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">ReservationResourceController.java</span></div><h1>ReservationResourceController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.ReserveResourceEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrievePathEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.BandwidthName;
+import com.tlf.oss.resourceinventory.granite.core.enums.CustomerOrderType;
+import com.tlf.oss.resourceinventory.granite.core.enums.Operation;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.mapper.impl.ReserveResourceMapper;
+import com.tlf.oss.resourceinventory.granite.core.repository.ReserveResourceDao;
+import com.tlf.oss.resourceinventory.granite.core.service.PathService;
+import com.tlf.oss.resourceinventory.granite.core.utils.RIEntityGraniteUtils;
+import com.tlf.oss.resourceinventory.granite.core.validation.Reserve;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.CustomerOrder;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L28">public class ReservationResourceController extends ValidatorEntity implements Serializable {</span>
+
+	private static final long serialVersionUID = -1008629764974608075L;
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	public ReserveResourceDao rdao;
+
+	@Inject
+	private PathService pathService;
+
+	@Inject
+	private ReservationResourceGponController reserveResourceGponController;
+
+	@Inject
+	private ReservationResourceMetallicController reserveResourceMetallicController;
+
+	@Inject
+	private ReserveResourceMapper mapper;
+
+	public ResourceInventoryEntity reserveResource(@Reserve ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L52">		ReserveResourceEntity reserveResourceEntity = null;</span>
+
+<span class="fc" id="L54">		Optional&lt;CustomerOrder&gt; customerOrder = Optional.ofNullable(entity.getCustomerOrder());</span>
+
+		// Verifica se é venda de oferta ou mudanca de oferta 
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">		if (!customerOrder.isPresent() ||</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">			validateCustomerOrderType(customerOrder.get().getCustomerOrderType())) {</span>
+
+    		// Executa o Fluxo de uma nova reserva
+<span class="fc" id="L61">			reserveResourceEntity = reserve(entity);</span>
+<span class="pc bpc" id="L62" title="5 of 6 branches missed.">		} else if (customerOrder.isPresent() || isChangeOffer(customerOrder.get()) || isOfferEdition(customerOrder.get())) {</span>
+
+			// Executa o Fluxo de modificação
+<span class="fc" id="L65">			reserveResourceEntity = reserveOfferEditionMetallicController(entity);</span>
+		}
+
+<span class="fc" id="L68">		return updateEntity(reserveResourceEntity, entity);</span>
+	}
+
+	private ResourceInventoryEntity updateEntity(ReserveResourceEntity reserveResourceEntity,ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">		if (!isGpon(entity)) {</span>
+<span class="fc" id="L73">			return mapper.parseGetPhysicalReserveResource(reserveResourceEntity, entity);</span>
+		}
+
+<span class="nc" id="L76">		return entity;</span>
+	}
+
+	private ReserveResourceEntity getReserveResourceEntity(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="nc" id="L80">		ReserveResourceEntity reserveEntity = new ReserveResourceEntity();</span>
+
+<span class="nc" id="L82">		reserveEntity.setCnl(entity.getAddress().getCnl());</span>
+<span class="nc" id="L83">		reserveEntity.setTelephonicArea(entity.getAddress().getTelephonicArea());</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">		reserveEntity.setLocker(entity.getCabinet() != null ? entity.getCabinet().getName() : &quot;&quot;);</span>
+<span class="nc" id="L85">		reserveEntity.setTerminal(getNetworkOwnerID(entity));</span>
+<span class="nc" id="L86">		reserveEntity.setSpeed(getDownloadSpeed(entity));</span>
+<span class="nc" id="L87">		reserveEntity.setUnit(&quot;&quot;);</span>
+<span class="nc" id="L88">		reserveEntity.setProtocol(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+
+<span class="nc" id="L90">		return reserveEntity;</span>
+	}
+
+	private String getDownloadSpeed(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="nc" id="L95">		Optional&lt;CustomerFacingService&gt; broadband = RIEntityGraniteUtils.retrieveBroadband(entity);</span>
+
+<span class="nc bnc" id="L97" title="All 2 branches missed.">		if (broadband.isPresent()) {</span>
+<span class="nc" id="L98">			CustomerFacingService customerFacingService = getCustomerFacingService(entity, &quot;BROADBAND&quot;, &quot;Downstream&quot;);</span>
+
+<span class="nc" id="L100">			return customerFacingService.getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0).getValue();</span>
+		} else {
+<span class="nc" id="L102">			return BandwidthName._4M.getVelocity();</span>
+		}
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public ReserveResourceEntity reserve(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L109">		ReserveResourceEntity reserveResource = null;</span>
+<span class="fc" id="L110">		Operation operation = Operation.SALE_OFFER;</span>
+<span class="fc" id="L111">		boolean isGpon = isGpon(entity);</span>
+<span class="fc" id="L112">		RetrievePathEntity path = retrievePath(entity, isGpon);</span>
+
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">		if (null != path) {</span>
+<span class="nc" id="L115">    		StatusPathType pathStatus = path.getStatus();</span>
+<span class="nc" id="L116">    		logger.log(OSSLogger.INFO, &quot;Path status: &quot;.concat(pathStatus.getValue()));</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    		logger.log(OSSLogger.INFO, &quot;Resource status: &quot;.concat(path.getResourceStatus() != null ? path.getResourceStatus().getValue() : &quot;&quot;));</span>
+
+    		// verifica se a reserva já existe para este cliente
+<span class="nc bnc" id="L120" title="All 2 branches missed.">    		if (StatusPathType.RESERVED.equals(pathStatus)) {</span>
+
+<span class="nc" id="L122">    			logger.log(OSSLogger.INFO, &quot;Reserva encontrada para o terminal [&quot; + getNetworkOwnerID(entity) + &quot;]&quot;);</span>
+
+<span class="nc" id="L124">    			ReserveResourceEntity reserveResourceEntity = getReserveResourceEntity(entity);</span>
+
+<span class="nc" id="L126">    			reserveResourceEntity.setListCode(path.getPort());</span>
+<span class="nc" id="L127">    			reserveResourceEntity.setCode(&quot;0&quot;);</span>
+
+<span class="nc" id="L129">    			return reserveResourceEntity;</span>
+<span class="nc bnc" id="L130" title="All 4 branches missed.">    		} else if (StatusPathType.ACTIVE.equals(pathStatus) &amp;&amp; StatusPathType.ACTIVE.equals(path.getResourceStatus())) {</span>
+<span class="nc" id="L131">    			operation = Operation.OFFER_EDITION;</span>
+    		}
+		}
+
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">		logger.log(OSSLogger.INFO, &quot;Efetuando uma [&quot; + operation.getValue() + &quot;] para um terminal [&quot; + (isGpon ? &quot;Fibra&quot; : &quot;Metálico&quot;) + &quot;]&quot;);</span>
+
+		// Verifica a tecnologia (GPON ou METALICO)
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">		if (isGpon) {</span>
+<span class="nc" id="L139">			reserveResourceGponController(entity, operation);</span>
+		} else {
+<span class="fc" id="L141">			reserveResource = reserveResourceMetallic(entity, operation);</span>
+		}
+
+<span class="fc" id="L144">		return reserveResource;</span>
+	}
+
+	private RetrievePathEntity retrievePath(ResourceInventoryEntity entity, boolean isGpon) throws OSSBusinessException {
+<span class="fc" id="L148">		List&lt;RetrievePathEntity&gt; paths = retrievePaths(entity, isGpon);</span>
+
+		// Caso retorne mais de um Path, retorna apenas o primeiro
+<span class="pc bpc" id="L151" title="2 of 4 branches missed.">		if (null != paths &amp;&amp; !paths.isEmpty()) {</span>
+<span class="nc" id="L152">			return paths.stream().findFirst().orElse(null);</span>
+		}
+
+<span class="fc" id="L155">		return null;</span>
+	}
+
+	private List&lt;RetrievePathEntity&gt; retrievePaths(ResourceInventoryEntity entity, boolean isGpon) throws OSSBusinessException {
+		try {
+<span class="fc" id="L160">			return pathService.getPaths(entity, isGpon);</span>
+<span class="nc" id="L161">		} catch (Exception oexc) {</span>
+<span class="nc" id="L162">			return null;</span>
+		}
+	}
+
+	private boolean isChangeOffer(CustomerOrder customerOrder) {
+<span class="nc" id="L167">		return CustomerOrderType.CHANGE_OFFER.getValue().equalsIgnoreCase(customerOrder.getCustomerOrderType());</span>
+	}
+
+	private boolean isOfferEdition(CustomerOrder customerOrder) {
+<span class="nc" id="L171">		return Operation.OFFER_EDITION.getValue().equalsIgnoreCase(customerOrder.getCustomerOrderType());</span>
+	}
+
+	private void reserveResourceGponController(ResourceInventoryEntity entity, Operation operation) throws OSSBusinessException {
+<span class="nc" id="L175">		reserveResourceGponController.reserveResource(entity, operation);</span>
+<span class="nc" id="L176">	}</span>
+
+	private ReserveResourceEntity reserveResourceMetallic(ResourceInventoryEntity entity, Operation operation) throws OSSBusinessException {
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">		if (Operation.OFFER_EDITION.equals(operation)) {</span>
+<span class="nc" id="L180">			return reserveOfferEditionMetallicController(entity);</span>
+		} else {
+<span class="fc" id="L182">			return reserveResourceMetallicController(entity);</span>
+		}
+	}
+
+	private ReserveResourceEntity reserveOfferEditionMetallicController(ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+<span class="fc" id="L188">		return reserveResourceMetallicController.reserveOfferEdition(entity);</span>
+	}
+
+	private ReserveResourceEntity reserveResourceMetallicController(ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+<span class="fc" id="L193">		return reserveResourceMetallicController.validateReserve(entity);</span>
+	}
+
+	private boolean validateCustomerOrderType(String customerOrderType) {
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">		logger.log(OSSLogger.INFO, &quot;CustomerOrderType: &quot;.concat(customerOrderType != null ? customerOrderType : &quot;&quot;));</span>
+
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">		return null == customerOrderType ||</span>
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">				&quot;&quot;.equals(customerOrderType.trim()) ||</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">			   customerOrderType.equals(Operation.CHANGE_ADDRESS.getValue()) ||</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">			   customerOrderType.equals(Operation.SALE_OFFER.getValue());</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

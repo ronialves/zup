@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeallocateGponController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">DeallocateGponController.java</span></div><h1>DeallocateGponController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.CancelChangeSpeedGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.DeallocateInternalResourceGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ResourceStatusGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.ServiceCodeEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.UpdateResourcesServiceAmoEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.Message;
+import com.tlf.oss.resourceinventory.granite.core.enums.Operation;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.repository.CancelChangeSpeedGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.DeallocateInternalResourceGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.ResourceStatusGponDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.RetrieveServiceCodeDao;
+import com.tlf.oss.resourceinventory.granite.core.repository.UpdateResourcesServiceAmoDao;
+import com.tlf.oss.resourceinventory.granite.core.utils.Constants;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L27">public class DeallocateGponController {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private DeallocateInternalResourceGponDao deallocateGponDao;
+
+	@Inject
+	private CancelChangeSpeedGponDao cancelChangeSpeedGponDao; 
+
+	@Inject 
+	private UpdateResourcesServiceAmoDao updateResourcesServiceAmoDao;
+
+	@Inject
+	private ResourceStatusGponDao resourceStatusGponDao;
+	
+	@Inject
+	private RetrieveServiceCodeDao retrieveServiceCodeDao;
+
+<span class="fc" id="L47">	private OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(Code.RIGRANITE_003.getValue(), &quot;&quot;,Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);</span>
+
+	public ResourceInventoryEntity doExecution(ResourceInventoryEntity entity, final Operation operation) throws OSSBusinessException {
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">		if (Operation.OFFER_EDITION.equals(operation)) {</span>
+
+<span class="fc" id="L53">			UpdateResourcesServiceAmoEntity updateResourcesServiceAmoEntity = new UpdateResourcesServiceAmoEntity();</span>
+
+<span class="fc" id="L55">			final ServiceCodeEntity serviceCodeEntity = retrieveServiceCodeDao.retrieveServiceCode(entity);</span>
+
+<span class="fc" id="L57">			updateResourcesServiceAmoEntity.setStatus(entity.getResourceFacingService().getStatus());</span>
+<span class="fc" id="L58">			updateResourcesServiceAmoEntity.setServiceCode(serviceCodeEntity.getServiceCode());</span>
+<span class="fc" id="L59">			updateResourcesServiceAmoEntity.setAccessDesignator(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L60">			updateResourcesServiceAmoEntity = updateResourcesServiceAmoDao.updateResourcesServiceAmo(updateResourcesServiceAmoEntity);</span>
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">			if (Code.SUCCESS.getValue().equals(updateResourcesServiceAmoEntity.getCode())) {</span>
+<span class="fc" id="L63">				final ResourceStatusGponEntity entityGponStatus = resourceStatusGponDao.updateStatus(getResourceStatusGponEntity(entity));</span>
+
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">				if (!Code.SUCCESS.getValue().equals(entityGponStatus.getResult().getCode())) {</span>
+<span class="nc" id="L66">					throw getFalloutException(entityGponStatus.getResult().getCode(), entityGponStatus.getResult().getDescription(), ResourceStatusGponEntity.PKG_PATH_PRC_ALTER_STATUS_GPON);</span>
+				}
+
+<span class="fc" id="L69">				logger.log(OSSLogger.INFO, &quot;Executed cancel&quot;);</span>
+
+<span class="fc" id="L71">				return entity;</span>
+			} else {
+<span class="fc" id="L73">				throw getFalloutException(updateResourcesServiceAmoEntity.getCode(), updateResourcesServiceAmoEntity.getDescription(), UpdateResourcesServiceAmoEntity.UPDATE_RESOURCE_AMO_PROC);</span>
+			}
+
+		} else {
+<span class="fc" id="L77">			final DeallocateInternalResourceGponEntity deallocateEntity = deallocateResource(entity);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">			if (Message.SUCCESS.getValue().equalsIgnoreCase(deallocateEntity.getCode())) {</span>
+<span class="fc" id="L79">				logger.log(OSSLogger.INFO, &quot;Executed deallocate&quot;);</span>
+<span class="fc" id="L80">				return entity;</span>
+			} else {
+<span class="fc" id="L82">				throw getFalloutException(deallocateEntity.getCode(), deallocateEntity.getDescription(), DeallocateInternalResourceGponEntity.PRC_NAME);</span>
+			}
+		}
+	}
+
+	@Transactional(rollbackOn=Exception.class)
+	public DeallocateInternalResourceGponEntity deallocateResource(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L90">		DeallocateInternalResourceGponEntity deallocateResourceGpon = new DeallocateInternalResourceGponEntity();</span>
+		
+<span class="pc bpc" id="L92" title="1 of 4 branches missed.">		if(entity.getResourceFacingService() != null &amp;&amp; entity.getResourceFacingService().getServiceId() != null){</span>
+<span class="fc" id="L93">			deallocateResourceGpon.setTerminal(entity.getResourceFacingService().getServiceId());</span>
+		}
+		else{
+<span class="fc" id="L96">			throw new OSSBusinessException(&quot;Erro ao validar o objeto DeallocateResourceGponEntity&quot;, &quot;RIGRANITE-001&quot;,</span>
+				&quot;O valor do campo ServiceID eh nulo&quot;);
+		}
+<span class="fc" id="L99">		deallocateResourceGpon = deallocateGponDao.getDeallocateInternalResource(deallocateResourceGpon);</span>
+
+<span class="fc" id="L101">		return deallocateResourceGpon;</span>
+	}
+	
+	@Transactional(rollbackOn=Exception.class)
+	public CancelChangeSpeedGponEntity cancelChangeSpeedGpon(ResourceInventoryEntity entity) throws OSSBusinessException{
+		
+<span class="nc" id="L107">		CancelChangeSpeedGponEntity cancelChangeSpeedGpon = new CancelChangeSpeedGponEntity();</span>
+<span class="nc" id="L108">		final ServiceCodeEntity serviceCodeEntity = retrieveServiceCodeDao.retrieveServiceCode(entity);</span>
+		
+<span class="nc bnc" id="L110" title="All 4 branches missed.">		if(entity.getResourceFacingService() != null &amp;&amp; entity.getResourceFacingService().getServiceId() != null){</span>
+<span class="nc" id="L111">			cancelChangeSpeedGpon = getCancelChangeSpeedGponEntity(entity, serviceCodeEntity);</span>
+		}
+		else{
+<span class="nc" id="L114">			throw new OSSBusinessException(&quot;Erro ao validar o objeto CancelChangeSpeedGponEntity&quot;, &quot;RIGRANITE-001&quot;,</span>
+				&quot;O valor do campo ServiceID eh nulo&quot;);
+		}
+		
+<span class="nc" id="L118">		cancelChangeSpeedGpon = cancelChangeSpeedGponDao.cancelResource(cancelChangeSpeedGpon);</span>
+<span class="nc" id="L119">		return cancelChangeSpeedGpon;</span>
+	}
+
+	public CancelChangeSpeedGponEntity getCancelChangeSpeedGponEntity(ResourceInventoryEntity entity, final ServiceCodeEntity serviceCodeEntity){
+<span class="nc" id="L123">		final CancelChangeSpeedGponEntity gponEntity = new CancelChangeSpeedGponEntity();</span>
+<span class="nc" id="L124">		gponEntity.setServiceCode(serviceCodeEntity.getServiceCode());</span>
+<span class="nc" id="L125">		gponEntity.setServiceId(entity.getResourceFacingService().getServiceId());</span>
+	
+<span class="nc" id="L127">		return gponEntity;</span>
+	}
+
+	private ResourceStatusGponEntity getResourceStatusGponEntity(final ResourceInventoryEntity entity) {
+<span class="fc" id="L131">		entity.getResourceFacingService().setStatus(StatusPathType.ACTIVE.getValue());</span>
+<span class="fc" id="L132">		final ResourceStatusGponEntity updateEntity = new ResourceStatusGponEntity();</span>
+<span class="fc" id="L133">		updateEntity.setTerminal(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L134">		updateEntity.setStatus(entity.getResourceFacingService().getStatus());</span>
+		
+<span class="fc" id="L136">		return updateEntity;</span>
+	}
+	
+	private OSSBusinessException getFalloutException(final String code, final String description, final String procName) {
+<span class="fc" id="L140">		this.falloutConfig.setOriginAPIDescription(String.format(Code.RIGRANITE_003.getDescription(), procName));</span>
+<span class="fc" id="L141">		this.falloutConfig.setErrorCode(code);</span>
+<span class="fc" id="L142">		this.falloutConfig.setErrorMessage(description);</span>
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">		this.falloutConfig.setDetailMessage(code.concat(&quot;;&quot;).concat(description != null ? description : &quot;&quot;));</span>
+<span class="fc" id="L144">		return OSSExceptionFactory.getOSSBusinessException(this.falloutConfig);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

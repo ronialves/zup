@@ -1,0 +1,4 @@
+com/tlf/oss/resourceinventory/radius/api/v1_0/RetrieveService.class
+com/tlf/oss/resourceinventory/radius/api/RestConfig.class
+com/tlf/oss/resourceinventory/radius/api/v1_0/DeallocateService.class
+com/tlf/oss/resourceinventory/radius/api/v1_0/AllocateService.class

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExceptionInfoEnum.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RadiusAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.radius.enums</a> &gt; <span class="el_source">ExceptionInfoEnum.java</span></div><h1>ExceptionInfoEnum.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.radius.enums;
+
+/**
+ * REC3635-1110 | REC3635-2042
+ * 
+ * @project Fusion
+ * @author 80629552
+ * @since 20190325
+ */
+
+<span class="nc" id="L11">public enum ExceptionInfoEnum {</span>
+	
+<span class="nc" id="L13">	RIRADIUS_001(&quot;RIRADIUS-001&quot;, &quot;Erro ao validar o objeto ResourceInventoryEntity&quot;, &quot;O valor do campo %s eh nulo&quot;),</span>
+<span class="nc" id="L14">	RIRADIUS_002(&quot;RIRADIUS-002&quot;, &quot;Erro de conexao&quot;, &quot;%s: %s&quot;),</span>
+<span class="nc" id="L15">	RIRADIUS_003(&quot;RIRADIUS-003&quot;, &quot;Erro ao executar Query %s&quot;, &quot;&quot;),</span>
+<span class="nc" id="L16">	RIRADIUS_004(&quot;RIRADIUS-004&quot;, &quot;Erro interno&quot;, &quot;%s&quot;),</span>
+<span class="nc" id="L17">	RIRADIUS_999(&quot;RIRADIUS-999&quot;, &quot;Erro nao mapeado&quot;, &quot;&quot;);</span>
+
+	final String code;
+	final String description;
+    final String message;
+	 
+<span class="nc" id="L23">	private ExceptionInfoEnum(String code, String description, String message) {</span>
+<span class="nc" id="L24">		this.code = code;</span>
+<span class="nc" id="L25">		this.description = description;</span>
+<span class="nc" id="L26">		this.message = message;</span>
+<span class="nc" id="L27">	}</span>
+
+	public String getCode(){
+<span class="nc" id="L30">		return code;</span>
+	}
+	
+	public String getDescription(){
+<span class="nc" id="L34">		return description;</span>
+	}
+	
+	public String getMessage(){
+<span class="nc" id="L38">		return message;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

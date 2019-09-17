@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InstallGponController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">InstallGponController.java</span></div><h1>InstallGponController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.granite.core.entity.ResourceStatusGponEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.Code;
+import com.tlf.oss.resourceinventory.granite.core.enums.Message;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.repository.ResourceStatusGponDao;
+import com.tlf.oss.resourceinventory.granite.core.utils.Constants;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L18">public class InstallGponController extends ValidatorEntity{</span>
+
+	@Inject
+	private ResourceStatusGponDao resourceStatusGponDao;
+	
+<span class="fc" id="L23">	private OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(Code.RIGRANITE_003.getValue(), String.format(Code.RIGRANITE_003.getDescription(), ResourceStatusGponEntity.PKG_PATH_PRC_ALTER_STATUS_GPON), Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);</span>
+	
+	public ResourceInventoryEntity doExecution(ResourceInventoryEntity entity) throws OSSBusinessException{
+		
+<span class="fc" id="L27">	ResourceStatusGponEntity statusEntity = updateStatus(entity);</span>
+		
+<span class="fc" id="L29">		return getResourceInventoryEntity(statusEntity, entity);</span>
+	}
+	
+	@Transactional(rollbackOn=Exception.class)
+	public ResourceStatusGponEntity updateStatus(ResourceInventoryEntity entity) throws OSSBusinessException {
+				
+<span class="fc" id="L35">		ResourceStatusGponEntity resourceStatusGponEntity = this.getResourceStatusGponEntity(entity);</span>
+<span class="fc" id="L36">		return resourceStatusGponDao.updateStatus(resourceStatusGponEntity);		</span>
+	}
+	
+	private ResourceStatusGponEntity getResourceStatusGponEntity(ResourceInventoryEntity entity) {
+<span class="fc" id="L40">		ResourceStatusGponEntity updateEntity = new ResourceStatusGponEntity();</span>
+<span class="fc" id="L41">		updateEntity.setTerminal(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L42">		updateEntity.setStatus(StatusPathType.ACTIVE.getValue());</span>
+<span class="fc" id="L43">		return updateEntity;</span>
+	}
+	
+	private ResourceInventoryEntity getResourceInventoryEntity(ResourceStatusGponEntity entityStatus, ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">		if (Message.SUCCESS.getValue().equalsIgnoreCase(entityStatus.getResult().getCode()))</span>
+<span class="fc" id="L48">			return entity;</span>
+		else{
+<span class="fc" id="L50">			this.falloutConfig.setErrorCode(entityStatus.getResult().getCode());</span>
+<span class="fc" id="L51">			this.falloutConfig.setErrorMessage(entityStatus.getResult().getDescription());</span>
+<span class="fc" id="L52">			this.falloutConfig.setDetailMessage(entityStatus.getResult().getCode().concat(&quot;;&quot;).concat(entityStatus.getResult().getDescription()));</span>
+<span class="fc" id="L53">			throw OSSExceptionFactory.getOSSBusinessException(this.falloutConfig);</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

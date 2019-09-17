@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrieveController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CPEAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.cpe.core</a> &gt; <span class="el_source">RetrieveController.java</span></div><h1>RetrieveController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.cpe.core;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import org.apache.commons.collections.CollectionUtils;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CaracteristicaDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.CatalogoInfo;
+import com.tlf.oss.resourceinventory.cpe.entity.ClientInformation;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoServico;
+import com.tlf.oss.resourceinventory.cpe.enums.TipoRfs;
+import com.tlf.oss.resourceinventory.cpe.repository.RetrieveRepository;
+import com.tlf.oss.resourceinventory.cpe.utils.CpeConstants;
+import com.tlf.oss.resourceinventory.cpe.utils.EntityExtractor;
+import com.tlf.oss.resourceinventory.cpe.validation.Retrieve;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L29">public class RetrieveController {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private RetrieveRepository retrieveRepository;
+
+	public ResourceInventoryEntity retrieve(@Retrieve final ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">		if (isRetrieveClientInformation(entity)) {</span>
+<span class="fc" id="L41">			logger.log(OSSLogger.INFO, &quot;Buscando as informações de cliente no CPE...&quot;);</span>
+
+			EstadoServico estado;
+<span class="fc" id="L44">			String status = EntityExtractor.extractStateOfResource(entity);</span>
+
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">			if (null != status &amp;&amp; status.equalsIgnoreCase(CpeConstants.STATE_ACTIVE)) {</span>
+<span class="fc" id="L47">				estado = EstadoServico.ATIVADO;</span>
+			} else {
+<span class="fc" id="L49">				estado = EstadoServico.EM_APROVISIONAMENTO;</span>
+			}
+
+<span class="fc" id="L52">			List&lt;ClientInformation&gt; result = retrieveRepository.retrieveClientInformation(entity, estado);</span>
+
+<span class="fc" id="L54">			return mapClientInformation(entity, result);</span>
+
+		} else {
+<span class="fc" id="L57">			logger.log(OSSLogger.INFO, &quot;Buscando as informações de catálogo no CPE...&quot;);</span>
+<span class="fc" id="L58">			List&lt;CatalogoInfo&gt; result = retrieveRepository.retrieveCatalog();</span>
+<span class="fc" id="L59">			return mapCatalogoInfo(entity, result);</span>
+		}
+	}
+
+	public boolean isRetrieveClientInformation(ResourceInventoryEntity entity) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		if (null == entity.getResourceOrder())</span>
+<span class="fc" id="L65">			return false;</span>
+<span class="fc" id="L66">		return true;</span>
+	}
+
+	private ResourceInventoryEntity mapCatalogoInfo(final ResourceInventoryEntity entity,
+			final List&lt;CatalogoInfo&gt; catalogos) {
+
+<span class="fc" id="L72">		logger.log(OSSLogger.INFO, &quot;Mapeando os registros do banco na entidade ResourceInventoryEntity...&quot;);</span>
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">		if (entity.getResourceFacingService() == null) {</span>
+<span class="fc" id="L75">			entity.setResourceFacingService(new ResourceFacingService());</span>
+		}
+
+<span class="fc" id="L78">		catalogos.forEach(catalog -&gt; {</span>
+
+<span class="fc bfc" id="L80" title="All 4 branches covered.">			if (catalog.getModelo() != null &amp;&amp; !catalog.getModelo().isEmpty()) {</span>
+<span class="fc" id="L81">				entity.getResourceFacingService().getServiceDescribedBy()</span>
+<span class="fc" id="L82">						.add(createServiceDescribedBy(CpeConstants.MODELO, catalog.getModelo()));</span>
+			}
+
+<span class="fc bfc" id="L85" title="All 4 branches covered.">			if (catalog.getFabricante() != null &amp;&amp; !catalog.getFabricante().isEmpty()) {</span>
+<span class="fc" id="L86">				entity.getResourceFacingService().getServiceDescribedBy()</span>
+<span class="fc" id="L87">						.add(createServiceDescribedBy(CpeConstants.FABRICANTE, catalog.getFabricante()));</span>
+			}
+
+<span class="fc bfc" id="L90" title="All 4 branches covered.">			if (catalog.getRede() != null &amp;&amp; !catalog.getRede().isEmpty()) {</span>
+<span class="fc" id="L91">				entity.getResourceFacingService().getServiceDescribedBy()</span>
+<span class="fc" id="L92">						.add(createServiceDescribedBy(CpeConstants.REDE, catalog.getRede()));</span>
+			}
+
+<span class="fc bfc" id="L95" title="All 4 branches covered.">			if (catalog.getTipoDispositivo() != null &amp;&amp; !catalog.getTipoDispositivo().isEmpty()) {</span>
+<span class="fc" id="L96">				entity.getResourceFacingService().getServiceDescribedBy()</span>
+<span class="fc" id="L97">						.add(createServiceDescribedBy(CpeConstants.TIPO_DISPOSITIVO, catalog.getTipoDispositivo()));</span>
+			}
+
+<span class="fc bfc" id="L100" title="All 4 branches covered.">			if (catalog.getDescricao() != null &amp;&amp; !catalog.getDescricao().isEmpty()) {</span>
+<span class="fc" id="L101">				entity.getResourceFacingService().getServiceDescribedBy()</span>
+<span class="fc" id="L102">						.add(createServiceDescribedBy(CpeConstants.DESCRICAO, catalog.getDescricao()));</span>
+			}
+
+<span class="fc bfc" id="L105" title="All 4 branches covered.">			if (catalog.getTipoRFS() != null &amp;&amp; !catalog.getTipoRFS().isEmpty()) {</span>
+<span class="fc" id="L106">				entity.getResourceFacingService().getServiceDescribedBy()</span>
+<span class="fc" id="L107">						.add(createServiceDescribedBy(CpeConstants.TIPO_RFS, catalog.getTipoRFS()));</span>
+			}
+
+<span class="fc bfc" id="L110" title="All 4 branches covered.">			if (catalog.getNomeCategoria() != null &amp;&amp; !catalog.getNomeCategoria().isEmpty()) {</span>
+<span class="fc" id="L111">				entity.getResourceFacingService().getServiceDescribedBy()</span>
+<span class="fc" id="L112">						.add(createServiceDescribedBy(CpeConstants.NOME_CATEGORIA, catalog.getNomeCategoria()));</span>
+			}
+
+<span class="fc bfc" id="L115" title="All 4 branches covered.">			if (catalog.getNomeCaracteristica() != null &amp;&amp; !catalog.getNomeCaracteristica().isEmpty()) {</span>
+<span class="fc" id="L116">				entity.getResourceFacingService().getServiceDescribedBy().add(</span>
+<span class="fc" id="L117">						createServiceDescribedBy(CpeConstants.NOME_CARACTERISTICA, catalog.getNomeCaracteristica()));</span>
+			}
+
+<span class="fc bfc" id="L120" title="All 4 branches covered.">			if (catalog.getValor() != null &amp;&amp; !catalog.getValor().isEmpty()) {</span>
+<span class="fc" id="L121">				entity.getResourceFacingService().getServiceDescribedBy()</span>
+<span class="fc" id="L122">						.add(createServiceDescribedBy(CpeConstants.VALOR, catalog.getValor()));</span>
+			}
+<span class="fc" id="L124">		});</span>
+
+<span class="fc" id="L126">		return entity;</span>
+	}
+
+	private ResourceInventoryEntity mapClientInformation(final ResourceInventoryEntity entity,
+			final List&lt;ClientInformation&gt; clientInformations) {
+<span class="fc" id="L131">		logger.log(OSSLogger.INFO, &quot;Mapeando os registros do banco na entidade ResourceInventoryEntity...&quot;);</span>
+
+<span class="fc bfc" id="L133" title="All 2 branches covered.">		if (!clientInformations.isEmpty()) {</span>
+<span class="fc" id="L134">			List&lt;CustomerFacingService&gt; cfsList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L136">			List&lt;ClientInformation&gt; voIpInfo = clientInformations.stream()</span>
+<span class="fc" id="L137">					.filter(info -&gt; TipoRfs.VOIP.getRoiName().equals(info.getTipoRfs())).collect(Collectors.toList());</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">			if (CollectionUtils.isNotEmpty(voIpInfo)) {</span>
+<span class="fc" id="L139">				clientInformations.removeIf(info -&gt; TipoRfs.VOIP.getRoiName().equals(info.getTipoRfs()));</span>
+<span class="fc" id="L140">				clientInformations.add(voIpInfo.get(0));</span>
+			}
+
+<span class="fc" id="L143">			clientInformations.forEach(clientInfo -&gt; {</span>
+<span class="fc" id="L144">				CustomerFacingService cfs = new CustomerFacingService();</span>
+<span class="fc" id="L145">				ResourceFacingService rfs = new ResourceFacingService();</span>
+<span class="fc" id="L146">				List&lt;ResourceFacingService&gt; rfsList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L147">				List&lt;ServiceDescribedBy&gt; rfsSdbList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L149">				cfs.setServiceId(clientInfo.getServiceId());</span>
+
+<span class="fc" id="L151">				rfs.setStatus(clientInfo.getStatus());</span>
+<span class="fc" id="L152">				rfs.setCategory(clientInfo.getTipoRfs());</span>
+<span class="fc" id="L153">				rfs.setServiceDescribedBy(rfsSdbList);</span>
+<span class="fc" id="L154">				rfsList.add(rfs);</span>
+<span class="fc" id="L155">				cfs.setResourceFacingService(rfsList);</span>
+
+				String equipmentType;
+				String categoria;
+
+<span class="fc bfc" id="L160" title="All 2 branches covered.">				if (EstadoServico.ATIVADO.getValue().equalsIgnoreCase(clientInfo.getStatus())) {</span>
+<span class="fc" id="L161">					categoria = clientInfo.getCategoriaCorrente();</span>
+				} else {
+<span class="fc" id="L163">					categoria = clientInfo.getCategoriaEsperada();</span>
+				}
+
+<span class="fc bfc" id="L166" title="All 2 branches covered.">				if (!TipoRfs.VOIP.getRoiName().equalsIgnoreCase(clientInfo.getTipoRfs())) {</span>
+<span class="fc" id="L167">					equipmentType = CpeConstants.EQUIPMENT_TYPE;</span>
+				} else {
+<span class="fc" id="L169">					String voiceTotalPorts = &quot;2&quot;;</span>
+
+<span class="fc" id="L171">					equipmentType = CpeConstants.VOICE_EQUIPMENT_TYPE;</span>
+
+<span class="pc bpc" id="L173" title="2 of 4 branches missed.">					if (null != categoria &amp;&amp; categoria.contains(CpeConstants.ATA)) {</span>
+<span class="fc" id="L174">						voiceTotalPorts = categoria.replaceAll(&quot;[^0-9]&quot;, &quot;&quot;);</span>
+					}
+
+<span class="fc bfc" id="L177" title="All 2 branches covered.">					for (ClientInformation voip : voIpInfo) {</span>
+<span class="fc" id="L178">						rfsSdbList</span>
+<span class="fc" id="L179">								.add(createServiceDescribedBy(CpeConstants.TELEPHONE_NUMBER, voip.getNumeroTelefone()));</span>
+<span class="fc" id="L180">						rfsSdbList.add(createServiceDescribedBy(CpeConstants.ID_FXS, voip.getIdFxs()));</span>
+<span class="fc" id="L181">					}</span>
+
+<span class="fc" id="L183">					rfsSdbList.add(createServiceDescribedBy(CpeConstants.VOICE_TOTAL_PORTS, voiceTotalPorts));</span>
+<span class="fc" id="L184">					rfsSdbList.add(</span>
+<span class="fc" id="L185">							createServiceDescribedBy(CpeConstants.VOICE_USED_PORTS, String.valueOf(voIpInfo.size())));</span>
+				}
+
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">				if (isNotEmpty(clientInfo.getNumeroSerialGpon())) {</span>
+<span class="fc" id="L189">					rfsSdbList.add(createServiceDescribedBy(CpeConstants.GPON_SERIAL_NUMBER,</span>
+<span class="fc" id="L190">							clientInfo.getNumeroSerialGpon()));</span>
+				}
+
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">				if (isNotEmpty(clientInfo.getNumeroSerial())) {</span>
+<span class="fc" id="L194">					rfsSdbList.add(createServiceDescribedBy(CpeConstants.SERIAL_NUMBER, clientInfo.getNumeroSerial()));</span>
+				}
+
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">				if (isNotEmpty(clientInfo.getMacAddress())) {</span>
+<span class="fc" id="L198">					rfsSdbList.add(createServiceDescribedBy(CpeConstants.MACADDRESS, clientInfo.getMacAddress()));</span>
+				}
+
+<span class="fc" id="L201">				rfsSdbList.add(createServiceDescribedBy(equipmentType, categoria));</span>
+
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">				if (isNotEmpty(clientInfo.getModel())) {</span>
+<span class="fc" id="L204">					rfsSdbList.add(createServiceDescribedBy(CpeConstants.EQUIPMENT_MODEL, clientInfo.getModel()));</span>
+				}
+
+<span class="fc bfc" id="L207" title="All 2 branches covered.">				if (isNotEmpty(clientInfo.getVendor())) {</span>
+<span class="fc" id="L208">					rfsSdbList.add(createServiceDescribedBy(CpeConstants.EQUIPMENT_VENDOR, clientInfo.getVendor()));</span>
+				}
+
+<span class="fc bfc" id="L211" title="All 2 branches covered.">				if (TipoRfs.ACCESS.getRoiName().equalsIgnoreCase(clientInfo.getTipoRfs())) {</span>
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">					rfsSdbList.add(createServiceDescribedBy(CpeConstants.HPNA,</span>
+<span class="pc bpc" id="L213" title="1 of 2 branches missed.">							null != categoria &amp;&amp; categoria.contains(CpeConstants.HPNA) ? &quot;true&quot; : &quot;false&quot;));</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">				} else if (TipoRfs.STB.getRoiName().equalsIgnoreCase(clientInfo.getTipoRfs())) {</span>
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">					rfsSdbList.add(createServiceDescribedBy(CpeConstants.DVR,</span>
+<span class="pc bpc" id="L216" title="1 of 2 branches missed.">							null != categoria &amp;&amp; categoria.contains(CpeConstants.DVR) ? &quot;true&quot; : &quot;false&quot;));</span>
+
+<span class="fc" id="L218">					Optional&lt;CaracteristicaDispositivo&gt; wifi = Optional.empty();</span>
+
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">					if (null != clientInfo.getCaracteristicas()) {</span>
+						
+<span class="fc" id="L222">						wifi = clientInfo.getCaracteristicas()</span>
+<span class="fc" id="L223">								.stream()</span>
+<span class="pc bnc" id="L224" title="All 4 branches missed.">								.filter(caracteristica -&gt; CpeConstants.WIFI.equalsIgnoreCase(caracteristica.getNome()) &amp;&amp; CpeConstants.SUPORTA.equalsIgnoreCase(caracteristica.getValor()))</span>
+<span class="fc" id="L225">								.findAny();</span>
+					}
+
+<span class="pc bpc" id="L228" title="1 of 2 branches missed.">					rfsSdbList.add(createServiceDescribedBy(CpeConstants.WIFI, wifi.isPresent() ? &quot;true&quot; : &quot;false&quot;));</span>
+
+				}
+
+<span class="fc" id="L232">				cfsList.add(cfs);</span>
+<span class="fc" id="L233">			});</span>
+
+<span class="fc" id="L235">			entity.setCustomerFacingService(cfsList);</span>
+		}
+
+<span class="fc" id="L238">		return entity;</span>
+	}
+
+	private ServiceDescribedBy createServiceDescribedBy(String name, String value) {
+<span class="fc" id="L242">		ServiceDescribedBy sdb = new ServiceDescribedBy();</span>
+
+<span class="fc" id="L244">		sdb.getServiceSpecCharDescribes().add(new ServiceSpecCharDescribes());</span>
+<span class="fc" id="L245">		sdb.getServiceSpecCharDescribes().get(0).setValue(value);</span>
+<span class="fc" id="L246">		sdb.setName(name);</span>
+
+<span class="fc" id="L248">		return sdb;</span>
+	}
+
+	private boolean isEmpty(String value) {
+<span class="pc bpc" id="L252" title="1 of 4 branches missed.">		return null == value || value.isEmpty();</span>
+	}
+
+	private boolean isNotEmpty(String value) {
+<span class="fc bfc" id="L256" title="All 2 branches covered.">		return !isEmpty(value);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

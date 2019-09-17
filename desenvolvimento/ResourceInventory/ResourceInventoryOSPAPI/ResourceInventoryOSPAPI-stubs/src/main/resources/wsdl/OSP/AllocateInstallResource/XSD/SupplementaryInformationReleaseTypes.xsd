@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:si="http://www.cpqd.com.br/etics/SlotInfoTypes"
+	xmlns:rs="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes"
+	xmlns:ro="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes"
+	xmlns:ce="http://www.cpqd.com.br/etics/customelements"
+	elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/SupplementaryInformationReleaseTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes"
+		schemaLocation="ResourceOrderInfoTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes"
+		schemaLocation="ResourceServiceInfoTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/customelements"
+		schemaLocation="CustomElements.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/SlotInfoTypes"
+		schemaLocation="SlotInfoTypes.xsd"></xs:import>
+	<xs:complexType name="SupplementaryInformationIn">
+		<xs:sequence>
+			<!-- Dados do Número de Serviço -->
+			<xs:element minOccurs="0" name="resourceService" type="rs:ResourceService"></xs:element>
+			<!-- Documento -->
+			<xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo"></xs:element>
+			<!-- Retirada de Extensões -->
+			<xs:element default="1" minOccurs="0" name="extensionsRemoval">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:pattern value="0|1"></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Lista de campos de tipo chave-valor -->
+			<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SupplementaryInformationOut">
+		<xs:sequence>
+			<!-- Documento -->
+			<xs:element minOccurs="0" name="resourceOrderInfo" type="ro:ResourceOrderInfo"></xs:element>
+			<!-- Dados do Número de Serviço -->
+			<xs:element minOccurs="0" name="resourceService" type="rs:ResourceService"></xs:element>
+			<!-- Tipo do Local Splitter Segundo Nível -->
+			<xs:element minOccurs="0" name="splitterInstallTypePlace"
+				type="st:string3"></xs:element>
+			<!-- Local da Instalação do Equipamento Terminal FTTX -->
+			<xs:element minOccurs="0" name="terminalEquipInstallPlace"
+				type="st:string10"></xs:element>
+			<!-- Tipo Local do Equipamento Terminal FTTX -->
+			<xs:element minOccurs="0" name="terminalEquipInstallTypePlace"
+				type="st:string3"></xs:element>
+			<!-- Atendimento do Equipamento Terminal FTTX -->
+			<xs:element minOccurs="0" name="attendance" type="st:string20"></xs:element>
+			<!-- Cabo de assinante calibre aéreo -->
+			<xs:element minOccurs="0" name="cableSubscriberAirGauge"
+				type="st:string3"></xs:element>
+			<!-- Cabo de assinante calibre subterrâneo -->
+			<xs:element minOccurs="0" name="cableSubscriberUndergroundGauge"
+				type="st:string3"></xs:element>
+			<!-- Metragem do cabo de assinante aéreo -->
+			<xs:element minOccurs="0" name="metreageAirSubscriberCable"
+				type="st:string5"></xs:element>
+			<!-- Metragem do cabo de assinante subterraneo -->
+			<xs:element minOccurs="0" name="metreageUndergroundSubscriberCable"
+				type="st:string5"></xs:element>
+			<!-- Observação -->
+			<xs:element minOccurs="0" name="observation" type="st:string75"></xs:element>
+			<!-- Data e hora da execução do serviço -->
+			<xs:element minOccurs="0" name="serviceExecutionTimestamp"
+				type="st:string19"></xs:element>
+			<!-- Seção de Serviço -->
+			<xs:element minOccurs="0" name="serviceArea" type="st:string30"></xs:element>
+			<!-- Posição Logica do Cliente -->
+			<xs:element minOccurs="0" name="clientLogicalPosition"
+				type="st:integer4"></xs:element>
+			<!-- Flag Overlapped Net -->
+			<xs:element minOccurs="0" name="overlappedNetFlag" type="st:string1"></xs:element>
+			<!-- Dados do Slot -->
+			<xs:element minOccurs="0" name="slotInfo" type="si:SlotInfo"></xs:element>
+			<!-- Lista de campos de tipo chave-valor -->
+			<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

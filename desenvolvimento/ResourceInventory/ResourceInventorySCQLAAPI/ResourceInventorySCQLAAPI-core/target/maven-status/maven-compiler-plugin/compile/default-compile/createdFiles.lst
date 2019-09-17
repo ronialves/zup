@@ -1,0 +1,8 @@
+com/tlf/oss/resourceinventory/scqla/core/validation/Retrieval.class
+com/tlf/oss/resourceinventory/scqla/core/enums/EntityFields.class
+com/tlf/oss/resourceinventory/scqla/core/validation/RetrievalValidator.class
+com/tlf/oss/resourceinventory/scqla/core/enums/Code.class
+com/tlf/oss/resourceinventory/scqla/core/enums/Message.class
+com/tlf/oss/resourceinventory/scqla/core/validation/ValidatorEntity.class
+com/tlf/oss/resourceinventory/scqla/core/service/AvailabilityRetrievalService.class
+com/tlf/oss/resourceinventory/scqla/core/RetrievalController.class

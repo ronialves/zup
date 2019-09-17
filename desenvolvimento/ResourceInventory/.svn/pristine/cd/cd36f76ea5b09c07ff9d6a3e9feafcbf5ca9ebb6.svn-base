@@ -1,0 +1,104 @@
+@import '../../app.component.scss';
+
+.ui-catalog-container {
+    position: relative;
+    top: 64px;
+    margin: 20px 32px;
+}
+
+.ui-catalog-filters {
+    margin-bottom: 20px;
+    padding: 12px;
+    font-size: 14px;
+    .ui-filter-buttons {
+        text-align: right;
+    }
+    button {
+        margin-left: 8px;
+    }
+}
+
+.ui-table-container {
+    min-height: 480px;
+}
+  
+table {
+    width: 100%;
+    tbody {
+        max-height: 480px;
+        overflow: auto;
+    }
+    th {
+        font-weight: bold;
+        font-size: 15px;
+    }
+    tr.ui-element-row:hover {
+        background: #efefef;
+        cursor: pointer;
+    }      
+    tr.active {
+        background: #f5f5f5;
+        font-weight: bold;
+    }
+    tr button {
+        float: right;
+        margin-right: 8px;
+    }
+}
+
+.mat-column-fabricante {
+    width: 20%;
+}
+.mat-column-modelo {
+    width: 25%;
+}
+.mat-column-rede {
+    width: 10%;
+}
+.mat-column-tecnologia {
+    width: 10%;
+}
+.mat-column-categoria {
+    width: 20%;
+}
+.mat-column-acao {
+    width: 15%;
+}
+
+
+.ui-loading-shade {
+    position: absolute;
+    width: 100%;
+    min-height: 480px;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+.ui-warning {
+    color: #980000;
+    max-width: 360px;
+    text-align: center;
+}
+
+.ui-catalog-grid {
+    margin-bottom: 20px;
+    padding: 12px;
+    font-size: 14px;
+    button {
+        position: relative;
+        float: right;
+        margin-top: -58px;
+        margin-right: -4px;
+    }
+}
+
+.ui-text-inside-grid {
+    position: absolute;
+    left: 10px;
+}    
+.ui-text-inside-grid label {
+    font-weight: bold !important;
+}

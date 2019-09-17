@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetermineDistanceEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.entity</a> &gt; <span class="el_source">DetermineDistanceEntity.java</span></div><h1>DetermineDistanceEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+
+@SuppressWarnings(&quot;serial&quot;)
+@Entity
+@NamedStoredProcedureQuery(name = &quot;determineDistance&quot;, resultClasses = DetermineDistanceEntity.class, procedureName = &quot;SAGREMAN.GVT_SP_SOA_CONSULTA_DISTANCIA&quot;, parameters = {
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_cnl&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_street_code&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_address_num&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_ident_equip1&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_ident_equip2&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;p_in_origem&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_distancia&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_cod&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;p_out_msg&quot;, type = String.class) })
+public class DetermineDistanceEntity implements Serializable {
+	
+	@Basic
+	@Column(name = &quot;p_in_cnl&quot;)
+	private Integer cnl;
+
+	@Basic
+	@Column(name = &quot;p_in_street_code&quot;)
+	private String streetCode;
+
+	@Basic
+	@Column(name = &quot;p_in_address_num&quot;)
+	private String streetNumber;
+
+	@Basic
+	@Column(name = &quot;p_in_ident_equip1&quot;)
+	private String cabinetId;
+
+	@Basic
+	@Column(name = &quot;p_in_ident_equip2&quot;)
+	private String terminalBoxId;
+
+	@Basic
+	@Column(name = &quot;p_in_origem&quot;)
+	private String origem;
+
+	@Basic
+	@Column(name = &quot;p_out_distancia&quot;)
+	private Integer distance;
+
+	@Id
+	@Basic
+	@Column(name = &quot;p_out_cod&quot;)
+	private Integer code;
+
+	@Basic
+	@Column(name = &quot;p_out_msg&quot;)
+	private String message;
+	
+	public DetermineDistanceEntity () {
+<span class="nc" id="L67">		super();</span>
+<span class="nc" id="L68">	}</span>
+
+	public DetermineDistanceEntity(Integer cnl, String streetCode, String streetNumber, String cabinetId, String terminalBoxId,
+			String origem, Integer distance, Integer code, String message) {
+<span class="nc" id="L72">		super();</span>
+<span class="nc" id="L73">		this.cnl = cnl;</span>
+<span class="nc" id="L74">		this.streetCode = streetCode;</span>
+<span class="nc" id="L75">		this.streetNumber = streetNumber;</span>
+<span class="nc" id="L76">		this.cabinetId = cabinetId;</span>
+<span class="nc" id="L77">		this.terminalBoxId = terminalBoxId;</span>
+<span class="nc" id="L78">		this.origem = origem;</span>
+<span class="nc" id="L79">		this.distance = distance;</span>
+<span class="nc" id="L80">		this.code = code;</span>
+<span class="nc" id="L81">		this.message = message;</span>
+<span class="nc" id="L82">	}</span>
+	
+<span class="nc" id="L84">	public DetermineDistanceEntity(BrazilianUrbanPropertyAddress address) {</span>
+
+<span class="nc" id="L86">		this.cnl = Integer.parseInt(address.getCnl());</span>
+<span class="nc" id="L87">		this.streetCode = address.getStreetCode();</span>
+<span class="nc" id="L88">		this.streetNumber = address.getStreetNrFirst();</span>
+<span class="nc" id="L89">	}</span>
+
+	public Integer getCnl() {
+<span class="nc" id="L92">		return cnl;</span>
+	}
+
+	public void setCnl(Integer cnl) {
+<span class="nc" id="L96">		this.cnl = cnl;</span>
+<span class="nc" id="L97">	}</span>
+
+	public String getStreetCode() {
+<span class="nc" id="L100">		return streetCode;</span>
+	}
+
+	public void setStreetCode(String streetCode) {
+<span class="nc" id="L104">		this.streetCode = streetCode;</span>
+<span class="nc" id="L105">	}</span>
+
+	public String getStreetNumber() {
+<span class="nc" id="L108">		return streetNumber;</span>
+	}
+
+	public void setStreetNumber(String streetNumber) {
+<span class="nc" id="L112">		this.streetNumber = streetNumber;</span>
+<span class="nc" id="L113">	}</span>
+
+	public String getCabinetId() {
+<span class="nc" id="L116">		return cabinetId;</span>
+	}
+
+	public void setCabinetId(String cabinetId) {
+<span class="nc" id="L120">		this.cabinetId = cabinetId;</span>
+<span class="nc" id="L121">	}</span>
+
+	public String getTerminalBoxId() {
+<span class="nc" id="L124">		return terminalBoxId;</span>
+	}
+
+	public void setTerminalBoxId(String terminalBoxId) {
+<span class="nc" id="L128">		this.terminalBoxId = terminalBoxId;</span>
+<span class="nc" id="L129">	}</span>
+
+	public String getOrigem() {
+<span class="nc" id="L132">		return origem;</span>
+	}
+
+	public void setOrigem(String origem) {
+<span class="nc" id="L136">		this.origem = origem;</span>
+<span class="nc" id="L137">	}</span>
+
+	public Integer getDistance() {
+<span class="nc" id="L140">		return distance;</span>
+	}
+
+	public void setDistance(Integer distance) {
+<span class="nc" id="L144">		this.distance = distance;</span>
+<span class="nc" id="L145">	}</span>
+
+	public Integer getCode() {
+<span class="nc" id="L148">		return code;</span>
+	}
+
+	public void setCode(Integer code) {
+<span class="nc" id="L152">		this.code = code;</span>
+<span class="nc" id="L153">	}</span>
+
+	public String getMessage() {
+<span class="nc" id="L156">		return message;</span>
+	}
+
+	public void setMessage(String message) {
+<span class="nc" id="L160">		this.message = message;</span>
+<span class="nc" id="L161">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

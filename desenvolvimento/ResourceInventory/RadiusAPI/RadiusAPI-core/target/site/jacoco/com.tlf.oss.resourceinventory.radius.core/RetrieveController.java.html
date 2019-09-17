@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrieveController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RadiusAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.radius.core</a> &gt; <span class="el_source">RetrieveController.java</span></div><h1>RetrieveController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.radius.core;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.radius.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.radius.repository.RetrieveRepository;
+import com.tlf.oss.resourceinventory.radius.validation.Retrieve;
+import com.tlf.oss.resourceinventory.radius.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.ResourceCharacteristicSpecification;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+
+
+<span class="nc" id="L22">public class RetrieveController extends ValidatorEntity implements Serializable{</span>
+
+	private static final long serialVersionUID = 4501865998279734435L;
+	
+	@Inject
+	private OSSLogger logger;
+	
+	@Inject
+	private RetrieveRepository retrieveRepository;
+
+	
+	public ResourceInventoryEntity retrieve(@Retrieve ResourceInventoryEntity entity) throws OSSBusinessException {
+			
+<span class="nc" id="L35">		String designador = entity.getResourceFacingService().getServiceId();</span>
+		
+<span class="nc" id="L37">		logger.log(OSSLogger.INFO, &quot;Buscando IP alocado para o Designador: '&quot; + designador + &quot;'&quot;);</span>
+<span class="nc" id="L38">		String ipAddress = retrieveRepository.getIpAddress(designador);</span>
+
+<span class="nc bnc" id="L40" title="All 2 branches missed.">		if (ipAddress == null) {</span>
+<span class="nc" id="L41">			logger.log(OSSLogger.INFO, &quot;IP_ADDRESS não encontrado.&quot;);</span>
+		}
+
+<span class="nc" id="L44">		return getResourceInventoryEntity(ipAddress);</span>
+
+	}
+	
+	private ResourceInventoryEntity getResourceInventoryEntity(String ipAddress) {
+<span class="nc" id="L49">		ResourceCharacteristicSpecification rcs = new ResourceCharacteristicSpecification();</span>
+<span class="nc" id="L50">		rcs.setId(&quot;STATIC_IP_IPV4&quot;);</span>
+<span class="nc" id="L51">		rcs.setValue(ipAddress);</span>
+
+<span class="nc" id="L53">		Shelf shelf = new Shelf();</span>
+<span class="nc" id="L54">		shelf.getResourceCharacteristicSpecifications().add(rcs);</span>
+<span class="nc" id="L55">		Cabinet cabinet = new Cabinet();</span>
+<span class="nc" id="L56">		List&lt;Shelf&gt; hasShelves =  new ArrayList&lt;Shelf&gt;();</span>
+<span class="nc" id="L57">		hasShelves.add(shelf);</span>
+<span class="nc" id="L58">		cabinet.setHasShelves(hasShelves);</span>
+		
+<span class="nc" id="L60">		ResourceInventoryEntity resourceInventoryEntity = new ResourceInventoryEntity();</span>
+<span class="nc" id="L61">		resourceInventoryEntity.setCabinet(cabinet);</span>
+		
+<span class="nc" id="L63">		return resourceInventoryEntity;</span>
+		
+	}	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

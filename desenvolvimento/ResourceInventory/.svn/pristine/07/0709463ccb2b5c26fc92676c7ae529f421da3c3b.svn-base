@@ -1,0 +1,41 @@
+package com.tfl.oss.resourceinventory.granite.execution;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+
+rule "Regra VOPSOL - VoIP Solo"
+	agenda-group "SERVICECODE"
+	when
+		$rules : Rules()
+		$ruleName : String()
+
+		// Verificamos se cliente tem cobertura SOLO
+		$inventoryEntity : ResourceInventoryEntity(customerFacingService.size() < 2)
+
+		// Apenas para servico VoIP
+		CustomerFacingService(eval(category.equalsIgnoreCase("VOIP"))) from $inventoryEntity.customerFacingService
+	then
+		$rules.setResult("VOPSOL");
+		insert($rules);
+end
+
+rule "Regra IPT - TV Solo"
+	agenda-group "SERVICECODE"
+	when
+		$rules : Rules()
+		$ruleName : String()
+
+		// Verificamos se cliente tem cobertura SOLO
+		$inventoryEntity : ResourceInventoryEntity(customerFacingService.size() < 2)
+
+		// Apenas para TV
+		CustomerFacingService(eval(category.equalsIgnoreCase("IPTV"))) from $inventoryEntity.customerFacingService
+	then
+		$rules.setResult("IPT");
+		insert($rules);
+end

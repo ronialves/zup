@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeallocateEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">DeallocateEntity.java</span></div><h1>DeallocateEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
+
+import com.tlf.oss.resourceinventory.tbs.to.ResultTo;
+
+/**
+ * BEATRIXTWO-934 | DEMOSS-2998
+ * 
+ * @project Beatrix Fase 2
+ * @author jose.fabio.d.souza
+ * @since 201803
+ */
+
+@Entity
+@NamedStoredProcedureQuery(name = &quot;deallocate&quot;, resultClasses = DeallocateEntity.class, procedureName = &quot;ASAP.TLF_SP_DEALLOCATE&quot;, parameters = {
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_PON&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.IN, name = &quot;P_DESIGNADOR_ACESSO&quot;, type = String.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_COD_RETORNO&quot;, type = Integer.class),
+		@StoredProcedureParameter(mode = ParameterMode.OUT, name = &quot;P_MSG_RETORNO&quot;, type = String.class) })
+public class DeallocateEntity implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Basic
+	@Column(name = &quot;P_PON&quot;)
+	private String purchaseOrderNumber;
+	
+	@Basic
+	@Column(name = &quot;P_DESIGNADOR_ACESSO&quot;)
+	private String designadorAcesso;
+
+	@Id
+	@Basic
+	@Column(name = &quot;P_COD_RETORNO&quot;)
+	private Integer returnCode;
+
+	@Basic
+	@Column(name = &quot;P_MSG_RETORNO&quot;)
+	private String returnMsg;
+
+	@Transient
+	private ResultTo result;
+
+	public DeallocateEntity() {
+<span class="fc" id="L58">		super();</span>
+<span class="fc" id="L59">	}</span>
+
+	public DeallocateEntity(String purchaseOrderNumber, String designadorAcesso, Integer returnCode, String returnMsg) {
+<span class="nc" id="L62">		super();</span>
+<span class="nc" id="L63">		this.purchaseOrderNumber = purchaseOrderNumber;</span>
+<span class="nc" id="L64">		this.designadorAcesso = designadorAcesso;</span>
+<span class="nc" id="L65">		this.returnCode = returnCode;</span>
+<span class="nc" id="L66">		this.returnMsg = returnMsg;</span>
+<span class="nc" id="L67">	}</span>
+
+	public String getPurchaseOrderNumber() {
+<span class="nc" id="L70">		return purchaseOrderNumber;</span>
+	}
+
+	public void setPurchaseOrderNumber(String purchaseOrderNumber) {
+<span class="fc" id="L74">		this.purchaseOrderNumber = purchaseOrderNumber;</span>
+<span class="fc" id="L75">	}</span>
+
+	public String getDesignadorAcesso() {
+<span class="nc" id="L78">		return designadorAcesso;</span>
+	}
+
+	public void setDesignadorAcesso(String designadorAcesso) {
+<span class="fc" id="L82">		this.designadorAcesso = designadorAcesso;</span>
+<span class="fc" id="L83">	}</span>
+
+	public Integer getReturnCode() {
+<span class="fc" id="L86">		return returnCode;</span>
+	}
+
+	public void setReturnCode(Integer returnCode) {
+<span class="fc" id="L90">		this.returnCode = returnCode;</span>
+<span class="fc" id="L91">	}</span>
+
+	public String getReturnMsg() {
+<span class="nc" id="L94">		return returnMsg;</span>
+	}
+
+	public void setReturnMsg(String returnMsg) {
+<span class="fc" id="L98">		this.returnMsg = returnMsg;</span>
+<span class="fc" id="L99">	}</span>
+
+	public ResultTo getResult() {
+<span class="nc" id="L102">		return result;</span>
+	}
+
+	public void setResult(ResultTo result) {
+<span class="nc" id="L106">		this.result = result;</span>
+<span class="nc" id="L107">	}</span>
+
+	public static long getSerialversionuid() {
+<span class="nc" id="L110">		return serialVersionUID;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

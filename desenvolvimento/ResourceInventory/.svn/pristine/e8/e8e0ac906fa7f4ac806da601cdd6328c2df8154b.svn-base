@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomerEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySchemas-customer</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.schemas.api</a> &gt; <span class="el_source">CustomerEntity.java</span></div><h1>CustomerEntity.java</h1><pre class="source lang-java linenums">
+package com.tlf.oss.resourceinventory.schemas.api;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
+@Entity
+@Table(name = &quot;CUSTOMER&quot;)
+@SequenceGenerator(name = &quot;CUSTOMER_SEQ&quot;, sequenceName = &quot;SEQ_RI_CUSTOMER&quot;, allocationSize = 1)	
+@NamedQuery(name = &quot;CustomerEntity.byAccessDesignator&quot;, query = &quot;SELECT c FROM CustomerEntity c WHERE c.accessDesignator = :accessDesignator&quot;)
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = &quot;CustomerEntity&quot;, propOrder = { &quot;accessDesignator&quot;, &quot;accessId&quot;, &quot;customerId&quot;, &quot;networkOwner&quot;, &quot;accessTechnology&quot;, &quot;status&quot;, &quot;provider&quot;, &quot;createDate&quot; })
+<span class="nc" id="L29">public class CustomerEntity {</span>
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = &quot;CUSTOMER_SEQ&quot;)
+	@Column(name = &quot;ID&quot;)
+	@XmlTransient
+	private Long id;
+	
+	@Column(name = &quot;ACCESS_DESIGNATOR&quot;)
+	private String accessDesignator;
+	
+	@Column(name = &quot;ACCESS_ID&quot;)
+	private String accessId;
+	
+	@Column(name = &quot;CUSTOMER_ID&quot;)
+	private String customerId;
+	
+	@Column(name = &quot;NETWORK_OWNER&quot;)
+	private String networkOwner;
+	
+	@Column(name = &quot;ACCESS_TECHNOLOGY&quot;)
+	private String accessTechnology;
+	
+	@Column(name = &quot;STATUS&quot;)
+	private String status;
+	
+	@Column(name = &quot;PROVIDER&quot;)
+	private String provider;
+	
+	@Column(name = &quot;CREATE_DATE&quot;)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createDate;
+
+	public String getAccessDesignator() {
+<span class="nc" id="L63">		return accessDesignator;</span>
+	}
+
+	public void setAccessDesignator(String accessDesignator) {
+<span class="nc" id="L67">		this.accessDesignator = accessDesignator;</span>
+<span class="nc" id="L68">	}</span>
+
+	public String getAccessId() {
+<span class="nc" id="L71">		return accessId;</span>
+	}
+
+	public void setAccessId(String accessId) {
+<span class="nc" id="L75">		this.accessId = accessId;</span>
+<span class="nc" id="L76">	}</span>
+
+	public String getCustomerId() {
+<span class="nc" id="L79">		return customerId;</span>
+	}
+
+	public void setCustomerId(String customerId) {
+<span class="nc" id="L83">		this.customerId = customerId;</span>
+<span class="nc" id="L84">	}</span>
+
+	public String getNetworkOwner() {
+<span class="nc" id="L87">		return networkOwner;</span>
+	}
+
+	public void setNetworkOwner(String networkOwner) {
+<span class="nc" id="L91">		this.networkOwner = networkOwner;</span>
+<span class="nc" id="L92">	}</span>
+
+	public String getAccessTechnology() {
+<span class="nc" id="L95">		return accessTechnology;</span>
+	}
+
+	public void setAccessTechnology(String accessTechnology) {
+<span class="nc" id="L99">		this.accessTechnology = accessTechnology;</span>
+<span class="nc" id="L100">	}</span>
+
+	public String getStatus() {
+<span class="nc" id="L103">		return status;</span>
+	}
+
+	public void setStatus(String status) {
+<span class="nc" id="L107">		this.status = status;</span>
+<span class="nc" id="L108">	}</span>
+
+	public String getProvider() {
+<span class="nc" id="L111">		return provider;</span>
+	}
+
+	public void setProvider(String provider) {
+<span class="nc" id="L115">		this.provider = provider;</span>
+<span class="nc" id="L116">	}</span>
+
+	public Date getCreateDate() {
+<span class="nc" id="L119">		return createDate;</span>
+	}
+
+	public void setCreateDate(Date createDate) {
+<span class="nc" id="L123">		this.createDate = createDate;</span>
+<span class="nc" id="L124">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

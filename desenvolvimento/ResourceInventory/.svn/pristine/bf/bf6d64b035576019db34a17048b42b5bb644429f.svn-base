@@ -1,0 +1,75 @@
+package com.tlf.oss.resourceinventory.tbs.repository;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.tbs.entity.NetworkInfoEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.RetrieveInfoType;
+import com.tlf.oss.resourceinventory.tbs.repository.factory.GenericRepository;
+
+public class NetworkInfoRepository extends GenericRepository implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private final String TYPE_OF_RESOURCE = "DSLAM";
+
+	@Inject
+	protected OSSLogger logger;
+
+	/**
+	 * Realiza chamada da procedure ASAP.TLF_SP_RETRIEVE_FACILITY
+	 * 
+	 * @param entity
+	 * @return RetrieveEntity
+	 * @throws OSSBusinessException
+	 */
+	public NetworkInfoEntity getRetrieveNetworkInfo(String serviceId, String status) throws OSSBusinessException {
+
+		NetworkInfoEntity entity = new NetworkInfoEntity();
+		try {
+			TypedQuery<NetworkInfoEntity> query;
+			query = getFactory().createNamedQuery(RetrieveInfoType.RETRIEVE_NETWORK_INFO.getValue(), NetworkInfoEntity.class);
+			query.setParameter("P_DESIGNATOR", serviceId);
+			query.setParameter("P_CIRCUIT_ACTIVITY_IND", status);
+			logIn(query, RetrieveInfoType.RETRIEVE_NETWORK_INFO);
+			entity = query.getSingleResult();
+			entity.setTypeOfResource(TYPE_OF_RESOURCE);
+			logOut(entity);
+			getFactory().detach(entity);
+
+		} catch (Exception e) {
+			entity.setCodErro(1);
+			entity.setMsgErro(e.getMessage());
+		}
+
+		return entity;
+	}
+
+	/**
+	 * Gera log com a entrada da query
+	 * 
+	 * @param result
+	 */
+	private void logIn(Query query, RetrieveInfoType retrieveInfoType) {
+		String log = getlogIn(retrieveInfoType.getValue(), query);
+		logger.log(OSSLogger.INFO, log);
+	}
+
+	/**
+	 * Gera log com o resultado da query executada
+	 * 
+	 * @param result
+	 */
+	private void logOut(NetworkInfoEntity result) {
+		logger.log(OSSLogger.INFO, result.toString());
+	}
+
+}

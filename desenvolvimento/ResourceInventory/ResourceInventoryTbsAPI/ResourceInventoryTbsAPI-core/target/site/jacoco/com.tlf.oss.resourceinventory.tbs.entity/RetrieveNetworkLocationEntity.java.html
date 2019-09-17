@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrieveNetworkLocationEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.entity</a> &gt; <span class="el_source">RetrieveNetworkLocationEntity.java</span></div><h1>RetrieveNetworkLocationEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.Table;
+
+
+@Table(name=&quot;NETWORK_LOCATION&quot;)
+@Entity
+@NamedNativeQueries({
+	@NamedNativeQuery(name=&quot;QueryNetworkLocation&quot;,query=
+	&quot;SELECT DISTINCT Q1.CLLI_CODE FROM &quot; +
+    &quot;   (SELECT DISTINCT (B.CLLI_CODE) AS CLLI_CODE&quot; +
+	&quot;       FROM ASAP.SERVICE_REQUEST_CIRCUIT S,&quot; +
+	&quot;           ASAP.SERV_REQ                SR,&quot; +
+	&quot;           ASAP.CIRCUIT                 C,&quot; +
+	&quot;           ASAP.NETWORK_LOCATION        B&quot; +
+	&quot;       WHERE C.CIRCUIT_DESIGN_ID = S.CIRCUIT_DESIGN_ID&quot; +
+	&quot;           AND C.TYPE &lt;&gt; 'S'&quot; +
+	&quot;           AND B.LOCATION_ID = C.LOCATION_ID&quot; +
+	&quot;           AND B.LOCATION_TYPE = 'End Office - Electronic Digital'&quot; +
+	&quot;           AND SR.PON = ?&quot; +
+	&quot;           AND SR.DOCUMENT_NUMBER = S.DOCUMENT_NUMBER&quot; +
+	&quot;           AND S.DOCUMENT_NUMBER = ?&quot; +
+	&quot;           UNION ALL&quot; +
+	&quot;               SELECT DISTINCT (B.CLLI_CODE) AS CLLI_CODE&quot; +
+	&quot;                   FROM ASAP.SERVICE_REQUEST_CIRCUIT S,&quot; +
+	&quot;                       ASAP.SERV_REQ                SR,&quot; +
+	&quot;                       ASAP.CIRCUIT                 C,&quot; +
+	&quot;                       ASAP.NETWORK_LOCATION        B&quot; +
+	&quot;                   WHERE C.CIRCUIT_DESIGN_ID = S.CIRCUIT_DESIGN_ID&quot; +
+	&quot;                   AND C.TYPE &lt;&gt; 'S'&quot; +
+	&quot;                   AND B.LOCATION_ID = C.LOCATION_ID_2&quot; +
+	&quot;                   AND B.LOCATION_TYPE = 'End Office - Electronic Digital'&quot; +
+	&quot;                   AND SR.PON = ?&quot; +
+	&quot;                   AND SR.DOCUMENT_NUMBER = S.DOCUMENT_NUMBER&quot; +
+	&quot;                   AND S.DOCUMENT_NUMBER = ?&quot; +
+    &quot;   ) Q1&quot;, resultClass = RetrieveNetworkLocationEntity.class),
+	@NamedNativeQuery(name=&quot;QueryNetworkLocationByPilot&quot;,query=
+	&quot;SELECT DISTINCT C.CLLI_CODE&quot; +
+    &quot;       FROM ASAP.ASSIGNED_TEL_NUM A,&quot; +
+    &quot;           ASAP.NPA_NXX_LOCATION B,&quot; +
+    &quot;           ASAP.NETWORK_LOCATION C&quot; +
+    &quot;       WHERE A.DOCUMENT_NUMBER = ?&quot; +
+    &quot;           AND A.IDENTITY_CD = 'MPTN'&quot; +
+    &quot;           AND B.NPA = A.TEL_NBR_NPA&quot; +
+    &quot;           AND B.NXX = A.TEL_NBR_NXX&quot; +
+    &quot;           AND B.LINE_RANGE_LOWER = A.TEL_NBR_LINE_RANGE&quot; +
+    &quot;           AND C.LOCATION_TYPE = 'End Office - Electronic Digital'&quot; +
+    &quot;           AND C.LOCATION_ID = B.LOCATION_ID&quot;, resultClass = RetrieveNetworkLocationEntity.class),
+    @NamedNativeQuery(name=&quot;QueryNetworkLocationByPilotOrderNumber&quot;,query=
+    &quot;SELECT DISTINCT C.CLLI_CODE&quot; +
+    &quot;      FROM ASAP.ASSIGNED_TEL_NUM A,&quot; +
+    &quot;           ASAP.NPA_NXX_LOCATION B,&quot; +
+    &quot;           ASAP.NETWORK_LOCATION C&quot; +
+    &quot;       WHERE A.DOCUMENT_NUMBER = ?&quot; +
+    &quot;           AND B.NPA = A.TEL_NBR_NPA&quot; +
+    &quot;           AND B.NXX = A.TEL_NBR_NXX&quot; +
+    &quot;           AND B.LINE_RANGE_LOWER = A.TEL_NBR_LINE_RANGE&quot; +
+    &quot;           AND C.LOCATION_TYPE = 'End Office - Electronic Digital'&quot; +
+    &quot;           AND C.LOCATION_ID = B.LOCATION_ID&quot;, resultClass = RetrieveNetworkLocationEntity.class)
+})
+<span class="nc" id="L68">public class RetrieveNetworkLocationEntity extends EntityCommon&lt;Long&gt; implements Serializable{</span>
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name=&quot;CLLI_CODE&quot;)
+	private String CLLICode;
+	
+	
+	
+	/**
+	 * @return the cLLICode
+	 */
+	public String getCLLICode() {
+<span class="nc" id="L85">		return CLLICode;</span>
+	}
+
+	/**
+	 * @param cLLICode the cLLICode to set
+	 */
+	public void setCLLICode(String cLLICode) {
+<span class="nc" id="L92">		CLLICode = cLLICode;</span>
+<span class="nc" id="L93">	}</span>
+
+	@Override
+	public Long getId() {
+		// TODO Auto-generated method stub
+<span class="nc" id="L98">		return null;</span>
+	}
+
+	@Override
+	public void setId(Long id) {
+		// TODO Auto-generated method stub
+		
+<span class="nc" id="L105">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

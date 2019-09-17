@@ -1,0 +1,124 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tr="http://www.cpqd.com.br/etics/TerminalResourceTypes" xmlns:st="http://www.cpqd.com.br/etics/simpletypes"
+	xmlns:sc="http://www.cpqd.com.br/etics/ServiceCustomerTypes" xmlns:ir="http://www.cpqd.com.br/etics/IntermediaryResourceTypes"
+	xmlns:inr="http://www.cpqd.com.br/etics/InicialResourceTypes" xmlns:cr="http://www.cpqd.com.br/etics/CustomerResourceTypes"
+	xmlns:at="http://www.cpqd.com.br/etics/AddressTypes"
+	elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/CircuitTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/InicialResourceTypes"
+		schemaLocation="InicialResourceTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/IntermediaryResourceTypes"
+		schemaLocation="IntermediaryResourceTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/TerminalResourceTypes"
+		schemaLocation="TerminalResourceTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/CustomerResourceTypes"
+		schemaLocation="CustomerResourceTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/AddressTypes"
+		schemaLocation="AddressTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/ServiceCustomerTypes"
+		schemaLocation="ServiceCustomerTypes.xsd"></xs:import>
+	<xs:complexType name="Circuit">
+		<xs:sequence>
+			<!-- Identificação do Circuito -->
+			<xs:element name="circuitIdentifier" type="st:string50"></xs:element>
+			<!-- Estado do Circuito Par/Fibra: 1 - DS (Designado) 2 - RS (Reservado) 
+				3 - OC (Ocupado) 5 - AR (A Retirar) 8 - RA (Reserva para Averiguação) 9 - 
+				DF (Defeito) 10 - ND (Não Disponível) 12 - RT (Reserva Técnica) 11 – CR (Carrier) 
+				Par: 4 - DL (Dedicação de Linha) 7 - DJ (Dedicação Jumper) -->
+			<xs:element name="circuitStatus">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:pattern value="1|2|3|4|5|7|8|9|10|11|12"></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Caracteristica do Circuito (0 - Nao e LP, 2 - Ponta A de LP, 3 - 
+				Ponta B de LP) -->
+			<xs:element default="0" minOccurs="0" name="characteristic">
+				<xs:simpleType>
+					<xs:restriction base="st:string1">
+						<xs:pattern value="0|2|3"></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Recursos -->
+			<xs:element minOccurs="0" name="resources">
+				<xs:complexType>
+					<xs:sequence>
+						<!-- N Equipamento Inicial -->
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="relatedInicialResources" type="inr:InicialResource"></xs:element>
+						<!-- N Equipamento Intermediarios -->
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="relatedIntermediaryResources" type="ir:IntermediaryResource"></xs:element>
+						<!-- N Equipamento Terminal -->
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="relatedTerminalResources" type="tr:TerminalResource"></xs:element>
+						<!-- N Equipamento Adicional -->
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="relatedAditionalResources" type="cr:CustomerResource"></xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CircuitReport">
+		<xs:sequence>
+			<!-- Identificação do Circuito -->
+			<xs:element name="circuitIdentifier" type="st:string50"></xs:element>
+			<!-- Estado do Circuito Par/Fibra: 1 - DS (Designado) 2 - RS (Reservado) 
+				3 - OC (Ocupado) 5 - AR (A Retirar) 8 - RA (Reserva para Averiguação) 9 - 
+				DF (Defeito) 10 - ND (Não Disponível) 12 - RT (Reserva Técnica) 11 – CR (Carrier) 
+				Par: 4 - DL (Dedicação de Linha) 7 - DJ (Dedicação Jumper) -->
+			<xs:element name="circuitStatus">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:pattern value="1|2|3|4|5|7|8|9|10|11|12"></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Caracteristica do Circuito (0 - Nao e LP, 2 - Ponta A de LP, 3 - 
+				Ponta B de LP) -->
+			<xs:element default="0" minOccurs="0" name="characteristic">
+				<xs:simpleType>
+					<xs:restriction base="st:string1">
+						<xs:pattern value="0|2|3"></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Endereço do Circuito -->
+			<xs:element minOccurs="0" name="address" type="at:Address"></xs:element>
+			<!-- Recursos -->
+			<xs:element minOccurs="0" name="resources">
+				<xs:complexType>
+					<xs:sequence>
+						<!-- N Equipamento Inicial -->
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="relatedInicialResources" type="inr:InicialResource"></xs:element>
+						<!-- N Equipamento Intermediarios -->
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="relatedIntermediaryResources" type="ir:IntermediaryResource"></xs:element>
+						<!-- N Equipamento Terminal -->
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="relatedTerminalResources" type="tr:TerminalResource"></xs:element>
+						<!-- N Equipamento Adicional -->
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="relatedAditionalResources" type="cr:CustomerResource"></xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<!-- Serviços -->
+			<xs:element minOccurs="0" name="relatedServices">
+				<xs:complexType>
+					<xs:sequence>
+						<!-- N Serviços -->
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="service"
+							type="sc:ServiceCustomer"></xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

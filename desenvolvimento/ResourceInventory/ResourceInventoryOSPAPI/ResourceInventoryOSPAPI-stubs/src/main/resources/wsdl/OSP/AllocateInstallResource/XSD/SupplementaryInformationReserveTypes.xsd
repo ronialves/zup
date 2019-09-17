@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:si="http://www.cpqd.com.br/etics/SlotInfoTypes"
+	xmlns:rs="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes"
+	xmlns:fa="http://www.cpqd.com.br/etics/FullAddressTypes" xmlns:ce="http://www.cpqd.com.br/etics/customelements"
+	elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/SupplementaryInformationReserveTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceServiceInfoTypes"
+		schemaLocation="ResourceServiceInfoTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/SlotInfoTypes"
+		schemaLocation="SlotInfoTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/FullAddressTypes"
+		schemaLocation="FullAddressTypes.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/customelements"
+		schemaLocation="CustomElements.xsd"></xs:import>
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="SupplementaryInformationIn">
+		<xs:sequence>
+			<!-- Dados do Número de Serviço -->
+			<xs:element minOccurs="0" name="resourceService" type="rs:ResourceService"></xs:element>
+			<!-- One Stop Shop, 1-Processo One Stop Shop -->
+			<xs:element default="1" minOccurs="0" name="oneStopShop">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:pattern value="1"></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Lista de campos de tipo chave-valor -->
+			<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SupplementaryInformationOut">
+		<xs:sequence>
+			<!-- Dados do Número de Serviço -->
+			<xs:element minOccurs="0" name="resourceService" type="rs:ResourceService"></xs:element>
+			<!-- Dados do Slot -->
+			<xs:element minOccurs="0" name="slotInfo" type="si:SlotInfo"></xs:element>
+			<!-- Endereço do Assinante -->
+			<xs:element minOccurs="0" name="subscriberAddress" type="fa:FullAddress"></xs:element>
+			<!-- Posição Logica do Cliente -->
+			<xs:element minOccurs="0" name="clientLogicalPosition"
+				type="st:integer4"></xs:element>
+			<!-- Flag Overlapped Net -->
+			<xs:element minOccurs="0" name="overlappedNetFlag" type="st:string1"></xs:element>
+			<!-- Lista de campos de tipo chave-valor -->
+			<xs:element minOccurs="0" name="customElements" type="ce:CustomElements"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

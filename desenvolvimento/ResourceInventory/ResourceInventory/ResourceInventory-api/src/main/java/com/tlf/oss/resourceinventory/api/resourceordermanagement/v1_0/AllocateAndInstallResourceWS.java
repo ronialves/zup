@@ -1,0 +1,109 @@
+package com.tlf.oss.resourceinventory.api.resourceordermanagement.v1_0;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.header.Header;
+import com.tlf.oss.common.interceptor.annotation.SoapInterceptor;
+import com.tlf.oss.common.schemas.entity.Warn;
+import com.tlf.oss.resourceinventory.core.resourceordermanagement.v1_0.AllocateAndInstallResource;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.*;
+import com.tlf.oss.resourceinventory.schemas.util.RIConstants;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebParam.Mode;
+import javax.jws.WebResult;
+import javax.jws.WebService;
+import javax.xml.ws.Holder;
+
+/**
+ * Interface nova para reserva, alocação e ativação de recursos
+ *
+ */
+@Stateless
+@WebService(name = "AllocateAndInstallResourcePort", serviceName = "AllocateAndInstallResource", portName = "AllocateAndInstallResourcePortName", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE)
+@SoapInterceptor
+public class AllocateAndInstallResourceWS {
+
+	@Inject private AllocateAndInstallResource allocateAndInstallResource;
+
+	@WebMethod(operationName = "determineResourceAvailability")
+	@WebResult(name = "determineResourceAvailabilityOut", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE)
+	public DetermineResourceAvailabilityOut determineResourceAvailability(
+			@WebParam(name = "header", targetNamespace = RIConstants.NAMESPACE_HEADER, header = true, mode = Mode.INOUT) Holder<Header> header,
+			@WebParam(name = "warn", targetNamespace = RIConstants.NAMESPACE_WARN, header = true, mode = Mode.OUT) Holder<Warn> warn,
+			@WebParam(name = "determineResourceAvailabilityIn", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE) DetermineResourceAvailabilityIn determineResourceAvailabilityIn)
+			throws OSSBusinessException {
+		return allocateAndInstallResource.determineResourceAvailability(header.value, warn, determineResourceAvailabilityIn);
+	}
+
+	@WebMethod(operationName = "reserveResource")
+	@WebResult(name = "reserveResourceOut", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE)
+	public ReserveResourceOut reserveResource(
+			@WebParam(name = "header", targetNamespace = RIConstants.NAMESPACE_HEADER, header = true, mode = Mode.INOUT) Holder<Header> header,
+			@WebParam(name = "reserveResourceIn", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE) ReserveResourceIn reserveResourceIn)
+			throws OSSBusinessException {
+
+		return allocateAndInstallResource.reserveResource(header.value, reserveResourceIn);
+	}
+
+	@WebMethod(operationName = "releaseResource")
+	@WebResult(name = "releaseResourceOut", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE)
+	public ReleaseResourceOut releaseResource(
+			@WebParam(name = "header", targetNamespace = RIConstants.NAMESPACE_HEADER, header = true, mode = Mode.INOUT) Holder<Header> header,
+			@WebParam(name = "releaseResourceIn", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE) ReleaseResourceIn releaseResourceIn)
+			throws OSSBusinessException {
+
+		return allocateAndInstallResource.releaseResource(header.value, releaseResourceIn);
+	}
+
+	@WebMethod(operationName = "allocateResource")
+	@WebResult(name = "allocateResourceOut", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE)
+	public AllocateResourceOut allocateResource(
+			@WebParam(name = "header", targetNamespace = RIConstants.NAMESPACE_HEADER, header = true, mode = Mode.INOUT) Holder<Header> header,
+			@WebParam(name = "allocateResourceIn", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE) AllocateResourceIn allocateResourceIn)
+			throws OSSBusinessException {
+
+		return allocateAndInstallResource.allocateResource(header.value, allocateResourceIn);
+	}
+
+	@WebMethod(operationName = "installResource")
+	@WebResult(name = "installResourceOut", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE)
+	public InstallResourceOut installResource(
+			@WebParam(name = "header", targetNamespace = RIConstants.NAMESPACE_HEADER, header = true, mode = Mode.INOUT) Holder<Header> header,
+			@WebParam(name = "installResourceIn", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE) InstallResourceIn installResourceIn)
+			throws OSSBusinessException {
+
+		return allocateAndInstallResource.installResource(header.value, installResourceIn);
+	}
+
+	@WebMethod(operationName = "deallocateResource")
+	@WebResult(name = "deallocateResourceOut", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE)
+	public DeallocateResourceOut deallocateResource(
+			@WebParam(name = "header", targetNamespace = RIConstants.NAMESPACE_HEADER, header = true, mode = Mode.INOUT) Holder<Header> header,
+			@WebParam(name = "deallocateResourceIn", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE) DeallocateResourceIn deallocateResourceIn)
+			throws OSSBusinessException {
+
+		return allocateAndInstallResource.deallocateResource(header.value, deallocateResourceIn);
+	}
+
+	@WebMethod(operationName = "uninstallResource")
+	@WebResult(name = "uninstallResourceOut", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE)
+	public UninstallResourceOut uninstallResource(
+			@WebParam(name = "header", targetNamespace = RIConstants.NAMESPACE_HEADER, header = true, mode = Mode.INOUT) Holder<Header> header,
+			@WebParam(name = "uninstallResourceIn", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE) UninstallResourceIn uninstallResourceIn)
+			throws OSSBusinessException {
+
+		return allocateAndInstallResource.unistallResourceOut(header.value, uninstallResourceIn);
+	}
+
+	@WebMethod(operationName = "updateResource")
+	@WebResult(name = "updateResourceOut", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE)
+	public UpdateResourceOut updateResource (
+			@WebParam(name = "header", targetNamespace = RIConstants.NAMESPACE_HEADER, header = true, mode = Mode.INOUT) Holder<Header> header,
+			@WebParam(name = "updateResourceIn", targetNamespace = RIConstants.NAMESPACE_ALLOCATE_AND_INSTALL_RESOURCE) UpdateResourceIn updateResourceIn)
+			throws OSSBusinessException {
+		return allocateAndInstallResource.updateResource(header.value, updateResourceIn);
+	}
+}

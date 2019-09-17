@@ -1,0 +1,34 @@
+package com.tlf.oss.resourceinventory.nwi.core;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.nwi.core.validation.EquipmentRetrieval;
+import com.tlf.oss.resourceinventory.nwi.repository.EquipmentRetrievalRepository;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class EquipmentRetrievalController {
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private EquipmentRetrievalRepository equipmentRetrievalRepository;
+
+	/**
+	 * Consulta os Equipamentos no SIGITM
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity retrieval(@EquipmentRetrieval ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalController - Iniciando fluxo do retrieval.");
+
+		return equipmentRetrievalRepository.getEquipment(entity);
+
+	}
+
+}

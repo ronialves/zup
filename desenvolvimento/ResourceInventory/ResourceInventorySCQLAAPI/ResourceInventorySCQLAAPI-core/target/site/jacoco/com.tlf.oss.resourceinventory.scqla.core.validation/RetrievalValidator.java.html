@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrievalValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySCQLAAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.scqla.core.validation</a> &gt; <span class="el_source">RetrievalValidator.java</span></div><h1>RetrievalValidator.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.scqla.core.validation;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.scqla.core.enums.EntityFields;
+
+<span class="nc" id="L10">public class RetrievalValidator extends ValidatorEntity implements ConstraintValidator&lt;Retrieval, ResourceInventoryEntity&gt;{</span>
+
+	@Override
+<span class="nc" id="L13">	public void initialize(Retrieval facilityRetrieval) {}</span>
+
+	@Override
+	public boolean isValid(ResourceInventoryEntity entity, ConstraintValidatorContext context) {
+<span class="nc" id="L17">		boolean isValid = true;</span>
+<span class="nc" id="L18">		context.disableDefaultConstraintViolation();</span>
+		try {
+			//Valida cenario de cliente Ativo
+			//Caso seja informado getResourceFacingService busca por telefone o cliente ativo
+<span class="nc bnc" id="L22" title="All 4 branches missed.">			if(null != entity.getResourceFacingService() &amp;&amp; null !=entity.getCustomerFacingService()){</span>
+				
+<span class="nc bnc" id="L24" title="All 2 branches missed.">				if(!validatorCustomerFacingService(entity, EntityFields.CATEGORY.getValue(),EntityFields.SERVICE_ID.getValue())</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">						|| !validatorServiceDescribedBy(entity.getResourceFacingService().getServiceDescribedBy(), EntityFields.NAME.getValue())</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">						|| !validatorServiceSpecCharDescribes(entity.getResourceFacingService().getServiceDescribedBy(), EntityFields.VALUE.getValue())){</span>
+					//Caso alguma informação esteja faltando do telefone, 
+					//valida o endereço, para buscar pelo mesmo
+<span class="nc" id="L29">					validatorAdress(entity,EntityFields.CNL.getValue(),EntityFields.AT.getValue(),EntityFields.STREETCODE.getValue(),EntityFields.STREETNRFIRST.getValue());</span>
+				}
+			}else{
+<span class="nc" id="L32">				validatorAdress(entity,EntityFields.CNL.getValue(),EntityFields.AT.getValue(),EntityFields.STREETCODE.getValue(),EntityFields.STREETNRFIRST.getValue());</span>
+			}
+
+<span class="nc" id="L35">		} catch (OSSBusinessException e) {</span>
+<span class="nc" id="L36">			context.buildConstraintViolationWithTemplate(e.getDetail()).addConstraintViolation();</span>
+<span class="nc" id="L37">			isValid = false;</span>
+
+<span class="nc" id="L39">		}</span>
+
+<span class="nc" id="L41">		return isValid;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

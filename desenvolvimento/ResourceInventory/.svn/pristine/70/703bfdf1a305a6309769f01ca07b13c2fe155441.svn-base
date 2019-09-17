@@ -1,0 +1,21 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/LogicalCableTypes">
+<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"/>
+<xs:complexType name="LogicalCable">
+<xs:sequence>
+<!--  Localidade  -->
+<xs:element minOccurs="0" name="regionCode" type="st:integer9"/>
+<!--  Site  -->
+<xs:element minOccurs="0" name="siteCode" type="st:string40"/>
+<!--  Código  -->
+<xs:element name="code" type="st:string40"/>
+<!--  Código Lateral  -->
+<xs:element minOccurs="0" name="lateral" type="st:string5"/>
+<!--
+ Função (Alimentador, distribuidor, de equipamento, etc) 
+-->
+<xs:element minOccurs="0" name="function" type="st:integer2"/>
+<!--  Unidade Lógica  -->
+<xs:element name="logicalUnit" type="st:integer4"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

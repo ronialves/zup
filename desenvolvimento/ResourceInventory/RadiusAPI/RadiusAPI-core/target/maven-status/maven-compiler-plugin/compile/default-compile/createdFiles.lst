@@ -1,0 +1,16 @@
+com/tlf/oss/resourceinventory/radius/core/RetrieveController.class
+com/tlf/oss/resourceinventory/radius/enums/ExceptionInfoEnum.class
+com/tlf/oss/resourceinventory/radius/validation/Allocate.class
+com/tlf/oss/resourceinventory/radius/validation/ValidatorEntity.class
+com/tlf/oss/resourceinventory/radius/repository/AllocateRepository.class
+com/tlf/oss/resourceinventory/radius/validation/DeallocateValidator.class
+com/tlf/oss/resourceinventory/radius/validation/Retrieve.class
+com/tlf/oss/resourceinventory/radius/core/DeallocateController.class
+com/tlf/oss/resourceinventory/radius/validation/AllocateValidator.class
+com/tlf/oss/resourceinventory/radius/repository/DeallocateRepository.class
+com/tlf/oss/resourceinventory/radius/core/AllocateController.class
+com/tlf/oss/resourceinventory/radius/enums/EntityFields.class
+com/tlf/oss/resourceinventory/radius/validation/RetrieveValidator.class
+com/tlf/oss/resourceinventory/radius/repository/RetrieveRepository.class
+com/tlf/oss/resourceinventory/radius/repository/factory/GenericRepository.class
+com/tlf/oss/resourceinventory/radius/validation/Deallocate.class

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="ResourceInventoryGraniteAPI-ear-0.0.1-SNAPSHOT">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/application" tag="defaultRootSource"/>
+        <dependent-module archiveName="ResourceInventoryGraniteAPI-api.war" deploy-path="/" handle="module:/resource/ResourceInventoryGraniteAPI-api/ResourceInventoryGraniteAPI-api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventorySchemas-entities.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventorySchemas-entities/ResourceInventorySchemas-entities">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventoryGraniteAPI-core.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventoryGraniteAPI-core/ResourceInventoryGraniteAPI-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventoryGraniteAPI-rules.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/com/tlf/oss/resourceinventory/ResourceInventoryGraniteAPI-rules/0.0.1-SNAPSHOT/ResourceInventoryGraniteAPI-rules-0.0.1-SNAPSHOT.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="drools-core.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/drools/drools-core/6.4.0.Final/drools-core-6.4.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="mvel2.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/mvel/mvel2/2.2.8.Final/mvel2-2.2.8.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="kie-api.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/kie/kie-api/6.4.0.Final/kie-api-6.4.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-codec.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="drools-compiler.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/drools/drools-compiler/6.4.0.Final/drools-compiler-6.4.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="antlr-runtime.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/antlr/antlr-runtime/3.5/antlr-runtime-3.5.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ecj.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/eclipse/jdt/core/compiler/ecj/4.4.2/ecj-4.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xstream.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/com/thoughtworks/xstream/xstream/1.4.7/xstream-1.4.7.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="protobuf-java.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/com/google/protobuf/protobuf-java/2.6.0/protobuf-java-2.6.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="kie-internal.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/kie/kie-internal/6.4.0.Final/kie-internal-6.4.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="json-simple.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="mapstruct-jdk8.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/mapstruct/mapstruct-jdk8/1.1.0.Final/mapstruct-jdk8-1.1.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="mapstruct-processor.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/mapstruct/mapstruct-processor/1.1.0.Final/mapstruct-processor-1.1.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="freemarker.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/freemarker/freemarker/2.3.21/freemarker-2.3.21.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="OSSCommons-util.jar" deploy-path="/APP-INF/lib" handle="module:/resource/OSSCommons-util/OSSCommons-util">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-core.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-classic.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-api.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="gson.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/com/google/code/gson/gson/2.3/gson-2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/application_7.xsd" version="7">
+  <display-name>ResourceInventorySCQLAAPI-ear</display-name>
+  <module>
+    <web>
+      <web-uri>ResourceInventorySCQLAAPI-api.war</web-uri>
+      <context-root>/ri-scqlaapi</context-root>
+    </web>
+  </module>
+  <module>
+    <ejb>ResourceInventorySCQLAAPI-core.jar</ejb>
+  </module>
+  <library-directory>APP-INF/lib</library-directory>
+</application>

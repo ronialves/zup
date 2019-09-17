@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeallocateController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">DeallocateController.java</span></div><h1>DeallocateController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.osp.core.enums.OSPCode;
+import com.tlf.oss.resourceinventory.osp.core.enums.Operation;
+import com.tlf.oss.resourceinventory.osp.core.validation.Deallocate;
+import com.tlf.oss.resourceinventory.osp.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@Logged
+@RequestScoped
+<span class="nc" id="L17">public class DeallocateController extends ValidatorEntity {</span>
+
+	@Inject
+	private DeallocateMetallicController deallocateMetallicController;
+
+	@Inject
+	private DeallocateGponController deallocateGponController;
+	
+	@Inject
+	private OSSLogger logger;
+
+	public ResourceInventoryEntity doExecution(@Deallocate ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">		if (isGpon(entity)) {</span>
+<span class="nc" id="L30">			logger.log(OSSLogger.INFO, &quot;DeallocateGponController - GPON&quot;);</span>
+<span class="nc" id="L31">			deallocateGpon(entity);</span>
+		} else {
+<span class="nc" id="L33">			logger.log(OSSLogger.INFO, &quot;DeallocateMetallicController - METALLIC&quot;);</span>
+<span class="nc" id="L34">			deallocateMetallic(entity);</span>
+		}
+<span class="nc" id="L36">		return entity;</span>
+
+	}
+
+	private void deallocateGpon(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="nc" id="L41">		deallocateGponController.deallocate(entity, Operation.DEALLOCATE);</span>
+<span class="nc" id="L42">	}</span>
+
+	private void deallocateMetallic(ResourceInventoryEntity entity) throws OSSBusinessException {
+		try {
+<span class="nc" id="L46">			deallocateMetallicController.deallocate(entity, Operation.DEALLOCATE);</span>
+<span class="nc" id="L47">		} catch (OSSBusinessException ossBusinessException) {</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">			if (!OSPCode.RESOURCE_FACILITY.getValue().equals(ossBusinessException.getDetail())) {</span>
+<span class="nc" id="L49">				throw ossBusinessException;</span>
+			}
+<span class="nc" id="L51">		}</span>
+<span class="nc" id="L52">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

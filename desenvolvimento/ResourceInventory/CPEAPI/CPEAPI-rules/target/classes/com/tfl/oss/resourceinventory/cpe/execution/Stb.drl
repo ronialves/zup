@@ -1,0 +1,102 @@
+package com.tfl.oss.resourceinventory.cpe.execution
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.cpe.rules.Categoria;
+
+rule "[STB] Set Top Box" salience 4
+   agenda-group "STB"
+   when
+      $tipoRfs : Categoria()
+
+      ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null)
+      
+      $inventoryEntity : ResourceInventoryEntity(customerFacingService != null, customerFacingService.size() == 1)
+      
+      $customerFacingServices : CustomerFacingService() from $inventoryEntity.customerFacingService
+      
+      $equipmentTypeSdb : ServiceDescribedBy("EQUIPMENT_TYPE".equalsIgnoreCase(name)) from $customerFacingServices.serviceDescribedBy
+      
+      $equipmentTypeSdbValue : ServiceSpecCharDescribes("STB".equalsIgnoreCase(value)) from $equipmentTypeSdb.serviceSpecCharDescribes
+   then
+      $tipoRfs.setResult("Set Top Box");
+      insert($tipoRfs);
+end
+
+rule "[STB] Set Top Box DVR" salience 3
+   agenda-group "STB"
+   when
+      $tipoRfs : Categoria()
+
+      ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null)
+      
+      $inventoryEntity : ResourceInventoryEntity(customerFacingService != null, customerFacingService.size() == 1)
+      
+      $customerFacingServices : CustomerFacingService() from $inventoryEntity.customerFacingService
+      
+      $equipmentTypeSdb : ServiceDescribedBy("EQUIPMENT_TYPE".equalsIgnoreCase(name)) from $customerFacingServices.serviceDescribedBy
+      
+      $dvrSdb : ServiceDescribedBy("DVR".equalsIgnoreCase(name)) from $customerFacingServices.serviceDescribedBy
+      
+      $equipmentTypeSdbValue : ServiceSpecCharDescribes("STB".equalsIgnoreCase(value)) from $equipmentTypeSdb.serviceSpecCharDescribes
+      
+      $dvrSdbValue : ServiceSpecCharDescribes("TRUE".equalsIgnoreCase(value)) from $dvrSdb.serviceSpecCharDescribes
+   then
+      $tipoRfs.setResult("Set Top Box DVR");
+      insert($tipoRfs);
+end
+
+rule "[STB] Set Top Box IPTV" salience 2
+   agenda-group "STB"
+   when
+      $tipoRfs : Categoria()
+
+      ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null )
+      
+      $inventoryEntity : ResourceInventoryEntity(customerFacingService != null, customerFacingService.size() == 1)
+      
+      $customerFacingServices : CustomerFacingService() from $inventoryEntity.customerFacingService
+      
+      $equipmentTypeSdb : ServiceDescribedBy("EQUIPMENT_TYPE".equalsIgnoreCase(name)) from $customerFacingServices.serviceDescribedBy
+      
+      $technologySdb : ServiceDescribedBy("TECHNOLOGY".equalsIgnoreCase(name)) from $customerFacingServices.serviceDescribedBy
+      
+      $equipmentTypeSdbValue : ServiceSpecCharDescribes("STB".equalsIgnoreCase(value)) from $equipmentTypeSdb.serviceSpecCharDescribes
+      
+      $technologySdbValue : ServiceSpecCharDescribes("IPTV".equalsIgnoreCase(value)) from $technologySdb.serviceSpecCharDescribes
+   then
+      $tipoRfs.setResult("Set Top Box IPTV");
+      insert($tipoRfs);
+end
+
+rule "[STB] Set Top Box DVR IPTV" salience 1
+   agenda-group "STB"
+   when
+      $tipoRfs : Categoria()
+
+      ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null)
+      
+      $inventoryEntity : ResourceInventoryEntity(customerFacingService != null, customerFacingService.size() == 1)
+      
+      $customerFacingServices : CustomerFacingService() from $inventoryEntity.customerFacingService
+      
+      $equipmentTypeSdb : ServiceDescribedBy("EQUIPMENT_TYPE".equalsIgnoreCase(name)) from $customerFacingServices.serviceDescribedBy
+      
+      $dvrSdb : ServiceDescribedBy("DVR".equalsIgnoreCase(name)) from $customerFacingServices.serviceDescribedBy
+      
+      $technologySdb : ServiceDescribedBy("TECHNOLOGY".equalsIgnoreCase(name)) from $customerFacingServices.serviceDescribedBy
+      
+      $equipmentTypeSdbValue : ServiceSpecCharDescribes("STB".equalsIgnoreCase(value)) from $equipmentTypeSdb.serviceSpecCharDescribes
+      
+      $dvrSdbValue : ServiceSpecCharDescribes("TRUE".equalsIgnoreCase(value)) from $dvrSdb.serviceSpecCharDescribes
+      
+      $technologySdbValue : ServiceSpecCharDescribes("IPTV".equalsIgnoreCase(value)) from $technologySdb.serviceSpecCharDescribes
+   then
+      $tipoRfs.setResult("Set Top Box DVR IPTV");
+      insert($tipoRfs);
+end

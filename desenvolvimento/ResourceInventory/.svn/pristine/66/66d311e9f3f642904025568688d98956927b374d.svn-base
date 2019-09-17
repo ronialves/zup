@@ -1,0 +1,25 @@
+package com.tlf.oss.resourceinventory.orchestration.execution.resourceordermanagement;
+
+rule "[Update] - CPE" extends "BaseRule"
+	agenda-group "UPDATE"
+	when
+		$action : Action(name == '1.0_CPE_UPDATE') from $resource.actions
+		ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null, 
+            					resourceOrder!.resourceOrderItem!.name == 'R_CPE_ACCESS' || 
+								resourceOrder!.resourceOrderItem!.name == 'R_CPE_VOIP' ||  
+								resourceOrder!.resourceOrderItem!.name == 'R_CPE_ACCESS_PORT')
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);		
+		insert( $action );
+end
+
+rule "[Update STB] - CPE" extends "BaseRule"
+	agenda-group "UPDATE"
+	when
+		$action : Action(name == '1.0_CPE_UPDATE_STB') from $resource.actions
+		ResourceInventoryEntity(resourceOrder!.resourceOrderItem!.name != null, 
+            					resourceOrder!.resourceOrderItem!.name == 'R_CPE_STB')
+	then
+		log($logger, drools.getRule().getName(), "Ação gerada = " + $action);		
+		insert( $action );
+end

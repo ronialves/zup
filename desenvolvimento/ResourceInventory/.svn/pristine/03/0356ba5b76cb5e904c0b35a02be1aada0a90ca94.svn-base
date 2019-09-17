@@ -1,0 +1,65 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
+import { Subscription, BehaviorSubject } from 'rxjs';
+import { AppComponent } from '../app.component';
+import { NavBarState } from './nav-bar-state.model';
+
+
+@Component({
+  selector: 'nav-bar',
+  templateUrl: './nav-bar.component.html',
+  styleUrls: ['./nav-bar.component.scss']
+})
+
+export class NavBarComponent implements OnInit, OnDestroy {
+  @Input()
+  retracted: boolean;
+  currentState$: BehaviorSubject<NavBarState> = new BehaviorSubject(null);
+  subscriptions$: Subscription = new Subscription();  
+  
+  states: Array<NavBarState> = [
+    new NavBarState("Consultar Equipamentos", "catalogo", "fas fa-boxes"),
+    new NavBarState("Inserir Equipamento", "equipamento", "fas fa-box")
+  ];
+  
+  constructor(
+    private router: Router,
+    public appComponent: AppComponent
+  ) {}
+
+  ngOnInit(): void {
+    this.eventUrlChange();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions$.unsubscribe();
+  }
+
+  eventUrlChange(): void {
+    this.subscriptions$.add(this.router.events.subscribe((event) =>{
+      if (event instanceof NavigationEnd) {
+        let url = event.urlAfterRedirects;
+        this.loadState(url);
+      }
+    }))
+  }
+
+  getStateByName(name): NavBarState {
+    return this.states.filter((state) => {
+      return state.name == name;
+    })[0];
+  }
+
+  getUrlFatherPath(fullUrl): string {
+    if (!fullUrl) {
+      return '';
+    }
+    return fullUrl.replace('/', '').split('/')[0].split('?')[0]
+  }
+
+  loadState(url: string): void {
+    let state = this.getUrlFatherPath(url)
+    this.currentState$.next(this.getStateByName(state));
+  }
+}

@@ -1,0 +1,4 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryRepository/ResourceInventoryRepository-api/src/main/java/com/tlf/oss/resourceinventory/repository/api/V1_0/CustomerService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryRepository/ResourceInventoryRepository-api/src/main/java/com/tlf/oss/resourceinventory/repository/api/V1_0/CustomerAuditService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryRepository/ResourceInventoryRepository-api/src/main/java/com/tlf/oss/resourceinventory/repository/api/V1_0/OrchestrationAuditService.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryRepository/ResourceInventoryRepository-api/src/main/java/com/tlf/oss/resourceinventory/repository/api/V1_0/RESTConfig.java

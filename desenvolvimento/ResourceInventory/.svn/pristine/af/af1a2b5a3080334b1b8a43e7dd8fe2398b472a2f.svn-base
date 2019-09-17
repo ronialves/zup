@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/CustomerTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd"></xs:import>
+	<xs:complexType name="Customer">
+		<xs:sequence>
+			<!-- Código do cliente -->
+			<xs:element minOccurs="0" name="code" type="st:string30"></xs:element>
+			<!-- Nome do cliente -->
+			<xs:element minOccurs="0" name="name" type="st:string50"></xs:element>
+			<!-- Observações -->
+			<xs:element minOccurs="0" name="notes" type="st:string250"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

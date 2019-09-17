@@ -1,0 +1,9 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTbsAPI/ResourceInventoryTbsAPI-core/src/test/java/com/tlf/oss/resourceinventory/tbs/core/Environment.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTbsAPI/ResourceInventoryTbsAPI-core/src/test/java/com/tlf/oss/resourceinventory/tbs/core/InstallTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTbsAPI/ResourceInventoryTbsAPI-core/src/test/java/com/tlf/oss/resourceinventory/tbs/core/CabinetRetrievalControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTbsAPI/ResourceInventoryTbsAPI-core/src/test/java/com/tlf/oss/resourceinventory/tbs/core/FacilityRetrievalTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTbsAPI/ResourceInventoryTbsAPI-core/src/test/java/com/tlf/oss/resourceinventory/tbs/core/GatherResourceInformationControllerTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTbsAPI/ResourceInventoryTbsAPI-core/src/test/java/com/tlf/oss/resourceinventory/tbs/core/DeallocateTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTbsAPI/ResourceInventoryTbsAPI-core/src/test/java/com/tlf/oss/resourceinventory/tbs/core/AllocateTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTbsAPI/ResourceInventoryTbsAPI-core/src/test/java/com/tlf/oss/resourceinventory/tbs/core/FacilityTest.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryTbsAPI/ResourceInventoryTbsAPI-core/src/test/java/com/tlf/oss/resourceinventory/tbs/core/AllTests.java

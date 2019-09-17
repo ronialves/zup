@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeallocateController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RadiusAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.radius.core</a> &gt; <span class="el_source">DeallocateController.java</span></div><h1>DeallocateController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.radius.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.radius.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.radius.repository.DeallocateRepository;
+import com.tlf.oss.resourceinventory.radius.validation.Deallocate;
+import com.tlf.oss.resourceinventory.radius.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+/**
+ * REC3635-1294 | REC3635-2045
+ * 
+ * @project Fusion
+ * @author 80645973
+ * @since 20190326
+ */
+<span class="fc" id="L22">public class DeallocateController  extends ValidatorEntity implements Serializable{</span>
+	
+	private static final long serialVersionUID = 1L;
+	
+    @Inject
+    private OSSLogger logger;
+    
+    @Inject
+    private DeallocateRepository deallocateRepository;
+    
+    
+    public ResourceInventoryEntity deallocate(@Deallocate ResourceInventoryEntity entity) throws OSSBusinessException{
+    	
+<span class="fc" id="L35">    	String designadorAcesso = entity.getResourceFacingService().getServiceId();</span>
+    	
+<span class="fc" id="L37">    	logger.log(OSSLogger.INFO, &quot;Desalocadndo Ip ao Designador: '&quot;+ designadorAcesso+ &quot;'&quot;);</span>
+    	
+<span class="fc" id="L39">    	String ipAddress = deallocateRepository.getIpAddress(designadorAcesso);</span>
+    	
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">    	if(ipAddress != null){</span>
+    	
+<span class="fc" id="L43">    	deallocateRepository.deallocateIpAddress(ipAddress);</span>
+    	
+<span class="fc" id="L45">    	deallocateRepository.deallocateDesignador(designadorAcesso);</span>
+    	
+    	}else{
+<span class="nc" id="L48">    		logger.log(OSSLogger.ERROR,&quot;IP_ADDRESS nulo na tabela TNETPRO_POOL&quot;);</span>
+<span class="nc" id="L49">    		throw new OSSBusinessException(ExceptionInfoEnum.RIRADIUS_004.getDescription(),</span>
+<span class="nc" id="L50">    				ExceptionInfoEnum.RIRADIUS_004.getCode(),String.format(ExceptionInfoEnum.RIRADIUS_002.getMessage(),</span>
+    					&quot;Erro: IP_ADRESS nulo na tabela TNETPRO_POOL&quot;));
+    		
+    	}
+       	
+<span class="fc" id="L55">    	return entity;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

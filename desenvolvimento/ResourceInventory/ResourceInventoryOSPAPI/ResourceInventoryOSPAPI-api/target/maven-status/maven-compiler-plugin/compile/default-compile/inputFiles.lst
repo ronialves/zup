@@ -1,0 +1,9 @@
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryOSPAPI/ResourceInventoryOSPAPI-api/src/main/java/com/tlf/oss/resourceinventory/osp/api/v1_0/Reserve.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryOSPAPI/ResourceInventoryOSPAPI-api/src/main/java/com/tlf/oss/resourceinventory/osp/api/v1_0/Uninstall.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryOSPAPI/ResourceInventoryOSPAPI-api/src/main/java/com/tlf/oss/resourceinventory/osp/api/v1_0/Allocate.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryOSPAPI/ResourceInventoryOSPAPI-api/src/main/java/com/tlf/oss/resourceinventory/osp/api/v1_0/Deallocate.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryOSPAPI/ResourceInventoryOSPAPI-api/src/main/java/com/tlf/oss/resourceinventory/osp/api/v1_0/AvailabilityRetrieval.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryOSPAPI/ResourceInventoryOSPAPI-api/src/main/java/com/tlf/oss/resourceinventory/osp/config/RESTConfig.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryOSPAPI/ResourceInventoryOSPAPI-api/src/main/java/com/tlf/oss/resourceinventory/osp/api/v1_0/FacilityRetrieval.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryOSPAPI/ResourceInventoryOSPAPI-api/src/main/java/com/tlf/oss/resourceinventory/osp/api/v1_0/CancelReserved.java
+/home/roni/repos_svn/ESTEIRA_2_QA1_RESOURCEINVENTORY_DEV_FUSION_RI/ResourceInventory/ResourceInventoryOSPAPI/ResourceInventoryOSPAPI-api/src/main/java/com/tlf/oss/resourceinventory/osp/api/v1_0/Install.java

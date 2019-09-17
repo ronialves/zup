@@ -1,0 +1,38 @@
+[
+    {
+        "faultCode": "RISAGRE-501",
+        "faultDescription": "PARAMETRO NAO INFORMADO"
+    },
+    {
+        "faultCode": "RISAGRE-502",
+        "faultDescription": "ERRO DE CONEXAO"
+    },
+    {
+        "faultCode": "RISAGRE-503",
+        "faultDescription": "PARAMETRO INVALIDO"
+    },
+    {
+        "faultCode": "RISAGRE-504",
+        "faultDescription": "ERRO DE CADASTRO"
+    },
+    {
+        "faultCode": "RISAGRE-505",
+        "faultDescription": "ERRO DE SISTEMA"
+    },
+    {
+        "faultCode": "RISAGRE-506",
+        "faultDescription": "ERRO TRANSACIONAL"
+    },
+    {
+        "faultCode": "RISAGRE-513",
+        "faultDescription": "ERRO TRANSACIONAL (REDE)"
+    },
+    {
+        "faultCode": "RISAGRE-666",
+        "faultDescription": "ERRO INTERNO NAO MAPEADO"
+    },
+    {
+        "faultCode": "RISAGRE-999",
+        "faultDescription": "ERRO NAO MAPEADO"
+    }
+]

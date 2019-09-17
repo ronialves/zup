@@ -1,0 +1,33 @@
+package com.tlf.oss.resourceinventory.cpe.validation;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.cpe.enums.EntityFields;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class DeallocateValidator extends ValidatorEntity
+		implements ConstraintValidator<Deallocate, ResourceInventoryEntity> {
+
+	@Override
+	public void initialize(Deallocate constraintAnnotation) {
+
+	}
+
+	@Override
+	public boolean isValid(ResourceInventoryEntity entity, ConstraintValidatorContext context) {
+		try {
+			this.validateCustomerFacingServices(entity);
+			this.validateResourceFacingService(entity, EntityFields.SERVICE_ID.getValue());
+		} catch (OSSBusinessException e) {
+			context.buildConstraintViolationWithTemplate(e.getDetail()).addConstraintViolation();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
+
+}

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes"
+	xmlns:si="http://www.cpqd.com.br/etics/SupplementaryInformationReportTypes"
+	xmlns:se="http://www.cpqd.com.br/etics/ServiceTypes" xmlns:re="http://www.cpqd.com.br/etics/provisiongtypes"
+	xmlns:mt="http://www.cpqd.com.br/etics/CustomerTypes" xmlns:itr="http://www.cpqd.com.br/etics/CustomerResourceTypes"
+	xmlns:ca="http://www.cpqd.com.br/etics/CircuitRelatedResourceTypes"
+	xmlns:at="http://www.cpqd.com.br/etics/AddressTypes"
+	elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/facilities/ReportResourceProvisioningTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/AddressTypes"
+		schemaLocation="AddressTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/CircuitRelatedResourceTypes"
+		schemaLocation="CircuitRelatedResourceTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/provisiongtypes"
+		schemaLocation="ProvisioningTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/CustomerTypes"
+		schemaLocation="CustomerTypes.xsd" />
+	<xs:import
+		namespace="http://www.cpqd.com.br/etics/SupplementaryInformationReportTypes"
+		schemaLocation="SupplementaryInformationReportTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/ServiceTypes"
+		schemaLocation="ServiceTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/CustomerResourceTypes"
+		schemaLocation="CustomerResourceTypes.xsd" /> 
+  <!-- Elemento de entrada de dados -->
+	<xs:complexType name="ReportResourceProvisioningRequest">
+		<xs:sequence>
+  <!-- Ordem de Recursos (Número do Documento) -->
+			<xs:element minOccurs="0" name="resourceOrder" type="st:string40" /> 
+  <!-- Ordem de Reserva de Recursos (Número do Documento de Reserva) -->
+			<xs:element minOccurs="0" name="reserveOrder" type="st:string15" /> 
+  <!-- Identificador do Circuito   -->
+			<xs:element minOccurs="0" name="circuitId" type="st:string50" /> 
+  <!-- Tipo de Circuito (1   Rede Metálica, 2   Rede FTTH) -->
+			<xs:element minOccurs="0" name="circuitType">
+				<xs:simpleType>
+					<xs:restriction base="st:string30">
+						<xs:pattern value="1|2" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+  <!--  
+ Estado do Circuito
+				Par/Fibra:
+				1   DS (Designado)
+				2   RS (Reservado)
+				3   OC (Ocupado)
+				5   AR (A Retirar)
+				8   RA (Reserva para Averiguação)
+				9   DF (Defeito)
+				10   ND (Não Disponível)
+				12   RT (Reserva Técnica)
+				11 – CR (Carrier)
+				Par:
+				4   DL (Dedicação de Linha)
+				7   DJ (Dedicação Jumper)
+	-->
+			<xs:element minOccurs="0" name="circuitStatus">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:pattern value="1|2|3|4|5|7|8|9|10|11|12" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+  <!--  Caracteristica do Circuito (0   Nao e LP, 2   Ponta A de LP, 3   Ponta B de LP) -->
+			<xs:element default="0" minOccurs="0" name="category">
+				<xs:simpleType>
+					<xs:restriction base="st:string1">
+						<xs:pattern value="0|2|3" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+  <!-- Serviço -->
+			<xs:element minOccurs="0" name="service" type="se:Service" /> 
+  <!-- Endereço -->
+			<xs:element minOccurs="0" name="address" type="at:Address" /> 
+  <!-- Cliente -->
+			<xs:element minOccurs="0" name="customer" type="mt:Customer" /> 
+  <!-- Dados Complementares -->
+			<xs:element minOccurs="0" name="supplementaryInformation"
+				type="si:SupplementaryInformationIn" />
+		</xs:sequence>
+	</xs:complexType>
+  <!-- Elemento de entrada de dados -->
+	<xs:complexType name="DistributeFreeResourceTermRequest">
+		<xs:sequence>
+  <!-- Ordem de Recursos (Número do Documento) -->
+			<xs:element minOccurs="0" name="resourceOrder" type="st:string40" /> 
+  <!-- Tipo de Circuito (1   Rede Metálica, 2   Rede FTTH) -->
+			<xs:element minOccurs="1" name="circuitType">
+				<xs:simpleType>
+					<xs:restriction base="st:string30">
+						<xs:pattern value="1|2" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+  <!--   Identificador do Circuito -->
+			<xs:element minOccurs="0" name="circuitIdentifier" type="st:string50" /> 
+  <!--   Serviço -->
+			<xs:element minOccurs="0" name="serviceNumber" type="st:string60" />
+		</xs:sequence>
+	</xs:complexType>
+  <!--   Elemento de saida de dados -->
+	<xs:complexType name="ReportResourceProvisioningResponse">
+		<xs:sequence>
+  <!--   Resultado da operação -->
+			<xs:element name="result" type="re:ResultTypeWithErrorCode" /> 
+  <!--   Dados retornados ao sistema externo -->
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="informations">
+				<xs:complexType>
+					<xs:sequence>
+  <!--   Nível da informação (1   Lógicas, 2   Físicas) -->
+						<xs:element name="level">
+							<xs:simpleType>
+								<xs:restriction base="xs:integer">
+									<xs:pattern value="1|2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+  <!--   Tipo de Circuito (1   Rede Metálica, 2   Rede FTTH) -->
+						<xs:element name="circuitType">
+							<xs:simpleType>
+								<xs:restriction base="st:string30">
+									<xs:pattern value="1|2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+  <!--   Dedicação (0   Não dedicados, 1   Dedicados) -->
+						<xs:element minOccurs="0" name="dedication">
+							<xs:simpleType>
+								<xs:restriction base="xs:integer">
+									<xs:pattern value="0|1" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+  <!--   Massiva (0-Não estao em dados massivos, 1   Estao em dados massivos) -->
+						<xs:element minOccurs="0" name="massive">
+							<xs:simpleType>
+								<xs:restriction base="xs:integer">
+									<xs:pattern value="0|1" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+  <!--   Ordem de Recursos -->
+						<xs:element minOccurs="0" name="resourceOrder" type="st:string40" /> 
+  <!--   Ordem de Reserva de Recursos -->
+						<xs:element minOccurs="0" name="reserveOrder" type="st:string15" /> 
+  <!--   Qde Unid. de Transmissão -->
+						<xs:element name="transmissionUnits" type="st:integer5" /> 
+  <!--   Condição de Rede (0   Normal, 1   Invasao, 2   Segregacao)-->
+						<xs:element default="0" name="statusNetwork">
+							<xs:simpleType>
+								<xs:restriction base="st:string1">
+									<xs:pattern value="0|1|2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+  <!--   Circuitos -->
+						<xs:element minOccurs="0" name="relatedCircuits"
+							type="ca:CircuitResourceReport" /> 
+  <!--   Dados Complementares -->
+						<xs:element minOccurs="0" name="supplementaryInformation"
+							type="si:SupplementaryInformationOut" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+  <!--   Elemento de saida de dados -->
+	<xs:complexType name="DistributeFreeResourceTermResponse">
+		<xs:sequence>
+  <!--   Resultado da operação -->
+			<xs:element name="result" type="re:ResultType" /> 
+  <!--   Dados retornados ao sistema externo -->
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="informations">
+				<xs:complexType>
+					<xs:sequence>
+  <!--   Ordem de Recursos (Número do Documento) -->
+						<xs:element minOccurs="0" name="resourceOrder" type="st:string40" /> 
+  <!--   Tipo de Circuito (1   Rede Metálica, 2   Rede FTTH) -->
+						<xs:element minOccurs="1" name="circuitType">
+							<xs:simpleType>
+								<xs:restriction base="st:string30">
+									<xs:pattern value="1|2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+  <!--   Identificador do Circuito -->
+						<xs:element minOccurs="0" name="circuitIdentifier"
+							type="st:string50" /> 
+  <!--   Condição de Rede (0   Normal, 1   Invasao, 2   Segregacao)-->
+						<xs:element default="0" name="statusNetwork">
+							<xs:simpleType>
+								<xs:restriction base="st:string1">
+									<xs:pattern value="0|1|2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+  <!--   Serviço -->
+						<xs:element minOccurs="0" name="serviceNumber" type="st:string60" /> 
+  <!--   Endereço -->
+						<xs:element minOccurs="0" name="address" type="at:Address" /> 
+  <!--   Lista de recursos -->
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="resources"
+							type="itr:CustomAvailableResources" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

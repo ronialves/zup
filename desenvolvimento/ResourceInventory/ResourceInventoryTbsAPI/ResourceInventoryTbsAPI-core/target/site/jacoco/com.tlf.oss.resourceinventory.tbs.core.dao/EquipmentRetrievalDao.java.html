@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EquipmentRetrievalDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core.dao</a> &gt; <span class="el_source">EquipmentRetrievalDao.java</span></div><h1>EquipmentRetrievalDao.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core.dao;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.Equipment;
+import com.tlf.oss.resourceinventory.schemas.PhysicalPort;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.core.utils.Constants;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrievalEquipmentDetailTreeEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrievalEquipmentEntity;
+import com.tlf.oss.resourceinventory.tbs.repository.factory.GenericRepository;
+
+/**
+ * Responsável pela comunicação com as Procs do TBS que retornam as informações
+ * dos Equipamentos de Rede.
+ */
+<span class="nc" id="L27">public class EquipmentRetrievalDao extends GenericRepository implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private OSSLogger logger;
+
+	private static final String TLF_SP_SIGITM_GET_ELEMENTO = &quot;TLF_SP_SIGITM_GET_ELEMENTO&quot;;
+	private static final String TLF_SP_SIGITM_GET_FILHO = &quot;TLF_SP_SIGITM_GET_FILHO&quot;;
+	private static final String TLF_SP_SIGITM_GET_PORTA = &quot;TLF_SP_SIGITM_GET_PORTA&quot;;
+	
+	private static final String STATE_OR_PROVINCE = &quot;stateOrProvince&quot;;
+	private static final String MICROAREA = &quot;microarea&quot;;
+	private static final String EQUIPMENT = &quot;equipment&quot;;
+	private static final String HOSTNAME = &quot;Hostname&quot;;
+	private static final String P_STATE_CODE = &quot;p_state_code&quot;;
+	private static final String P_SITE = &quot;p_site&quot;;
+	private static final String P_HOSTNAME = &quot;p_hostname&quot;;
+	private static final String P_FUSION = &quot;p_fusion&quot;;
+	private static final String P_EQUIPMENT_ID = &quot;p_equipment_id&quot;;
+	
+	private static final String TBS = &quot;TBS&quot;;
+	private static final String SUB = &quot;SUB&quot;;
+	private static final String SLOT = &quot;SLOT&quot;;
+	private static final String PORT = &quot;PORT&quot;;
+
+	/**
+	 * Fluxo de Consulta dos Equipamentos de uma Localidade.
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public ResourceInventoryEntity getEquipmentByLocation(ResourceInventoryEntity entity) {
+<span class="nc" id="L60">		logger.log(OSSLogger.INFO, &quot;EquipmentRetrievalDao - getEquipmentByLocation - Iniciando chamada a Procedure do TBS.&quot;);</span>
+
+		List&lt;RetrievalEquipmentEntity&gt; result;
+
+			TypedQuery&lt;RetrievalEquipmentEntity&gt; query;
+<span class="nc" id="L65">			query = getFactory().createNamedQuery(RetrievalEquipmentEntity.RETRIEVAL_EQUIPMENT, RetrievalEquipmentEntity.class);</span>
+			
+<span class="nc" id="L67">			String stateOrProvince = getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, STATE_OR_PROVINCE);</span>
+<span class="nc" id="L68">			String microArea = getParamValue(entity, Constants.NETWORK_OWNER_VIVO2, MICROAREA);</span>
+
+<span class="nc bnc" id="L70" title="All 8 branches missed.">			if(stateOrProvince != null &amp;&amp; !stateOrProvince.isEmpty() &amp;&amp; microArea != null &amp;&amp; !microArea.isEmpty()) {</span>
+<span class="nc" id="L71">				query.setParameter(P_STATE_CODE, stateOrProvince);</span>
+<span class="nc" id="L72">				query.setParameter(P_SITE, microArea);</span>
+
+<span class="nc" id="L74">				logIn(query, TLF_SP_SIGITM_GET_ELEMENTO);</span>
+
+<span class="nc" id="L76">				result = query.getResultList();</span>
+
+<span class="nc" id="L78">				return equipmentMapper(entity, result);</span>
+			} else {
+
+<span class="nc" id="L81">				return entity;</span>
+			}
+	}
+
+	/**
+	* Metodo responsavel pelo mapeamento das informacoes dos Equipamentos.
+	* 
+	* @param entity
+	* @param resultQuery
+	* @return
+	*/
+	private ResourceInventoryEntity equipmentMapper(ResourceInventoryEntity entity, List&lt;RetrievalEquipmentEntity&gt; resultQuery) {
+			
+<span class="nc bnc" id="L94" title="All 4 branches missed.">		if(resultQuery != null &amp;&amp; !resultQuery.isEmpty()) {</span>
+<span class="nc" id="L95">			List&lt;Equipment&gt; equipments = getEquipments(entity);</span>
+			
+<span class="nc bnc" id="L97" title="All 2 branches missed.">		for (RetrievalEquipmentEntity resultEquipment : resultQuery) {</span>
+				
+<span class="nc" id="L99">				Equipment equipment = new Equipment();</span>
+				
+<span class="nc bnc" id="L101" title="All 2 branches missed.">				if(resultEquipment.getTypeEquip() != null)</span>
+<span class="nc" id="L102">					equipment.setTypeOfResource(resultEquipment.getTypeEquip());</span>
+				
+<span class="nc bnc" id="L104" title="All 2 branches missed.">				if(resultEquipment.getHostname() != null)</span>
+<span class="nc" id="L105">					equipment.setName(resultEquipment.getHostname().toLowerCase());</span>
+				
+<span class="nc bnc" id="L107" title="All 2 branches missed.">				if(resultEquipment.getNasip() != null)</span>
+<span class="nc" id="L108">					equipment.setIp(resultEquipment.getNasip());</span>
+				
+<span class="nc" id="L110">				equipment.setOrigin(TBS);</span>
+				
+<span class="nc bnc" id="L112" title="All 2 branches missed.">				if(resultEquipment.getIdEquip() != null)</span>
+<span class="nc" id="L113">					equipment.setId(resultEquipment.getIdEquip());</span>
+				
+<span class="nc bnc" id="L115" title="All 2 branches missed.">				if(resultEquipment.getVendorName() != null)</span>
+<span class="nc" id="L116">					equipment.setVendor(resultEquipment.getVendorName());</span>
+				
+<span class="nc bnc" id="L118" title="All 2 branches missed.">				if(resultEquipment.getAcronymEquip() != null)</span>
+<span class="nc" id="L119">					equipment.setModel(resultEquipment.getAcronymEquip());</span>
+				
+<span class="nc" id="L121">				equipments.add(equipment);</span>
+<span class="nc" id="L122">			}</span>
+<span class="nc" id="L123">			entity.setEquipment(equipments);</span>
+		}
+<span class="nc" id="L125">		return entity;</span>
+	}
+
+	/**
+	 * Fluxo de Consulta de Detalhe de Equipamentos.
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public ResourceInventoryEntity getEquipmentDetail(ResourceInventoryEntity entity) {
+		
+<span class="nc" id="L136">		logger.log(OSSLogger.INFO, &quot;EquipmentRetrievalDao - getEquipmentDetail - Iniciando chamada a Procedure do TBS.&quot;);</span>
+		
+<span class="nc" id="L138">		List&lt;RetrievalEquipmentDetailTreeEntity&gt; resultTree = new ArrayList&lt;RetrievalEquipmentDetailTreeEntity&gt;();</span>
+		
+<span class="nc" id="L140">		TypedQuery&lt;RetrievalEquipmentDetailTreeEntity&gt; queryTree = getFactory().createNamedQuery(</span>
+				RetrievalEquipmentDetailTreeEntity.RETRIEVAL_EQUIPMENT_DETAIL_TREE,
+				RetrievalEquipmentDetailTreeEntity.class);
+		
+<span class="nc" id="L144">		String equipmentName = getParamValue(entity, EQUIPMENT, HOSTNAME);</span>
+
+<span class="nc bnc" id="L146" title="All 4 branches missed.">		if(equipmentName != null &amp;&amp; !equipmentName.isEmpty()) {</span>
+<span class="nc" id="L147">			queryTree.setParameter(P_HOSTNAME, equipmentName);</span>
+<span class="nc" id="L148">			queryTree.setParameter(P_FUSION, &quot;SIM&quot;);</span>
+
+<span class="nc" id="L150">			logIn(queryTree, TLF_SP_SIGITM_GET_FILHO);</span>
+<span class="nc" id="L151">			resultTree = queryTree.getResultList();</span>
+			
+<span class="nc" id="L153">			entity = equipmentTreeMapper(entity, resultTree);			</span>
+		} 
+<span class="nc" id="L155">		return entity;		</span>
+	}
+	
+	private ResourceInventoryEntity equipmentTreeMapper(ResourceInventoryEntity entity, List&lt;RetrievalEquipmentDetailTreeEntity&gt; resultTree) {
+		
+<span class="nc" id="L160">		logger.log(OSSLogger.INFO, &quot;EquipmentRetrievalDao - getEquipmentDetail - Iniciando o mapeamento de dados de retorno do TBS.&quot;);</span>
+		
+<span class="nc bnc" id="L162" title="All 4 branches missed.">		if(resultTree != null &amp;&amp; !resultTree.isEmpty()) {			</span>
+			
+<span class="nc" id="L164">			List&lt;PortAdapterCard&gt; cards = new ArrayList&lt;PortAdapterCard&gt;();</span>
+						
+<span class="nc bnc" id="L166" title="All 2 branches missed.">			for(RetrievalEquipmentDetailTreeEntity equipTree : resultTree) {				</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">				if(null != equipTree.getEquipAcronym()) {</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">					if(SLOT.equalsIgnoreCase(equipTree.getEquipAcronym())) {						</span>
+<span class="nc" id="L169">						cards.add(getCard(equipTree, SLOT, resultTree));</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">					} else if(SUB.equalsIgnoreCase(equipTree.getEquipAcronym())) {						</span>
+<span class="nc" id="L171">						cards.add(getCard(equipTree, SUB, resultTree));</span>
+					} 
+				}	
+<span class="nc" id="L174">			}			</span>
+			
+<span class="nc" id="L176">			return saveCard(entity, cards);			</span>
+		} else {
+<span class="nc" id="L178">			return entity;</span>
+		}
+	}
+	
+	private PortAdapterCard getCard(RetrievalEquipmentDetailTreeEntity equipTree, String type, List&lt;RetrievalEquipmentDetailTreeEntity&gt; resultTree) {
+		
+<span class="nc" id="L184">		PortAdapterCard card = new PortAdapterCard();</span>
+
+<span class="nc bnc" id="L186" title="All 2 branches missed.">		if (equipTree.getEquipIdParent() != null)</span>
+<span class="nc" id="L187">			card.setSlotId(equipTree.getEquipIdParent());</span>
+
+<span class="nc bnc" id="L189" title="All 2 branches missed.">		if (equipTree.getEquipIdChild() != null)</span>
+<span class="nc" id="L190">			card.setSubSlotId(equipTree.getEquipIdChild());</span>
+
+<span class="nc bnc" id="L192" title="All 2 branches missed.">		if (equipTree.getMountPosNumber() != null) {</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">			if (SLOT.equalsIgnoreCase(type)) {</span>
+<span class="nc" id="L194">				card.setSlot(equipTree.getMountPosNumber());</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">			} else if (SUB.equalsIgnoreCase(type)) {</span>
+<span class="nc" id="L196">				card.setSubSlot(equipTree.getMountPosNumber());</span>
+<span class="nc" id="L197">				card.setContainsPorts(getContainsPorts(card, resultTree));</span>
+			}
+		}
+
+<span class="nc" id="L201">		card.setOrigin(TBS);</span>
+
+<span class="nc bnc" id="L203" title="All 2 branches missed.">		if (equipTree.getEquipName() != null)</span>
+<span class="nc" id="L204">			card.setName(equipTree.getEquipName());</span>
+
+<span class="nc" id="L206">		return card;</span>
+	}
+	
+	private List&lt;PhysicalPort&gt; getContainsPorts(PortAdapterCard card, List&lt;RetrievalEquipmentDetailTreeEntity&gt; resultTree) {
+		
+<span class="nc" id="L211">		List&lt;PhysicalPort&gt; physicalPorts = new ArrayList&lt;PhysicalPort&gt;();		</span>
+<span class="nc" id="L212">			physicalPorts = getPorts(resultTree, card.getSubSlotId());</span>
+<span class="nc" id="L213">		return physicalPorts;</span>
+	}	
+	
+	private List&lt;PhysicalPort&gt; getPorts(List&lt;RetrievalEquipmentDetailTreeEntity&gt; resultTree, String id) {
+
+<span class="nc" id="L218">		List&lt;PhysicalPort&gt; ports = new ArrayList&lt;PhysicalPort&gt;();</span>
+
+<span class="nc bnc" id="L220" title="All 2 branches missed.">		for (RetrievalEquipmentDetailTreeEntity resultPort : resultTree) {</span>
+<span class="nc bnc" id="L221" title="All 4 branches missed.">			if (PORT.equalsIgnoreCase(resultPort.getEquipAcronym()) &amp;&amp; resultPort.getEquipIdChild() != null</span>
+<span class="nc bnc" id="L222" title="All 4 branches missed.">					&amp;&amp; resultPort.getEquipIdParent() != null &amp;&amp; id.equalsIgnoreCase(resultPort.getEquipIdParent())) {</span>
+<span class="nc" id="L223">				PhysicalPort physicalPort = new PhysicalPort();</span>
+
+<span class="nc bnc" id="L225" title="All 2 branches missed.">				if (null != resultPort.getMountPosNumber())</span>
+<span class="nc" id="L226">					physicalPort.setId(resultPort.getMountPosNumber());</span>
+
+<span class="nc bnc" id="L228" title="All 2 branches missed.">				if (null != resultPort.getEquipIdChild())</span>
+<span class="nc" id="L229">					physicalPort.setFiberId(resultPort.getEquipIdChild());</span>
+
+<span class="nc" id="L231">				ports.add(physicalPort);</span>
+			}
+<span class="nc" id="L233">		}</span>
+				
+<span class="nc" id="L235">		return ports;		</span>
+	}
+	
+	private ResourceInventoryEntity saveCard(ResourceInventoryEntity entity, List&lt;PortAdapterCard&gt; cards) {
+		
+<span class="nc bnc" id="L240" title="All 2 branches missed.">		if(entity.getEquipment() != null) {</span>
+<span class="nc" id="L241">			Equipment equipment = new Equipment();</span>
+<span class="nc" id="L242">				equipment.setHasCards(cards);</span>
+<span class="nc" id="L243">			entity.getEquipment().add(equipment);</span>
+<span class="nc" id="L244">		} else {</span>
+<span class="nc" id="L245">			List&lt;Equipment&gt; equipments = new ArrayList&lt;Equipment&gt;();</span>
+<span class="nc" id="L246">				Equipment equipment = new Equipment();</span>
+<span class="nc" id="L247">					equipment.setHasCards(cards);</span>
+<span class="nc" id="L248">				equipments.add(equipment);</span>
+<span class="nc" id="L249">			entity.setEquipment(equipments);</span>
+		}
+		
+<span class="nc" id="L252">		return formatEquipments(entity);</span>
+	}
+	
+	private ResourceInventoryEntity formatEquipments(ResourceInventoryEntity entity) {
+		
+<span class="nc" id="L257">		List&lt;PortAdapterCard&gt; formatCards = new ArrayList&lt;PortAdapterCard&gt;();</span>
+		
+<span class="nc bnc" id="L259" title="All 2 branches missed.">		for(Equipment equipment : entity.getEquipment()) {			</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">			for(PortAdapterCard card : equipment.getHasCards()) {				</span>
+				
+<span class="nc bnc" id="L262" title="All 2 branches missed.">				if(!formatCards.contains(card)) {</span>
+<span class="nc" id="L263">					formatCards.add(card);</span>
+				}							
+<span class="nc" id="L265">			}			</span>
+<span class="nc" id="L266">		}</span>
+				
+<span class="nc" id="L268">		List&lt;Equipment&gt; equipments = new ArrayList&lt;Equipment&gt;();</span>
+<span class="nc" id="L269">			Equipment equipment = new Equipment();</span>
+<span class="nc" id="L270">				equipment.setHasCards(formatCards);</span>
+<span class="nc" id="L271">			equipments.add(equipment);</span>
+<span class="nc" id="L272">		entity.setEquipment(equipments);</span>
+		
+<span class="nc" id="L274">		return entity;</span>
+	}
+
+	private void logIn(Query query, String procName) {
+<span class="nc" id="L278">		String log = getlogIn(procName, query);</span>
+<span class="nc" id="L279">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L280">	}</span>
+	
+	/**
+	 * Retorna o valor do Parâmetro do ServiceDescribedBy.
+	 * 
+	 * @param entity
+	 * @param networkOwner
+	 * @param paramName
+	 * @return
+	 */
+	private String getParamValue(ResourceInventoryEntity entity, String networkOwner, String paramName) {
+		
+<span class="nc bnc" id="L292" title="All 2 branches missed.">		for (ServiceDescribedBy sdb : entity.getResourceFacingService().getServiceDescribedBy()) {			</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">			if (networkOwner.equalsIgnoreCase(sdb.getName())) {				</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">				for (ServiceSpecCharDescribes sscd : sdb.getServiceSpecCharDescribes()) {					</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">					if (paramName.equalsIgnoreCase(sscd.getValueType())) {</span>
+<span class="nc" id="L296">						logger.log(OSSLogger.INFO, &quot;EquipmentRetrievalDao - getParamValue - &quot; + paramName + &quot; : &quot; + sscd.getValue());</span>
+<span class="nc" id="L297">						return sscd.getValue();</span>
+					}					
+<span class="nc" id="L299">				}</span>
+			}
+<span class="nc" id="L301">		}</span>
+		
+<span class="nc" id="L303">		return null;</span>
+	}
+	
+	/**
+	*Validacao do equipamento, caso exista, o mesmo eh retornado.
+	*Caso nao exista, criamos um novo para que nao de Null Pointer Exception. 
+	*
+	*@param entity
+	*@return
+	*/
+	private List&lt;Equipment&gt; getEquipments(ResourceInventoryEntity entity){
+<span class="nc bnc" id="L314" title="All 2 branches missed.">		if (entity.getEquipment() != null) {</span>
+<span class="nc" id="L315">			return entity.getEquipment();</span>
+		} else {
+<span class="nc" id="L317">			return new ArrayList&lt;Equipment&gt;();</span>
+		}
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

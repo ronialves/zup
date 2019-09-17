@@ -1,0 +1,80 @@
+package com.tlf.oss.resourceinventory.netcool.core;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.netcool.repository.EquipmentRetrievalRepository;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.netcool.core.utils.Constants;
+import com.tlf.oss.resourceinventory.netcool.core.validation.EquipmentRetrieval;
+
+public class EquipmentRetrievalController implements Serializable{
+
+	private static final long serialVersionUID = 1474105269583554588L;
+	
+	@Inject
+	protected OSSLogger logger;
+	
+	@Inject
+	private EquipmentRetrievalRepository equipmentRetrievalRepository;
+	
+	/**
+	 * Consulta os Equipamentos no SIGITM
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException 
+	 */
+	public ResourceInventoryEntity retrieval(@EquipmentRetrieval ResourceInventoryEntity entity) throws OSSBusinessException{
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalController - Iniciando fluxo do retrieval.");
+		
+		String flow = identifyFlow(entity);
+		
+		if (Constants.EQUIPMENT.equalsIgnoreCase(flow)) {
+			return getEquipment(entity);
+		}
+		
+		return entity;
+	}
+	
+	/**
+	 * Realiza busca de localização dos equipamentos
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	private ResourceInventoryEntity getEquipment(ResourceInventoryEntity entity) throws OSSBusinessException{
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalController - Iniciando fluxo do getEquipment.");
+		return equipmentRetrievalRepository.getEquipment(entity);
+	}
+	
+	/**
+	 * Verifica o fluxo de Consultas aos Equipamentos.
+	 * @param entity
+	 * @return {@link String}
+	 */
+	private String identifyFlow(ResourceInventoryEntity entity) {
+		
+		logger.log(OSSLogger.INFO, "EquipmentRetrievalController - Identificando tipo de consulta.");
+		
+		List<ServiceDescribedBy> serviceDescribedBys = entity.getResourceFacingService().getServiceDescribedBy();
+		for (ServiceDescribedBy serviceDescribedBy : serviceDescribedBys) {
+			if (serviceDescribedBy.getName().equals(Constants.EQUIPMENT)) {
+				Optional<ServiceSpecCharDescribes> serviceSpecCharDescribe = serviceDescribedBy.getServiceSpecCharDescribes().stream().filter(s -> s.getValueType().equals(Constants.HOSTNAME)).findFirst();
+				if (serviceSpecCharDescribe.get().getValue() != null) {
+					return Constants.EQUIPMENT;
+				}
+			}
+		}
+	
+		return Constants.CABINET;
+	}
+}

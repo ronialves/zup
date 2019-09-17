@@ -1,0 +1,335 @@
+package com.tlf.oss.resourceinventory.tbs.core;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.IPAddress;
+import com.tlf.oss.resourceinventory.schemas.LogicalResource;
+import com.tlf.oss.resourceinventory.schemas.LogicalResourceAssociation;
+import com.tlf.oss.resourceinventory.schemas.PhysicalPort;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ResourceCharacteristicSpecification;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.Splitter;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.api.resourcelifecyclemanagement.v1_0.GatherResourceInformation;
+import com.tlf.oss.resourceinventory.tbs.core.validation.GatherResource;
+import com.tlf.oss.resourceinventory.tbs.entity.GatherResourceEntity;
+import com.tlf.oss.resourceinventory.tbs.repository.GatherResourceInformationRepository;
+
+public class GatherResourceInformationController implements Serializable {
+    private static final long seialVersionUID = 1L;
+
+    @Inject private OSSLogger ossLogger;
+    @Inject private GatherResourceInformationRepository gatherResourceInformationRepository;
+
+    private ResourceInventoryEntity buildResourceInventoryEntityResponse(GatherResourceEntity gatherResourceEntity) {
+        ResourceInventoryEntity resourceInventoryEntity = new ResourceInventoryEntity();
+        Cabinet cabinet = new Cabinet();
+        Shelf shelf = new Shelf();
+
+        PortAdapterCard portAdapterCard = new PortAdapterCard();
+        PhysicalPort physicalPort = new PhysicalPort();
+
+        IPAddress ipAddress = new IPAddress();
+        ipAddress.setNetworkNumber(gatherResourceEntity.getIpAddress());
+
+        physicalPort.setLogicalResourceAssociation(this.buildLogicalResources(gatherResourceEntity));
+        portAdapterCard.setContainsPorts(Arrays.asList(physicalPort));
+
+        shelf.setIpAddress(ipAddress);
+        shelf.setHasCards(Arrays.asList(portAdapterCard));
+        shelf.setResourceCharacteristicSpecifications(this.buildResourceCharacteristicSpecifications(gatherResourceEntity));
+
+        cabinet.setHasShelves(Arrays.asList(shelf));
+        resourceInventoryEntity.setCabinet(cabinet);
+        return resourceInventoryEntity;
+    }
+
+    private List<ResourceCharacteristicSpecification> buildResourceCharacteristicSpecifications(GatherResourceEntity gatherResourceEntity) {
+        List<ResourceCharacteristicSpecification> resourceCharacteristicSpecifications = new ArrayList<>();
+
+        if (gatherResourceEntity.getMascaraIp() != null) {
+            ResourceCharacteristicSpecification ipMask = new ResourceCharacteristicSpecification();
+            ipMask.setId("MASCARA_IP");
+            ipMask.setValue(gatherResourceEntity.getMascaraIp());
+            resourceCharacteristicSpecifications.add(ipMask);
+        }
+
+        if (gatherResourceEntity.getGerencia() != null) {
+            ResourceCharacteristicSpecification gerencia = new ResourceCharacteristicSpecification();
+            gerencia.setId("GERENCIA");
+            gerencia.setValue(gatherResourceEntity.getGerencia());
+            resourceCharacteristicSpecifications.add(gerencia);
+        }
+
+        if (gatherResourceEntity.getSwitchAtendimento() != null) {
+            ResourceCharacteristicSpecification switchAtendimento = new ResourceCharacteristicSpecification();
+            switchAtendimento.setId("SWITCH_ATENDIMENTO");
+            switchAtendimento.setValue(gatherResourceEntity.getSwitchAtendimento());
+            resourceCharacteristicSpecifications.add(switchAtendimento);
+        }
+
+        if (gatherResourceEntity.getV5ID() != null) {
+            ResourceCharacteristicSpecification v5id = new ResourceCharacteristicSpecification();
+            v5id.setId("V5ID");
+            v5id.setValue(gatherResourceEntity.getV5ID());
+            resourceCharacteristicSpecifications.add(v5id);
+        }
+
+        if (gatherResourceEntity.getSwitchAtendimento2() != null) {
+            ResourceCharacteristicSpecification switchAtendimento = new ResourceCharacteristicSpecification();
+            switchAtendimento.setId("SWITCH_ATENDIMENTO_2");
+            switchAtendimento.setValue(gatherResourceEntity.getSwitchAtendimento2());
+            resourceCharacteristicSpecifications.add(switchAtendimento);
+        }
+
+        if (gatherResourceEntity.getV5ID2() != null) {
+            ResourceCharacteristicSpecification v5id = new ResourceCharacteristicSpecification();
+            v5id.setId("V5ID_2");
+            v5id.setValue(gatherResourceEntity.getV5ID2());
+            resourceCharacteristicSpecifications.add(v5id);
+        }
+
+        if (gatherResourceEntity.getShasta() != null) {
+            ResourceCharacteristicSpecification shasta = new ResourceCharacteristicSpecification();
+            shasta.setId("SHASTA");
+            shasta.setValue(gatherResourceEntity.getShasta());
+            resourceCharacteristicSpecifications.add(shasta);
+        }
+
+        if (gatherResourceEntity.getProtocoloAGCF() != null) {
+            ResourceCharacteristicSpecification protocoloAGCF = new ResourceCharacteristicSpecification();
+            protocoloAGCF.setId("PROTOCOLO_AGCF");
+            protocoloAGCF.setValue(gatherResourceEntity.getProtocoloAGCF());
+            resourceCharacteristicSpecifications.add(protocoloAGCF);
+        }
+
+        if (gatherResourceEntity.getNomeAGCF() != null) {
+            ResourceCharacteristicSpecification nomeAGCF = new ResourceCharacteristicSpecification();
+            nomeAGCF.setId("NOME_AGCF");
+            nomeAGCF.setValue(gatherResourceEntity.getNomeAGCF());
+            resourceCharacteristicSpecifications.add(nomeAGCF);
+        }
+
+        if (gatherResourceEntity.getIpAddressAGCF() != null) {
+            ResourceCharacteristicSpecification ipAddressAGCF = new ResourceCharacteristicSpecification();
+            ipAddressAGCF.setId("IP_ADDRESS_AGCF");
+            ipAddressAGCF.setValue(gatherResourceEntity.getIpAddressAGCF());
+            resourceCharacteristicSpecifications.add(ipAddressAGCF);
+        }
+
+        if (gatherResourceEntity.getStackVlan() != null) {
+            ResourceCharacteristicSpecification stackVlan = new ResourceCharacteristicSpecification();
+            stackVlan.setId("STACK_VLAN");
+            stackVlan.setValue("" + gatherResourceEntity.getStackVlan());
+            resourceCharacteristicSpecifications.add(stackVlan);
+        }
+
+        if (gatherResourceEntity.getExternalNetworkOwner() != null) {
+            ResourceCharacteristicSpecification eno = new ResourceCharacteristicSpecification();
+            eno.setId("EXTERNAL_NETWORK_OWNER");
+            eno.setValue(gatherResourceEntity.getExternalNetworkOwner());
+            resourceCharacteristicSpecifications.add(eno);
+        }
+
+        return resourceCharacteristicSpecifications;
+    }
+
+    private LogicalResourceAssociation buildLogicalResources(GatherResourceEntity gatherResourceEntity) {
+        LogicalResourceAssociation logicalResourceAssociation = new LogicalResourceAssociation();
+        List<LogicalResource> logicalResources = logicalResourceAssociation.getLogicalResource();
+
+        if (gatherResourceEntity.getNameHL() != null) {
+            LogicalResource nameHL = new LogicalResource();
+            nameHL.setName("NAME_HL");
+            nameHL.setValue(gatherResourceEntity.getNameHL());
+            logicalResources.add(nameHL);
+        }
+
+        if (gatherResourceEntity.getVendorHL() != null) {
+            LogicalResource vendorHL = new LogicalResource();
+            vendorHL.setName("VENDOR_HL");
+            vendorHL.setValue(gatherResourceEntity.getVendorHL());
+            logicalResources.add(vendorHL);
+        }
+
+        if (gatherResourceEntity.getHostName() != null) {
+            LogicalResource hostName = new LogicalResource();
+            hostName.setName("HOSTNAME");
+            hostName.setValue(gatherResourceEntity.getHostName());
+            logicalResources.add(hostName);
+        }
+
+        if (gatherResourceEntity.getNasip() != null) {
+            LogicalResource nasip = new LogicalResource();
+            nasip.setName("NASIP");
+            nasip.setValue(gatherResourceEntity.getNasip());
+            logicalResources.add(nasip);
+
+            LogicalResource fusion = new LogicalResource();
+            fusion.setName("FUSION_NETWORK");
+            fusion.setValue("true");
+            logicalResources.add(fusion);
+        } else {
+            LogicalResource fusion = new LogicalResource();
+            fusion.setName("FUSION_NETWORK");
+            fusion.setValue("false");
+            logicalResources.add(fusion);
+        }
+
+        if (gatherResourceEntity.getSite() != null) {
+            LogicalResource site = new LogicalResource();
+            site.setName("SITE");
+            site.setValue(gatherResourceEntity.getSite());
+            logicalResources.add(site);
+        }
+
+        if (gatherResourceEntity.getNumeroBras() != null) {
+            LogicalResource numeroBras = new LogicalResource();
+            numeroBras.setName("NUMERO_BRAS");
+            numeroBras.setValue(gatherResourceEntity.getNumeroBras());
+            logicalResources.add(numeroBras);
+        }
+
+        if (gatherResourceEntity.getSlotBras() != null) {
+            LogicalResource slotBras = new LogicalResource();
+            slotBras.setName("SLOT_BRAS");
+            slotBras.setValue(gatherResourceEntity.getSlotBras());
+            logicalResources.add(slotBras);
+        }
+
+        if (gatherResourceEntity.getSubSlotBras() != null) {
+            LogicalResource subSlotBras = new LogicalResource();
+            subSlotBras.setName("SUBSLOT_BRAS");
+            subSlotBras.setValue(gatherResourceEntity.getSubSlotBras());
+            logicalResources.add(subSlotBras);
+        }
+
+        if (gatherResourceEntity.getPortaBras() != null) {
+            LogicalResource portaBras = new LogicalResource();
+            portaBras.setName("PORTA_BRAS");
+            portaBras.setValue(gatherResourceEntity.getPortaBras());
+            logicalResources.add(portaBras);
+        }
+
+        if (gatherResourceEntity.getNumeroAgregador() != null) {
+            LogicalResource numeroAgregador = new LogicalResource();
+            numeroAgregador.setName("NUMERO_AGREGADOR");
+            numeroAgregador.setValue(gatherResourceEntity.getNumeroAgregador());
+            logicalResources.add(numeroAgregador);
+        }
+
+        if (gatherResourceEntity.getSlotAgregador() != null) {
+            LogicalResource slotAgregador = new LogicalResource();
+            slotAgregador.setName("SLOT_AGREGADOR");
+            slotAgregador.setValue(gatherResourceEntity.getSlotAgregador());
+            logicalResources.add(slotAgregador);
+        }
+
+        if (gatherResourceEntity.getSubSlotAgregador() != null) {
+            LogicalResource subSlotAgregador = new LogicalResource();
+            subSlotAgregador.setName("SUBSLOT_AGREGADOR");
+            subSlotAgregador.setValue(gatherResourceEntity.getSubSlotAgregador());
+            logicalResources.add(subSlotAgregador);
+        }
+
+        if (gatherResourceEntity.getPortaAgregador() != null) {
+            LogicalResource portaAgregador = new LogicalResource();
+            portaAgregador.setName("PORTA_AGREGADOR");
+            portaAgregador.setValue(gatherResourceEntity.getPortaAgregador());
+            logicalResources.add(portaAgregador);
+        }
+
+        if (gatherResourceEntity.getTipoCategatoriaVlan() != null) {
+            LogicalResource tipoCategoriaVlan = new LogicalResource();
+            tipoCategoriaVlan.setName("TIPO_CATEGORIA_VLAN");
+            tipoCategoriaVlan.setValue(gatherResourceEntity.getTipoCategatoriaVlan());
+            logicalResources.add(tipoCategoriaVlan);
+        }
+
+        if (gatherResourceEntity.getVlanVod() != null) {
+            LogicalResource vlanVod = new LogicalResource();
+            vlanVod.setName("VLAN_VOD");
+            vlanVod.setValue("" + gatherResourceEntity.getVlanVod());
+            logicalResources.add(vlanVod);
+        }
+
+        if (gatherResourceEntity.getVlanVoip() != null) {
+            LogicalResource vlanVoip = new LogicalResource();
+            vlanVoip.setName("VLAN_VOIP");
+            vlanVoip.setValue("" + gatherResourceEntity.getVlanVoip());
+            logicalResources.add(vlanVoip);
+        }
+
+        if (gatherResourceEntity.getVlanMcast() != null) {
+            LogicalResource vlanMcast = new LogicalResource();
+            vlanMcast.setName("VLAN_MCAST");
+            vlanMcast.setValue("" + gatherResourceEntity.getVlanMcast());
+            logicalResources.add(vlanMcast);
+        }
+
+        if (gatherResourceEntity.getVlanIptv() != null) {
+            LogicalResource vlanIpTv = new LogicalResource();
+            vlanIpTv.setName("VLAN_IPTV");
+            vlanIpTv.setValue("" + gatherResourceEntity.getVlanIptv());
+            logicalResources.add(vlanIpTv);
+        }
+
+        if (gatherResourceEntity.getFusion() != null) {
+            LogicalResource fusion = new LogicalResource();
+            fusion.setName("FUSION");
+            fusion.setValue(gatherResourceEntity.getFusion());
+            logicalResources.add(fusion);
+        }
+
+        return logicalResourceAssociation;
+    }
+
+    private GatherResourceEntity executeQuery(GatherResourceInformation gatherResourceInformationIn) throws OSSBusinessException {
+        Splitter splitter = gatherResourceInformationIn.getSplitter();
+        Cabinet cabinet = gatherResourceInformationIn.getCabinet();
+        Shelf shelf = gatherResourceInformationIn.getShelf();
+
+        if (this.isGatherResourceByCabinetAndSpliiter(cabinet, splitter)) {
+            this.ossLogger.log(OSSLogger.INFO, "Buscando recurso no TBS por meio do Armário: " + cabinet.getName() + " e Splitter: " + splitter.getId());
+            return this.gatherResourceInformationRepository.gatherResourceInformationByCabinetAndSplitter(cabinet, splitter);
+        } else if (this.isGatherResourceByShelf(shelf)) {
+            PortAdapterCard portAdapterCard = shelf.getHasCards().get(0);
+            this.ossLogger.log(OSSLogger.INFO, "Buscando recurso no TBS por meio do Shelf: " + portAdapterCard.getId());
+            return this.gatherResourceInformationRepository.gatherResourceInformationByEquipment(portAdapterCard);
+        } else {
+            return null;
+        }
+    }
+
+    private boolean foundWithoutError(GatherResourceEntity gatherResourceEntity) {
+        return gatherResourceEntity != null && (gatherResourceEntity.getCodigoRetorno() == null || gatherResourceEntity.getCodigoRetorno() == 0);
+    }
+
+    public ResourceInventoryEntity gatherResource(@GatherResource ResourceInventoryEntity resourceInventoryEntity) throws OSSBusinessException {
+        GatherResourceEntity gatherResourceEntity = this.executeQuery(resourceInventoryEntity.getGatherResourceInformation());
+
+        if (this.foundWithoutError(gatherResourceEntity)) {
+            return this.buildResourceInventoryEntityResponse(gatherResourceEntity);
+        } else if (gatherResourceEntity != null) {
+            throw new OSSBusinessException("ERRO: " + gatherResourceEntity.getMensagemRetorno(), "RITBS-001", "Erro ao buscar recurso no TBS: " + gatherResourceEntity.getMensagemRetorno());
+        } else {
+            throw new OSSBusinessException("ERRO: Recurso não encontrado", "RITBS-001", "Erro ao buscar recurso no TBS: Recurso não encontrado");
+        }
+    }
+
+    private boolean isGatherResourceByShelf(Shelf shelf) {
+        return shelf != null && shelf.getHasCards() != null && shelf.getHasCards().size() > 0;
+    }
+    private boolean isGatherResourceByCabinetAndSpliiter(Cabinet cabinet, Splitter splitter) {
+        return cabinet != null && splitter != null;
+    }
+}

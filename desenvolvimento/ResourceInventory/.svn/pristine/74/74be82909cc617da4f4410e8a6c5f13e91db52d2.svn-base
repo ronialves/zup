@@ -1,0 +1,20 @@
+package com.tlf.oss.resourceinventory.cpe.enums;
+
+public enum CPEWSName {
+	
+	AllocateInstallResource("AllocateInstallResource"),
+	QueryBuilderService("QueryBuilderService"),
+	ReportResourceProvisioning("ReportResourceProvisioning"),
+	TrackManageResourceProvisioning("TrackManageResourceProvisioning"),
+	TrackManageServiceProvisioning("TrackManageServiceProvisioning");
+
+	private final String name;
+	
+	private CPEWSName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+}

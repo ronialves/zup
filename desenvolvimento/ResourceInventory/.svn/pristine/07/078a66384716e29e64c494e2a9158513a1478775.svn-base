@@ -1,0 +1,6 @@
+ri.orchestration.url=http://%s:%s/ri-orchestration/{version}/orchestration/{action}
+ri.repository.customer.retrieve.url= http://%s:%s/ri-repositoryapi/{version}/{entity}/{id};
+ri.repository.customer.save.url= http://%s:%s/ri-repositoryapi/{version}/{entity};
+ri.repository.customer.update.url= http://%s:%s/ri-repositoryapi/{version}/{entity};
+ri.repository.customer.delete.url= http://%s:%s/ri-repositoryapi/{version}/{entity}/{id};
+ri.repository.orchestration.audit.save.url= http://%s:%s/ri-repositoryapi/{version}/{entity};

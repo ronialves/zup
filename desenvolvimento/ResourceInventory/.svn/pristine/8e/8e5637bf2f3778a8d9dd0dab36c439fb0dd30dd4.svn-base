@@ -1,0 +1,30 @@
+<div class="ui-dark-theme">
+  <div class="ui-system-logo" (click)="this.router.navigateByUrl('/home')">
+    <img [ngClass]="{'ui-system-logo-img': !retracted, 'ui-system-logo-img-retracted': retracted}" src="assets/images/logo.png">
+  </div>
+  <div class="ui-appname" (click)="this.router.navigateByUrl('/home')">
+    <strong>CPE</strong>
+    <span [ngClass]="{
+      'ui-appname-detail': !retracted,
+      'ui-appname-detail-retracted': retracted
+    }"> Inventory</span>
+  </div>
+  <div class="ui-divisor"></div>
+  <div class="ui-options">
+    <button mat-button *ngFor="let state of states" 
+        (click)="this.router.navigate([state.name])" 
+        [ngClass]="{ 
+          'ui-option': true,
+          'ui-option-active': state.active,
+          'ui-option-retracted': retracted
+        }">
+      <i [class]="state.icon + ' ui-option-icon'"></i>
+      <div [ngClass]="{ 
+              'ui-option-name': true,
+              'ui-option-name-retracted': retracted
+            }">
+        {{state.alias}}
+      </div>
+    </button>
+  </div>
+</div>

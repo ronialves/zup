@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+    targetNamespace="http://www.cpqd.com.br/TERUS/BloqueioPortaResponse"
+    xmlns:st="http://www.cpqd.com.br/TERUS/BloqueioPortaResponse" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="BloqueioPortaResponse" type="st:BloqueioPortaResponseType"/>
+    <xsd:complexType name="BloqueioPortaResponseType">
+        <xsd:sequence>
+        	<xsd:element name="DATA_HORA" minOccurs="1"	type="xsd:dateTime" maxOccurs="1">
+			</xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="COD_MSG">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="5"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="DSC_MSG">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="250"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="NOME">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+						<xsd:minLength value="1"></xsd:minLength>
+						<xsd:maxLength value="20"></xsd:maxLength>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="LIC">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+						<xsd:minLength value="1"></xsd:minLength>
+						<xsd:maxLength value="23"></xsd:maxLength>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

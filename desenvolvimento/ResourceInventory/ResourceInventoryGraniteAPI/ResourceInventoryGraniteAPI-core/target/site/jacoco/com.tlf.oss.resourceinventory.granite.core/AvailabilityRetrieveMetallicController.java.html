@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AvailabilityRetrieveMetallicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryGraniteAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.granite.core</a> &gt; <span class="el_source">AvailabilityRetrieveMetallicController.java</span></div><h1>AvailabilityRetrieveMetallicController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.granite.core;
+
+import java.util.Collection;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.AvailabilityRetrieveActiveMsanDslamEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveAvailabilityDslamEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrieveAvailabilityMsanEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.TypeAvailability;
+import com.tlf.oss.resourceinventory.granite.core.mapper.impl.RetrieveResourceMapper;
+import com.tlf.oss.resourceinventory.granite.core.service.PathService;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L19">public class AvailabilityRetrieveMetallicController {</span>
+
+	@Inject
+	private AvailabilityRetrieveMsanController availabilityRetrieveMsanController;
+
+	@Inject
+	private AvailabilityRetrieveDslamController availabilityRetrieveDslamController;
+	
+	@Inject
+	private AvailabilityRetrieveActiveMsanDslamController availabilityRetrieveActiveMsanDslamController;
+
+	@Inject
+	private LoadConfigMemoryController resourceLoadConfigMemoryBO;
+
+	@Inject
+	private RetrieveResourceMapper retrieveResourceMapper;
+	
+	@Inject
+	private PathService pathService;
+
+	@Inject
+	private OSSLogger logger;
+
+	public ResourceInventoryEntity availabilityRetrieve(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">		if(null != entity.getResourceFacingService()) {</span>
+			
+<span class="nc" id="L46">			String terminal = pathService.getNetworkOwnerID(entity);</span>
+			
+			Collection&lt;AvailabilityRetrieveActiveMsanDslamEntity&gt; retrieveAvailabilityActiveMsanDslam;
+<span class="nc" id="L49">			retrieveAvailabilityActiveMsanDslam = availabilityRetrieveActiveMsanDslamController.getAvailabilityActiveMsanDslam(terminal);</span>
+			
+<span class="nc" id="L51">			entity = retrieveResourceMapper.parseGetResourceRetrieveActiveMsanDslam(retrieveAvailabilityActiveMsanDslam, entity);</span>
+		
+<span class="nc" id="L53">		} else {</span>
+			
+<span class="fc bfc" id="L55" title="All 2 branches covered.">			if(isMsan(entity.getCabinet())){</span>
+<span class="fc" id="L56">				logger.log(OSSLogger.INFO, &quot;Tipo de equipamento MSAN&quot; );</span>
+	
+				// valida porta disponivel MSAN
+<span class="fc" id="L59">				List&lt;RetrieveAvailabilityMsanEntity&gt; retrieveAvailabilityMsan = availabilityRetrieveMsanController.getAvailabilityMsan(</span>
+<span class="fc" id="L60">						entity.getAddress(), entity.getCabinet(), resourceLoadConfigMemoryBO.getMapResult(),</span>
+<span class="fc" id="L61">						TypeAvailability.VDSL.getTypes());</span>
+	
+<span class="fc" id="L63">				entity = retrieveResourceMapper.parseGetPhysicalResourceAvailabilityMsan(retrieveAvailabilityMsan, entity);</span>
+<span class="fc" id="L64">			}else{</span>
+<span class="fc" id="L65">				logger.log(OSSLogger.INFO, &quot;Tipo de equipamento DSLAM&quot; );</span>
+				// valida porta disponivel DSLAM
+				Collection&lt;RetrieveAvailabilityDslamEntity&gt; retrieveAvailabilityDslam;
+<span class="fc" id="L68">				retrieveAvailabilityDslam = availabilityRetrieveDslamController.getAvailabilityDSLAM(resourceLoadConfigMemoryBO.getMapResult(), entity);</span>
+	
+<span class="fc" id="L70">				entity = retrieveResourceMapper.parseGetPhysicalResourceAvailabilityDslam(retrieveAvailabilityDslam, entity);</span>
+			}
+		}
+<span class="fc" id="L73">		return entity;</span>
+	}
+
+	private boolean isMsan(Cabinet cabinet){
+<span class="fc bfc" id="L77" title="All 2 branches covered.">			if(TypeAvailability.MSAN.getTypes().equalsIgnoreCase(cabinet.getHasShelves().get(0).getTypeOfResource())){</span>
+<span class="fc" id="L78">				return true;</span>
+			}
+<span class="fc" id="L80">		return false;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

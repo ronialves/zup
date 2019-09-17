@@ -1,0 +1,257 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CategoriaDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoRecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.entity.EstadoServicoAssinante;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.enums.EstadoServico;
+import com.tlf.oss.resourceinventory.cpe.enums.RoiAction;
+import com.tlf.oss.resourceinventory.cpe.enums.TipoRfs;
+import com.tlf.oss.resourceinventory.cpe.helper.AllocateHelper;
+import com.tlf.oss.resourceinventory.cpe.mapping.EntityConverter;
+import com.tlf.oss.resourceinventory.cpe.repository.AllocateRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.CategoriaDispositivoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoRecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.rules.ExecutionRules;
+import com.tlf.oss.resourceinventory.cpe.utils.CpeConstants;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class AllocateSTBControllerTest {
+
+	@InjectMocks
+	private AllocateStbController allocateSTBController;
+
+	@Spy
+	@InjectMocks
+	private EntityConverter entityConverter = new EntityConverter();
+
+	@Mock
+	private OSSLogger logger;
+
+	@Mock
+	private AllocateRepository allocateRepository;
+
+	@Mock
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Mock
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	@Mock
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Mock
+	private EstadoServicoAssinanteRepository estadoServicoAssinanteRepository;
+
+	@Mock
+	private CategoriaDispositivoRepository categoriaDispositivoRepository;
+
+	@Mock
+	private DispositivoFisico dispositivoFisico;
+
+	@Mock
+	private ExecutionRules executionRules;
+	
+	@Mock
+	private EstadoRecursoLogicoRepository estadoRecursoLogicoRepository;
+
+	@Mock
+	private AllocateHelper helper;
+
+	private ResourceInventoryEntity entity;
+
+	@Before
+	public void before() {
+		entity = new ResourceInventoryEntity();
+
+		ResourceFacingService resourceFacingService = new ResourceFacingService();
+		entity.setResourceFacingService(resourceFacingService);
+		entity.setAddress(new BrazilianUrbanPropertyAddress());
+		ResourceOrderItem resourceOrderItem = new ResourceOrderItem();
+		ResourceOrder resourceOrder = new ResourceOrder();
+		resourceOrder.setResourceOrderItem(resourceOrderItem);
+		entity.setResourceOrder(resourceOrder);
+
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setCategory("BROADBAND");
+		listOfCustomerFacingService.get(0).getServiceDescribedBy()
+				.add(getServiceDescribedBy(CpeConstants.VOICE_EQUIPMENT_TYPE, ""));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy()
+				.add(getServiceDescribedBy(CpeConstants.EQUIPMENT_TYPE, ""));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(getServiceDescribedBy(CpeConstants.HPNA, ""));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy()
+				.add(getServiceDescribedBy(CpeConstants.EQUIPMENT_TYPE, "STB"));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy()
+				.add(getServiceDescribedBy(CpeConstants.EQUIPMENT_TYPE, ""));
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(getServiceDescribedBy(CpeConstants.DVR, ""));
+
+		entity.setCustomerFacingService(listOfCustomerFacingService);
+	}
+
+	@Test
+	public void testAllocateSTBprovideAndAddException() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.STB.getRoiName());
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.PROVIDE.getAction());
+		
+		EstadoRecursoLogico estadoRecursoLogico = getEstadoRecursoLogico();
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		when(dispositivoFisicoRepository.findByAccessId(anyObject())).thenReturn(dispositivoFisico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		
+		allocateSTBController.allocate(entity);
+	}
+	
+	@Test
+	public void testAllocateSTBCeaseSucess() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.STB.getRoiName());
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.CEASE.getAction());
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(getServiceDescribedBy("SERIAL_NUMBER", "1234"));
+		
+		RecursoLogico recursoLogico = getRecursoLogico();
+		List<DispositivoFisico> dispositivos = getListDispositivos();
+		EstadoRecursoLogico estadoRecursoLogico = getEstadoRecursoLogico();
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		when(dispositivoFisicoRepository.findByAccessId(anyObject())).thenReturn(dispositivoFisico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(dispositivoFisicoRepository.listByServiceId(anyObject())).thenReturn(dispositivos);
+		when(recursoLogicoRepository.findByDispositivoFisicoId(anyObject())).thenReturn(recursoLogico);
+
+		allocateSTBController.allocate(entity);
+	}
+	
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateSTBCeaseSemRecursoLogicoSucess() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.STB.getRoiName());
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.CEASE.getAction());
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(getServiceDescribedBy("SERIAL_NUMBER", "1234"));
+		
+		List<DispositivoFisico> dispositivos = getListDispositivos();
+		EstadoRecursoLogico estadoRecursoLogico = getEstadoRecursoLogico();
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		when(dispositivoFisicoRepository.findByAccessId(anyObject())).thenReturn(dispositivoFisico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+		when(dispositivoFisicoRepository.listByServiceId(anyObject())).thenReturn(dispositivos);
+
+		allocateSTBController.allocate(entity);
+	}
+	
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateSTBCeaseException() throws OSSBusinessException {
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.STB.getRoiName());
+		entity.getResourceOrder().getResourceOrderItem().setAction(RoiAction.CEASE.getAction());
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(getServiceDescribedBy("SERIAL_NUMBER", "1234"));
+		
+		EstadoRecursoLogico estadoRecursoLogico = getEstadoRecursoLogico();
+		EstadoServicoAssinante estadoServicoAssinante = getEstadoServicoAssinante();
+		CategoriaDispositivo categoriaDispositivo = getCategoriaDispositivo();
+		when(dispositivoFisicoRepository.findByAccessId(anyObject())).thenReturn(dispositivoFisico);
+		when(estadoServicoAssinanteRepository.findByEstadoServico(anyObject())).thenReturn(estadoServicoAssinante);
+		when(categoriaDispositivoRepository.findByNomeCategoria(anyObject())).thenReturn(categoriaDispositivo);
+		when(estadoRecursoLogicoRepository.findByEstadoRecurso(anyObject())).thenReturn(estadoRecursoLogico);
+
+		allocateSTBController.allocate(entity);
+	}
+
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateConditionRoiActionFalse() throws OSSBusinessException {
+
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.ACCESS.getRoiName());
+
+		entity.getResourceOrder().getResourceOrderItem().setAction("null");
+
+		allocateSTBController.allocate(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = OSSBusinessException.class)
+	public void testAllocateException() throws OSSBusinessException {
+
+		when(allocateSTBController.allocate(entity)).thenThrow(OSSBusinessException.class);
+
+		allocateSTBController.allocate(entity);
+	}
+
+	private EstadoServicoAssinante getEstadoServicoAssinante() {
+		final EstadoServicoAssinante estadoServicoAssinante = new EstadoServicoAssinante();
+		estadoServicoAssinante.setEstadoServico(EstadoServico.EM_APROVISIONAMENTO.getValue());
+		estadoServicoAssinante.setId(1);
+		return estadoServicoAssinante;
+	}
+
+	private CategoriaDispositivo getCategoriaDispositivo() {
+		CategoriaDispositivo categoriaDispositivo = new CategoriaDispositivo();
+		categoriaDispositivo.setId(1);
+		categoriaDispositivo.setNomeCategoria("ATA 16 Portas");
+		categoriaDispositivo.setTipoRfs(entity.getResourceOrder().getResourceOrderItem().getName());
+		return categoriaDispositivo;
+	}
+
+	private ServiceDescribedBy getServiceDescribedBy(String name, String value) {
+		ServiceDescribedBy serviceDescribedByDs = new ServiceDescribedBy();
+		serviceDescribedByDs.setName(name);
+		ServiceSpecCharDescribes serviceSpecCharDescribes = new ServiceSpecCharDescribes();
+		serviceSpecCharDescribes.setValue(value);
+		serviceDescribedByDs.getServiceSpecCharDescribes().add(serviceSpecCharDescribes);
+		return serviceDescribedByDs;
+	}
+	
+	private EstadoRecursoLogico getEstadoRecursoLogico() {
+		EstadoRecursoLogico estadoRecursoLogico = new EstadoRecursoLogico();
+		estadoRecursoLogico.setId(1);
+		return estadoRecursoLogico;
+	}
+	
+	private List<DispositivoFisico> getListDispositivos() {
+		List<DispositivoFisico> listDispositivosFisicos = new ArrayList<DispositivoFisico>();
+		DispositivoFisico dispositivoFisico = new DispositivoFisico();
+		dispositivoFisico.setNumeroSerial("1234");
+		listDispositivosFisicos.add(dispositivoFisico);
+		return listDispositivosFisicos;
+	}
+	
+	private RecursoLogico getRecursoLogico() {
+		RecursoLogico recursoLogico = new RecursoLogico();
+		return recursoLogico;
+	}
+
+}

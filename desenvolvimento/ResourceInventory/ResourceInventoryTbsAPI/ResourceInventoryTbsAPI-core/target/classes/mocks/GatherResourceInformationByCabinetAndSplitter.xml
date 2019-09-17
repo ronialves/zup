@@ -1,0 +1,19 @@
+<resourceInventoryEntity>
+    <gatherResourceInformation>
+        <address>
+            <networkOwner>VIVO2</networkOwner>
+        </address>
+        <cabinet>
+            <name>CTA-KA1I3O</name>
+        </cabinet>
+        <splitter>
+            <id>CTA-ASAD123</id>
+        </splitter>
+        <resourceOrder>
+            <resourceOrderItem>
+                <name>RETRIEVE</name>
+                <action>GET_RESOURCE</action>
+            </resourceOrderItem>
+        </resourceOrder>
+    </gatherResourceInformation>
+</resourceInventoryEntity>

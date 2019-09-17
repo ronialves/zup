@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReserveController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.core</a> &gt; <span class="el_source">ReserveController.java</span></div><h1>ReserveController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.sagre.core.validation.Reserve;
+import com.tlf.oss.resourceinventory.sagre.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.ReserveEntity;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.sagre.repository.ReserveRepository;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+<span class="fc" id="L18">public class ReserveController extends ValidatorEntity implements Serializable{</span>
+	
+	/**
+	 * BEATRIXTWO-22 | DEMOSS-2155
+	 * 
+	 * @project Beatrix Fase 2
+	 * @author renan.n.Oliveira
+	 * @since 201709
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	public ReserveRepository reserveRepository;
+	
+<span class="fc" id="L32">	OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RISAGRE_003.getCode(),</span>
+<span class="fc" id="L33">			String.format(ExceptionInfoEnum.RISAGRE_003.getDescription(), &quot;GVT_SP_SOA_CRIA_RS_CTRL&quot;),</span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+	private static final int RESULTADO_ESPERADO = 0;
+	
+	public static final String P_IN_TIPO_RESERVA = &quot;VT-GPON&quot;;
+	public static final String P_IN_ORIGEM = &quot;RI&quot;;
+	public static final String P_IN_TIPO_DOCUMENTO = &quot;PSR&quot;;
+	public static final String P_IN_CLASSE_SERVICO = &quot;LIRA&quot;;
+	
+
+	public ResourceInventoryEntity getReserve(@Reserve ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+<span class="fc" id="L46">		ReserveEntity reserve = new ReserveEntity();</span>
+<span class="fc" id="L47">		reserve.setCnl(Integer.valueOf(entity.getAddress().getCnl()));</span>
+<span class="fc" id="L48">		reserve.setTecVoz(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+<span class="fc" id="L49">		reserve.setTecAcesso(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getAccessTechnology());</span>
+<span class="fc" id="L50">		reserve.setIdAcesso(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L51">		reserve.setStreetCode(entity.getAddress().getStreetCode());</span>
+<span class="fc" id="L52">		reserve.setInLote(entity.getAddress().getStreetNrFirst());</span>
+<span class="fc" id="L53">		reserve.setIdentEquip1(entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet().getId());</span>
+<span class="fc" id="L54">		reserve.setIdentEquip2(entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet().getTerminalBox().getName());</span>
+<span class="fc" id="L55">		reserve.setInSos(null);</span>
+<span class="fc" id="L56">		reserve.setIdentEquip3(null);</span>
+<span class="fc" id="L57">		reserve.setInOrigem(P_IN_ORIGEM);</span>
+<span class="fc" id="L58">		reserve.setTipoReserva(P_IN_TIPO_RESERVA);</span>
+<span class="fc" id="L59">		reserve.setTipoDocumento(P_IN_TIPO_DOCUMENTO);</span>
+<span class="fc" id="L60">		reserve.setClasseServico(P_IN_CLASSE_SERVICO);</span>
+		
+<span class="fc" id="L62">		return getResourceInventoryEntity(reserveRepository.getReserve(reserve), entity);</span>
+
+	}
+	
+	public ResourceInventoryEntity getResourceInventoryEntity(ReserveEntity reserve, ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">		if (RESULTADO_ESPERADO != reserve.getCod()) {</span>
+<span class="nc" id="L70">			String errorCode = String.valueOf(reserve.getCod());</span>
+<span class="nc" id="L71">			String errorMessage = reserve.getMsg();</span>
+<span class="nc" id="L72">			String detailMessage = errorCode + &quot;; &quot; + errorMessage;</span>
+
+<span class="nc" id="L74">		    falloutConfig.setErrorCode(errorCode);</span>
+<span class="nc" id="L75">		    falloutConfig.setErrorMessage(errorMessage);</span>
+<span class="nc" id="L76">			falloutConfig.setDetailMessage(detailMessage);</span>
+<span class="nc" id="L77">			throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+		}
+
+<span class="fc" id="L80">		return entity;</span>
+
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

@@ -1,0 +1,8 @@
+{
+    "/ri-cpeapi/*": {
+        "target": "http://localhost:7010",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": "true"
+    }
+}

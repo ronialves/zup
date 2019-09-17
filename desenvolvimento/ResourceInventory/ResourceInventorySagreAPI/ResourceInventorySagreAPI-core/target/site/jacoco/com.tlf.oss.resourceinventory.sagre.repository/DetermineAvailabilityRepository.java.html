@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetermineAvailabilityRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.repository</a> &gt; <span class="el_source">DetermineAvailabilityRepository.java</span></div><h1>DetermineAvailabilityRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.repository;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.sagre.entity.DetermineAvailabilityEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.DetermineDistanceEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.DetermineResourceAvailabilityMetallic;
+import com.tlf.oss.resourceinventory.sagre.repository.factory.GenericRepository;
+
+
+@SuppressWarnings(&quot;serial&quot;)
+<span class="nc" id="L21">public class DetermineAvailabilityRepository extends GenericRepository implements Serializable {</span>
+
+	@PersistenceContext(name=&quot;SagreDS&quot;)
+	EntityManager factory;
+
+	@Inject
+	protected OSSLogger logger;
+	
+	public DetermineAvailabilityEntity getDetermineAvailability(DetermineAvailabilityEntity entity)
+			throws OSSBusinessException {
+<span class="nc" id="L31">		DetermineAvailabilityEntity result = new DetermineAvailabilityEntity();</span>
+<span class="nc" id="L32">		getFactory().getEntityManagerFactory().getCache().evict(DetermineAvailabilityEntity.class);</span>
+
+		try {
+			TypedQuery&lt;DetermineAvailabilityEntity&gt; query;
+<span class="nc" id="L36">			query = getFactory().createNamedQuery(&quot;determineAvailability&quot;, DetermineAvailabilityEntity.class);</span>
+
+<span class="nc" id="L38">			query.setParameter(&quot;p_in_cnl&quot;, entity.getCnl());</span>
+<span class="nc" id="L39">			query.setParameter(&quot;p_in_street_code&quot;, entity.getStreetCode());</span>
+<span class="nc" id="L40">			query.setParameter(&quot;p_in_address_num&quot;, entity.getStreetNumber());</span>
+<span class="nc" id="L41">			query.setParameter(&quot;p_out_status&quot;, entity.getStatus());</span>
+<span class="nc" id="L42">			query.setParameter(&quot;p_out_fail_diag&quot;, entity.getFailDiag());</span>
+<span class="nc" id="L43">			query.setParameter(&quot;p_out_bloqueio_endereco&quot;, entity.getBlockageAddress());</span>
+<span class="nc" id="L44">			query.setParameter(&quot;p_out_tecnology&quot;, entity.getTechnology());</span>
+<span class="nc" id="L45">			query.setParameter(&quot;p_out_estacao_telefonica&quot;, entity.getStation());</span>
+<span class="nc" id="L46">			query.setParameter(&quot;p_out_ident_equip1&quot;, entity.getIdentEquip1());</span>
+<span class="nc" id="L47">			query.setParameter(&quot;p_out_ident_equip2&quot;, entity.getIdentEquip2());</span>
+<span class="nc" id="L48">			query.setParameter(&quot;p_out_bloqueio_equipamento&quot;, entity.getBlockageEquipment());</span>
+<span class="nc" id="L49">			query.setParameter(&quot;p_out_razao_bloqueio_eqpto&quot;, entity.getBlockageReason());</span>
+<span class="nc" id="L50">			query.setParameter(&quot;p_out_equipment_type&quot;, entity.getEquipmentType());</span>
+<span class="nc" id="L51">			query.setParameter(&quot;p_out_qtd_fibras&quot;, entity.getQuantityPort());</span>
+<span class="nc" id="L52">			query.setParameter(&quot;p_out_switch&quot;, entity.getSwitchName());</span>
+<span class="nc" id="L53">			query.setParameter(&quot;p_out_compartilhamento&quot;, entity.getShare());</span>
+<span class="nc" id="L54">			query.setParameter(&quot;p_out_armario_optico&quot;, entity.getCabinetName());</span>
+<span class="nc" id="L55">			query.setParameter(&quot;p_out_tipo_cobertura&quot;, entity.getTypeCoverage());</span>
+<span class="nc" id="L56">			query.setParameter(&quot;p_out_cod&quot;, entity.getReturnCode());</span>
+<span class="nc" id="L57">			query.setParameter(&quot;p_out_msg&quot;, entity.getMessage());</span>
+
+<span class="nc" id="L59">			logIn(query);</span>
+			
+<span class="nc" id="L61">			logger.log(OSSLogger.INFO, query.getParameters().toString());</span>
+
+<span class="nc" id="L63">			result = query.getSingleResult();</span>
+
+<span class="nc" id="L65">			logOut(result);</span>
+<span class="nc" id="L66">		} catch (Exception e) {</span>
+<span class="nc" id="L67">			result.getResult().setCode(&quot;10&quot;);</span>
+<span class="nc" id="L68">			result.getResult().setDescription(e.getMessage());</span>
+<span class="nc" id="L69">		}</span>
+
+<span class="nc" id="L71">		return result;</span>
+	}
+	
+	public DetermineDistanceEntity getDistance(DetermineDistanceEntity entity)
+			throws OSSBusinessException {
+
+<span class="nc" id="L77">		DetermineDistanceEntity queryResult = new DetermineDistanceEntity();</span>
+<span class="nc" id="L78">		getFactory().getEntityManagerFactory().getCache().evict(DetermineDistanceEntity.class);</span>
+		
+		try {
+			TypedQuery&lt;DetermineDistanceEntity&gt; query;
+<span class="nc" id="L82">			query = getFactory().createNamedQuery(&quot;determineDistance&quot;, DetermineDistanceEntity.class);</span>
+
+<span class="nc" id="L84">			query.setParameter(&quot;p_in_cnl&quot;, entity.getCnl());</span>
+<span class="nc" id="L85">			query.setParameter(&quot;p_in_street_code&quot;, entity.getStreetCode());</span>
+<span class="nc" id="L86">			query.setParameter(&quot;p_in_address_num&quot;, entity.getStreetNumber());</span>
+<span class="nc" id="L87">			query.setParameter(&quot;p_in_ident_equip1&quot;, entity.getCabinetId());</span>
+<span class="nc" id="L88">			query.setParameter(&quot;p_in_ident_equip2&quot;,  entity.getTerminalBoxId());</span>
+<span class="nc" id="L89">			query.setParameter(&quot;p_in_origem&quot;, Constants.RESOURCE_INVENTORY_ORIGEM);</span>
+<span class="nc" id="L90">			query.setParameter(&quot;p_out_distancia&quot;, entity.getDistance());			</span>
+<span class="nc" id="L91">			query.setParameter(&quot;p_out_cod&quot;, entity.getCode());</span>
+<span class="nc" id="L92">			query.setParameter(&quot;p_out_msg&quot;, entity.getMessage());</span>
+			
+<span class="nc" id="L94">			logIn(query);</span>
+			
+<span class="nc" id="L96">			logger.log(OSSLogger.INFO, query.getParameters().toString());</span>
+
+<span class="nc" id="L98">			queryResult = query.getSingleResult();</span>
+
+<span class="nc" id="L100">			logOutDistance(queryResult);</span>
+<span class="nc" id="L101">		} catch (Exception e) {</span>
+<span class="nc" id="L102">			logger.error(e.getMessage(), e.getCause());</span>
+<span class="nc" id="L103">		}</span>
+
+<span class="nc" id="L105">		return queryResult;</span>
+	}
+	
+	/**
+	 * @param entity
+	 * @return
+	 * @throws OSSBusinessException
+	 */
+	public DetermineResourceAvailabilityMetallic getDetermineAvailabilityMetallic(DetermineResourceAvailabilityMetallic entity)
+			throws OSSBusinessException {
+	
+<span class="nc" id="L116">		DetermineResourceAvailabilityMetallic result = new DetermineResourceAvailabilityMetallic();</span>
+		
+<span class="nc" id="L118">		getFactory().getEntityManagerFactory().getCache().evict(DetermineResourceAvailabilityMetallic.class);</span>
+		
+		try {
+			TypedQuery&lt;DetermineResourceAvailabilityMetallic&gt; query;
+<span class="nc" id="L122">			query = getFactory().createNamedQuery(&quot;determineResourceAvailabilityMetallic&quot;, DetermineResourceAvailabilityMetallic.class);</span>
+
+<span class="nc" id="L124">			query.setParameter(&quot;p_in_cnl&quot;, entity.getCnl());</span>
+<span class="nc" id="L125">			query.setParameter(&quot;p_in_street_code&quot;, entity.getStreetCode());</span>
+<span class="nc" id="L126">			query.setParameter(&quot;p_in_address_num&quot;, entity.getAddressNum());</span>
+<span class="nc" id="L127">			query.setParameter(&quot;p_out_status&quot;, entity.getStatus());</span>
+<span class="nc" id="L128">			query.setParameter(&quot;p_out_fail_diag&quot;, entity.getFailDiag());</span>
+<span class="nc" id="L129">			query.setParameter(&quot;p_out_bloqueio_endereco&quot;, entity.getBlockageAddress());</span>
+<span class="nc" id="L130">			query.setParameter(&quot;p_out_tecnology&quot;, entity.getTechnology());</span>
+<span class="nc" id="L131">			query.setParameter(&quot;p_out_estacao_telefonica&quot;, entity.getEstacaoTelefonica());</span>
+<span class="nc" id="L132">			query.setParameter(&quot;p_out_ident_equip1&quot;, entity.getIdentEquip1());</span>
+<span class="nc" id="L133">			query.setParameter(&quot;p_out_ident_equip2&quot;, entity.getIdentEquip2());</span>
+<span class="nc" id="L134">			query.setParameter(&quot;p_out_bloqueio_equipamento&quot;, entity.getBlockageEquipment());</span>
+<span class="nc" id="L135">			query.setParameter(&quot;p_out_razao_bloqueio_eqpto&quot;, entity.getRazaoBloqueio());</span>
+<span class="nc" id="L136">			query.setParameter(&quot;p_out_shadow&quot;, entity.getShadow());</span>
+<span class="nc" id="L137">			query.setParameter(&quot;p_out_equipment_type&quot;, entity.getEquipmentType());</span>
+<span class="nc" id="L138">			query.setParameter(&quot;p_out_qtd_pares&quot;, entity.getQtdPares());</span>
+<span class="nc" id="L139">			query.setParameter(&quot;p_out_switch&quot;, entity.getSwitchName());</span>
+<span class="nc" id="L140">			query.setParameter(&quot;p_out_compartilhamento&quot;, entity.getCompartilhamento());</span>
+<span class="nc" id="L141">			query.setParameter(&quot;p_out_armario_optico&quot;, entity.getArmarioOptico());</span>
+<span class="nc" id="L142">			query.setParameter(&quot;p_out_armario_metalico&quot;, entity.getArmarioMetalico());</span>
+<span class="nc" id="L143">			query.setParameter(&quot;p_out_cod&quot;, entity.getReturnCode());</span>
+<span class="nc" id="L144">			query.setParameter(&quot;p_out_msg&quot;, entity.getMessage());</span>
+
+<span class="nc" id="L146">			logInMetallic(query);</span>
+			
+<span class="nc" id="L148">			logger.log(OSSLogger.INFO, query.getParameters().toString());</span>
+
+<span class="nc" id="L150">			result = query.getSingleResult();</span>
+
+<span class="nc" id="L152">			logOutMetalic(result);</span>
+			
+<span class="nc" id="L154">		} catch (Exception e) {</span>
+<span class="nc" id="L155">			result.getResult().setCode(&quot;10&quot;);</span>
+<span class="nc" id="L156">			result.getResult().setDescription(e.getMessage());</span>
+<span class="nc" id="L157">		}</span>
+
+<span class="nc" id="L159">		return result;</span>
+	}
+
+	private void logIn(Query query) {
+<span class="nc" id="L163">		String log = getlogIn(&quot;SAGREMAN.GVT_SP_SOA_CONS_COB_FIBRA&quot;, query);</span>
+<span class="nc" id="L164">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L165">	}</span>
+	
+	private void logInMetallic(Query query) {
+<span class="nc" id="L168">		String log = getlogIn(&quot;SAGREMAN.GVT_SP_SOA_CONSULTA_COBERTURA&quot;, query);</span>
+<span class="nc" id="L169">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L170">	}</span>
+
+	private void logOut(DetermineAvailabilityEntity result) {
+<span class="nc" id="L173">		String log = new StringBuilder(&quot;Param OUT: &quot;).append(&quot;p_out_cod = &quot;).append(result.getReturnCode()).append(&quot;p_out_msg = &quot;)</span>
+<span class="nc" id="L174">				.append(result.getMessage()).toString();</span>
+<span class="nc" id="L175">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L176">	}</span>
+	
+	private void logOutMetalic(DetermineResourceAvailabilityMetallic result) {
+<span class="nc" id="L179">		String log = new StringBuilder(&quot;Param OUT: &quot;).append(&quot;p_out_cod = &quot;).append(result.getReturnCode()).append(&quot;p_out_msg = &quot;)</span>
+<span class="nc" id="L180">				.append(result.getMessage()).toString();</span>
+<span class="nc" id="L181">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L182">	}</span>
+	
+	private void logOutDistance(DetermineDistanceEntity result) {
+<span class="nc" id="L185">		String log = new StringBuilder(&quot;Param OUT: &quot;).append(&quot;p_out_cod = &quot;).append(result.getCode()).append(&quot;p_out_msg = &quot;)</span>
+<span class="nc" id="L186">				.append(result.getMessage()).toString();</span>
+<span class="nc" id="L187">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L188">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

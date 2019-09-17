@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeallocateController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.core</a> &gt; <span class="el_source">DeallocateController.java</span></div><h1>DeallocateController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.core;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.sagre.core.validation.Deallocate;
+import com.tlf.oss.resourceinventory.sagre.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.DeallocateResourceEntity;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.sagre.enums.Status;
+import com.tlf.oss.resourceinventory.sagre.repository.DeallocateRepository;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+/**
+ * BEATRIXTWO-935 | DEMOSS-2995
+ * @project Beatrix Fase 2
+ * @author renan.n.oliveira
+ * @since 201803
+ */
+
+<span class="fc" id="L26">public class DeallocateController extends ValidatorEntity implements Serializable {</span>
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Inject 
+	private DeallocateRepository deallocateRepository;
+	
+<span class="fc" id="L36">	OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RISAGRE_003.getCode(),</span>
+<span class="fc" id="L37">			String.format(ExceptionInfoEnum.RISAGRE_003.getDescription(), &quot;GVT_SP_SOA_LIBERA_FAC_CTRL&quot;),</span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+	
+	public static final int RESULTADO_ESPERADO = 0;
+
+<span class="fc" id="L42">	public static final String P_OUT_MSG = null;</span>
+<span class="fc" id="L43">	public static final Integer P_OUT_COD = null;</span>
+	
+	public ResourceInventoryEntity deallocate(@Deallocate ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L47">		DeallocateResourceEntity deallocateResource = new DeallocateResourceEntity();</span>
+<span class="fc" id="L48">		deallocateResource.setCnl(Integer.valueOf(entity.getAddress().getCnl()));</span>
+<span class="fc" id="L49">		deallocateResource.setAccessTechnology(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getAccessTechnology());</span>
+<span class="fc" id="L50">		deallocateResource.setVoiceTechnology(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+<span class="fc" id="L51">		deallocateResource.setAccessId(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L52">		deallocateResource.setType(Status.DESIGNACAO.getName());</span>
+				
+<span class="fc" id="L54">		deallocateResource.setResultCode(P_OUT_COD);</span>
+<span class="fc" id="L55">		deallocateResource.setMessage(P_OUT_MSG);</span>
+		
+<span class="fc" id="L57">		return getResourceInventoryEntity(deallocateRepository.deallocate(deallocateResource), entity);</span>
+	}
+
+	
+	/**
+	 * Enriquece ResourceInventoryEntity atraves da execucao do DeallocateDAO.allocate
+	 * 
+	 * @param deallocate
+	 * @param entity
+	 * @return ResourceInventoryEntity
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getResourceInventoryEntity(DeallocateResourceEntity deallocate,
+			ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">		if (RESULTADO_ESPERADO != deallocate.getResultCode()) {</span>
+<span class="nc" id="L73">		    String errorCode = String.valueOf(deallocate.getResultCode());</span>
+<span class="nc" id="L74">		    String errorMessage = deallocate.getMessage();</span>
+<span class="nc" id="L75">		    String detailMessage = errorCode + &quot;; &quot; + errorMessage;</span>
+		 
+<span class="nc" id="L77">		    falloutConfig.setErrorCode(errorCode);</span>
+<span class="nc" id="L78">		    falloutConfig.setErrorMessage(errorMessage);</span>
+<span class="nc" id="L79">			falloutConfig.setDetailMessage(detailMessage);</span>
+<span class="nc" id="L80">		    throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+		}
+
+<span class="fc" id="L83">		return entity;</span>
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

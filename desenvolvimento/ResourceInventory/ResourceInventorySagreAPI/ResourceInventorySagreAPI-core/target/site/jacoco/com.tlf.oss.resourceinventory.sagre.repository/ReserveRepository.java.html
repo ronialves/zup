@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReserveRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.repository</a> &gt; <span class="el_source">ReserveRepository.java</span></div><h1>ReserveRepository.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.repository;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.TypedQuery;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.sagre.entity.ReserveEntity;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.sagre.repository.factory.GenericRepository;;
+
+/**
+ * BEATRIXTWO-22 | DEMOSS-2155
+ * 
+ * @project Beatrix Fase 2
+ * @author renan.n.Oliveira
+ * @since 201709
+ */
+
+<span class="nc" id="L27">public class ReserveRepository extends GenericRepository implements Serializable {</span>
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	protected OSSLogger logger;
+	
+	private static final String GVT_SP_SOA_CRIA_RS_CTRL = &quot;SAGREMAN.GVT_SP_SOA_CRIA_RS_CTRL&quot;;
+
+	public ReserveEntity getReserve(ReserveEntity entity)
+			throws OSSBusinessException {
+<span class="nc" id="L38">		ReserveEntity result = new ReserveEntity();</span>
+		
+		try {
+			TypedQuery&lt;ReserveEntity&gt; query;
+<span class="nc" id="L42">			query = getFactory().createNamedQuery(&quot;reserve&quot;, ReserveEntity.class);</span>
+
+<span class="nc" id="L44">			query.setParameter(&quot;p_in_cnl&quot;, entity.getCnl());</span>
+<span class="nc" id="L45">			query.setParameter(&quot;p_in_tec_acesso&quot;, entity.getTecAcesso());</span>
+<span class="nc" id="L46">			query.setParameter(&quot;p_in_tec_voz&quot;, entity.getTecVoz());</span>
+<span class="nc" id="L47">			query.setParameter(&quot;p_in_id_acesso&quot;, entity.getIdAcesso());</span>
+<span class="nc" id="L48">			query.setParameter(&quot;p_in_sos&quot;, entity.getInSos());</span>
+<span class="nc" id="L49">			query.setParameter(&quot;p_in_street_code&quot;, entity.getStreetCode());</span>
+<span class="nc" id="L50">			query.setParameter(&quot;p_in_lote&quot;, entity.getInLote());</span>
+<span class="nc" id="L51">			query.setParameter(&quot;p_in_ident_equip1&quot;, entity.getIdentEquip1());</span>
+<span class="nc" id="L52">			query.setParameter(&quot;p_in_ident_equip2&quot;, entity.getIdentEquip2());</span>
+<span class="nc" id="L53">			query.setParameter(&quot;p_in_ident_equip3&quot;, entity.getIdentEquip3());</span>
+<span class="nc" id="L54">			query.setParameter(&quot;p_in_tipo_reserva&quot;, entity.getTipoReserva());</span>
+<span class="nc" id="L55">			query.setParameter(&quot;p_in_origem&quot;, entity.getInOrigem());</span>
+<span class="nc" id="L56">			query.setParameter(&quot;p_out_aux1&quot;, entity.getAux1());</span>
+<span class="nc" id="L57">			query.setParameter(&quot;p_out_cod&quot;, entity.getCod());</span>
+<span class="nc" id="L58">			query.setParameter(&quot;p_out_msg&quot;, entity.getMsg());</span>
+<span class="nc" id="L59">			query.setParameter(&quot;p_in_tipo_documento&quot;, entity.getTipoDocumento());</span>
+<span class="nc" id="L60">			query.setParameter(&quot;p_in_classe_servico&quot;, entity.getClasseServico());</span>
+
+<span class="nc" id="L62">			logIn(query);</span>
+
+<span class="nc" id="L64">			result = query.getSingleResult();</span>
+
+<span class="nc" id="L66">			logOut(result);</span>
+			
+<span class="nc" id="L68">		} catch (NonUniqueResultException | QueryTimeoutException | NoResultException e) {</span>
+<span class="nc" id="L69">			throw new OSSBusinessException(ExceptionInfoEnum.RISAGRE_002.getDescription(),</span>
+<span class="nc" id="L70">					ExceptionInfoEnum.RISAGRE_002.getCode(),</span>
+<span class="nc" id="L71">					String.format(ExceptionInfoEnum.RISAGRE_002.getMessage(), GVT_SP_SOA_CRIA_RS_CTRL, e.getMessage()));</span>
+<span class="nc" id="L72">		} catch (PersistenceException e) {</span>
+<span class="nc" id="L73">			throw new OSSBusinessException(ExceptionInfoEnum.RISAGRE_002.getDescription(),</span>
+<span class="nc" id="L74">					ExceptionInfoEnum.RISAGRE_002.getCode(),</span>
+<span class="nc" id="L75">					String.format(ExceptionInfoEnum.RISAGRE_002.getMessage(), GVT_SP_SOA_CRIA_RS_CTRL, e.getMessage()));</span>
+<span class="nc" id="L76">		} catch (Exception e) {</span>
+<span class="nc" id="L77">			throw new OSSBusinessException(ExceptionInfoEnum.RISAGRE_999.getDescription(),</span>
+<span class="nc" id="L78">					ExceptionInfoEnum.RISAGRE_999.getCode(),</span>
+<span class="nc" id="L79">					String.format(ExceptionInfoEnum.RISAGRE_999.getMessage(), GVT_SP_SOA_CRIA_RS_CTRL, e.getMessage()));</span>
+<span class="nc" id="L80">		}</span>
+
+<span class="nc" id="L82">		return result;</span>
+	}
+	
+	private void logIn(Query query) {
+<span class="nc" id="L86">		String log = getlogIn(GVT_SP_SOA_CRIA_RS_CTRL, query);</span>
+<span class="nc" id="L87">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L88">	}</span>
+	
+	private void logOut(ReserveEntity result) {
+<span class="nc" id="L91">		String log = new StringBuilder(&quot;Param OUT: &quot;).append(&quot;p_out_cod = &quot;).append(result.getCod()).append(&quot;p_out_msg = &quot;)</span>
+<span class="nc" id="L92">				.append(result.getMsg()).toString();</span>
+<span class="nc" id="L93">		logger.log(OSSLogger.INFO, log);</span>
+<span class="nc" id="L94">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

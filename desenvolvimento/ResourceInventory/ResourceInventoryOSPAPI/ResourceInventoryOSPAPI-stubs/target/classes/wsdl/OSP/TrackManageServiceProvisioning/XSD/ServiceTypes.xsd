@@ -1,0 +1,35 @@
+<?xml version="1.0" ?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/ServiceTypes">
+
+    <xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"></xs:import>
+   
+    <xs:complexType name="Service">
+        <xs:sequence>
+
+            <!-- Número do Serviço -->
+            <xs:element minOccurs="0" name="identifier" type="st:string60"></xs:element>
+
+            <!-- Tipo de serviço do Catálogo de Serviços (Classe de Serviço) -->
+            <xs:element minOccurs="0" name="serviceType" type="st:string30"></xs:element>
+
+            <!-- Velocidade -->
+            <xs:element minOccurs="0" name="speed" type="st:string3"></xs:element>            
+            
+        </xs:sequence>
+    </xs:complexType>
+	
+	<xs:complexType name="ServiceServiceType">
+        <xs:sequence>
+
+            <!-- Número do Serviço -->
+            <xs:element minOccurs="0" name="identifier" type="st:string60"></xs:element>
+
+            <!-- Tipo de serviço do Catálogo de Serviços (Classe de Serviço) -->
+            <xs:element name="serviceType" type="st:string30"></xs:element>
+
+            <!-- Velocidade -->
+            <xs:element minOccurs="0" name="speed" type="st:string3"></xs:element>            
+            
+        </xs:sequence>
+    </xs:complexType>
+	
+</xs:schema>

@@ -1,0 +1,196 @@
+package com.tlf.oss.resourceinventory.granite.core;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.granite.core.entity.ReserveResourceEntity;
+import com.tlf.oss.resourceinventory.granite.core.entity.RetrievePathEntity;
+import com.tlf.oss.resourceinventory.granite.core.enums.CustomerOrderType;
+import com.tlf.oss.resourceinventory.granite.core.enums.Operation;
+import com.tlf.oss.resourceinventory.granite.core.enums.StatusPathType;
+import com.tlf.oss.resourceinventory.granite.core.mapper.impl.ReserveResourceMapper;
+import com.tlf.oss.resourceinventory.granite.core.repository.ReserveResourceDao;
+import com.tlf.oss.resourceinventory.granite.core.service.PathService;
+import com.tlf.oss.resourceinventory.granite.core.validation.Reserve;
+import com.tlf.oss.resourceinventory.granite.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.CustomerOrder;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+public class ReservationResourceController extends ValidatorEntity implements Serializable {
+
+	private static final long serialVersionUID = -1008629764974608075L;
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	public ReserveResourceDao rdao;
+
+	@Inject
+	private PathService pathService;
+
+	@Inject
+	private ReservationResourceGponController reserveResourceGponController;
+
+	@Inject
+	private ReservationResourceMetallicController reserveResourceMetallicController;
+
+	@Inject
+	private ReserveResourceMapper mapper;
+
+	public ResourceInventoryEntity reserveResource(@Reserve ResourceInventoryEntity entity) throws OSSBusinessException {
+
+		ReserveResourceEntity reserveResourceEntity = null;
+
+		Optional<CustomerOrder> customerOrder = Optional.ofNullable(entity.getCustomerOrder());
+
+		// Verifica se é venda de oferta ou mudanca de oferta 
+		if (!customerOrder.isPresent() ||
+			validateCustomerOrderType(customerOrder.get().getCustomerOrderType())) {
+
+    		// Executa o Fluxo de uma nova reserva
+			reserveResourceEntity = reserve(entity);
+		} else if (customerOrder.isPresent() || isChangeOffer(customerOrder.get()) || isOfferEdition(customerOrder.get())) {
+
+			// Executa o Fluxo de modificação
+			reserveResourceEntity = reserveOfferEditionMetallicController(entity);
+		}
+
+		return updateEntity(reserveResourceEntity, entity);
+	}
+
+	private ResourceInventoryEntity updateEntity(ReserveResourceEntity reserveResourceEntity,ResourceInventoryEntity entity) throws OSSBusinessException {
+		if (!isGpon(entity)) {
+			return mapper.parseGetPhysicalReserveResource(reserveResourceEntity, entity);
+		}
+
+		return entity;
+	}
+
+	private ReserveResourceEntity getReserveResourceEntity(ResourceInventoryEntity entity) throws OSSBusinessException {
+		ReserveResourceEntity reserveEntity = new ReserveResourceEntity();
+
+		reserveEntity.setCnl(entity.getAddress().getCnl());
+		reserveEntity.setTelephonicArea(entity.getAddress().getTelephonicArea());
+		reserveEntity.setLocker(entity.getCabinet() != null ? entity.getCabinet().getName() : "");
+		reserveEntity.setTerminal(getNetworkOwnerID(entity));
+		reserveEntity.setSpeed(getDownloadSpeed(entity));
+		reserveEntity.setUnit("");
+		reserveEntity.setProtocol(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());
+
+		return reserveEntity;
+	}
+
+	private String getDownloadSpeed(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+		CustomerFacingService customerFacingService = getCustomerFacingService(entity, "BROADBAND", "Downstream");
+
+		return customerFacingService.getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0).getValue();
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public ReserveResourceEntity reserve(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+		ReserveResourceEntity reserveResource = null;
+		Operation operation = Operation.SALE_OFFER;
+		boolean isGpon = isGpon(entity);
+		RetrievePathEntity path = retrievePath(entity, isGpon);
+
+		if (null != path) {
+    		StatusPathType pathStatus = path.getStatus();
+    		logger.log(OSSLogger.INFO, "Path status: ".concat(pathStatus.getValue()));
+    		logger.log(OSSLogger.INFO, "Resource status: ".concat(path.getResourceStatus() != null ? path.getResourceStatus().getValue() : ""));
+
+    		// verifica se a reserva já existe para este cliente
+    		if (StatusPathType.RESERVED.equals(pathStatus)) {
+
+    			logger.log(OSSLogger.INFO, "Reserva encontrada para o terminal [" + getNetworkOwnerID(entity) + "]");
+
+    			ReserveResourceEntity reserveResourceEntity = getReserveResourceEntity(entity);
+
+    			reserveResourceEntity.setListCode(path.getPort());
+    			reserveResourceEntity.setCode("0");
+
+    			return reserveResourceEntity;
+    		} else if (StatusPathType.ACTIVE.equals(pathStatus) && StatusPathType.ACTIVE.equals(path.getResourceStatus())) {
+    			operation = Operation.OFFER_EDITION;
+    		}
+		}
+
+		logger.log(OSSLogger.INFO, "Efetuando uma [" + operation.getValue() + "] para um terminal [" + (isGpon ? "Fibra" : "Metálico") + "]");
+
+		// Verifica a tecnologia (GPON ou METALICO)
+		if (isGpon) {
+			reserveResourceGponController(entity, operation);
+		} else {
+			reserveResource = reserveResourceMetallic(entity, operation);
+		}
+
+		return reserveResource;
+	}
+
+	private RetrievePathEntity retrievePath(ResourceInventoryEntity entity, boolean isGpon) throws OSSBusinessException {
+		List<RetrievePathEntity> paths = retrievePaths(entity, isGpon);
+
+		// Caso retorne mais de um Path, retorna apenas o primeiro
+		if (null != paths && !paths.isEmpty()) {
+			return paths.stream().findFirst().orElse(null);
+		}
+
+		return null;
+	}
+
+	private List<RetrievePathEntity> retrievePaths(ResourceInventoryEntity entity, boolean isGpon) throws OSSBusinessException {
+		try {
+			return pathService.getPaths(entity, isGpon);
+		} catch (Exception oexc) {
+			return null;
+		}
+	}
+
+	private boolean isChangeOffer(CustomerOrder customerOrder) {
+		return CustomerOrderType.CHANGE_OFFER.getValue().equalsIgnoreCase(customerOrder.getCustomerOrderType());
+	}
+
+	private boolean isOfferEdition(CustomerOrder customerOrder) {
+		return Operation.OFFER_EDITION.getValue().equalsIgnoreCase(customerOrder.getCustomerOrderType());
+	}
+
+	private void reserveResourceGponController(ResourceInventoryEntity entity, Operation operation) throws OSSBusinessException {
+		reserveResourceGponController.reserveResource(entity, operation);
+	}
+
+	private ReserveResourceEntity reserveResourceMetallic(ResourceInventoryEntity entity, Operation operation) throws OSSBusinessException {
+		if (Operation.OFFER_EDITION.equals(operation)) {
+			return reserveOfferEditionMetallicController(entity);
+		} else {
+			return reserveResourceMetallicController(entity);
+		}
+	}
+
+	private ReserveResourceEntity reserveOfferEditionMetallicController(ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+		return reserveResourceMetallicController.reserveOfferEdition(entity);
+	}
+
+	private ReserveResourceEntity reserveResourceMetallicController(ResourceInventoryEntity entity)
+			throws OSSBusinessException {
+		return reserveResourceMetallicController.validateReserve(entity);
+	}
+
+	private boolean validateCustomerOrderType(String customerOrderType) {
+		logger.log(OSSLogger.INFO, "CustomerOrderType: ".concat(customerOrderType != null ? customerOrderType : ""));
+
+		return null == customerOrderType ||
+				"".equals(customerOrderType.trim()) ||
+			   customerOrderType.equals(Operation.CHANGE_ADDRESS.getValue()) ||
+			   customerOrderType.equals(Operation.SALE_OFFER.getValue());
+	}
+}

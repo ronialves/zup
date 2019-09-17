@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://www.cpqd.com.br/etics/headerContext" targetNamespace="http://www.cpqd.com.br/etics/headerContext"
+	version="1.0">
+	<xs:element name="context" nillable="true" type="tns:wsContext"></xs:element>
+	<xs:complexType name="wsContext">
+		<xs:sequence>
+			<xs:element name="regionCode" type="xs:string"></xs:element>
+			<xs:element name="centralOffice" type="xs:string"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

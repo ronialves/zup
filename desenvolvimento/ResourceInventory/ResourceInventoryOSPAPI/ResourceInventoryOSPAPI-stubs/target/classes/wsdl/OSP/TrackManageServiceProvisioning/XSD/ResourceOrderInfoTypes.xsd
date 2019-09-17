@@ -1,0 +1,31 @@
+<?xml version="1.0" ?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes">
+
+    <xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"></xs:import>
+
+    <xs:complexType name="ResourceOrderInfo">
+        <xs:sequence>
+
+            <!-- Tipo do documento -->
+            <xs:element minOccurs="0" name="resourceOrderType" type="st:string3"></xs:element>
+
+            <!-- Data -->
+            <xs:element minOccurs="0" name="resourceOrderDate" type="xs:date"></xs:element>
+
+        </xs:sequence>
+    </xs:complexType>
+	
+	 <xs:complexType name="ResourceOrderInfoFull">
+        <xs:sequence>
+
+            <!-- Tipo do documento -->
+            <xs:element minOccurs="0" name="resourceOrderType" type="st:string3"></xs:element>
+			
+			 <!-- Ordem de Recursos -->
+            <xs:element minOccurs="0" name="resourceOrder" type="st:string40"></xs:element>
+
+            <!-- Data -->
+            <xs:element minOccurs="0" name="resourceOrderDate" type="xs:date"></xs:element>
+
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,7 @@
+com/tlf/oss/resourceinventory/sagre/api/dao/QueryTest.class
+com/tlf/oss/resourceinventory/sagre/api/dao/CacheTest.class
+com/tlf/oss/resourceinventory/sagre/api/dao/EntityManagerFactoryTest.class
+com/tlf/oss/resourceinventory/sagre/api/DetermineAvailabilityTest.class
+com/tlf/oss/resourceinventory/sagre/api/dao/ParameterTest.class
+com/tlf/oss/resourceinventory/sagre/api/BaseTest.class
+com/tlf/oss/resourceinventory/sagre/api/dao/EntityManagerTest.class

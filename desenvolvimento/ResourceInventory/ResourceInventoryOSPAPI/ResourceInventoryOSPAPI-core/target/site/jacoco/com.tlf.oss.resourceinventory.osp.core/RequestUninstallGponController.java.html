@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RequestUninstallGponController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryOSPAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.osp.core</a> &gt; <span class="el_source">RequestUninstallGponController.java</span></div><h1>RequestUninstallGponController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.osp.core;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.interceptor.annotation.Logged;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.ReleaseResourceRequest;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.facilities.allocateinstallresourcetypes.ReleaseResourceResponse;
+import com.tlf.oss.resourceinventory.generated.osp.allocateinstallresource.headercontext.WsContext;
+import com.tlf.oss.resourceinventory.osp.core.enums.Message;
+import com.tlf.oss.resourceinventory.osp.core.enums.OSPWSName;
+import com.tlf.oss.resourceinventory.osp.core.service.UninstallService;
+import com.tlf.oss.resourceinventory.osp.factory.OssBusinessExceptionFactory;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@Logged
+@RequestScoped
+<span class="nc" id="L20">public class RequestUninstallGponController {</span>
+
+	@Inject
+	protected OSSLogger logger;
+	
+	@Inject
+	private UninstallService uninstallService;
+	
+	public ResourceInventoryEntity resourceUninstall(ResourceInventoryEntity entity) throws OSSBusinessException{
+<span class="nc" id="L29">		logger.log(OSSLogger.INFO, &quot;UninstallGponController.resourceUninstall - Start&quot;);</span>
+		
+<span class="nc" id="L31">		WsContext headerContext = new WsContext();</span>
+		
+<span class="nc bnc" id="L33" title="All 2 branches missed.">		headerContext.setRegionCode(entity.getAddress().getCnl() != null ? entity.getAddress().getCnl() : null);</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		headerContext.setCentralOffice(entity.getAddress().getTelephonicArea() != null ? entity.getAddress().getTelephonicArea() : null);</span>
+		
+		try {
+<span class="nc" id="L37">			ReleaseResourceRequest request = createRequest(entity);</span>
+			
+<span class="nc" id="L39">			logger.log(OSSLogger.INFO, &quot;Calling service releaseResource&quot;);</span>
+<span class="nc" id="L40">			ReleaseResourceResponse response = uninstallService.releaseResource(request, headerContext);						</span>
+<span class="nc" id="L41">			validateResult(response);</span>
+<span class="nc" id="L42">			logger.log(OSSLogger.INFO, &quot;Called service releaseResource&quot;);</span>
+			
+<span class="nc" id="L44">		} catch (Exception e) {			</span>
+<span class="nc" id="L45">			logger.log(OSSLogger.ERROR, Message.ERRO_RESOURCE_UNINSTALL.getValue()+&quot; =[&quot; + e.getMessage() + &quot;]&quot;);</span>
+<span class="nc" id="L46">		    throw OssBusinessExceptionFactory.getOSSBusinessException(e, OSPWSName.AllocateInstallResource);</span>
+<span class="nc" id="L47">		}</span>
+<span class="nc" id="L48">		logger.log(OSSLogger.INFO, &quot;UninstallGponController.resourceUninstall - End&quot;);</span>
+<span class="nc" id="L49">		return entity;</span>
+	}
+	
+	private ReleaseResourceRequest createRequest(ResourceInventoryEntity entity) {		
+<span class="nc" id="L53">		ReleaseResourceRequest request = new ReleaseResourceRequest();		</span>
+<span class="nc" id="L54">		request.setResourceOrder(entity.getCustomerOrder().getPurchaseOrderNumber());	</span>
+<span class="nc" id="L55">		request.setCircuitId(entity.getCircuit().getId());		</span>
+<span class="nc" id="L56">		return request;		</span>
+	}
+	
+	private void validateResult(ReleaseResourceResponse response) throws OSSBusinessException {		
+<span class="nc bnc" id="L60" title="All 4 branches missed.">		if (response.getResult() != null &amp;&amp; response.getResult().getCode() != 0) {</span>
+<span class="nc" id="L61">			throw OssBusinessExceptionFactory.getFalloutOSSBusinessException(String.valueOf(response.getResult().getErrorCode()), response.getResult().getDescription(), OSPWSName.AllocateInstallResource);</span>
+		}		
+<span class="nc" id="L63">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

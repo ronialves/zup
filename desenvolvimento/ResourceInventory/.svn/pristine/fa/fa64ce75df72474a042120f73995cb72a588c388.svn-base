@@ -1,0 +1,254 @@
+package com.tlf.oss.resourceinventory.cpe.core;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.cpe.entity.CatalogoDispositivo;
+import com.tlf.oss.resourceinventory.cpe.entity.DispositivoFisico;
+import com.tlf.oss.resourceinventory.cpe.entity.RecursoLogico;
+import com.tlf.oss.resourceinventory.cpe.enums.TipoRfs;
+import com.tlf.oss.resourceinventory.cpe.helper.UpdateHelper;
+import com.tlf.oss.resourceinventory.cpe.mapping.EntityConverter;
+import com.tlf.oss.resourceinventory.cpe.repository.AllocateRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.CatalogoDispositivoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.CategoriaDispositivoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.DispositivoFisicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.EstadoServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.RecursoLogicoRepository;
+import com.tlf.oss.resourceinventory.cpe.repository.ServicoAssinanteRepository;
+import com.tlf.oss.resourceinventory.cpe.rules.ExecutionRules;
+import com.tlf.oss.resourceinventory.cpe.utils.CpeConstants;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.PhysicalLink;
+import com.tlf.oss.resourceinventory.schemas.PlacePhysicalResourceAssoc;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+
+@RunWith(MockitoJUnitRunner.class)
+public class UpdateSTBControllerTest {
+
+	@InjectMocks
+	private UpdateStbController updateSTBController;
+
+	@Spy
+	@InjectMocks
+	private EntityConverter entityConverter = new EntityConverter();
+
+	@Mock
+	private OSSLogger logger;
+
+	@Mock
+	private AllocateRepository allocateRepository;
+
+	@Mock
+	private ServicoAssinanteRepository servicoAssinanteRepository;
+
+	@Mock
+	private DispositivoFisicoRepository dispositivoFisicoRepository;
+
+	@Mock
+	private RecursoLogicoRepository recursoLogicoRepository;
+
+	@Mock
+	private EstadoServicoAssinanteRepository estadoServicoAssinanteRepository;
+
+	@Mock
+	private CategoriaDispositivoRepository categoriaDispositivoRepository;
+
+	@Mock
+	private CatalogoDispositivoRepository catalogoDispositivoRepository;
+
+	@Mock
+	private ExecutionRules executionRules;
+	
+	@Mock
+	private UpdateHelper helper;
+
+	private ResourceInventoryEntity entity;
+
+	@Before
+	public void before() {
+		entity = new ResourceInventoryEntity();
+
+		PlacePhysicalResourceAssoc placePhysicalResourceAssoc = new PlacePhysicalResourceAssoc();
+		placePhysicalResourceAssoc.setPhysicalLink(new PhysicalLink());
+		placePhysicalResourceAssoc.getPhysicalLink().setAccessTechnology("GPON");
+
+		entity.setAddress(getBrazilianUrbanPropertyAddress());
+
+		entity.getAddress().setPlacePhysicalResourceAssoc(placePhysicalResourceAssoc);
+
+		entity.setCustomerFacingService(getListCustomerFacingService());
+
+		ResourceFacingService resourceFacingService = new ResourceFacingService();
+		resourceFacingService.setServiceId("00000000000004");
+		entity.setResourceFacingService(resourceFacingService);
+
+		ResourceOrder resourceOrder = new ResourceOrder();
+		resourceOrder.setResourceOrderItem(new ResourceOrderItem());
+		entity.setResourceOrder(resourceOrder);
+
+		entity.setAddress(getBrazilianUrbanPropertyAddress());
+		entity.setCustomerFacingService(getListCustomerFacingService());
+		
+		entity.getResourceOrder().getResourceOrderItem().setName(TipoRfs.STB.getRoiName());
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.EQUIPMENT_TYPE, CpeConstants.STB));
+
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.MACADDRESS, "A2:B3:C4:D5"));
+	
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.CASD, "A1B2C3D4E5F6G7H8J9I0"));
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.SERIAL_NUMBER, "100000"));
+	}
+	
+
+	@Test
+	public void testUpdateSTBSucess() throws OSSBusinessException {
+		
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.DVR, "TRUE"));
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.TECHNOLOGY, CpeConstants.IPTV));
+		
+		RecursoLogico recursoLogico = new RecursoLogico();
+		CatalogoDispositivo equipment = getCatalogoDispositivo();
+		List<DispositivoFisico> dispositivos = getDispositivosFisico();
+		when(helper.getCatalogoDispositivo(anyObject())).thenReturn(equipment);	
+		when(dispositivoFisicoRepository.listByServiceId(anyObject())).thenReturn(dispositivos);
+		when(dispositivoFisicoRepository.findByMacaddress(anyObject())).thenReturn(Optional.ofNullable(null));
+		when(dispositivoFisicoRepository.findBySerialNumber(anyObject())).thenReturn(Optional.ofNullable(null));
+		when(recursoLogicoRepository.findByDispositivoFisicoId(anyObject())).thenReturn(recursoLogico);
+		updateSTBController.update(entity);
+	}
+	
+	@Test(expected = OSSBusinessException.class)
+	public void testUpdateSTBDispositivoEquipmentDifException() throws OSSBusinessException {
+		
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.DVR, "TRUE"));
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.TECHNOLOGY, CpeConstants.IPTV));
+		
+		RecursoLogico recursoLogico = new RecursoLogico();
+		CatalogoDispositivo equipment = new CatalogoDispositivo();
+		List<DispositivoFisico> dispositivos = getDispositivosFisico();
+		when(helper.getCatalogoDispositivo(anyObject())).thenReturn(equipment);	
+		when(dispositivoFisicoRepository.listByServiceId(anyObject())).thenReturn(dispositivos);
+		when(recursoLogicoRepository.findByDispositivoFisicoId(anyObject())).thenReturn(recursoLogico);
+		updateSTBController.update(entity);
+	}
+
+	@Test
+	public void testUpdateSerialnotNullSucess() throws Exception {
+		
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.DVR, "TRUE"));
+		entity.getCustomerFacingService().get(0).getServiceDescribedBy().add(createServiceDescribedBy(CpeConstants.TECHNOLOGY, CpeConstants.IPTV));
+		
+		RecursoLogico recursoLogico = new RecursoLogico();
+		CatalogoDispositivo equipment = getCatalogoDispositivo();
+		List<DispositivoFisico> dispositivos = getDispositivosFisico();
+		dispositivos.get(0).setNumeroSerial("");
+		when(helper.getCatalogoDispositivo(anyObject())).thenReturn(equipment);	
+		when(dispositivoFisicoRepository.listByServiceId(anyObject())).thenReturn(dispositivos);
+		when(dispositivoFisicoRepository.findByMacaddress(anyObject())).thenReturn(Optional.ofNullable(null));
+		when(dispositivoFisicoRepository.findBySerialNumber(anyObject())).thenReturn(Optional.ofNullable(null));
+		when(recursoLogicoRepository.findByDispositivoFisicoId(anyObject())).thenReturn(recursoLogico);
+		updateSTBController.update(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = Exception.class)
+	public void testUpdateSTBException() throws Exception {
+
+		when(helper.getCatalogoDispositivo(anyObject())).thenThrow(Exception.class);
+
+		updateSTBController.update(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = OSSBusinessException.class)
+	public void testUpdateSTBOSSBusinessException() throws OSSBusinessException {
+
+		when(updateSTBController.update(entity)).thenThrow(OSSBusinessException.class);
+
+		updateSTBController.update(entity);
+	}
+
+	private BrazilianUrbanPropertyAddress getBrazilianUrbanPropertyAddress() {
+		BrazilianUrbanPropertyAddress brazilianUrbanPropertyAddress = new BrazilianUrbanPropertyAddress();
+		brazilianUrbanPropertyAddress.setStreetCode("237558");
+		brazilianUrbanPropertyAddress.setStreetNrFirst("154");
+		brazilianUrbanPropertyAddress.setCnl("11000");
+		brazilianUrbanPropertyAddress.setNetworkOwner("VIVO1");
+		brazilianUrbanPropertyAddress.setTelephonicArea("AT");
+
+		return brazilianUrbanPropertyAddress;
+	}
+
+	private List<CustomerFacingService> getListCustomerFacingService() {
+		List<CustomerFacingService> listOfCustomerFacingService = new ArrayList<CustomerFacingService>();
+		listOfCustomerFacingService.add(new CustomerFacingService());
+		listOfCustomerFacingService.get(0).setServiceId("1001");
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().add(new ServiceDescribedBy());
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().get(0).getServiceSpecCharDescribes()
+				.add(new ServiceSpecCharDescribes());
+		listOfCustomerFacingService.get(0).getServiceDescribedBy().get(0).getServiceSpecCharDescribes().get(0)
+				.setValue("1234321234");
+
+		return listOfCustomerFacingService;
+	}
+
+	private List<DispositivoFisico> getDispositivosFisico() {
+		
+		List<DispositivoFisico> dispositivos = new ArrayList<>();
+		DispositivoFisico dispositivoFisico = new DispositivoFisico();
+		dispositivoFisico.setId(762);
+		dispositivoFisico.setNumeroSerial(null);
+		dispositivoFisico.setMacAddress(null);
+		dispositivoFisico.setCategoriaDispositivoEsperada(2);
+		dispositivoFisico.setCategoriaDispositivoCorrente(null);
+		dispositivoFisico.setCatalagoDispositivoId(1);
+		dispositivoFisico.setNumeroSerialGpon("1234321234");
+		dispositivos.add(dispositivoFisico);
+
+		return dispositivos;
+	}
+
+
+	private CatalogoDispositivo getCatalogoDispositivo() {
+		
+		CatalogoDispositivo equipment = new CatalogoDispositivo();
+		equipment.setId(100);
+		equipment.setRede("VIVO1");
+		equipment.setCategoriaDispositivoId(2);
+
+		return equipment;
+	}
+
+	private ServiceDescribedBy createServiceDescribedBy(String name, String value) {
+		ServiceDescribedBy sdb = new ServiceDescribedBy();
+		ServiceSpecCharDescribes sscd = new ServiceSpecCharDescribes();
+		List<ServiceSpecCharDescribes> sscdList = new ArrayList<>();
+
+		sdb.setName(name);
+		sscd.setValue(value);
+		sscdList.add(sscd);
+		sdb.setServiceSpecCharDescribes(sscdList);
+
+		return sdb;
+	}
+}

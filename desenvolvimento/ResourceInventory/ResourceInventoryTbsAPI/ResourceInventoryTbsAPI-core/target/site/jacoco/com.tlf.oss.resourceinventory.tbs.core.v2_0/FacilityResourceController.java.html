@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FacilityResourceController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core.v2_0</a> &gt; <span class="el_source">FacilityResourceController.java</span></div><h1>FacilityResourceController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core.v2_0;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.IPAddress;
+import com.tlf.oss.resourceinventory.schemas.LogicalResource;
+import com.tlf.oss.resourceinventory.schemas.LogicalResourceAssociation;
+import com.tlf.oss.resourceinventory.schemas.PhysicalPort;
+import com.tlf.oss.resourceinventory.schemas.PhysicalResource;
+import com.tlf.oss.resourceinventory.schemas.PortAdapterCard;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.Shelf;
+import com.tlf.oss.resourceinventory.schemas.SwitchesAssociated;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.v2_0.RetrieveFacilityEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.EntityFields;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.tbs.repository.v2_0.FacilityResourceRepository;
+
+/**
+ * BEATRIXTWO-70 | DEMOSS-2285
+ *
+ * @project Beatrix Fase 2
+ * @author rodrigo.de.freitas
+ * @since 201710
+ */
+@SuppressWarnings(&quot;serial&quot;)
+<span class="fc" id="L37">public class FacilityResourceController implements Serializable {</span>
+
+	@Inject
+	FacilityResourceRepository facilityResourceRepository;
+
+	@Inject
+	OSSLogger logger;
+
+	public static final int RESULTADO_ESPERADO = 0;
+	public static final String VENDA = &quot;N&quot;;
+	public static final String P_DOWNSTREAM = &quot;Downstream&quot;;
+	public static final String P_UPSTREAM = &quot;Upstream&quot;;
+	public static final String P_HSI = &quot;HSI&quot;;
+	public static final String P_VOIP = &quot;VOIP&quot;;
+	public static final String P_VOD = &quot;UNICAST&quot;;
+	public static final String P_MCAST = &quot;MULTICAST&quot;;
+
+	/**
+	 * Retorna atraves do {@link RetrieveFacilityEntity}, o
+	 * {@link ResourceInventoryEntity} enriquecido
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity retrieveFacility(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L64">		logger.log(OSSLogger.INFO,</span>
+				&quot;[FacilityResourceController] Tranformando ResourceInventoryEntity em RetrieveFacilityEntity&quot;);
+
+<span class="fc" id="L67">		RetrieveFacilityEntity retrieve = new RetrieveFacilityEntity();</span>
+
+<span class="fc" id="L69">		retrieve.setDesignator(entity.getResourceFacingService().getServiceId());</span>
+<span class="fc" id="L70">		retrieve.setActivity(VENDA);</span>
+
+<span class="fc" id="L72">		logger.log(OSSLogger.INFO,</span>
+				&quot;[FacilityResourceController] Realizando chamada do facilityResourceDAO.retrieveFacility&quot;);
+
+<span class="fc" id="L75">		return getResourceInventoryEntity(facilityResourceRepository.retrieveFacility(retrieve), entity);</span>
+	}
+
+	/**
+	 * Realiza enriquecimento do {@link ResourceInventoryEntity} atraves da execucao
+	 * do facilityResourceDAO.retrieveFacility
+	 * 
+	 * @param retrieve
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getResourceInventoryEntity(RetrieveFacilityEntity retrieve,
+			ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">		if (RESULTADO_ESPERADO != retrieve.getResultCode()) {</span>
+<span class="nc" id="L91">			logger.log(OSSLogger.ERROR, ExceptionInfoEnum.RITBS_003.getCode().concat(&quot; - &quot;)</span>
+<span class="nc" id="L92">					.concat(retrieve.getMessage()).concat(&quot; - &quot;).concat(String.valueOf(retrieve.getResultCode())));</span>
+		} else {
+
+<span class="fc" id="L95">			logger.log(OSSLogger.INFO,</span>
+					&quot;[FacilityResourceController] Iniciando enriquecimento do ResourceInventoryEntity&quot;
+<span class="fc" id="L97">							.concat(&quot; - RetrieveEntity: &quot;).concat(retrieve.toString()));</span>
+
+<span class="fc" id="L99">			Cabinet cabinet = buildCabinet(retrieve, entity);</span>
+
+<span class="fc" id="L101">			PhysicalResource networkAggregator = new PhysicalResource();</span>
+<span class="fc" id="L102">			networkAggregator.setAccessTecnology(retrieve.getAccessTechnology());// P_TECNOLOGIA</span>
+
+<span class="fc" id="L104">			ResourceFacingService resourceFacingService = buildResourceFacingService(retrieve);</span>
+
+<span class="fc" id="L106">			entity.setCabinet(cabinet);</span>
+<span class="fc" id="L107">			entity.setNetworkAggregator(networkAggregator);</span>
+<span class="fc" id="L108">			entity.setResourceFacingService(resourceFacingService);</span>
+
+<span class="fc" id="L110">			logger.log(OSSLogger.INFO,</span>
+					&quot;[FacilityResourceController] Enriquecimento do ResourceInventoryEntity concluido&quot;);
+
+		}
+
+<span class="fc" id="L115">		return entity;</span>
+	}
+
+	/**
+	 * Realiza enriquecimento do objeto {@link Cabinet}
+	 * @param retrieval
+	 * @return Cabinet
+	 */
+	private Cabinet buildCabinet(RetrieveFacilityEntity retrieval, ResourceInventoryEntity entity){
+<span class="fc" id="L124">		Cabinet cabinet = null;</span>
+		
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">		if(entity.getCabinet() == null){</span>
+<span class="fc" id="L127">			cabinet = new Cabinet();</span>
+		} else {
+<span class="nc" id="L129">			cabinet = entity.getCabinet();</span>
+		}
+
+<span class="fc" id="L132">		cabinet.setType(retrieval.getAccessTechnology());</span>
+<span class="fc" id="L133">		cabinet.setName(retrieval.getCabinet());</span>
+<span class="fc" id="L134">		cabinet.setSwitchesAssociated(buildCabinetSwitchesAssociated(retrieval.getSwitchAtendimento()));</span>
+<span class="fc" id="L135">		cabinet.setBRASAssociated(buildCabinetSwitchesAssociated(retrieval.getShasta()));				</span>
+<span class="fc" id="L136">		cabinet.setHasShelves(buildCabinetHasShelves(retrieval));</span>
+		
+<span class="fc" id="L138">		logger.log(OSSLogger.INFO, &quot;[FacilityResourceController] Enriquecimento do resourceInventoryEntity.cabinet&quot;);</span>
+		
+<span class="fc" id="L140">		return cabinet;</span>
+	}
+
+	/**
+	 * Retorna o objeto SwitchesAssociated para o Cabinet
+	 * 
+	 * @param retrieval
+	 * @param name
+	 * @return SwitchesAssociated
+	 */
+	private SwitchesAssociated buildCabinetSwitchesAssociated(String name) {
+<span class="fc" id="L151">		SwitchesAssociated switches = new SwitchesAssociated();</span>
+<span class="fc" id="L152">		switches.setName(name);</span>
+<span class="fc" id="L153">		return switches;</span>
+	}
+
+	/**
+	 * Retorna o objeto HasShelves para o Cabinet
+	 * 
+	 * @param retrieval
+	 * @return List
+	 */
+	private List&lt;Shelf&gt; buildCabinetHasShelves(RetrieveFacilityEntity retrieval) {
+<span class="fc" id="L163">		List&lt;Shelf&gt; hasShelves = new ArrayList&lt;Shelf&gt;();</span>
+<span class="fc" id="L164">		Shelf shelf = new Shelf();</span>
+<span class="fc" id="L165">		shelf.setModel(retrieval.getShelfModel());</span>
+<span class="fc" id="L166">		shelf.setVendor(retrieval.getVendorName());</span>
+<span class="fc" id="L167">		shelf.setName(retrieval.getDslamName());</span>
+<span class="fc" id="L168">		IPAddress ipAddress = new IPAddress();</span>
+<span class="fc" id="L169">		ipAddress.setNetworkNumber(retrieval.getIpAddress());</span>
+<span class="fc" id="L170">		shelf.setIpAddress(ipAddress);</span>
+<span class="fc" id="L171">		shelf.setHasCards(buildCabinetHasCards(retrieval));</span>
+<span class="fc" id="L172">		hasShelves.add(shelf);</span>
+<span class="fc" id="L173">		return hasShelves;</span>
+	}
+
+	/**
+	 * Retorna o objeto HasCards para o Cabinet
+	 * 
+	 * @param retrieval
+	 * @return List
+	 */
+	private List&lt;PortAdapterCard&gt; buildCabinetHasCards(RetrieveFacilityEntity retrieval) {
+<span class="fc" id="L183">		List&lt;PortAdapterCard&gt; hasCards = new ArrayList&lt;PortAdapterCard&gt;();</span>
+<span class="fc" id="L184">		PortAdapterCard card = new PortAdapterCard();</span>
+<span class="fc" id="L185">		card.setSlot(retrieval.getSlot());</span>
+<span class="fc" id="L186">		card.setVendor(retrieval.getVendorName());</span>
+<span class="fc" id="L187">		card.setModel(retrieval.getBoardModel());</span>
+<span class="fc" id="L188">		card.setContainsPorts(buildCabinetConstainsPorts(retrieval));</span>
+<span class="fc" id="L189">		hasCards.add(card);</span>
+<span class="fc" id="L190">		return hasCards;</span>
+	}
+
+	/**
+	 * Retorna o objeto ConstainsPorts para o Cabinet
+	 * 
+	 * @param retrieval
+	 * @return List
+	 */
+	private List&lt;PhysicalPort&gt; buildCabinetConstainsPorts(RetrieveFacilityEntity retrieval) {
+<span class="fc" id="L200">		List&lt;PhysicalPort&gt; containsPorts = new ArrayList&lt;PhysicalPort&gt;();</span>
+<span class="fc" id="L201">		PhysicalPort port = new PhysicalPort();</span>
+<span class="fc" id="L202">		port.setId(formataString(retrieval.getPort()));</span>
+<span class="fc" id="L203">		port.setLogicalResourceAssociation(buildCabinetLogicalResourceAssociation(retrieval));</span>
+<span class="fc" id="L204">		containsPorts.add(port);</span>
+<span class="fc" id="L205">		return containsPorts;</span>
+	}
+
+	/**
+	 * Retorna o objeto LogicalResourceAssociation para o Cabinet
+	 * 
+	 * @param retrieval
+	 * @return List
+	 */
+	private LogicalResourceAssociation buildCabinetLogicalResourceAssociation(RetrieveFacilityEntity retrieval) {
+<span class="fc" id="L215">		LogicalResourceAssociation logicalResourceAssociation = new LogicalResourceAssociation();</span>
+		
+<span class="pc bpc" id="L217" title="3 of 4 branches missed.">		if (retrieval.getPortLogic() != null &amp;&amp; !retrieval.getPortLogic().isEmpty()) {</span>
+<span class="nc" id="L218">			LogicalResource logicalResource = new LogicalResource();</span>
+<span class="nc" id="L219">			logicalResource.setValue(formataString(retrieval.getPortLogic()));</span>
+<span class="nc" id="L220">			logicalResource.setTypeOfResource(EntityFields.VIRTUAL_PORT.getValue());</span>
+<span class="nc" id="L221">			logicalResourceAssociation.getLogicalResource().add(logicalResource);</span>
+		}
+
+<span class="pc bpc" id="L224" title="3 of 4 branches missed.">		if (retrieval.getCvlan() != null &amp;&amp; !retrieval.getCvlan().isEmpty()) {</span>
+<span class="nc" id="L225">			LogicalResource logicalResource = new LogicalResource();</span>
+<span class="nc" id="L226">			logicalResource.setValue(retrieval.getCvlan());</span>
+<span class="nc" id="L227">			logicalResource.setName(EntityFields.CUSTOMER.getValue());</span>
+<span class="nc" id="L228">			logicalResource.setTypeOfResource(EntityFields.VLAN.getValue());</span>
+<span class="nc" id="L229">			logicalResourceAssociation.getLogicalResource().add(logicalResource);</span>
+		}
+
+<span class="pc bpc" id="L232" title="3 of 4 branches missed.">		if (retrieval.getSvlan() != null &amp;&amp; !retrieval.getSvlan().isEmpty()) {</span>
+<span class="nc" id="L233">			LogicalResource logicalResource = new LogicalResource();</span>
+<span class="nc" id="L234">			logicalResource.setValue(retrieval.getSvlan());</span>
+<span class="nc" id="L235">			logicalResource.setName(EntityFields.HSI.getValue());</span>
+<span class="nc" id="L236">			logicalResource.setTypeOfResource(EntityFields.VLAN.getValue());</span>
+<span class="nc" id="L237">			logicalResourceAssociation.getLogicalResource().add(logicalResource);</span>
+		}
+
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">		if (retrieval.getVlanVoip() != null) {</span>
+<span class="nc" id="L241">			LogicalResource logicalResource = new LogicalResource();</span>
+<span class="nc" id="L242">			logicalResource.setValue(String.valueOf(retrieval.getVlanVoip()));</span>
+<span class="nc" id="L243">			logicalResource.setName(EntityFields.VOIP.getValue());</span>
+<span class="nc" id="L244">			logicalResource.setTypeOfResource(EntityFields.VLAN.getValue());</span>
+<span class="nc" id="L245">			logicalResourceAssociation.getLogicalResource().add(logicalResource);</span>
+		}
+
+<span class="pc bpc" id="L248" title="1 of 2 branches missed.">		if (retrieval.getVlanVod() != null) {</span>
+<span class="nc" id="L249">			LogicalResource logicalResource = new LogicalResource();</span>
+<span class="nc" id="L250">			logicalResource.setValue(String.valueOf(retrieval.getVlanVod()));</span>
+<span class="nc" id="L251">			logicalResource.setName(EntityFields.UNICAST.getValue());</span>
+<span class="nc" id="L252">			logicalResource.setTypeOfResource(EntityFields.VLAN.getValue());</span>
+<span class="nc" id="L253">			logicalResourceAssociation.getLogicalResource().add(logicalResource);</span>
+		}
+
+<span class="pc bpc" id="L256" title="1 of 2 branches missed.">		if (retrieval.getVlanMulticast() != null) {</span>
+<span class="nc" id="L257">			LogicalResource logicalResource = new LogicalResource();</span>
+<span class="nc" id="L258">			logicalResource.setValue(String.valueOf(retrieval.getVlanMulticast()));</span>
+<span class="nc" id="L259">			logicalResource.setName(EntityFields.MULTICAST.getValue());</span>
+<span class="nc" id="L260">			logicalResource.setTypeOfResource(EntityFields.VLAN.getValue());</span>
+<span class="nc" id="L261">			logicalResourceAssociation.getLogicalResource().add(logicalResource);</span>
+		}
+
+<span class="pc bpc" id="L264" title="1 of 2 branches missed.">		if (EntityFields.IPV4.equals(getIPType(retrieval.getIpAddress()))) {</span>
+<span class="nc" id="L265">			LogicalResource logicalResource = new LogicalResource();</span>
+<span class="nc" id="L266">			logicalResource.setValue(retrieval.getIpAddress());</span>
+<span class="nc" id="L267">			logicalResource.setName(EntityFields.IPV4.getValue());</span>
+<span class="nc" id="L268">			logicalResource.setTypeOfResource(EntityFields.STATIC_IP.getValue());</span>
+<span class="nc" id="L269">			logicalResourceAssociation.getLogicalResource().add(logicalResource);</span>
+		}
+
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">		if (EntityFields.IPV6.equals(getIPType(retrieval.getIpAddress()))) {</span>
+<span class="nc" id="L273">			LogicalResource logicalResource = new LogicalResource();</span>
+<span class="nc" id="L274">			logicalResource.setValue(retrieval.getIpAddress());</span>
+<span class="nc" id="L275">			logicalResource.setName(EntityFields.IPV6.getValue());</span>
+<span class="nc" id="L276">			logicalResource.setTypeOfResource(EntityFields.STATIC_IP.getValue());</span>
+<span class="nc" id="L277">			logicalResourceAssociation.getLogicalResource().add(logicalResource);</span>
+		}
+
+<span class="fc" id="L280">		return logicalResourceAssociation;</span>
+	}
+
+	/**
+	 * Necessario para caso venha um valor com caracter inexperado não estourar e
+	 * lancar excecao
+	 * 
+	 * @param value
+	 * @return O valor formatado
+	 */
+	private String formataString(String value) {
+		int valueInt;
+
+		try {
+<span class="nc" id="L294">			valueInt = Integer.parseInt(value);</span>
+
+<span class="fc" id="L296">		} catch (Exception e) {</span>
+
+<span class="fc" id="L298">			return value;</span>
+<span class="nc" id="L299">		}</span>
+
+<span class="nc" id="L301">		return String.valueOf(valueInt);</span>
+	}
+
+	/**
+	 * Realiza enriquecimento do {@link ResourceFacingService}
+	 * 
+	 * @param retrieve
+	 * @return ResourceFacingService
+	 */
+	private ResourceFacingService buildResourceFacingService(RetrieveFacilityEntity retrieve) {
+<span class="fc" id="L311">		ResourceFacingService resourceFacingService = new ResourceFacingService();</span>
+<span class="fc" id="L312">		List&lt;ServiceDescribedBy&gt; streamList = new ArrayList&lt;ServiceDescribedBy&gt;();</span>
+<span class="fc" id="L313">		ServiceDescribedBy downstream = new ServiceDescribedBy();</span>
+<span class="fc" id="L314">		ServiceDescribedBy upstream = new ServiceDescribedBy();</span>
+<span class="fc" id="L315">		ServiceSpecCharDescribes downstreamSpec = new ServiceSpecCharDescribes();</span>
+<span class="fc" id="L316">		ServiceSpecCharDescribes upstreamSpec = new ServiceSpecCharDescribes();</span>
+
+<span class="fc" id="L318">		downstreamSpec.setValue(retrieve.getDownstream());// P_DOWNSTREAM</span>
+<span class="fc" id="L319">		downstream.setName(P_DOWNSTREAM);</span>
+<span class="fc" id="L320">		downstream.getServiceSpecCharDescribes().add(downstreamSpec);</span>
+
+<span class="fc" id="L322">		upstreamSpec.setValue(retrieve.getUpstream());// P_UPSTREAM</span>
+<span class="fc" id="L323">		upstream.setName(P_UPSTREAM);</span>
+<span class="fc" id="L324">		upstream.getServiceSpecCharDescribes().add(upstreamSpec);</span>
+
+<span class="fc" id="L326">		streamList.add(downstream);</span>
+<span class="fc" id="L327">		streamList.add(upstream);</span>
+
+<span class="fc" id="L329">		resourceFacingService.setServiceDescribedBy(streamList);</span>
+<span class="fc" id="L330">		resourceFacingService.setServiceId(retrieve.getDesignadorAcesso());</span>
+
+<span class="fc" id="L332">		logger.log(OSSLogger.INFO,</span>
+				&quot;[FacilityResourceController] Enriquecimento do resourceInventoryEntity.resourceFacingService&quot;);
+
+<span class="fc" id="L335">		return resourceFacingService;</span>
+	}
+
+	public String getIPType(String ip) {
+<span class="pc bpc" id="L339" title="1 of 2 branches missed.">		if (ip.contains(&quot;.&quot;)) {</span>
+<span class="fc" id="L340">			return EntityFields.IPV4.getValue();</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">		} else if (ip.contains(&quot;:&quot;)) {</span>
+<span class="nc" id="L342">			return EntityFields.IPV6.getValue();</span>
+		}
+<span class="nc" id="L344">		return &quot;&quot;;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

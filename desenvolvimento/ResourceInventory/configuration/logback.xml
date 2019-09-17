@@ -1,0 +1,47 @@
+<configuration scan="true" scanPeriod="30 seconds">
+	<property scope="context" name="log.home" value="/opt/web/logs/WLS_PSTN_INVENTORY_QA/app" />
+	
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[%d{HH:mm:ss.SSS}] [%-5level] [%logger{36}] :: %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="OSSLoggerSIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<discriminator>
+			<key>serviceName</key>
+			<defaultValue>ALL</defaultValue>
+		</discriminator>
+		<sift>
+			<appender name="OSSLoggerAppender-{serviceName}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<append>true</append>
+				<File>${log.home}/${serviceName}.log</File>
+				<Encoding>UTF-8</Encoding>
+				<encoder>
+					<pattern>[%d{HH:mm:ss.SSS}] [%-5level] [%logger{36}] :: %msg%n</pattern>
+				</encoder>
+				<maxHistory>30</maxHistory>
+				<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+					<level>DEBUG</level>
+				</filter>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<FileNamePattern>${log.home}/${serviceName}.%d{yyyy-MM-dd}.%i.log.zip</FileNamePattern>
+					<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+						<maxFileSize>200MB</maxFileSize>
+					</timeBasedFileNamingAndTriggeringPolicy>
+				</rollingPolicy>
+			</appender>
+		</sift>
+	</appender>
+
+	<logger name="OSSLogger" additivity="false" level="debug">
+		<appender-ref ref="OSSLoggerSIFT"/>
+	</logger>
+	
+	<logger name="org.drools" level="off"/>
+	
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
+

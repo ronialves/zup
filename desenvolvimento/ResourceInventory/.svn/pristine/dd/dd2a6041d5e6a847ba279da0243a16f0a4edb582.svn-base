@@ -1,0 +1,18 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes }  from '@angular/router'
+import { HomeComponent } from './home/home.component';
+import { CatalogListComponent } from './catalog/catalog-list/catalog-list.component';
+
+const appRoutes: Routes = [
+  { path: '', redirectTo: '/home', pathMatch: 'full'},
+  { path: 'catalogo', pathMatch: 'full', component: CatalogListComponent},
+  { path: 'home', component: HomeComponent, pathMatch: 'full' }
+];
+
+@NgModule({
+    imports: [
+      RouterModule.forRoot(appRoutes)
+    ],
+    exports: [RouterModule]
+})
+export class AppRoutingModule {}

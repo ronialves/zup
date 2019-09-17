@@ -1,0 +1,228 @@
+package com.tfl.oss.resourceinventory.granite.execution
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tlf.oss.resourceinventory.granite.core.entity.Rules;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+
+rule "Regra VBIF16 - 16Mbps sem IP FIXO, banda larga com IPTV e VOIP"
+	agenda-group "SERVICECODE"
+	when
+		$rules : Rules()
+		$ruleName : String()
+
+		// Verificamos se cliente tem + de uma cobertura
+		$inventoryEntity : ResourceInventoryEntity(customerFacingService.size() < 4)
+
+		// Se de fato ha cobertura para servico IPTV 
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("IPTV"))) from $inventoryEntity.customerFacingService
+		
+		// Verifica Categoria BROADBAND
+		$customerFacingServices : CustomerFacingService(category != null, eval(category.equalsIgnoreCase("BROADBAND")))
+				 from $inventoryEntity.customerFacingService
+
+		// Se de fato ha cobertura para servico VOIP
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("VOIP"))) from $inventoryEntity.customerFacingService
+		
+		// Apenas IP
+		$serviceDescribedBy : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("IP"))) from $customerFacingServices.serviceDescribedBy
+
+		// Apenas DYNAMIC
+		$serviceSpecCharDescribes : ServiceSpecCharDescribes(value != null, eval(value.equalsIgnoreCase("DYNAMIC")))
+				 from $serviceDescribedBy.serviceSpecCharDescribes
+
+		// Obtemos descricao do Downstream se existir
+		$serviceDescribedBy2 : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("DOWNSTREAM"))) from $customerFacingServices.serviceDescribedBy
+		
+		// Obtemos o valor do Downstream se existir
+		ServiceSpecCharDescribes(value != null, (value == "15360") || (value == "16384")) from $serviceDescribedBy2.serviceSpecCharDescribes
+	then
+		$rules.setResult("VBIF16");
+		insert($rules);
+end
+
+rule "Regra VBIF05 - 25Mbps sem IP FIXO, banda larga com IPTV e VOIP"
+	agenda-group "SERVICECODE"
+	when
+		$rules : Rules()
+		$ruleName : String()
+
+		// Verificamos se cliente tem + de uma cobertura
+		$inventoryEntity : ResourceInventoryEntity(customerFacingService.size() < 4)
+
+		// Se de fato ha cobertura para servico IPTV 
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("IPTV"))) from $inventoryEntity.customerFacingService
+		
+		// Verifica Categoria BROADBAND
+		$customerFacingServices : CustomerFacingService(category != null, eval(category.equalsIgnoreCase("BROADBAND")))
+				 from $inventoryEntity.customerFacingService
+
+		// Se de fato ha cobertura para servico VOIP
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("VOIP"))) from $inventoryEntity.customerFacingService
+		
+		// Apenas IP
+		$serviceDescribedBy : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("IP"))) from $customerFacingServices.serviceDescribedBy
+
+		// Apenas DYNAMIC
+		$serviceSpecCharDescribes : ServiceSpecCharDescribes(value != null, eval(value.equalsIgnoreCase("DYNAMIC")))
+				 from $serviceDescribedBy.serviceSpecCharDescribes
+
+		// Obtemos descricao do Downstream se existir
+		$serviceDescribedBy2 : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("DOWNSTREAM"))) from $customerFacingServices.serviceDescribedBy
+		
+		// Obtemos o valor do Downstream se existir
+		ServiceSpecCharDescribes(value != null, value == "25600") from $serviceDescribedBy2.serviceSpecCharDescribes
+	then
+		$rules.setResult("VBIF05");
+		insert($rules);
+end
+
+rule "Regra VBIF50 - 50Mbps sem IP FIXO, banda larga com IPTV e VOIP"
+	agenda-group "SERVICECODE"
+	when
+		$rules : Rules()
+		$ruleName : String()
+
+		// Verificamos se cliente tem + de uma cobertura
+		$inventoryEntity : ResourceInventoryEntity(customerFacingService.size() < 4)
+
+		// Se de fato ha cobertura para servico IPTV 
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("IPTV"))) from $inventoryEntity.customerFacingService
+		
+		// Verifica Categoria BROADBAND
+		$customerFacingServices : CustomerFacingService(category != null, eval(category.equalsIgnoreCase("BROADBAND")))
+				 from $inventoryEntity.customerFacingService
+
+		// Se de fato ha cobertura para servico VOIP
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("VOIP"))) from $inventoryEntity.customerFacingService
+		
+		// Apenas IP
+		$serviceDescribedBy : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("IP"))) from $customerFacingServices.serviceDescribedBy
+
+		// Apenas DYNAMIC
+		$serviceSpecCharDescribes : ServiceSpecCharDescribes(value != null, eval(value.equalsIgnoreCase("DYNAMIC")))
+				 from $serviceDescribedBy.serviceSpecCharDescribes
+
+		// Obtemos descricao do Downstream se existir
+		$serviceDescribedBy2 : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("DOWNSTREAM"))) from $customerFacingServices.serviceDescribedBy
+		
+		// Obtemos o valor do Downstream se existir
+		ServiceSpecCharDescribes(value != null, value == "51200") from $serviceDescribedBy2.serviceSpecCharDescribes
+	then
+		$rules.setResult("VBIF50");
+		insert($rules);
+end
+
+rule "Regra VBIF00- 100Mbps sem IP FIXO, banda larga com IPTV e VOIP"
+	agenda-group "SERVICECODE"
+	when
+		$rules : Rules()
+		$ruleName : String()
+
+		// Verificamos se cliente tem + de uma cobertura
+		$inventoryEntity : ResourceInventoryEntity(customerFacingService.size() < 4)
+
+		// Se de fato ha cobertura para servico IPTV 
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("IPTV"))) from $inventoryEntity.customerFacingService
+		
+		// Verifica Categoria BROADBAND
+		$customerFacingServices : CustomerFacingService(category != null, eval(category.equalsIgnoreCase("BROADBAND")))
+				 from $inventoryEntity.customerFacingService
+
+		// Se de fato ha cobertura para servico VOIP
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("VOIP"))) from $inventoryEntity.customerFacingService
+		
+		// Apenas IP
+		$serviceDescribedBy : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("IP"))) from $customerFacingServices.serviceDescribedBy
+
+		// Apenas DYNAMIC
+		$serviceSpecCharDescribes : ServiceSpecCharDescribes(value != null, eval(value.equalsIgnoreCase("DYNAMIC")))
+				 from $serviceDescribedBy.serviceSpecCharDescribes
+
+		// Obtemos descricao do Downstream se existir
+		$serviceDescribedBy2 : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("DOWNSTREAM"))) from $customerFacingServices.serviceDescribedBy
+		
+		// Obtemos o valor do Downstream se existir
+		ServiceSpecCharDescribes(value != null, value == "102400") from $serviceDescribedBy2.serviceSpecCharDescribes
+	then
+		$rules.setResult("VBIF00");
+		insert($rules);
+end
+
+
+rule "Regra VBIG11- 200Mbps sem IP FIXO, banda larga com IPTV e VOIP"
+	agenda-group "SERVICECODE"
+	when
+		$rules : Rules()
+		$ruleName : String()
+
+		// Verificamos se cliente tem + de uma cobertura
+		$inventoryEntity : ResourceInventoryEntity(customerFacingService.size() < 4)
+
+		// Se de fato ha cobertura para servico IPTV 
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("IPTV"))) from $inventoryEntity.customerFacingService
+		
+		// Verifica Categoria BROADBAND
+		$customerFacingServices : CustomerFacingService(category != null, eval(category.equalsIgnoreCase("BROADBAND")))
+				 from $inventoryEntity.customerFacingService
+
+		// Se de fato ha cobertura para servico VOIP
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("VOIP"))) from $inventoryEntity.customerFacingService
+		
+		// Apenas IP
+		$serviceDescribedBy : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("IP"))) from $customerFacingServices.serviceDescribedBy
+
+		// Apenas DYNAMIC
+		$serviceSpecCharDescribes : ServiceSpecCharDescribes(value != null, eval(value.equalsIgnoreCase("DYNAMIC")))
+				 from $serviceDescribedBy.serviceSpecCharDescribes
+
+		// Obtemos descricao do Downstream se existir
+		$serviceDescribedBy2 : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("DOWNSTREAM"))) from $customerFacingServices.serviceDescribedBy
+		
+		// Obtemos o valor do Downstream se existir
+		ServiceSpecCharDescribes(value != null, value == "204800") from $serviceDescribedBy2.serviceSpecCharDescribes
+	then
+		$rules.setResult("VBIG11");
+		insert($rules);
+end
+
+
+rule "Regra VBIG13- 300Mbps sem IP FIXO, banda larga com IPTV e VOIP"
+	agenda-group "SERVICECODE"
+	when
+		$rules : Rules()
+		$ruleName : String()
+
+		// Verificamos se cliente tem + de uma cobertura
+		$inventoryEntity : ResourceInventoryEntity(customerFacingService.size() < 4)
+
+		// Se de fato ha cobertura para servico IPTV 
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("IPTV"))) from $inventoryEntity.customerFacingService
+		
+		// Verifica Categoria BROADBAND
+		$customerFacingServices : CustomerFacingService(category != null, eval(category.equalsIgnoreCase("BROADBAND")))
+				 from $inventoryEntity.customerFacingService
+
+		// Se de fato ha cobertura para servico VOIP
+		CustomerFacingService(category != null, eval(category.equalsIgnoreCase("VOIP"))) from $inventoryEntity.customerFacingService
+		
+		// Apenas IP
+		$serviceDescribedBy : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("IP"))) from $customerFacingServices.serviceDescribedBy
+
+		// Apenas DYNAMIC
+		$serviceSpecCharDescribes : ServiceSpecCharDescribes(value != null, eval(value.equalsIgnoreCase("DYNAMIC")))
+				 from $serviceDescribedBy.serviceSpecCharDescribes
+
+		// Obtemos descricao do Downstream se existir
+		$serviceDescribedBy2 : ServiceDescribedBy(name != null, eval(name.equalsIgnoreCase("DOWNSTREAM"))) from $customerFacingServices.serviceDescribedBy
+		
+		// Obtemos o valor do Downstream se existir
+		ServiceSpecCharDescribes(value != null, value == "307200") from $serviceDescribedBy2.serviceSpecCharDescribes
+	then
+		$rules.setResult("VBIG13");
+		insert($rules);
+end

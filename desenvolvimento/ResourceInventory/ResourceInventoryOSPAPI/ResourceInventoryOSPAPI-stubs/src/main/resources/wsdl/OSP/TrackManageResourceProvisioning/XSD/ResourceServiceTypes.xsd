@@ -1,0 +1,28 @@
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.cpqd.com.br/etics/simpletypes" xmlns:rst="http://www.cpqd.com.br/etics/ResourceSpecificationTypes" xmlns:pt="http://www.cpqd.com.br/etics/provisiongtypes" elementFormDefault="qualified" targetNamespace="http://www.cpqd.com.br/etics/ResourceServiceTypes">
+<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes" schemaLocation="SimpleTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/ResourceSpecificationTypes" schemaLocation="ResourceSpecificationTypes.xsd"/>
+<xs:import namespace="http://www.cpqd.com.br/etics/provisiongtypes" schemaLocation="ProvisioningTypes.xsd"/>
+<xs:complexType name="ResourceService">
+<xs:sequence>
+<!--
+ Equipamento (1 - Caixa Terminal, 2 - Caixa Predial, 3 - ONU, 4 - Splitter, 5 - DGO, 6 - tfo, 
+			7 - Armario de Distribuicao, 8 - Armario de Equipamento, 9 - ONT, 10 - DG, 11 - Estacao, 12 - DLC, 13 - Outro, 14 – OLT, 15 – Distribuidor Interno) 
+-->
+<xs:element minOccurs="0" name="type">
+<xs:simpleType>
+<xs:restriction base="xs:integer">
+<xs:pattern value="1|2|3|4|5|6|7|8|9|10|11|12|13|14|15"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<!--  Código  -->
+<xs:element minOccurs="0" name="code" type="st:string050"/>
+<!--  Unidade Lógica (Porta, Vertical, Canal, etc)  -->
+<xs:element minOccurs="0" name="logicalUnit" type="st:integer6"/>
+<!--  Atenuação (Intervalo Válido:-999,99 a 999,99)  -->
+<xs:element minOccurs="0" name="atenuation" type="pt:decimal-or-empty"/>
+<!--  Tipo do Equipamento  -->
+<xs:element minOccurs="0" name="resourceSpecification" type="rst:ResourceSpecification"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

@@ -1,0 +1,22 @@
+<resourceInventoryEntity>
+    <customerOrder>
+        <purchaseOrderNumber>8-A886669CA9-1</purchaseOrderNumber>
+    </customerOrder>
+    <address>
+        <cnl>41000</cnl>
+        <networkOwner>VIVO2</networkOwner>
+        <placePhysicalResourceAssoc>
+            <physicalLink>
+                <accessTechnology>GPON</accessTechnology>
+            </physicalLink>
+        </placePhysicalResourceAssoc>
+    </address>
+    <resourceOrder>
+        <resourceOrderItem>
+            <id>19764193</id>
+        </resourceOrderItem>
+        <resourceOrderItem>
+            <name>RETRIEVE_NETWORK_INFORMATION</name>
+        </resourceOrderItem>
+    </resourceOrder>
+</resourceInventoryEntity>

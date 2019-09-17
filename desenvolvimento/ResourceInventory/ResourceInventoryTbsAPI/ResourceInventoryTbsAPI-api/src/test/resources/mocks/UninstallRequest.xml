@@ -1,0 +1,34 @@
+<uninstallResourceIn>
+   <brazilianUrbanPropertyAddress>
+      <city>CURITIBA</city>
+      <cnl>11000</cnl>
+      <networkOwner>VIVO2</networkOwner>
+      <placePhysicalResourceAssoc>
+         <physicalLink>
+            <voiceProtocol>SIP</voiceProtocol>
+            <accessTechnology>GPON</accessTechnology>
+         </physicalLink>
+      </placePhysicalResourceAssoc>
+   </brazilianUrbanPropertyAddress>
+   <resourceFacingService>
+      <serviceId>SPO-00587825-069</serviceId>
+   </resourceFacingService>
+   <customerOrder>
+      <purchaseOrderNumber>7-XYZABC123-11</purchaseOrderNumber>
+   </customerOrder>
+   <customerFacingServices>
+      <serviceDescribedBy>
+         <name>RPON</name>
+         <serviceSpecCharDescribes>
+            <value>C000026D05</value>
+         </serviceSpecCharDescribes>
+      </serviceDescribedBy>
+   </customerFacingServices>
+   <resourceOrder>
+      <resourceOrderItem>
+         <id></id>
+         <name>TSS_FIBER_ACCESS_PORT</name>
+         <action>ADD</action>
+      </resourceOrderItem>
+   </resourceOrder>
+</uninstallResourceIn>

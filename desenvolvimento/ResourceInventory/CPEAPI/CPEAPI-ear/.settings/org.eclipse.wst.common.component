@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CPEAPI-ear-0.0.1-SNAPSHOT">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/application" tag="defaultRootSource"/>
+        <dependent-module archiveName="CPEAPI-api-0.0.1-SNAPSHOT.war" deploy-path="/" handle="module:/resource/CPEAPI-api/CPEAPI-api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CPEAPI-web-0.0.1-SNAPSHOT.war" deploy-path="/" handle="module:/resource/CPEAPI-web/CPEAPI-web">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ResourceInventorySchemas-entities-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/ResourceInventorySchemas-entities/ResourceInventorySchemas-entities">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CPEAPI-core-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/CPEAPI-core/CPEAPI-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CPEAPI-rules-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/CPEAPI-rules/CPEAPI-rules">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="drools-core-6.4.0.Final.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/drools/drools-core/6.4.0.Final/drools-core-6.4.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="mvel2-2.2.8.Final.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/mvel/mvel2/2.2.8.Final/mvel2-2.2.8.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="kie-api-6.4.0.Final.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/kie/kie-api/6.4.0.Final/kie-api-6.4.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-codec-1.4.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="drools-compiler-6.4.0.Final.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/drools/drools-compiler/6.4.0.Final/drools-compiler-6.4.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="antlr-runtime-3.5.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/antlr/antlr-runtime/3.5/antlr-runtime-3.5.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ecj-4.4.2.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/eclipse/jdt/core/compiler/ecj/4.4.2/ecj-4.4.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xstream-1.4.7.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/com/thoughtworks/xstream/xstream/1.4.7/xstream-1.4.7.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="protobuf-java-2.6.0.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/com/google/protobuf/protobuf-java/2.6.0/protobuf-java-2.6.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="kie-internal-6.4.0.Final.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/kie/kie-internal/6.4.0.Final/kie-internal-6.4.0.Final.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="OSSCommons-util-0.0.1-SNAPSHOT.jar" deploy-path="/APP-INF/lib" handle="module:/resource/OSSCommons-util/OSSCommons-util">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-core-1.2.3.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="logback-classic-1.2.3.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-api-1.7.25.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="gson-2.3.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/com/google/code/gson/gson/2.3/gson-2.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-beanutils-1.9.3.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/commons-beanutils/commons-beanutils/1.9.3/commons-beanutils-1.9.3.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-logging-1.2.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/commons-logging/commons-logging/1.2/commons-logging-1.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-collections-3.2.2.jar" deploy-path="/APP-INF/lib" handle="module:/classpath/var/M2_REPO/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

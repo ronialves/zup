@@ -1,0 +1,173 @@
+package com.tlf.oss.resourceinventory.tbs.repository;
+
+import java.io.Serializable;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.schemas.api.v1_0.RetrieveResourceInformationOut;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrieveAssignedTelNumEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrieveEntity;
+import com.tlf.oss.resourceinventory.tbs.entity.RetrieveNetworkLocationEntity;
+import com.tlf.oss.resourceinventory.tbs.enums.RetrieveInfoType;
+import com.tlf.oss.resourceinventory.tbs.repository.factory.GenericRepository;
+
+public class RetrieveRepository extends GenericRepository implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private final String TYPE_OF_RESOURCE = "DSLAM";
+	
+	
+	@Inject
+	protected OSSLogger logger;
+
+	/**
+	 * Realiza chamada da procedure ASAP.GVT_SP_GET_INFO_CROSS_PARAMS
+	 * 
+	 * @param entity
+	 * @return RetrieveEntity
+	 * @throws OSSBusinessException
+	 */
+	public RetrieveEntity getRetrieveCrossConnectionInfo(RetrieveEntity entity) throws OSSBusinessException {
+
+		try {
+			Integer documentNumber = new Integer(entity.getDocumentNumber());
+			
+			TypedQuery<RetrieveEntity> query;
+			query = getFactory().createNamedQuery(RetrieveInfoType.CROSS_CONNECTION_INFO.getValue(), RetrieveEntity.class);
+			query.setParameter("P_DOCUMENT_NUMBER", entity.getDocumentNumber());
+
+			logIn(query, RetrieveInfoType.CROSS_CONNECTION_INFO);
+			entity = query.getSingleResult();
+			entity.setTypeOfResource(TYPE_OF_RESOURCE);
+			entity.setDocumentNumber(documentNumber);
+			logOut(entity);
+			getFactory().detach(entity);
+
+		} catch (Exception e) {
+			entity.setErro(1);
+			entity.setMsg(e.getMessage());
+		}
+
+		return entity;
+	}
+
+	/**
+	 * Realiza chamada da procedure ASAP.GVT_SP_GET_INFO_CFGSIN
+	 * 
+	 * @param entity
+	 * @return RetrieveEntity
+	 * @throws OSSBusinessException
+	 */
+	public RetrieveEntity getRetrieveNetworkSyncInfo(RetrieveEntity entity) throws OSSBusinessException {
+
+		try {
+			Integer documentNumber = new Integer(entity.getDocumentNumber());
+			String circuitActivityInd = entity.getCircuitActivityInd();
+			
+			TypedQuery<RetrieveEntity> query;
+			query = getFactory().createNamedQuery(RetrieveInfoType.NETWORK_SYNC_INFO.getValue(), RetrieveEntity.class);
+			query.setParameter("P_DOCUMENT_NUMBER", entity.getDocumentNumber());
+			query.setParameter("P_CIRCUIT_ACTIVITY_IND", entity.getCircuitActivityInd());
+
+			logIn(query, RetrieveInfoType.NETWORK_SYNC_INFO);
+			entity = query.getSingleResult();
+			entity.setTypeOfResource(TYPE_OF_RESOURCE);
+			entity.setDocumentNumber(documentNumber);
+			entity.setCircuitActivityInd(circuitActivityInd);
+			logOut(entity);
+			getFactory().detach(entity);
+
+		} catch (Exception e) {
+			entity.setErro(1);
+			entity.setMsg(e.getMessage());
+		}
+
+		return entity;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param purchaseOrderNumber
+	 * @return RetrieveAssignedTelNumEntity
+	 * @throws OSSBusinessException
+	 */
+	public RetrieveAssignedTelNumEntity getRetrieveAssignedTelNumEntity(String purchaseOrderNumber) throws OSSBusinessException {
+		
+		RetrieveAssignedTelNumEntity resultAssignedTelNum = new RetrieveAssignedTelNumEntity();
+		try {
+			
+				TypedQuery<RetrieveAssignedTelNumEntity> queryAssignedTelNum = (TypedQuery<RetrieveAssignedTelNumEntity>) getFactory()
+						.createNamedQuery("QueryAcessAssignedTelNum", RetrieveAssignedTelNumEntity.class)
+						.setParameter(1,purchaseOrderNumber);
+				
+				resultAssignedTelNum = queryAssignedTelNum.getSingleResult();				
+				
+		} catch (Exception e) {			
+			logger.error("Erro ao Consultar o getRetrieveAssignedTelNumEntity: " + e.getMessage(), e);
+		}
+		return resultAssignedTelNum;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param rangeInicial
+	 * @return RetrieveNetworkLocationEntity
+	 * @throws OSSBusinessException
+	 */
+	public RetrieveNetworkLocationEntity getNetworkLocationEntity(String purchaseOrderNumber, String documentNumber) throws OSSBusinessException {
+		
+		RetrieveNetworkLocationEntity resultNetworkLocation = new RetrieveNetworkLocationEntity();		
+		try {
+				
+				TypedQuery<RetrieveNetworkLocationEntity> queryAssignedTelNum = (TypedQuery<RetrieveNetworkLocationEntity>) getFactory()
+						.createNamedQuery("QueryNetworkLocation", RetrieveNetworkLocationEntity.class)
+						.setParameter(1,purchaseOrderNumber)
+						.setParameter(2,documentNumber);			
+				resultNetworkLocation = queryAssignedTelNum.getSingleResult();	
+				
+		} catch (Exception e) {
+			logger.error("Erro ao Consultar o getNetworkLocationEntity: " + e.getMessage(), e);
+		}
+		return resultNetworkLocation;
+	}
+	
+	
+	
+
+	/**
+	 * Gera log com a entrada da query
+	 * 
+	 * @param result
+	 */
+	private void logIn(Query query, RetrieveInfoType retrieveInfoType) {
+		String log = getlogIn(retrieveInfoType.getValue(), query);
+		logger.log(OSSLogger.INFO, log);
+	}
+
+	/**
+	 * Gera log com o resultado da query executada
+	 * 
+	 * @param result
+	 */
+	private void logOut(RetrieveEntity result) {
+		logger.log(OSSLogger.INFO, result.toString());
+	}
+
+}

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTERUSAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.terus.core</a> &gt; <span class="el_source">ReservationController.java</span></div><h1>ReservationController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.terus.core;
+
+import java.util.concurrent.TimeoutException;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.generated.terus.bloqueioportarequest.BloqueioPortaRequestType;
+import com.tlf.oss.resourceinventory.generated.terus.bloqueioportaresponse.BloqueioPortaResponseType;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.terus.core.enums.Code;
+import com.tlf.oss.resourceinventory.terus.core.enums.Message;
+import com.tlf.oss.resourceinventory.terus.core.service.TerusService;
+import com.tlf.oss.resourceinventory.terus.core.util.CalendarUtil;
+import com.tlf.oss.resourceinventory.terus.core.validator.Reserve;
+
+<span class="fc" id="L18">public class ReservationController  {</span>
+
+	@Inject
+	private OSSLogger logger;
+
+	@Inject
+	private TerusService terusService;
+
+	public void lock(@Reserve ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">		if(isLockPort(entity)){</span>
+		
+			try {
+<span class="fc" id="L31">				BloqueioPortaRequestType request = createRequest(entity);</span>
+<span class="fc" id="L32">				BloqueioPortaResponseType response = terusService.bloqueioPorta(request);</span>
+<span class="fc" id="L33">				updateEntity(response);</span>
+<span class="nc" id="L34">			} catch (OSSBusinessException e) {</span>
+<span class="nc" id="L35">				throw new OSSBusinessException(e.getDescription(), e.getStatusCode(), e.getDetail());</span>
+<span class="nc" id="L36">			} catch (Exception e) {</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">				if (e instanceof TimeoutException) {</span>
+<span class="nc" id="L38">					throw new OSSBusinessException(Message.ERRO_BLOQUEIO_PORTA_VOZ_TERUS.getValue(), Code.RITERUS_002.getValue(), Message.BUSINESS_ERROR_TIMEOUT_MSG.getValue());</span>
+				}
+<span class="nc" id="L40">				throw new OSSBusinessException(Message.ERRO_BLOQUEIO_PORTA_VOZ_TERUS.getValue(), Code.RITERUS_002.getValue(), e.getMessage());</span>
+<span class="fc" id="L41">			}</span>
+		}
+
+<span class="fc" id="L44">	}</span>
+
+	private boolean isLockPort(ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="fc" id="L48">			boolean result = entity.getOperationService().getServiceDescribedBy().stream()</span>
+<span class="fc" id="L49">					.filter(p -&gt; TerusService.UPDATEPOTS.equalsIgnoreCase(p.getName()))</span>
+<span class="fc" id="L50">					.map(p -&gt; p.getServiceSpecCharDescribes())</span>
+<span class="fc" id="L51">					.filter(p -&gt; &quot;TRUE&quot;.equalsIgnoreCase(p.get(0).getValue()))</span>
+<span class="fc" id="L52">					.findFirst()</span>
+<span class="fc" id="L53">					.isPresent();</span>
+
+<span class="fc" id="L55">			logger.log(OSSLogger.INFO, &quot;Propriedade &quot; + TerusService.UPDATEPOTS + &quot; encontrada. valor: &quot;+entity.getOperationService().</span>
+<span class="fc" id="L56">					getServiceDescribedBy().</span>
+<span class="fc" id="L57">					get(0).getServiceSpecCharDescribes().</span>
+<span class="fc" id="L58">					get(0).getValue());</span>
+			
+<span class="fc" id="L60">			return result;</span>
+			
+	}
+
+	private BloqueioPortaRequestType createRequest(ResourceInventoryEntity entity) {
+<span class="fc" id="L65">		BloqueioPortaRequestType request = new BloqueioPortaRequestType();</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">		if (entity.getCabinet() != null) {</span>
+<span class="fc" id="L67">			request.setDATAHORA(CalendarUtil.getCurrentTime());</span>
+<span class="fc" id="L68">			request.setNOME(entity.getCabinet().getIdMsan());</span>
+<span class="fc" id="L69">			request.setLIC(entity.getCabinet().getLic());</span>
+		}
+		
+<span class="fc" id="L72">		return request;</span>
+	}
+	
+	private void updateEntity(BloqueioPortaResponseType createResponse) {
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">		if (createResponse != null) {</span>
+<span class="fc" id="L77">			logOut(createResponse);</span>
+		}
+		
+<span class="fc" id="L80">	}</span>
+	
+	private void logOut(BloqueioPortaResponseType createResponse) {
+<span class="fc" id="L83">		StringBuilder log = new StringBuilder(&quot;Param OUT: &quot;);</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">		if (createResponse != null) {</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">					log.append(&quot;DATAHORA = &quot;).append(createResponse.getDATAHORA() != null ? createResponse.getDATAHORA().toString() : null)</span>
+<span class="fc" id="L86">					.append(&quot;CODMSG = &quot;).append(createResponse.getCODMSG()).append(&quot;DSCMSG = &quot;).append(createResponse.getDSCMSG()).toString();</span>
+<span class="fc" id="L87">			logger.log(OSSLogger.INFO, log.toString()); </span>
+		}
+<span class="fc" id="L89">	}	</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

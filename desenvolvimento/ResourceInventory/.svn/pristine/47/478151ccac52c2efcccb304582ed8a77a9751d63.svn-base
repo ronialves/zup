@@ -1,0 +1,85 @@
+package com.tlf.oss.resourceinventory.cpe.entity;
+
+import java.util.List;
+
+public class CatalogoDispositivoVo {
+
+	private Integer id;
+	private String modelo;
+	private String fabricante;
+	private String rede;
+	private Integer categoriaDispositivoId;
+	private String descricao;
+	private CategoriaDispositivo categoriaDispositivo;
+	private List<CaracteristicaDispositivoVo> caracteristicas;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
+	}
+
+	public String getFabricante() {
+		return fabricante;
+	}
+
+	public void setFabricante(String fabricante) {
+		this.fabricante = fabricante;
+	}
+
+	public String getRede() {
+		return rede;
+	}
+
+	public void setRede(String rede) {
+		this.rede = rede;
+	}
+
+	public Integer getCategoriaDispositivoId() {
+		return categoriaDispositivoId;
+	}
+
+	public void setCategoriaDispositivoId(Integer categoriaDispositivoId) {
+		this.categoriaDispositivoId = categoriaDispositivoId;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public CategoriaDispositivo getCategoriaDispositivo() {
+		return categoriaDispositivo;
+	}
+
+	public void setCategoriaDispositivo(CategoriaDispositivo categoriaDispositivo) {
+		this.categoriaDispositivo = categoriaDispositivo;
+	}
+
+	public List<CaracteristicaDispositivoVo> getCaracteristicas() {
+		return caracteristicas;
+	}
+
+	public void setCaracteristicas(List<CaracteristicaDispositivoVo> caracteristicas) {
+		this.caracteristicas = caracteristicas;
+	}
+
+	@Override
+	public String toString() {
+		return "CatalogoDispositivo [id=" + id + ", modelo=" + modelo + ", fabricante=" + fabricante + ", rede=" + rede
+				+ ", categoriaDispositivoId=" + categoriaDispositivoId + ", descricao=" + descricao + "]";
+	}
+}

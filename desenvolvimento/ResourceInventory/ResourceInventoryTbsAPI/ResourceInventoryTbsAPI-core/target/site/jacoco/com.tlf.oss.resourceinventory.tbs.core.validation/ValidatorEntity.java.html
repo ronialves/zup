@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidatorEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventoryTbsAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.tbs.core.validation</a> &gt; <span class="el_source">ValidatorEntity.java</span></div><h1>ValidatorEntity.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.tbs.core.validation;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.resourceinventory.schemas.BrazilianUrbanPropertyAddress;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.CustomerFacingService;
+import com.tlf.oss.resourceinventory.schemas.CustomerOrder;
+import com.tlf.oss.resourceinventory.schemas.InvolvesCustomer;
+import com.tlf.oss.resourceinventory.schemas.PhysicalLink;
+import com.tlf.oss.resourceinventory.schemas.PlacePhysicalResourceAssoc;
+import com.tlf.oss.resourceinventory.schemas.ResourceFacingService;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrder;
+import com.tlf.oss.resourceinventory.schemas.ResourceOrderItem;
+import com.tlf.oss.resourceinventory.schemas.ServiceDescribedBy;
+import com.tlf.oss.resourceinventory.schemas.ServiceSpecCharDescribes;
+import com.tlf.oss.resourceinventory.schemas.SwitchesAssociated;
+import com.tlf.oss.resourceinventory.schemas.TerminalBox;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.api.resourcelifecyclemanagement.v1_0.GatherResourceInformation;
+import com.tlf.oss.resourceinventory.tbs.core.utils.Constants;
+import com.tlf.oss.resourceinventory.tbs.enums.ExceptionInfoEnum;
+
+<span class="fc" id="L31">public class ValidatorEntity {</span>
+
+	public void validateAdress(ResourceInventoryEntity entity, String... params) throws OSSBusinessException {
+
+<span class="nc" id="L35">		Optional&lt;BrazilianUrbanPropertyAddress&gt; address = Optional.ofNullable(entity.getAddress());</span>
+<span class="nc" id="L36">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L37">		Set&lt;ConstraintViolation&lt;BrazilianUrbanPropertyAddress&gt;&gt; constraintViolations = null;</span>
+		
+<span class="nc bnc" id="L39" title="All 2 branches missed.">		if (!address.isPresent())</span>
+<span class="nc" id="L40">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L41">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;ADDRESS&quot;));</span>
+
+<span class="nc bnc" id="L43" title="All 2 branches missed.">		for (String param : params) {</span>
+			
+<span class="nc" id="L45">			constraintViolations = validator.validateProperty(address.get(),param);</span>
+
+<span class="nc bnc" id="L47" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L48">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L49">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+		}
+<span class="nc" id="L51">	}</span>
+
+	public void validatePhysicalLink(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+
+<span class="nc" id="L56">		validateAdress(entity);</span>
+
+<span class="nc" id="L58">		Optional&lt;PlacePhysicalResourceAssoc&gt; placePhysicalResourceAssoc = Optional</span>
+<span class="nc" id="L59">				.ofNullable(entity.getAddress().getPlacePhysicalResourceAssoc());</span>
+		
+<span class="nc" id="L61">		Optional&lt;PhysicalLink&gt; physicalLink = Optional</span>
+<span class="nc" id="L62">				.ofNullable(entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink());</span>
+		
+<span class="nc" id="L64">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L65">		Set&lt;ConstraintViolation&lt;PhysicalLink&gt;&gt; constraintViolations = null;</span>
+		
+<span class="nc bnc" id="L67" title="All 2 branches missed.">		if (!placePhysicalResourceAssoc.isPresent())</span>
+<span class="nc" id="L68">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L69">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;PLACE_PHYSICAL_RESOURCE_ASSOC&quot;));		</span>
+		
+<span class="nc bnc" id="L71" title="All 2 branches missed.">		if (!physicalLink.isPresent())</span>
+<span class="nc" id="L72">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L73">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;PHYSICAL_LINK&quot;));</span>
+			
+<span class="nc bnc" id="L75" title="All 2 branches missed.">		for (String param : params) {</span>
+			
+<span class="nc" id="L77">			constraintViolations = validator.validateProperty(physicalLink.get(),param);</span>
+			
+<span class="nc bnc" id="L79" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L80">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L81">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+		}
+<span class="nc" id="L83">	}</span>
+
+	public void validateResourceFacingService(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+
+<span class="nc" id="L88">		Optional&lt;ResourceFacingService&gt; resourceFacingService = Optional.ofNullable(entity.getResourceFacingService());</span>
+<span class="nc" id="L89">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L90">		Set&lt;ConstraintViolation&lt;ResourceFacingService&gt;&gt; constraintViolations = null;</span>
+		
+<span class="nc bnc" id="L92" title="All 2 branches missed.">		for (String param : params) {</span>
+			
+<span class="nc" id="L94">			constraintViolations = validator.validateProperty(resourceFacingService.get(),param);</span>
+			
+<span class="nc bnc" id="L96" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L97">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L98">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+		}
+<span class="nc" id="L100">	}</span>
+
+	public void validateCabinet(ResourceInventoryEntity entity, String... params) throws OSSBusinessException {
+
+<span class="nc" id="L104">		validatePhysicalLink(entity);</span>
+
+<span class="nc" id="L106">		Optional&lt;Cabinet&gt; cabinet = Optional</span>
+<span class="nc" id="L107">				.ofNullable(entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet());</span>
+<span class="nc" id="L108">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L109">		Set&lt;ConstraintViolation&lt;Cabinet&gt;&gt; constraintViolations = null;</span>
+		
+<span class="nc bnc" id="L111" title="All 2 branches missed.">		if (!cabinet.isPresent())</span>
+<span class="nc" id="L112">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L113">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;CABINET&quot;));</span>
+
+<span class="nc bnc" id="L115" title="All 2 branches missed.">		for (String param : params) {</span>
+
+<span class="nc" id="L117">			constraintViolations = validator.validateProperty(cabinet.get(),param);</span>
+			
+<span class="nc bnc" id="L119" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L120">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L121">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+			
+		}
+<span class="nc" id="L124">	}</span>
+
+	public void validateSwitchesAssociated(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+
+<span class="nc" id="L129">		validateCabinet(entity);</span>
+
+<span class="nc" id="L131">		Optional&lt;SwitchesAssociated&gt; switchesAssociated = Optional</span>
+<span class="nc" id="L132">				.ofNullable(entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet().getSwitchesAssociated());</span>
+<span class="nc" id="L133">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L134">		Set&lt;ConstraintViolation&lt;SwitchesAssociated&gt;&gt; constraintViolations = null;</span>
+		
+<span class="nc bnc" id="L136" title="All 2 branches missed.">		if (!switchesAssociated.isPresent())</span>
+<span class="nc" id="L137">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L138">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SWITCHES_ASSOCIATED&quot;));</span>
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">		for (String param : params) {</span>
+			
+<span class="nc" id="L142">			constraintViolations = validator.validateProperty(switchesAssociated.get(),param);</span>
+			
+<span class="nc bnc" id="L144" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L145">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L146">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+		}
+<span class="nc" id="L148">	}</span>
+
+	public void validateTerminalBox(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+
+<span class="nc" id="L153">		validateCabinet(entity);</span>
+
+<span class="nc" id="L155">		Optional&lt;TerminalBox&gt; terminalBox = Optional</span>
+<span class="nc" id="L156">				.ofNullable(entity.getAddress().getPlacePhysicalResourceAssoc().getCabinet().getTerminalBox());</span>
+<span class="nc" id="L157">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L158">		Set&lt;ConstraintViolation&lt;TerminalBox&gt;&gt; constraintViolations = null;</span>
+		
+<span class="nc bnc" id="L160" title="All 2 branches missed.">		if (!terminalBox.isPresent())</span>
+<span class="nc" id="L161">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L162">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;TERMINAL_BOX&quot;));</span>
+			
+<span class="nc bnc" id="L164" title="All 2 branches missed.">		for (String param : params) {</span>
+			
+<span class="nc" id="L166">			constraintViolations = validator.validateProperty(terminalBox.get(),param);</span>
+			
+<span class="nc bnc" id="L168" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L169">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L170">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+			
+		}
+<span class="nc" id="L173">	}</span>
+
+	public void validateCustomerOrder(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+
+<span class="nc" id="L178">		Optional&lt;CustomerOrder&gt; customerOrder = Optional.ofNullable(entity.getCustomerOrder());</span>
+<span class="nc" id="L179">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L180">		Set&lt;ConstraintViolation&lt;CustomerOrder&gt;&gt; constraintViolations = null;</span>
+		
+<span class="nc bnc" id="L182" title="All 2 branches missed.">		if (!customerOrder.isPresent())</span>
+<span class="nc" id="L183">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L184">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;CUSTOMER_ORDER&quot;));</span>
+			
+<span class="nc bnc" id="L186" title="All 2 branches missed.">		for (String param : params) {</span>
+			
+<span class="nc" id="L188">			constraintViolations = validator.validateProperty(customerOrder.get(),param);</span>
+			
+<span class="nc bnc" id="L190" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L191">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L192">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+			
+		}
+<span class="nc" id="L195">	}</span>
+
+	public void validateInvolvesCustomer(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+        
+<span class="nc" id="L200">		validateCustomerOrder(entity);</span>
+<span class="nc" id="L201">		Optional&lt;InvolvesCustomer&gt; involvesCustomer = Optional</span>
+<span class="nc" id="L202">				.ofNullable(entity.getCustomerOrder().getInvolvesCustomer());</span>
+<span class="nc" id="L203">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L204">		Set&lt;ConstraintViolation&lt;InvolvesCustomer&gt;&gt; constraintViolations = null;</span>
+
+<span class="nc bnc" id="L206" title="All 2 branches missed.">		if (!involvesCustomer.isPresent())</span>
+<span class="nc" id="L207">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L208">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;INVOLVES_CUSTOMER&quot;));</span>
+			
+<span class="nc bnc" id="L210" title="All 2 branches missed.">		for (String param : params) {</span>
+			
+<span class="nc" id="L212">			constraintViolations = validator.validateProperty(involvesCustomer.get(),param);</span>
+			
+<span class="nc bnc" id="L214" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L215">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L216">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+		}
+<span class="nc" id="L218">	}</span>
+
+	public void validateCustomerFacingServices(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="nc" id="L221">		Optional&lt;List&lt;CustomerFacingService&gt;&gt; customerFacingServicesList = Optional</span>
+<span class="nc" id="L222">				.ofNullable(entity.getCustomerFacingService());</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">		if (!customerFacingServicesList.isPresent()) {</span>
+<span class="nc" id="L224">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L225">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;CUSTOMER_FACING_SERVICE&quot;));</span>
+		}
+<span class="nc bnc" id="L227" title="All 2 branches missed.">		for (CustomerFacingService customerFacingServices : entity.getCustomerFacingService()) {</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">			if (customerFacingServices.getServiceDescribedBy() != null</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">					&amp;&amp; !customerFacingServices.getServiceDescribedBy().isEmpty())</span>
+<span class="nc" id="L230">				validateServiceDescribedBy(customerFacingServices);</span>
+<span class="nc" id="L231">		}</span>
+<span class="nc" id="L232">	}</span>
+
+	public void validatePhysicalResourceSummary(ResourceInventoryEntity entity) throws OSSBusinessException {
+<span class="nc" id="L235">		Optional&lt;String&gt; physicalResourceSummary = Optional.ofNullable(entity.getPhysicalResourceSummary());</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">		if (!physicalResourceSummary.isPresent()) {</span>
+<span class="nc" id="L237">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L238">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;PHYSICAL_RESOURCE_SUMMARY&quot;));</span>
+		}
+<span class="nc" id="L240">	}</span>
+
+	public void validateServiceDescribedBy(CustomerFacingService customerFacingServices)
+			throws OSSBusinessException {
+<span class="nc" id="L244">		Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribedByList = Optional</span>
+<span class="nc" id="L245">				.ofNullable(customerFacingServices.getServiceDescribedBy());</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">		if (!serviceDescribedByList.isPresent())</span>
+<span class="nc" id="L247">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L248">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SERVICE_DESCRIBED_BY&quot;));</span>
+			
+<span class="nc bnc" id="L250" title="All 2 branches missed.">		for (ServiceDescribedBy sdb : customerFacingServices.getServiceDescribedBy()) {</span>
+<span class="nc" id="L251">			Optional&lt;ServiceDescribedBy&gt; serviceDescribedBy = Optional.ofNullable(sdb);</span>
+<span class="nc bnc" id="L252" title="All 4 branches missed.">			if (!serviceDescribedBy.map(ServiceDescribedBy::getName).filter(d -&gt; !d.isEmpty()).isPresent())</span>
+<span class="nc" id="L253">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L254">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;NAME&quot;));</span>
+<span class="nc" id="L255">			validateServiceSpecCharDescribes(sdb);</span>
+<span class="nc" id="L256">		}</span>
+<span class="nc" id="L257">	}</span>
+	
+	public void validateServiceDescribedBy(ResourceFacingService resourceFacingService, String... params)
+			throws OSSBusinessException {
+<span class="nc" id="L261">		Optional&lt;List&lt;ServiceDescribedBy&gt;&gt; serviceDescribedByList = Optional</span>
+<span class="nc" id="L262">				.ofNullable(resourceFacingService.getServiceDescribedBy());</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">		if (!serviceDescribedByList.isPresent())</span>
+<span class="nc" id="L264">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L265">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SERVICE_DESCRIBED_BY&quot;));</span>
+			
+<span class="nc bnc" id="L267" title="All 2 branches missed.">		for (ServiceDescribedBy sdb : resourceFacingService.getServiceDescribedBy()) {</span>
+<span class="nc" id="L268">			Optional&lt;ServiceDescribedBy&gt; serviceDescribedBy = Optional.ofNullable(sdb);</span>
+<span class="nc bnc" id="L269" title="All 4 branches missed.">			if (!serviceDescribedBy.map(ServiceDescribedBy::getName).filter(d -&gt; !d.isEmpty()).isPresent())</span>
+<span class="nc" id="L270">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L271">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;NAME&quot;));</span>
+<span class="nc" id="L272">			validateServiceSpecCharDescribesCabinetRetrieval(sdb, params);</span>
+<span class="nc" id="L273">		}</span>
+<span class="nc" id="L274">	}</span>
+	
+	public void validateServiceSpecCharDescribesCabinetRetrieval(ServiceDescribedBy serviceDescribedBy, String... params)
+			throws OSSBusinessException {
+<span class="nc" id="L278">		Optional&lt;List&lt;ServiceSpecCharDescribes&gt;&gt; serviceSpecCharDescribesList = Optional</span>
+<span class="nc" id="L279">				.ofNullable(serviceDescribedBy.getServiceSpecCharDescribes());</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">		if (!serviceSpecCharDescribesList.isPresent()) {</span>
+<span class="nc" id="L281">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L282">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SERVICE_SPEC_CHAR_DESCRIBES&quot;));</span>
+		}
+
+<span class="nc bnc" id="L285" title="All 2 branches missed.">		for (String param : params) {</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">			if (serviceDescribedBy.getName().equalsIgnoreCase(Constants.NETWORK_OWNER_VIVO2) &amp;&amp; </span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">					serviceDescribedBy.getServiceSpecCharDescribes().stream().noneMatch(s -&gt; s.getValueType().equals(param))) {</span>
+<span class="nc" id="L288">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L289">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param.toUpperCase()));</span>
+			}
+<span class="nc bnc" id="L291" title="All 2 branches missed.">			if (serviceDescribedBy.getName().equalsIgnoreCase(Constants.EQUIPMENT) &amp;&amp; </span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">					serviceDescribedBy.getServiceSpecCharDescribes().stream().noneMatch(s -&gt; s.getValueType().equals(Constants.HOSTNAME))) {</span>
+<span class="nc" id="L293">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L294">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param.toUpperCase()));</span>
+			}
+		}
+		
+<span class="nc bnc" id="L298" title="All 2 branches missed.">		for (ServiceSpecCharDescribes scd : serviceDescribedBy.getServiceSpecCharDescribes()) {</span>
+<span class="nc" id="L299">			Optional&lt;ServiceSpecCharDescribes&gt; serviceSpecCharDescribes = Optional.ofNullable(scd);</span>
+<span class="nc bnc" id="L300" title="All 4 branches missed.">			if (!serviceSpecCharDescribes.map(ServiceSpecCharDescribes::getValue).filter(d -&gt; !d.trim().isEmpty()).isPresent())</span>
+<span class="nc" id="L301">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L302">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), serviceSpecCharDescribes.get().getValueType().toUpperCase()));</span>
+<span class="nc" id="L303">		}</span>
+		
+<span class="nc" id="L305">	}</span>
+
+	public void validateServiceSpecCharDescribes(ServiceDescribedBy serviceDescribedBy)
+			throws OSSBusinessException {
+<span class="nc" id="L309">		Optional&lt;List&lt;ServiceSpecCharDescribes&gt;&gt; serviceSpecCharDescribesList = Optional</span>
+<span class="nc" id="L310">				.ofNullable(serviceDescribedBy.getServiceSpecCharDescribes());</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">		if (!serviceSpecCharDescribesList.isPresent()) {</span>
+<span class="nc" id="L312">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L313">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SERVICE_SPEC_CHAR_DESCRIBES&quot;));</span>
+		}
+
+<span class="nc bnc" id="L316" title="All 2 branches missed.">		for (ServiceSpecCharDescribes scd : serviceDescribedBy.getServiceSpecCharDescribes()) {</span>
+<span class="nc" id="L317">			Optional&lt;ServiceSpecCharDescribes&gt; serviceSpecCharDescribes = Optional.ofNullable(scd);</span>
+<span class="nc bnc" id="L318" title="All 4 branches missed.">			if (!serviceSpecCharDescribes.map(ServiceSpecCharDescribes::getValue).filter(d -&gt; !d.isEmpty()).isPresent())</span>
+<span class="nc" id="L319">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L320">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;VALUE&quot;));</span>
+<span class="nc" id="L321">		}</span>
+<span class="nc" id="L322">	}</span>
+
+	public void validateResourceOrder(ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="nc" id="L326">		Optional&lt;ResourceOrder&gt; resourceOrder = Optional.ofNullable(entity.getResourceOrder());</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">		if (!resourceOrder.isPresent())</span>
+<span class="nc" id="L328">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L329">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;RESOURCE_ORDER&quot;));</span>
+<span class="nc" id="L330">	}</span>
+
+	public void validateResourceOrderItem(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+
+<span class="nc" id="L335">		validateResourceOrder(entity);</span>
+<span class="nc" id="L336">		Optional&lt;ResourceOrderItem&gt; resourceOrderItem = Optional</span>
+<span class="nc" id="L337">				.ofNullable(entity.getResourceOrder().getResourceOrderItem());</span>
+<span class="nc" id="L338">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L339">		Set&lt;ConstraintViolation&lt;ResourceOrderItem&gt;&gt; constraintViolations = null;</span>
+		
+<span class="nc bnc" id="L341" title="All 2 branches missed.">		if (!resourceOrderItem.isPresent())</span>
+<span class="nc" id="L342">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L343">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;RESOURCE_ORDER_ITEM&quot;));</span>
+		
+<span class="nc bnc" id="L345" title="All 2 branches missed.">		for (String param : params) {</span>
+			
+<span class="nc" id="L347">			constraintViolations = validator.validateProperty(resourceOrderItem.get(),param);</span>
+			
+<span class="nc bnc" id="L349" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L350">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L351">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+			
+		}
+<span class="nc" id="L354">	}</span>
+	
+	public void validateResourceFacingServiceId(ResourceInventoryEntity entity, String... params)
+			throws OSSBusinessException {
+
+<span class="nc" id="L359">		validateResourceFacingService(entity);</span>
+<span class="nc" id="L360">		Optional&lt;String&gt; serviceId = Optional</span>
+<span class="nc" id="L361">				.ofNullable(entity.getResourceFacingService().getServiceId());</span>
+<span class="nc" id="L362">		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();</span>
+<span class="nc" id="L363">		Set&lt;ConstraintViolation&lt;String&gt;&gt; constraintViolations = null;</span>
+		
+<span class="nc bnc" id="L365" title="All 2 branches missed.">		if (!serviceId.isPresent())</span>
+<span class="nc" id="L366">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L367">					String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SERVICE_ID&quot;));</span>
+		
+<span class="nc bnc" id="L369" title="All 2 branches missed.">		for (String param : params) {</span>
+			
+<span class="nc" id="L371">			constraintViolations = validator.validateProperty(serviceId.get(),param);</span>
+			
+<span class="nc bnc" id="L373" title="All 2 branches missed.">			if (constraintViolations.size()&gt;0)</span>
+<span class="nc" id="L374">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L375">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), param));</span>
+			
+		}
+<span class="nc" id="L378">	}</span>
+
+	public void validateGatherResource(ResourceInventoryEntity resourceInventoryEntity, String... params) throws OSSBusinessException {
+<span class="nc" id="L381">		GatherResourceInformation gatherResourceInformation = resourceInventoryEntity.getGatherResourceInformation();</span>
+<span class="nc bnc" id="L382" title="All 6 branches missed.">		if (gatherResourceInformation.getShelf() == null &amp;&amp; gatherResourceInformation.getCabinet() == null &amp;&amp; gatherResourceInformation.getSplitter() == null) {</span>
+<span class="nc" id="L383">			throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+					&quot;É necessário preencher os campos de forma adeguada. SHELF ou (CABINET &amp; SPLITTER)&quot;);
+<span class="nc bnc" id="L385" title="All 2 branches missed.">		} else if (gatherResourceInformation.getShelf() == null) {</span>
+<span class="nc bnc" id="L386" title="All 2 branches missed.">			if (gatherResourceInformation.getCabinet() == null) {</span>
+<span class="nc" id="L387">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L388">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;CABINET&quot;));</span>
+<span class="nc bnc" id="L389" title="All 2 branches missed.">			} else if (gatherResourceInformation.getSplitter() == null) {</span>
+<span class="nc" id="L390">				throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(), ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L391">						String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;SPLITTER&quot;));</span>
+			}
+		}
+<span class="nc" id="L394">	}</span>
+
+	public void validateResourceOrderItemOrCustomerOrder(ResourceInventoryEntity entity, String...params)
+            throws OSSBusinessException {
+
+<span class="nc" id="L399">	     Optional&lt;ResourceOrder&gt; resourceOrder = Optional.ofNullable(entity.getResourceOrder());</span>
+<span class="nc" id="L400">	     Optional&lt;CustomerOrder&gt; customerOrder = Optional.ofNullable(entity.getCustomerOrder());</span>
+	
+<span class="nc bnc" id="L402" title="All 4 branches missed.">	     if (!resourceOrder.isPresent() &amp;&amp; !customerOrder.isPresent()) {</span>
+<span class="nc" id="L403">	            throw new OSSBusinessException(ExceptionInfoEnum.RITBS_001.getDescription(),</span>
+<span class="nc" id="L404">	                         ExceptionInfoEnum.RITBS_001.getCode(),</span>
+<span class="nc" id="L405">	                         String.format(ExceptionInfoEnum.RITBS_001.getMessage(), &quot;RESOURCE_ORDER || CUSTOMER_ORDER&quot;));</span>
+	     }
+	
+<span class="nc bnc" id="L408" title="All 2 branches missed.">	     if (resourceOrder.isPresent()) </span>
+<span class="nc" id="L409">	    	 validateResourceOrderItem(null, params);</span>
+     
+<span class="nc" id="L411">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

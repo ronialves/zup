@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FacilityResourceController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ResourceInventorySagreAPI-core</a> &gt; <a href="index.source.html" class="el_package">com.tlf.oss.resourceinventory.sagre.core</a> &gt; <span class="el_source">FacilityResourceController.java</span></div><h1>FacilityResourceController.java</h1><pre class="source lang-java linenums">package com.tlf.oss.resourceinventory.sagre.core;
+
+import java.io.Serializable;
+import java.util.StringTokenizer;
+
+import javax.inject.Inject;
+
+import com.tlf.oss.common.exception.OSSBusinessException;
+import com.tlf.oss.common.fallout.OSSExceptionFactory;
+import com.tlf.oss.common.fallout.entity.OSSFalloutConfiguration;
+import com.tlf.oss.common.log.OSSLogger;
+import com.tlf.oss.resourceinventory.core.Constants;
+import com.tlf.oss.resourceinventory.sagre.core.validation.FacilityRetrieval;
+import com.tlf.oss.resourceinventory.sagre.core.validation.ValidatorEntity;
+import com.tlf.oss.resourceinventory.sagre.entity.RetrieveFacilityEntity;
+import com.tlf.oss.resourceinventory.sagre.enums.ExceptionInfoEnum;
+import com.tlf.oss.resourceinventory.sagre.repository.FacilityResourceRepository;
+import com.tlf.oss.resourceinventory.schemas.Cabinet;
+import com.tlf.oss.resourceinventory.schemas.Splitter;
+import com.tlf.oss.resourceinventory.schemas.TerminalBox;
+import com.tlf.oss.resourceinventory.schemas.api.ResourceInventoryEntity;
+import com.tlf.oss.resourceinventory.schemas.enums.SplitterLevel;
+
+/**
+ * BEATRIXTWO-441 | DEMOSS-2279
+ *
+ * @project Beatrix Fase 2
+ * @author rodrigo.de.freitas
+ * @since 201710
+ */
+@SuppressWarnings(&quot;serial&quot;)
+<span class="fc" id="L32">public class FacilityResourceController extends ValidatorEntity implements Serializable {</span>
+
+	@Inject
+	FacilityResourceRepository facilityResourceRepository;
+
+	@Inject
+	OSSLogger logger;
+
+<span class="fc" id="L40">	OSSFalloutConfiguration falloutConfig = new OSSFalloutConfiguration(ExceptionInfoEnum.RISAGRE_003.getCode(),</span>
+<span class="fc" id="L41">			String.format(ExceptionInfoEnum.RISAGRE_003.getDescription(), &quot;GVT_SP_SOA_FAC_CTRL&quot;), </span>
+			Constants.FALLOUT_EXCEPTIONS_FILENAME, Constants.FALLOUT_DESCRIPTION_FILENAME);
+
+	private static final int RESULTADO_ESPERADO = 0;
+
+	// Parametros a serem utilizados na leitura do getNote
+	private static final String ARMARIO = &quot;Armario:&quot;;
+	private static final String SPLITTER1N = &quot;Splitter_1n:&quot;;
+	private static final String FIBRA1N = &quot;Fibra_1n:&quot;;
+	private static final String CAIXA = &quot;Caixa:&quot;;
+	private static final String SPLITTER2N = &quot;Splitter_2n:&quot;;
+	private static final String FIBRA2N = &quot;Fibra_2n:&quot;;
+	private static final String STATUS = &quot;Status:&quot;;
+	private static final String CABO = &quot;Cabo:&quot;;
+
+	/**
+	 * Retorna atraves do RetrieveFacilityEntity (preenchido com
+	 * ResourceInventoryEntity), o ResourceInventoryEntity enriquecido
+	 * 
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity retrieveFacility(@FacilityRetrieval ResourceInventoryEntity entity) throws OSSBusinessException {
+
+<span class="fc" id="L66">		logger.log(OSSLogger.INFO, &quot;[FacilityResourceController] Tranformando ResourceInventoryEntity em RetrieveFacilityEntity&quot;);</span>
+
+<span class="fc" id="L68">		RetrieveFacilityEntity retrieveFacilityEntity = new RetrieveFacilityEntity();</span>
+
+<span class="fc" id="L70">		retrieveFacilityEntity.setCnl(Integer.valueOf(entity.getAddress().getCnl()));</span>
+<span class="fc" id="L71">		retrieveFacilityEntity.setAccessTechnology(</span>
+<span class="fc" id="L72">				entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getAccessTechnology());</span>
+<span class="fc" id="L73">		retrieveFacilityEntity.setVoiceTechnology(</span>
+<span class="fc" id="L74">				entity.getAddress().getPlacePhysicalResourceAssoc().getPhysicalLink().getVoiceProtocol());</span>
+<span class="fc" id="L75">		retrieveFacilityEntity.setAccessId(entity.getResourceFacingService().getServiceId());</span>
+		
+<span class="fc" id="L77">		logger.log(OSSLogger.INFO, &quot;[FacilityResourceController] Realizando chamada do facilityResourceDAO.retrieveFacility&quot;);</span>
+
+<span class="fc" id="L79">		return getResourceInventoryEntity(facilityResourceRepository.retrieveFacility(retrieveFacilityEntity), entity);</span>
+	}
+
+	/**
+	 * Realiza enriquecimento do {@link ResourceInventoryEntity}
+	 * 
+	 * @param retrieveFacilityEntity
+	 * @param entity
+	 * @return {@link ResourceInventoryEntity}
+	 * @throws OSSBusinessException
+	 */
+	public ResourceInventoryEntity getResourceInventoryEntity(RetrieveFacilityEntity retrieveFacilityEntity,
+			ResourceInventoryEntity entity) throws OSSBusinessException {
+		
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">		if (RESULTADO_ESPERADO != retrieveFacilityEntity.getResultCode()) {</span>
+
+<span class="nc" id="L95">			String errorCode = String.valueOf(retrieveFacilityEntity.getResultCode());</span>
+<span class="nc" id="L96">			String errorMessage = retrieveFacilityEntity.getMessage();</span>
+<span class="nc" id="L97">			String detailMessage = errorCode + &quot;; &quot; + errorMessage;</span>
+
+<span class="nc" id="L99">		    falloutConfig.setErrorCode(errorCode);</span>
+<span class="nc" id="L100">		    falloutConfig.setErrorMessage(errorMessage);</span>
+<span class="nc" id="L101">			falloutConfig.setDetailMessage(detailMessage);</span>
+<span class="nc" id="L102">			throw OSSExceptionFactory.getOSSBusinessException(falloutConfig);</span>
+		}
+
+
+<span class="pc bpc" id="L106" title="2 of 4 branches missed.">		if (retrieveFacilityEntity.getNote() != null &amp;&amp; !&quot;&quot;.equals(retrieveFacilityEntity.getNote())) {</span>
+<span class="fc" id="L107">			Cabinet cabinet = new Cabinet();</span>
+<span class="fc" id="L108">			Splitter splitterFirstLevel = new Splitter();</span>
+<span class="fc" id="L109">			TerminalBox terminalBox = new TerminalBox();</span>
+<span class="fc" id="L110">			Splitter splitterSecondLevel = new Splitter();</span>
+
+<span class="fc" id="L112">			logger.log(OSSLogger.INFO, &quot;[FacilityResourceController] O campo retrieveFacilityEntity.note esta preenchido: &quot;.concat(retrieveFacilityEntity.getNote()));</span>
+			
+<span class="fc" id="L114">			StringTokenizer token = new StringTokenizer(retrieveFacilityEntity.getNote(), &quot; &quot;);</span>
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">			while (token.hasMoreTokens()) {</span>
+
+<span class="fc" id="L118">				String chave = token.nextToken();</span>
+<span class="fc bfc" id="L119" title="All 9 branches covered.">				switch (chave) {</span>
+				case ARMARIO:
+<span class="fc" id="L121">					cabinet.setName(token.nextToken());</span>
+<span class="fc" id="L122">					break;</span>
+
+				case SPLITTER1N:
+<span class="fc" id="L125">					splitterFirstLevel.setId(token.nextToken());</span>
+<span class="fc" id="L126">					break;</span>
+
+				case FIBRA1N:
+<span class="fc" id="L129">					splitterFirstLevel.setFiberId(token.nextToken());</span>
+<span class="fc" id="L130">					break;</span>
+
+				case CAIXA:
+<span class="fc" id="L133">					terminalBox.setName(token.nextToken());</span>
+<span class="fc" id="L134">					break;</span>
+
+				case SPLITTER2N:
+<span class="fc" id="L137">					splitterSecondLevel.setId(token.nextToken());</span>
+<span class="fc" id="L138">					break;</span>
+
+				case FIBRA2N:
+<span class="fc" id="L141">					splitterSecondLevel.setFiberId(token.nextToken());</span>
+<span class="fc" id="L142">					break;</span>
+
+				case STATUS:
+<span class="fc" id="L145">					splitterSecondLevel.setStatus(token.nextToken());</span>
+<span class="fc" id="L146">					break;</span>
+
+				case CABO:
+<span class="fc" id="L149">					cabinet.setFeederCable(token.nextToken());</span>
+<span class="fc" id="L150">					break;</span>
+
+				default:
+					break;
+				}
+
+<span class="fc" id="L156">			}</span>
+
+<span class="fc" id="L158">			splitterFirstLevel.setTypeOfResource(SplitterLevel.FIRST.getLevel());</span>
+<span class="fc" id="L159">			cabinet.getSplitter().add(splitterFirstLevel);</span>
+			
+<span class="fc" id="L161">			splitterSecondLevel.setTypeOfResource(SplitterLevel.SECOND.getLevel());</span>
+<span class="fc" id="L162">			cabinet.getSplitter().add(splitterSecondLevel);</span>
+<span class="fc" id="L163">			cabinet.setTerminalBox(terminalBox);</span>
+
+<span class="fc" id="L165">			entity.setCabinet(cabinet);</span>
+			
+<span class="fc" id="L167">			entity.setPhysicalResourceSummary(retrieveFacilityEntity.getNote());</span>
+<span class="fc" id="L168">			logger.log(OSSLogger.INFO, &quot;[FacilityResourceController] Enriquecimento do ResourceInventoryEntity concluido&quot;);</span>
+			
+<span class="fc" id="L170">		}else{</span>
+<span class="nc" id="L171">			logger.log(OSSLogger.INFO, &quot;[FacilityResourceController] O campo retieveFacilityEntity.note retornou nulo ou vazio&quot;);</span>
+		}
+
+<span class="fc" id="L174">		return entity;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

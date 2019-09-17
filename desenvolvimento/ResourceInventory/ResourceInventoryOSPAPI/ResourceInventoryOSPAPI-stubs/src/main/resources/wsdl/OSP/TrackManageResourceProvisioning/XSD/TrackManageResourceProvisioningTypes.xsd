@@ -1,0 +1,155 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://www.cpqd.com.br/etics/simpletypes"
+	xmlns:sim="http://www.cpqd.com.br/etics/SupplementaryInformationManageProvTypes"
+	xmlns:sib="http://www.cpqd.com.br/etics/SupplementaryInformationBDTypes"
+	xmlns:rst="http://www.cpqd.com.br/etics/ResourceServiceTypes"
+	xmlns:roi="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes"
+	xmlns:re="http://www.cpqd.com.br/etics/provisiongtypes" xmlns:ca="http://www.cpqd.com.br/etics/CircuitResourceTypes"
+	elementFormDefault="qualified"
+	targetNamespace="http://www.cpqd.com.br/etics/facilities/TrackManageResourceProvisioningTypes">
+	<xs:import namespace="http://www.cpqd.com.br/etics/simpletypes"
+		schemaLocation="SimpleTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/provisiongtypes"
+		schemaLocation="ProvisioningTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceServiceTypes"
+		schemaLocation="ResourceServiceTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/CircuitResourceTypes"
+		schemaLocation="CircuitResourceTypes.xsd" />
+	<xs:import
+		namespace="http://www.cpqd.com.br/etics/SupplementaryInformationBDTypes"
+		schemaLocation="SupplementaryInformationBDTypes.xsd" />
+	<xs:import
+		namespace="http://www.cpqd.com.br/etics/SupplementaryInformationManageProvTypes"
+		schemaLocation="SupplementaryInformationManageProvTypes.xsd" />
+	<xs:import namespace="http://www.cpqd.com.br/etics/ResourceOrderInfoTypes"
+		schemaLocation="ResourceOrderInfoTypes.xsd" />
+	<!-- Tipos de Requisicao e Resposta da operacao cancelamento/confirmacao -->
+	<xs:complexType name="ManageResourceProvisioningActivityRequest">
+		<xs:sequence>
+			<!-- Ordem de Recursos -->
+			<xs:element minOccurs="0" name="resourceOrder" type="st:string40" />
+			<!-- Ordem de Reserva de Recursos -->
+			<xs:element minOccurs="0" name="reserveOrder" type="st:string15" />
+			<!-- Identificador do Circuito -->
+			<xs:element minOccurs="0" name="circuitId" type="st:string50" />
+			<!-- Operação (1 - Confirmação, 2 - Cancelamento) -->
+			<xs:element name="operation">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:pattern value="1|2" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Caracteristica do Circuito (0 - Nao e LP, 2 - Ponta A de LP, 3 - 
+				Ponta B de LP) -->
+			<xs:element default="0" minOccurs="0" name="category">
+				<xs:simpleType>
+					<xs:restriction base="st:string1">
+						<xs:pattern value="0|2|3" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Dados Complementares -->
+			<xs:element minOccurs="0" name="supplementaryInformation"
+				type="sim:SupplementaryInformationIn" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ManageResourceProvisioningActivityResponse">
+		<xs:sequence>
+			<!-- Resultado da operação -->
+			<xs:element name="result" type="re:ResultTypeWithErrorCode" />
+			<!-- Bilhete de Defeito Finalizado -->
+			<xs:element maxOccurs="unbounded" minOccurs="0"
+				name="resourceOrderInfoBD" type="roi:ResourceOrderInfoFull" />
+			<!-- Dados Complementares -->
+			<xs:element minOccurs="0" name="supplementaryInformation"
+				type="sim:SupplementaryInformationOut" />
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Tipos de Requisicao e Resposta da operacao BD -->
+	<xs:complexType name="UpdateResourceRepositoryRequest">
+		<xs:sequence>
+			<!-- Ordem de Recursos -->
+			<xs:element minOccurs="0" name="resourceOrder" type="st:string40" />
+			<!-- Identificador do Circuito -->
+			<xs:element minOccurs="0" name="circuitId" type="st:string50" />
+			<!-- Operacao (1 - Associacao, 2 - Finalizacao) -->
+			<xs:element name="operation">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:pattern value="1|2" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<!-- Equipamento -->
+			<xs:element minOccurs="0" name="resourceService" type="rst:ResourceService" />
+			<!-- Dados Complementares -->
+			<xs:element minOccurs="0" name="supplementaryInformation"
+				type="sib:SupplementaryInformationIn" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UpdateResourceRepositoryResponse">
+		<xs:sequence>
+			<!-- Resultado da operação -->
+			<xs:element name="result" type="re:ResultTypeWithErrorCode" />
+			<!-- Dados retornados ao sistema externo -->
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="informations">
+				<xs:complexType>
+					<xs:sequence>
+						<!-- Nível da informação (1 - Lógicas, 2 - Físicas) -->
+						<xs:element name="level">
+							<xs:simpleType>
+								<xs:restriction base="xs:integer">
+									<xs:pattern value="1|2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<!-- Tipo de Circuito (1 - Rede Metálica, 2 - Rede FTTH) -->
+						<xs:element name="circuitType">
+							<xs:simpleType>
+								<xs:restriction base="st:string30">
+									<xs:pattern value="1|2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<!-- Dedicação (0 - Não dedicados, 1 - Dedicados) -->
+						<xs:element minOccurs="0" name="dedication">
+							<xs:simpleType>
+								<xs:restriction base="xs:integer">
+									<xs:pattern value="0|1" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<!-- Massiva (0-Não estao em dados massivos, 1 - Estao em dados massivos) -->
+						<xs:element minOccurs="0" name="massive">
+							<xs:simpleType>
+								<xs:restriction base="xs:integer">
+									<xs:pattern value="0|1" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<!-- Ordem de Recursos -->
+						<xs:element minOccurs="0" name="resourceOrder" type="st:string40" />
+						<!-- Ordem de Reserva de Recursos -->
+						<xs:element minOccurs="0" name="reserveOrder" type="st:string15" />
+						<!-- Qde Unid. de Transmissão -->
+						<xs:element name="transmissionUnits" type="st:integer5" />
+						<!-- Condição de Rede (0 - Normal, 1 - Invasao, 2 - Segregacao) -->
+						<xs:element default="0" name="statusNetwork">
+							<xs:simpleType>
+								<xs:restriction base="st:string1">
+									<xs:pattern value="0|1|2" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<!-- Circuitos -->
+						<xs:element minOccurs="0" name="relatedCircuits" type="ca:CircuitResource" />
+						<!-- Dados Complementares -->
+						<xs:element minOccurs="0" name="supplementaryInformation"
+							type="sib:SupplementaryInformationOut" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
