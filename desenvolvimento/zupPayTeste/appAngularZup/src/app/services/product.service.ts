@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Product } from './products/product';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { Product } from '../products/product';
 
 const apiUrl = 'http://localhost:8080/api/products';
 

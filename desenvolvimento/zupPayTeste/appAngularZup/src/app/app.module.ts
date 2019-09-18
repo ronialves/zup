@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
-import { TokenInterceptor } from './interceptors/token.interceptor';
+import { TokenInterceptor } from './interceptors/TokenInterceptor';
 import { ProductsComponent } from './products/products.component';
 
 
