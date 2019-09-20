@@ -40,6 +40,14 @@ export class AuthService {
         catchError(this.handleError('login', []))
       );
   }
+
+  payment(data: any): Observable<any> {
+    return this.http.post<any>(apiUrl + 'payment', data)
+      .pipe(
+        tap(_ => this.log('payment')),
+        catchError(this.handleError('payment', []))
+      );
+  }
   
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

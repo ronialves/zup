@@ -67,4 +67,19 @@ public class AuthController {
         model.put("message", "User registered successfully");
         return ok(model);
     }
+    
+    
+    @SuppressWarnings("rawtypes")
+    @PostMapping("/payment")
+    public ResponseEntity payment(@RequestBody User user) {
+        User userExists = userService.findUserByEmail(user.getEmail());
+        if (userExists != null) {
+            throw new BadCredentialsException("User with username: " + user.getEmail() + " already exists");
+        }
+        userService.saveUser(user);
+        Map<Object, Object> model = new HashMap<>();
+        model.put("message", "User registered successfully");
+        return ok(model);
+    }
+    
 }

@@ -1,5 +1,6 @@
 package com.djamware.springangularauth.models;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -20,8 +21,10 @@ public class User {
     private boolean enabled;
     @DBRef
     private Set<Role> roles;
-
-    public String getId() {
+    
+    private List<CreditCard> creditCard;
+   
+	public String getId() {
         return id;
     }
     public void setId(String id) {
@@ -58,4 +61,10 @@ public class User {
         this.roles = roles;
     }
 
+    public List<CreditCard> getCreditCard() {
+		return creditCard;
+	}
+	public void setCreditCard(List<CreditCard> creditCard) {
+		this.creditCard = creditCard;
+	}
 }

@@ -3,11 +3,17 @@ package com.djamware.springangularauth.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
+
 @Document(collection = "products")
 public class Products {
 
+
     @Id
-    String id;
+    private String id;
+    @Indexed(unique = true, direction = IndexDirection.DESCENDING, dropDups = true)
+
     String prodName;
     String prodDesc;
     Double prodPrice;

@@ -19,6 +19,35 @@
             <span *ngIf="!registerForm.get('email').valid && registerForm.get('email').touched">Please enter your email</span>
           </mat-error>
         </mat-form-field>
+
+        <mat-form-field class="example-full-width">
+            <input matInput type="cardNumber" placeholder="Card Number" formControlName="cardNumber"
+                   [errorStateMatcher]="matcher">
+            <mat-error>
+              <span *ngIf="!registerForm.get('cardNumber').valid && registerForm.get('cardNumber').touched">Please enter your Card Number</span>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+              <input matInput type="cardCode" placeholder="Card Code" formControlName="cardCode"
+                     [errorStateMatcher]="matcher">
+              <mat-error>
+                <span *ngIf="!registerForm.get('cardCode').valid && registerForm.get('cardCode').touched">Please enter your Card Code Number</span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+                <input matInput type="cardExpirationDate" placeholder="Card Expiration Date" formControlName="cardExpirationDate"
+                       [errorStateMatcher]="matcher">
+                      
+                <mat-error>
+                  <span *ngIf="!registerForm.get('cardExpirationDate').valid && registerForm.get('cardExpirationDate').touched">Please enter your Card Expiration Date </span>
+                </mat-error>
+              </mat-form-field>
+
+            
+             
+
         <mat-form-field class="example-full-width">
           <input matInput type="password" placeholder="Password" formControlName="password"
                  [errorStateMatcher]="matcher">

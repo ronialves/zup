@@ -1,23 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { AuthService } from '../../auth.service';
+import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { ErrorStateMatcher } from '@angular/material/core';
+import {MatRadioModule} from '@angular/material/radio';
+
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  selector: 'app-payment-process',
+  templateUrl: './payment-process.component.html',
+  styleUrls: ['./payment-process.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class PaymentProcessComponent implements OnInit {
 
   registerForm: FormGroup;
-  fullName = '';
-  email = '';
-  password = '';
-  cardNumber = ''; 
-  cardCode = ''; 
-  cardExpirationDate = ''; 
+   
+
+  description = ''; 
+  amount = ''; 
+  currency = ''; 
 
   isLoadingResults = false;
   matcher = new MyErrorStateMatcher();
@@ -26,20 +27,17 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      'fullName' : [null, Validators.required],
-      'email' : [null, Validators.required],
-      'password' : [null, Validators.required] ,
-      'cardNumber' : [null, Validators.required] ,
-      'cardCode' : [null, Validators.required] ,
-      'cardExpirationDate' : [null, Validators.required]  
+      'description' : [null, Validators.required],
+      'amount' : [null, Validators.required],
+      'currency' : [null, Validators.required]  
 
     });
   }
 
   onFormSubmit(form: NgForm) {
-    this.authService.register(form)
+    this.authService.payment(form)
       .subscribe(res => {
-        this.router.navigate(['login']);
+        this.router.navigate(['payment']);
       }, (err) => {
         console.log(err);
         alert(err.error);

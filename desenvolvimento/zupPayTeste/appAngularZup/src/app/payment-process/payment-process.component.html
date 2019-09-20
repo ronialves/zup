@@ -1,0 +1,36 @@
+<div class="example-container mat-elevation-z8">
+        <div class="example-loading-shade"
+             *ngIf="isLoadingResults">
+          <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+        </div>
+        <mat-card class="example-card">
+          <form [formGroup]="registerForm" (ngSubmit)="onFormSubmit(registerForm.value)">
+                       
+    
+            <mat-form-field class="example-full-width">
+              <input matInput type="description" placeholder="Description" formControlName="Description"
+                     [errorStateMatcher]="matcher">
+              <mat-error>
+                <span *ngIf="!registerForm.get('description').valid && registerForm.get('description').touched">Please enter the description  </span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+                    <input matInput type="amount" placeholder="Amount" formControlName="Amount"
+                           [errorStateMatcher]="matcher">
+                    <mat-error>
+                      <span *ngIf="!registerForm.get('amount').valid && registerForm.get('amount').touched">Enter the amount to pay  </span>
+                    </mat-error>
+                  </mat-form-field>
+
+            <mat-radio-group formControlName="currency">
+                    <mat-radio-button value="usd">USD</mat-radio-button>
+                    <mat-radio-button value="eur">EUR</mat-radio-button>
+            </mat-radio-group> 
+
+            <div class="button-row">
+              <button type="submit"  mat-flat-button color="primary">Process Payment</button>
+            </div>
+          </form>
+        </mat-card>
+      </div>
