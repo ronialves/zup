@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.djamware.springangularauth.configs.JwtTokenProvider;
+import com.djamware.springangularauth.models.PaymantInfo;
 import com.djamware.springangularauth.models.User;
 import com.djamware.springangularauth.repositories.UserRepository;
 import com.djamware.springangularauth.services.CustomUserDetailsService;
+import com.djamware.springangularauth.services.UserPaymentService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -38,6 +40,9 @@ public class AuthController {
 
     @Autowired
     private CustomUserDetailsService userService;
+    
+    @Autowired
+    private UserPaymentService userPaymentService; 
 
     @SuppressWarnings("rawtypes")
     @PostMapping("/login")
@@ -71,14 +76,11 @@ public class AuthController {
     
     @SuppressWarnings("rawtypes")
     @PostMapping("/payment")
-    public ResponseEntity payment(@RequestBody User user) {
-        User userExists = userService.findUserByEmail(user.getEmail());
-        if (userExists != null) {
-            throw new BadCredentialsException("User with username: " + user.getEmail() + " already exists");
-        }
-        userService.saveUser(user);
+    public ResponseEntity payment(@RequestBody User user,@RequestBody PaymantInfo paymantInfo) {
+    	
+    	userPaymentService.processPayment(user, paymantInfo);     
         Map<Object, Object> model = new HashMap<>();
-        model.put("message", "User registered successfully");
+        model.put("message", "Api received payment process for the user " + user.getEmail());
         return ok(model);
     }
     
